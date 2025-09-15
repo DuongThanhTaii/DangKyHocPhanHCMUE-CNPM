@@ -1,0 +1,230 @@
+/* ============= Base ============= */
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --main-color: #143266;
+  --input-color: #f84b50;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-size: 1.6rem;
+  font-family: "Inter", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit;
+}
+
+/* ============= Common ============= */
+a {
+  text-decoration: none;
+}
+
+/* ================ Layout ================ */
+.container {
+  display: flex;
+  width: 100vw;
+  /* height: 100vh; */
+}
+
+.school {
+  width: 66.67%;
+}
+
+.school__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.main {
+  flex: 1;
+  padding: 15px 24px 0;
+  background-color: #ddd;
+}
+
+/* ================ Header ================ */
+.header__logo {
+  height: 50.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.header__logo-img {
+  height: 100%;
+}
+
+.header__info {
+  text-align: center;
+}
+
+.header__name-school,
+.header__label {
+  color: var(--main-color);
+  font-size: 1.8rem;
+  font-weight: 600;
+  line-height: 1.61;
+}
+
+.header__label {
+  font-size: 2.3rem;
+  line-height: 1.34;
+}
+
+/* ================ Form ================ */
+.form {
+  max-width: 400px;
+  margin: 30px auto;
+  padding: 32px 32px 24px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.form__title {
+  color: #c52f33;
+  font-size: 3.2rem;
+  font-weight: 700;
+  line-height: 1.24;
+  margin-bottom: 12px;
+}
+
+.form__desc {
+  color: #6b778c;
+  font-size: 1.3rem;
+  line-height: 1.52;
+  margin-bottom: 48px;
+}
+
+.form__group {
+  position: relative;
+  margin-bottom: 32px;
+}
+
+.form__group input {
+  width: 100%;
+  height: 56px;
+  border: 1px solid var(--input-color);
+  border-radius: 16px;
+  padding: 18px 16px 16px;
+  font-size: 1.6rem;
+  outline: none;
+  color: var(--input-color);
+  transition: all 0.25s ease;
+}
+
+.form__group label {
+  position: absolute;
+  left: 16px;
+  top: 41%;
+  transform: translateY(-50%);
+  color: var(--input-color);
+  font-size: 1.6rem;
+  pointer-events: none;
+  transition: 0.25s ease;
+  background: #fff;
+  padding: 0 4px;
+}
+
+.form__group input:focus + label,
+.form__group input:not(:placeholder-shown) + label {
+  top: 0;
+  font-size: 1.2rem;
+}
+
+.form__message {
+  margin-top: 6px;
+  margin-left: 10px;
+  font-size: 1.2rem;
+  color: var(--input-color);
+}
+
+.form__group input:valid {
+  border-color: var(--main-color);
+  color: var(--main-color);
+}
+
+.form__group input:valid + label {
+  color: var(--main-color);
+}
+
+.form__group input:valid + label + .form__message {
+  visibility: hidden;
+}
+
+.submit {
+  width: 100%;
+  padding: 14px;
+  background-color: var(--main-color);
+  color: #fff;
+  font-size: 1.6rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.submit:hover {
+  opacity: 0.9;
+}
+
+.form__line {
+  display: block;
+  height: 1px;
+  width: 100%;
+  background-color: #ccc;
+  margin: 24px 0;
+}
+
+.copyright {
+  color: #6b778c;
+  text-align: center;
+  font-size: 1.2rem;
+  line-height: 1.74;
+}
+
+/* ================ Responsive ================ */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .school {
+    display: none;
+  }
+
+  .main {
+    padding: 2rem;
+  }
+
+  .form {
+    padding: 2.4rem;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .container {
+    flex-direction: row;
+  }
+
+  .school {
+    width: 50%;
+  }
+
+  .main {
+    width: 50%;
+  }
+}

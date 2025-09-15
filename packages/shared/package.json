@@ -1,0 +1,14 @@
+{
+  "name": "hcmue-reg",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n backend,frontend -c cyan,magenta \"pnpm --filter backend dev\" \"pnpm --filter frontend dev\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}
