@@ -3,7 +3,7 @@ services:
   db:
     image: postgres:16
     env_file: ./env/db.env
-    ports: ["5432:5432"]
+    ports: ["5433:5432"]
     volumes:
       - dbdata:/var/lib/postgresql/data
       - ./sql:/docker-entrypoint-initdb.d # tự chạy 001_bootstrap.sql khi lần đầu tạo data dir
