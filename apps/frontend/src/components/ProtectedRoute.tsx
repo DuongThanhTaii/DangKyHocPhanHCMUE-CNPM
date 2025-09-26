@@ -13,8 +13,10 @@ export default function ProtectedRoute({
 
   if (!token || !user) return <Navigate to={redirectIfNoAuth} replace />;
 
-  if (!allow.includes(user.loai_tai_khoan)) {
-    return <Navigate to={ROLE_HOME[user.loai_tai_khoan]} replace />;
-  }
+    const role = user.loai_tai_khoan as Role | undefined;
+    if (!role || !allow.includes(role)) {
+      const redirectPath = role && ROLE_HOME[role] ? ROLE_HOME[role] : redirectIfNoAuth;
+      return <Navigate to={redirectPath} replace />;
+    }
   return <Outlet />;
 }
