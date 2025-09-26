@@ -53,7 +53,7 @@ function LoginPage() {
         <div className="header">
           <div className="header__logo">
             <img
-              src="public/assets/img/logohcmue.png"
+              src="public/assets/img/logo2.png"
               alt=""
               className="header__logo-img"
             />

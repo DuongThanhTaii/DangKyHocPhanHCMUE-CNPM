@@ -1,35 +1,32 @@
+import React from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import PDTLayout from "./layouts/PDTLayout";
 import LoginPage from "./pages/LoginPage";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ChuyenTrangThai from "./pages/pdt/ChuyenTrangThai";
+import DuyetHocPhan from "./pages/pdt/DuyetHocPhan";
+import TaoLopHocPhan from "./pages/pdt/TaoLopHocPhan";
+import QuanLyNoiBo from "./pages/pdt/QuanLyNoiBo";
+import ThongKeDashboard from "./pages/pdt/ThongKeDashboard";
 
-const Dummy = (text: string) => () => <div style={{ padding: 24 }}>{text}</div>;
-
-const router = createBrowserRouter([
-  { path: "/", element: <Navigate to="/login" replace /> },
-  { path: "/login", element: <LoginPage /> },
-
+export const router = createBrowserRouter([
+  { path: "/", element: <LoginPage /> },
   {
-    element: <ProtectedRoute allow={["phong_dao_tao"]} />,
-    children: [{ path: "/pdt", element: Dummy("Trang PĐT")() }],
+    element: <ProtectedRoute />,
+    children: [
+      {
+        path: "/pdt",
+        element: <PDTLayout />,
+        children: [
+          { index: true, element: <Navigate to="chuyen-trang-thai" replace /> },
+          { path: "chuyen-trang-thai", element: <ChuyenTrangThai /> },
+          { path: "duyet-hoc-phan", element: <DuyetHocPhan /> },
+          { path: "tao-lop-hoc-phan", element: <TaoLopHocPhan /> },
+          { path: "quan-ly", element: <QuanLyNoiBo /> },
+          { path: "thong-ke-dashboard", element: <ThongKeDashboard /> },
+        ],
+      },
+    ],
   },
-  {
-    element: <ProtectedRoute allow={["tro_ly_khoa"]} />,
-    children: [{ path: "/tlk", element: Dummy("Trang Trợ lý Khoa")() }],
-  },
-  {
-    element: <ProtectedRoute allow={["truong_khoa"]} />,
-    children: [{ path: "/tk", element: Dummy("Trang Trưởng khoa")() }],
-  },
-  {
-    element: <ProtectedRoute allow={["giang_vien"]} />,
-    children: [{ path: "/gv", element: Dummy("Trang Giảng viên")() }],
-  },
-  {
-    element: <ProtectedRoute allow={["sinh_vien"]} />,
-    children: [{ path: "/main", element: Dummy("Trang Sinh viên")() }],
-  },
-
-  { path: "*", element: Dummy("404 Not Found")() },
+  { path: "*", element: <Navigate to="/" replace /> },
 ]);
-
-export default router;
