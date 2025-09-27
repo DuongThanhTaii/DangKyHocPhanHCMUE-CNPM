@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit"; // 👈 type-only
-
+import type { PayloadAction } from "@reduxjs/toolkit";
 type User = {
   id?: string;
   ho_ten?: string;
