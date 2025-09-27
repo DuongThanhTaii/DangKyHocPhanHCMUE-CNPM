@@ -8,6 +8,8 @@ import DuyetHocPhan from "./pages/pdt/DuyetHocPhan";
 import TaoLopHocPhan from "./pages/pdt/TaoLopHocPhan";
 import QuanLyNoiBo from "./pages/pdt/QuanLyNoiBo";
 import ThongKeDashboard from "./pages/pdt/ThongKeDashboard";
+import GVLayout from "./layouts/GVLayout";
+import GiaoVienDashboard from "./pages/gv/Dashboard";
 
 export const router = createBrowserRouter([
   { path: "/", element: <LoginPage /> },
@@ -24,6 +26,19 @@ export const router = createBrowserRouter([
           { path: "tao-lop-hoc-phan", element: <TaoLopHocPhan /> },
           { path: "quan-ly", element: <QuanLyNoiBo /> },
           { path: "thong-ke-dashboard", element: <ThongKeDashboard /> },
+        ],
+      },
+    ],
+  },
+  {
+    element: <ProtectedRoute />,
+    children: [
+      {
+        path: "/gv",
+        element: <GVLayout />,
+        children: [
+          { index: true, element: <Navigate to="dashboard" replace /> },
+          { path: "dashboard", element: <GiaoVienDashboard /> },
         ],
       },
     ],
