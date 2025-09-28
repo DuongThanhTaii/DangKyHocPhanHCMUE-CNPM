@@ -1,82 +1,56 @@
 // apps/backend/src/modules/tlk/tlk.router.ts
 import { Router } from "express";
-import { prisma } from "../../db/prisma";
 import { requireAuth, requireRole } from "../../middlewares/auth";
+import { tlkService } from "./tlk.lendanhsachhocphan";
 
 const r = Router();
 
-/** Học kỳ + niên khóa hiện hành (dùng chung) */
+console.log("TLK router loaded");
+
 r.get("/hien-hanh", requireAuth, async (_req, res) => {
-  const hk = await prisma.hoc_ky.findFirst({
-    where: { trang_thai_hien_tai: true },
-    include: { nien_khoa: true },
-  });
-  if (!hk)
-    return res.status(404).json({ error: "Chưa cấu hình học kỳ hiện hành" });
-  res.json({
-    hoc_ky_id: hk.id,
-    ten_hoc_ky: hk.ten_hoc_ky,
-    nien_khoa: hk.nien_khoa.ten_nien_khoa,
-  });
+  try {
+    const data = await tlkService.hienHanhHocKy();
+    res.json(data);
+  } catch (e: any) {
+    res.status(404).json({ error: e.message });
+  }
 });
 
-/** Danh mục môn học theo khoa của TLK (suy từ JWT) */
 r.get(
-  "/tlk/mon-hoc",
+  "/mon-hoc",
   requireAuth,
-  requireRole("tro_ly_khoa"),
+  requireRole(["tro_ly_khoa"]),
   async (req, res) => {
-    const khoa_id = (req.auth as any).khoa_id as string | undefined;
-    if (!khoa_id)
-      return res.status(400).json({ error: "Không xác định khoa của TLK" });
-
-    const data = await prisma.mon_hoc.findMany({
-      where: { khoa_id },
-      select: { id: true, ma_mon: true, ten_mon: true, so_tin_chi: true },
-      orderBy: [{ ma_mon: "asc" }],
-    });
+    console.log(req.auth)
+    const user_id = (req.auth as any).sub as string | undefined;
+    if (!user_id)
+      return res.status(400).json({ error: "Không xác định tài khoản" });
+    const data = await tlkService.danhMucMonHocTheoKhoa(user_id);
     res.json({ data });
   }
 );
 
-/** Giảng viên theo khoa (optional lọc theo môn) */
 r.get(
-  "/tlk/giang-vien",
+  "/giang-vien",
   requireAuth,
-  requireRole("tro_ly_khoa"),
+  requireRole(["tro_ly_khoa"]),
   async (req, res) => {
-    const khoa_id = (req.auth as any).khoa_id as string | undefined;
-    if (!khoa_id)
-      return res.status(400).json({ error: "Không xác định khoa của TLK" });
-
-    const gvs = await prisma.giang_vien.findMany({
-      where: { khoa_id },
-      select: { id: true, user: { select: { ho_ten: true } } },
-      orderBy: { user: { ho_ten: "asc" } },
-    });
-    res.json({
-      data: gvs.map((g) => ({ id: g.id, ho_ten: g.user?.ho_ten || "" })),
-    });
+    const user_id = (req.auth as any).sub as string | undefined;
+    if (!user_id)
+      return res.status(400).json({ error: "Không xác định tài khoản" });
+    const data = await tlkService.giangVienTheoKhoa(user_id);
+    res.json({ data });
   }
 );
 
-/** Batch tạo đề xuất học phần */
 r.post(
-  "/tlk/de-xuat-hoc-phan/batch",
+  "/de-xuat-hoc-phan/batch",
   requireAuth,
-  requireRole("tro_ly_khoa"),
+  requireRole(["tro_ly_khoa"]),
   async (req, res) => {
     const khoa_id = (req.auth as any).khoa_id as string | undefined;
     const nguoi_tao_id = req.auth!.sub;
-    const { hoc_ky_id, danhSachDeXuat } = req.body as {
-      hoc_ky_id: string;
-      danhSachDeXuat: {
-        mon_hoc_id: string;
-        so_lop_du_kien: number;
-        giang_vien_id?: string | null;
-      }[];
-    };
-
+    const { hoc_ky_id, danhSachDeXuat } = req.body;
     if (!khoa_id)
       return res.status(400).json({ error: "Không xác định khoa của TLK" });
     if (
@@ -85,30 +59,33 @@ r.post(
       danhSachDeXuat.length === 0
     )
       return res.status(400).json({ error: "Dữ liệu không hợp lệ" });
-
-    const monIds = danhSachDeXuat.map((d) => d.mon_hoc_id);
-    const count = await prisma.mon_hoc.count({
-      where: { id: { in: monIds }, khoa_id },
-    });
-    if (count !== monIds.length)
-      return res.status(400).json({ error: "Có môn không thuộc khoa" });
-
-    // dùng createMany cho hiệu năng
-    await prisma.de_xuat_hoc_phan.createMany({
-      data: danhSachDeXuat.map((d) => ({
+    try {
+      const result = await tlkService.batchDeXuatHocPhan(
         khoa_id,
-        hoc_ky_id,
-        mon_hoc_id: d.mon_hoc_id,
-        so_lop_du_kien: Math.max(1, d.so_lop_du_kien || 1),
-        giang_vien_de_xuat: d.giang_vien_id ?? null,
         nguoi_tao_id,
-        trang_thai: "cho_duyet",
-        cap_duyet_hien_tai: "truong_khoa",
-      })),
-    });
-
-    res.json({ ok: true });
+        hoc_ky_id,
+        danhSachDeXuat
+      );
+      res.json(result);
+    } catch (e: any) {
+      res.status(400).json({ error: e.message });
+    }
   }
 );
+
+// // Thêm route mới cho lên danh sách học phần
+// r.get(
+//   "/tlk/len-danh-sach-hoc-phan",
+//   requireAuth,
+//   requireRole(["tro_ly_khoa"]),
+//   async (req, res) => {
+//     const khoa_id = (req.auth as any).khoa_id as string | undefined;
+//     const hoc_ky_id = req.query.hoc_ky_id as string;
+//     if (!khoa_id || !hoc_ky_id)
+//       return res.status(400).json({ error: "Thiếu khoa_id hoặc hoc_ky_id" });
+//     const data = await tlkService.lenDanhSachHocPhan(khoa_id, hoc_ky_id);
+//     res.json({ data });
+//   }
+// );
 
 export default r;

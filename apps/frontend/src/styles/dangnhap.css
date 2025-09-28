@@ -116,7 +116,7 @@ a {
 
 .form__group input {
   width: 100%;
-  height: 56px;
+  height: 100%;
   border: 1px solid var(--input-color);
   border-radius: 16px;
   padding: 18px 16px 16px;
