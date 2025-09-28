@@ -117,13 +117,15 @@ model ghi_danh_hoc_phan {
 }
 
 model giang_vien {
-  id                    String         @id @db.Uuid
-  khoa_id               String         @db.Uuid
+  id                    String                @id @db.Uuid
+  khoa_id               String                @db.Uuid
   chuyen_mon            String?
-  trinh_do              String?        @db.VarChar(50)
-  kinh_nghiem_giang_day Int?           @default(0)
-  users                 users          @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  khoa                  khoa           @relation(fields: [khoa_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  trinh_do              String?               @db.VarChar(50)
+  kinh_nghiem_giang_day Int?                  @default(0)
+  de_xuat_hoc_phan      de_xuat_hoc_phan[]
+  de_xuat_hoc_phan_gv   de_xuat_hoc_phan_gv[]
+  users                 users                 @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  khoa                  khoa                  @relation(fields: [khoa_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   lop_hoc_phan          lop_hoc_phan[]
 
   @@index([khoa_id], map: "idx_gv_khoa")
@@ -141,6 +143,7 @@ model hoc_ky {
   created_at           DateTime?              @default(now()) @db.Timestamp(6)
   updated_at           DateTime?              @default(now()) @db.Timestamp(6)
   chinh_sach_tin_chi   chinh_sach_tin_chi[]
+  de_xuat_hoc_phan     de_xuat_hoc_phan[]
   dot_dang_ky          dot_dang_ky[]
   nien_khoa            nien_khoa              @relation(fields: [id_nien_khoa], references: [id], onDelete: Cascade, onUpdate: NoAction)
   hoc_phan             hoc_phan[]
@@ -215,6 +218,7 @@ model khoa {
   created_at           DateTime?            @default(now()) @db.Timestamp(6)
   updated_at           DateTime?            @default(now()) @db.Timestamp(6)
   chinh_sach_tin_chi   chinh_sach_tin_chi[]
+  de_xuat_hoc_phan     de_xuat_hoc_phan[]
   giang_vien           giang_vien[]
   mon_hoc              mon_hoc[]
   nganh_hoc            nganh_hoc[]
@@ -359,6 +363,7 @@ model mon_hoc {
   thu_tu_hoc                                            Int?               @default(1)
   created_at                                            DateTime?          @default(now()) @db.Timestamp(6)
   updated_at                                            DateTime?          @default(now()) @db.Timestamp(6)
+  de_xuat_hoc_phan                                      de_xuat_hoc_phan[]
   hoc_phan                                              hoc_phan[]
   ket_qua_hoc_phan                                      ket_qua_hoc_phan[]
   mon_dieu_kien_mon_dieu_kien_mon_hoc_idTomon_hoc       mon_dieu_kien[]    @relation("mon_dieu_kien_mon_hoc_idTomon_hoc")
@@ -539,18 +544,70 @@ model truong_khoa {
 }
 
 model users {
-  id            String         @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  ma_nhan_vien  String?        @db.VarChar(20)
-  ho_ten        String         @db.VarChar(255)
-  tai_khoan_id  String?        @db.Uuid
-  created_at    DateTime?      @default(now()) @db.Timestamp(6)
-  updated_at    DateTime?      @default(now()) @db.Timestamp(6)
-  giang_vien    giang_vien?
-  phong_dao_tao phong_dao_tao?
-  sinh_vien     sinh_vien?
-  tai_lieu      tai_lieu[]
-  thong_bao     thong_bao[]
-  tro_ly_khoa   tro_ly_khoa?
-  truong_khoa   truong_khoa?
-  tai_khoan     tai_khoan?     @relation(fields: [tai_khoan_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  id                   String                 @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  ma_nhan_vien         String?                @db.VarChar(20)
+  ho_ten               String                 @db.VarChar(255)
+  tai_khoan_id         String?                @db.Uuid
+  created_at           DateTime?              @default(now()) @db.Timestamp(6)
+  updated_at           DateTime?              @default(now()) @db.Timestamp(6)
+  de_xuat_hoc_phan     de_xuat_hoc_phan[]
+  de_xuat_hoc_phan_log de_xuat_hoc_phan_log[]
+  giang_vien           giang_vien?
+  phong_dao_tao        phong_dao_tao?
+  sinh_vien            sinh_vien?
+  tai_lieu             tai_lieu[]
+  thong_bao            thong_bao[]
+  tro_ly_khoa          tro_ly_khoa?
+  truong_khoa          truong_khoa?
+  tai_khoan            tai_khoan?             @relation(fields: [tai_khoan_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model de_xuat_hoc_phan {
+  id                   String                 @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  khoa_id              String                 @db.Uuid
+  nguoi_tao_id         String                 @db.Uuid
+  hoc_ky_id            String                 @db.Uuid
+  mon_hoc_id           String                 @db.Uuid
+  so_lop_du_kien       Int
+  giang_vien_de_xuat   String?                @db.Uuid
+  trang_thai           String?                @default("cho_duyet") @db.VarChar(30)
+  cap_duyet_hien_tai   String?                @default("truong_khoa") @db.VarChar(20)
+  ghi_chu              String?
+  created_at           DateTime?              @default(now()) @db.Timestamp(6)
+  updated_at           DateTime?              @default(now()) @db.Timestamp(6)
+  giang_vien           giang_vien?            @relation(fields: [giang_vien_de_xuat], references: [id], onUpdate: NoAction)
+  hoc_ky               hoc_ky                 @relation(fields: [hoc_ky_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  khoa                 khoa                   @relation(fields: [khoa_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  mon_hoc              mon_hoc                @relation(fields: [mon_hoc_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users                users                  @relation(fields: [nguoi_tao_id], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  de_xuat_hoc_phan_gv  de_xuat_hoc_phan_gv[]
+  de_xuat_hoc_phan_log de_xuat_hoc_phan_log[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model de_xuat_hoc_phan_gv {
+  id               String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  de_xuat_id       String           @db.Uuid
+  giang_vien_id    String?          @db.Uuid
+  so_lop_du_kien   Int?
+  de_xuat_hoc_phan de_xuat_hoc_phan @relation(fields: [de_xuat_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  giang_vien       giang_vien?      @relation(fields: [giang_vien_id], references: [id], onUpdate: NoAction)
+}
+
+model de_xuat_hoc_phan_log {
+  id               String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  de_xuat_id       String           @db.Uuid
+  thoi_gian        DateTime?        @default(now()) @db.Timestamp(6)
+  hanh_dong        String           @db.VarChar(30)
+  nguoi_thuc_hien  String?          @db.Uuid
+  ghi_chu          String?
+  de_xuat_hoc_phan de_xuat_hoc_phan @relation(fields: [de_xuat_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users            users?           @relation(fields: [nguoi_thuc_hien], references: [id], onUpdate: NoAction)
+}
+
+model playing_with_neon {
+  id    Int    @id @default(autoincrement())
+  name  String
+  value Float? @db.Real
 }
