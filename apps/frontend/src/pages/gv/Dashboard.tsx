@@ -6,7 +6,9 @@ export default function GiaoVienDashboard() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Dashboard Giáo Viên</h1>
+      <h1 className="text-3xl text-amber-800 font-bold mb-4">
+        Dashboard Giáo Viên
+      </h1>
       <div className="bg-white p-6 rounded-lg shadow">
         <p>
           Xin chào, <strong>{user?.ho_ten}</strong>!

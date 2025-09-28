@@ -16,7 +16,7 @@ type HocKyHienHanh = {
   nien_khoa: string;
 };
 
-const API = import.meta.env.VITE_API_URL ?? "http://localhost:3000/api";
+const API = import.meta.env.VITE_API_URL;
 
 const LenDanhSachHocPhan: React.FC = () => {
   const [monHocs, setMonHocs] = useState<MonHoc[]>([]);
@@ -69,7 +69,7 @@ const LenDanhSachHocPhan: React.FC = () => {
     (async () => {
       try {
         setLoading(true);
-        await fetchHocKyHienHanh();
+        //await fetchHocKyHienHanh();
         await fetchMonHocs();
       } finally {
         setLoading(false);
@@ -201,7 +201,6 @@ const LenDanhSachHocPhan: React.FC = () => {
               <th>Tên MH</th>
               <th>STC</th>
               <th>Giảng viên</th>
-              <th>SL Lớp</th>
               <th>Thao tác</th>
             </tr>
           </thead>
@@ -237,19 +236,7 @@ const LenDanhSachHocPhan: React.FC = () => {
                       </select>
                     )}
                   </td>
-                  <td style={{ width: 120 }}>
-                    {checked && (
-                      <input
-                        type="number"
-                        min={1}
-                        value={current?.soLuongLop ?? 1}
-                        onChange={(e) =>
-                          onChangeSoLuongLop(mh.id, Number(e.target.value))
-                        }
-                        style={{ width: 80 }}
-                      />
-                    )}
-                  </td>
+
                   <td>
                     {checked ? (
                       <button
