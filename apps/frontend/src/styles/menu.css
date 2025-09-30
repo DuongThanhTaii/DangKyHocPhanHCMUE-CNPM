@@ -409,14 +409,34 @@ button.btn__quanlylhp.active {
   border-radius: 20px;
   border: 1px solid #ccc;
   margin: 0 20px 20px 20px;
-  width: fit-content;
-  min-width: 100%;
+}
+
+.body__inner * {
+  max-width: 100%;
+}
+
+.body__inner.scroll-x {
+  overflow-x: auto; /* bật kéo ngang */
+  overscroll-behavior-x: contain; /* tránh kéo lan ra ngoài */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Tuỳ chọn: nếu bạn render 1 dải item ngang, bọc trong .hstack để trải ngang đẹp */
+.body__inner.scroll-x .hstack {
+  display: inline-flex; /* inline để không chiếm 100% rồi vẫn tràn vô ích */
+  gap: 12px;
+  white-space: nowrap; /* item không bị xuống dòng */
 }
 
 .search-form {
+  width: 200px;
   display: flex;
   gap: 16px;
   height: 36px;
+}
+
+.form__group {
+  width: 100%;
 }
 
 .form__group__tracuu {
@@ -424,7 +444,7 @@ button.btn__quanlylhp.active {
 }
 
 .form__select {
-  width: 325px;
+  width: 250px;
   height: 40px;
   border: 1px solid #ccc;
   border-radius: 16px;
@@ -492,7 +512,7 @@ button.btn__quanlylhp.active {
 }
 
 .form__group__ctt input {
-  height: 40px;
+  height: 40px !important;
 }
 
 .form__button {
@@ -562,6 +582,10 @@ button.btn__quanlylhp.active {
 
 .w__48 {
   max-width: 48px;
+}
+
+.w__0 {
+  width: 0px !important;
 }
 
 .w__200 {
@@ -924,13 +948,17 @@ input.form__floating-label__quanly {
 
 .sub__title_chuyenphase {
   display: block;
-  padding-top: 20px;
+  padding-bottom: 20px;
   margin-top: 15px;
   margin-bottom: 20px;
   color: #172b4d;
   font-weight: 700;
   font-size: 18px;
-  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+}
+
+.form-section {
+  margin-bottom: 30px;
 }
 
 .sub__title_gd {
@@ -1547,6 +1575,58 @@ th {
   font-weight: 600;
 }
 
+/* Xếp dọc riêng cho form phases, không ảnh hưởng form khác */
+.phases-form {
+  display: block !important; /* thay vì flex của .search-form */
+  width: 100%;
+  height: auto !important; /* bỏ chiều cao cố định */
+  min-height: unset !important;
+  overflow: visible !important; /* tránh cắt bớt nội dung */
+  padding: 0; /* tuỳ, nếu .search-form có padding cho thanh tìm kiếm */
+  gap: 0; /* gap của flex không cần nữa vì đã display:block */
+}
+
+/* Mỗi phase là 1 khối full-width, tự đẩy form cao lên đúng bằng tổng các hàng */
+.phases-form .phase-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 250px) 1fr 1fr; /* tuỳ chỉnh cho cân đối */
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+/* Dọn margin/căn giữa bị thừa do .search-form */
+.phases-form .form__group {
+  margin: 0 !important;
+}
+
+/* Nút submit nằm dưới toàn bộ các hàng */
+.phases-form .btn__chung {
+  margin-top: 8px;
+  align-self: flex-start; /* đề phòng nếu có flex ở container cha */
+}
+
+/* Nếu .search-form gốc có align-items/justify-content/white-space ảnh hưởng — reset luôn */
+.phases-form,
+.phases-form * {
+  white-space: normal; /* tránh ép cùng 1 hàng */
+}
+
+/* Nhìn gọn hơn giữa các phase */
+.phases-form .phase-row + .phase-row {
+  border-top: 1px dashed #e5e7eb;
+  padding-top: 12px;
+}
+
+.phase-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 280px) 1fr 1fr;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
 /* Mobile (dưới 768px) */
 @media (max-width: 767px) {
   .btn__hamburger {
@@ -1594,6 +1674,12 @@ th {
 
   .layout__overlay.show {
     display: block;
+  }
+
+  .phases-form .phase-row {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
   }
 }
 
