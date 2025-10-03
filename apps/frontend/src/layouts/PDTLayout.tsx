@@ -26,7 +26,9 @@ function formatRole(role?: string) {
   }
 }
 
-export default function PDTLayout() {
+import type { PropsWithChildren } from "react";
+
+export default function PDTLayout({ children }: PropsWithChildren) {
   const { sidebarOpen, setSidebarOpen } = useSidebar();
   const location = useLocation();
   const dispatch = useAppDispatch();
@@ -336,7 +338,7 @@ export default function PDTLayout() {
           </div>
         </header>
         <section className="main__body">
-          <Outlet />
+          {children ?? <Outlet />}
         </section>
       </main>
 

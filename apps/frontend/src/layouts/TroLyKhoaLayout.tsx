@@ -26,7 +26,9 @@ function formatRole(role?: string) {
   }
 }
 
-export default function TroLyKhoaLayout() {
+import type { PropsWithChildren } from "react";
+
+export default function TroLyKhoaLayout({ children }: PropsWithChildren) {
   const { sidebarOpen, setSidebarOpen } = useSidebar();
   const location = useLocation();
   const dispatch = useAppDispatch();
@@ -171,11 +173,13 @@ export default function TroLyKhoaLayout() {
               </svg>
             </div>
             <div className="user__body">
-              <p className="user__name">{user?.ho_ten}</p>
+              <p className="user__name user__name__tlk">{user?.ho_ten}</p>
               <p className="user__score">
                 {user?.ma_so_sinh_vien || user?.ma_so_nhan_vien || ""}
               </p>
-              <p className="user__role">{formatRole(user?.loai_tai_khoan)}</p>
+              <p className="user__role user__role__tlk">
+                {formatRole(user?.loai_tai_khoan)}
+              </p>
             </div>
           </div>
         </div>
@@ -290,9 +294,7 @@ export default function TroLyKhoaLayout() {
           </div>
         </header>
 
-        <section className="main__body">
-          <Outlet />
-        </section>
+        <section className="main__body">{children ?? <Outlet />}</section>
       </main>
 
       {sidebarOpen && (

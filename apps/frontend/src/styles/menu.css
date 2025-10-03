@@ -91,6 +91,11 @@ a {
   line-height: 1.57; /* 167.467% */
 }
 
+.user__name__tlk,
+.user__role__tlk {
+  font-size: 1.2rem !important;
+}
+
 .sidebar__menu {
   padding: 16px;
 }
@@ -409,11 +414,13 @@ button.btn__quanlylhp.active {
   border-radius: 20px;
   border: 1px solid #ccc;
   margin: 0 20px 20px 20px;
+  width: fit-content;
+  min-width: 96%;
 }
 
-.body__inner * {
+/* .body__inner * {
   max-width: 100%;
-}
+} */
 
 .body__inner.scroll-x {
   overflow-x: auto; /* bật kéo ngang */
@@ -429,7 +436,7 @@ button.btn__quanlylhp.active {
 }
 
 .search-form {
-  width: 200px;
+  width: 350px;
   display: flex;
   gap: 16px;
   height: 36px;
@@ -565,6 +572,45 @@ button.btn__quanlylhp.active {
 
 .table_ldshp td {
   line-height: 40px;
+}
+
+.table_ldshp {
+  table-layout: fixed;
+  width: 100%;
+}
+.table_ldshp th.c-chon,
+.table_ldshp td:nth-child(1) {
+  width: 71px;
+}
+.table_ldshp th.c-ma,
+.table_ldshp td:nth-child(2) {
+  width: 110px;
+}
+.table_ldshp th.c-ten,
+.table_ldshp td:nth-child(3) {
+  width: 340px;
+}
+.table_ldshp th.c-stc,
+.table_ldshp td:nth-child(4) {
+  width: 66px;
+}
+.table_ldshp th.c-gv,
+.table_ldshp td:nth-child(5) {
+  width: 200px;
+}
+.table_ldshp th.c-action,
+.table_ldshp td:nth-child(6) {
+  width: 120px;
+}
+.table_ldshp tbody tr {
+  height: 44px;
+  vertical-align: middle;
+}
+.table_ldshp th,
+.table_ldshp td {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .table_ldshp td:last-child {
@@ -944,6 +990,10 @@ input.form__floating-label__quanly {
 
 .h100vh {
   height: 100vh;
+}
+
+.h__40 {
+  height: 40px !important;
 }
 
 .sub__title_chuyenphase {
@@ -1681,6 +1731,11 @@ th {
     grid-template-columns: 1fr !important;
     gap: 8px !important;
   }
+
+  .user__name__tlk,
+  .user__role__tlk {
+    font-size: 1rem !important;
+  }
 }
 
 /* Tablet (768px – 1023px) */
@@ -1730,6 +1785,11 @@ th {
 
   .header__title {
     font-size: 21px;
+  }
+
+  .user__name__tlk,
+  .user__role__tlk {
+    font-size: 1rem !important;
   }
 }
 
