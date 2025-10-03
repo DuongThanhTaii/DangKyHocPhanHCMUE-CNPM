@@ -304,7 +304,7 @@ export default function ChuyenTrangThai() {
                   fill="currentColor"
                 />
               </svg>
-              Set
+              Thiết lập
             </button>
           </form>
 
@@ -404,7 +404,7 @@ export default function ChuyenTrangThai() {
             <button
               type="submit"
               className="form__button btn__chung"
-              style={{ marginTop: "20px" }}
+              style={{ marginTop: "8px" }}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25">
                 <path

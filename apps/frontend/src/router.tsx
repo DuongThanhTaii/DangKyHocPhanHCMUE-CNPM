@@ -4,7 +4,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import PDTLayout from "./layouts/PDTLayout";
 import LoginPage from "./pages/LoginPage";
 import ChuyenTrangThai from "./pages/pdt/ChuyenTrangThai";
-import PDTDuyetHocPhan from "./pages/pdt/DuyetHocPhan";
+import PDTDuyetHocPhan from "./pages/pdt/DuyetHocPhan-PDT";
 import TaoLopHocPhan from "./pages/pdt/TaoLopHocPhan";
 import QuanLyNoiBo from "./pages/pdt/QuanLyNoiBo";
 import ThongKeDashboard from "./pages/pdt/ThongKeDashboard";
@@ -14,7 +14,7 @@ import GiaoVienDashboard from "./pages/gv/Dashboard";
 
 import TroLyKhoaLayout from "./layouts/TroLyKhoaLayout";
 import LenDanhSachHocPhan from "./pages/tlk/LenDanhSachHocPhan";
-import TlkDuyetHocPhan from "./pages/tlk/DuyetHocPhan";
+import TlkDuyetHocPhan from "./pages/tlk/DuyetHocPhan-TLK";
 
 export const router = createBrowserRouter([
   { path: "/", element: <LoginPage /> },

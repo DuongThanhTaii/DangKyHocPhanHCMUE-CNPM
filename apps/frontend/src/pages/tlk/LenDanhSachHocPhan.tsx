@@ -187,8 +187,11 @@ const LenDanhSachHocPhan: React.FC = () => {
               Nhập thông tin môn học
             </label>
           </div>
-          <button type="submit" className="form__button" disabled={loading}>
-            <span className="navbar__link-icon">🔎</span>{" "}
+          <button
+            type="submit"
+            className="btn__chung w__200 h__40"
+            disabled={loading}
+          >
             {loading ? "Đang tải..." : "Tìm kiếm"}
           </button>
         </form>
@@ -196,12 +199,12 @@ const LenDanhSachHocPhan: React.FC = () => {
         <table className="table table_ldshp">
           <thead>
             <tr>
-              <th>Chọn</th>
-              <th>Mã MH</th>
-              <th>Tên MH</th>
-              <th>STC</th>
-              <th>Giảng viên</th>
-              <th>Thao tác</th>
+              <th className="c-chon">Chọn</th>
+              <th className="c-ma">Mã MH</th>
+              <th className="c-ten">Tên MH</th>
+              <th className="c-stc">STC</th>
+              <th className="c-gv">Giảng viên</th>
+              <th className="c-action">Thao tác</th>
             </tr>
           </thead>
           <tbody>
@@ -240,7 +243,7 @@ const LenDanhSachHocPhan: React.FC = () => {
                   <td>
                     {checked ? (
                       <button
-                        className="btn__chung"
+                        className="btn__chung h__40"
                         onClick={() => removeRow(mh.id)}
                       >
                         Xóa
