@@ -19,6 +19,8 @@ import TlkDuyetHocPhan from "./pages/tlk/DuyetHocPhan-TLK";
 import TruongKhoaLayout from "./layouts/TruongKhoaLayout";
 import TkDuyetHocPhan from "./pages/tk/DuyetHocPhan-TK";
 
+import SinhVienLayout from "./layouts/SVLayout";
+
 export const router = createBrowserRouter([
   { path: "/", element: <LoginPage /> },
   {
@@ -73,6 +75,17 @@ export const router = createBrowserRouter([
       },
 
       { path: "duyet-hoc-phan", element: <TkDuyetHocPhan /> },
+    ],
+  },
+  {
+    path: "/sv",
+    element: <SinhVienLayout />,
+    children: [
+      // {
+      //   index: true,
+      //   element: <Navigate to="dang-ky-hoc-phan" replace />,
+      // },
+      // { path: "dang-ky-hoc-phan", element: <DangKyHocPhan /> },
     ],
   },
 
