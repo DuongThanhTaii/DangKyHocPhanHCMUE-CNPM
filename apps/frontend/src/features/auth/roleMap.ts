@@ -5,5 +5,5 @@ export const ROLE_HOME: Record<Role, string> = {
   truong_khoa: "/tk",
   tro_ly_khoa: "/tlk",
   giang_vien: "/gv",
-  sinh_vien: "/main",
+  sinh_vien: "/sv",
 };
