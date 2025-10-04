@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useLoginMutation } from "../features/auth/api";
 import { useAppDispatch } from "../app/hooks";
-import { setCredentials } from "../features/auth/slice";
+import { setCredentials } from "../features/auth/authSlice";
 import { ROLE_HOME } from "../features/auth/roleMap";
 
 function LoginPage() {

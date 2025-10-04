@@ -16,6 +16,9 @@ import TroLyKhoaLayout from "./layouts/TroLyKhoaLayout";
 import LenDanhSachHocPhan from "./pages/tlk/LenDanhSachHocPhan";
 import TlkDuyetHocPhan from "./pages/tlk/DuyetHocPhan-TLK";
 
+import TruongKhoaLayout from "./layouts/TruongKhoaLayout";
+import TkDuyetHocPhan from "./pages/tk/DuyetHocPhan-TK";
+
 export const router = createBrowserRouter([
   { path: "/", element: <LoginPage /> },
   {
@@ -58,6 +61,18 @@ export const router = createBrowserRouter([
       },
       { path: "len-danh-sach-hoc-phan", element: <LenDanhSachHocPhan /> },
       { path: "duyet-hoc-phan", element: <TlkDuyetHocPhan /> },
+    ],
+  },
+  {
+    path: "/tk",
+    element: <TruongKhoaLayout />,
+    children: [
+      {
+        index: true,
+        element: <Navigate to="duyet-hoc-phan" replace />,
+      },
+
+      { path: "duyet-hoc-phan", element: <TkDuyetHocPhan /> },
     ],
   },
 
