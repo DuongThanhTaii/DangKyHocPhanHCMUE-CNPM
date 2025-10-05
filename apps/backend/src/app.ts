@@ -1,5 +1,5 @@
 import 'dotenv/config';
-
+import { PhaseSchedulerService } from './services/PhaseSchedulerService';
 import express, { Request, Response } from "express";
 import cors from "cors";
 import helmet from "helmet";
@@ -17,5 +17,7 @@ app.get("/api/health", (_req: Request, res: Response) => {
 
 // API chính
 app.use("/api", routes);
+const phaseSchedulerService = PhaseSchedulerService.getInstance();
+phaseSchedulerService.start();
 
 export default app;
