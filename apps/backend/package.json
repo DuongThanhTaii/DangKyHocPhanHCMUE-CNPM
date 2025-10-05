@@ -9,12 +9,14 @@
   },
   "dependencies": {
     "@prisma/client": "^6.16.1",
+    "@types/node-cron": "^3.0.11",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
+    "node-cron": "^4.2.1",
     "pino": "^9.9.5",
     "zod": "^4.1.8"
   },
