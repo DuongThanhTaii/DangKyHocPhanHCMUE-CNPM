@@ -1,5 +1,5 @@
 import DuyetHocPhan from "../../features/duyet-hoc-phan/Duyethocphan";
 
-export default function PdtDuyetHocPhanPage() {
+export default function TlkDuyetHocPhanPage() {
   return <DuyetHocPhan />;
 }

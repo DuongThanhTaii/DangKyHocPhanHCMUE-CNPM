@@ -4,7 +4,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import PDTLayout from "./layouts/PDTLayout";
 import LoginPage from "./pages/LoginPage";
 import ChuyenTrangThai from "./pages/pdt/ChuyenTrangThai";
-import PDTDuyetHocPhan from "./pages/pdt/DuyetHocPhan";
+import PDTDuyetHocPhan from "./pages/pdt/DuyetHocPhan-PDT";
 import TaoLopHocPhan from "./pages/pdt/TaoLopHocPhan";
 import QuanLyNoiBo from "./pages/pdt/QuanLyNoiBo";
 import ThongKeDashboard from "./pages/pdt/ThongKeDashboard";
@@ -14,7 +14,12 @@ import GiaoVienDashboard from "./pages/gv/Dashboard";
 
 import TroLyKhoaLayout from "./layouts/TroLyKhoaLayout";
 import LenDanhSachHocPhan from "./pages/tlk/LenDanhSachHocPhan";
-import TlkDuyetHocPhan from "./pages/tlk/DuyetHocPhan";
+import TlkDuyetHocPhan from "./pages/tlk/DuyetHocPhan-TLK";
+
+import TruongKhoaLayout from "./layouts/TruongKhoaLayout";
+import TkDuyetHocPhan from "./pages/tk/DuyetHocPhan-TK";
+
+import SinhVienLayout from "./layouts/SVLayout";
 
 export const router = createBrowserRouter([
   { path: "/", element: <LoginPage /> },
@@ -58,6 +63,29 @@ export const router = createBrowserRouter([
       },
       { path: "len-danh-sach-hoc-phan", element: <LenDanhSachHocPhan /> },
       { path: "duyet-hoc-phan", element: <TlkDuyetHocPhan /> },
+    ],
+  },
+  {
+    path: "/tk",
+    element: <TruongKhoaLayout />,
+    children: [
+      {
+        index: true,
+        element: <Navigate to="duyet-hoc-phan" replace />,
+      },
+
+      { path: "duyet-hoc-phan", element: <TkDuyetHocPhan /> },
+    ],
+  },
+  {
+    path: "/sv",
+    element: <SinhVienLayout />,
+    children: [
+      // {
+      //   index: true,
+      //   element: <Navigate to="dang-ky-hoc-phan" replace />,
+      // },
+      // { path: "dang-ky-hoc-phan", element: <DangKyHocPhan /> },
     ],
   },
 

@@ -28,15 +28,15 @@ function formatRole(role?: string) {
 
 import type { PropsWithChildren } from "react";
 
-export default function PDTLayout({ children }: PropsWithChildren) {
+export default function TroLyKhoaLayout({ children }: PropsWithChildren) {
   const { sidebarOpen, setSidebarOpen } = useSidebar();
   const location = useLocation();
   const dispatch = useAppDispatch();
   const { user, token } = useAppSelector(selectAuth);
   const [showSetting, setShowSetting] = useState(false);
 
-  // ✅ Chặn người không phải PĐT hoặc chưa đăng nhập
-  if (!token || !user || user.loai_tai_khoan !== "phong_dao_tao") {
+  // ✅ Chặn người không phải Trợ lý khoa hoặc chưa đăng nhập
+  if (!token || !user || user.loai_tai_khoan !== "truong_khoa") {
     return <Navigate to="/" replace />;
   }
 
@@ -64,7 +64,7 @@ export default function PDTLayout({ children }: PropsWithChildren) {
     return () => m.removeEventListener?.("change", onChange);
   }, [setSidebarOpen]);
 
-  // Dropdown user + language + ripple
+  // Dropdown + ripple
   useEffect(() => {
     const accountClick = document.getElementById("user__icon");
     const accountPopup = document.getElementById("modal");
@@ -92,7 +92,6 @@ export default function PDTLayout({ children }: PropsWithChildren) {
       ) {
         accountPopup.style.display = "none";
       }
-
       if (
         langPopup &&
         langClick &&
@@ -146,6 +145,7 @@ export default function PDTLayout({ children }: PropsWithChildren) {
 
   return (
     <div className="layout">
+      {/* Sidebar */}
       <aside
         id="app-sidebar"
         className={`layout__sidebar ${sidebarOpen ? "is-open" : ""}`}
@@ -154,6 +154,7 @@ export default function PDTLayout({ children }: PropsWithChildren) {
         <div className="sidebar__logo">
           <img src={logo} alt="logo" className="logo-img" />
         </div>
+
         <div className="sidebar__info">
           <div className="sidebar__user">
             <div className="user__icon">
@@ -172,43 +173,22 @@ export default function PDTLayout({ children }: PropsWithChildren) {
               </svg>
             </div>
             <div className="user__body">
-              <p className="user__name">{user?.ho_ten}</p>
+              <p className="user__name user__name__tlk">{user?.ho_ten}</p>
               <p className="user__score">
                 {user?.ma_so_sinh_vien || user?.ma_so_nhan_vien || ""}
               </p>
-              <p className="user__role">{formatRole(user?.loai_tai_khoan)}</p>
+              <p className="user__role user__role__tlk">
+                {formatRole(user?.loai_tai_khoan)}
+              </p>
             </div>
           </div>
         </div>
 
+        {/* Menu TLK */}
         <div className="sidebar__menu">
           <h3 className="sidebar__menu-title">Chức năng</h3>
           <nav className="navbar" onClick={closeSidebarOnNavClick}>
             <ul className="navbar__list">
-              <li className="navbar__item">
-                <NavLink to="chuyen-trang-thai" className={getNavLinkClass}>
-                  <span className="navbar__link-icon">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="21"
-                      viewBox="0 0 20 21"
-                      fill="none"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M3.99999 13.004V16.204L9.59999 19.26L15.2 16.204V13.004L9.59999 16.06L3.99999 13.004ZM9.59999 4.86002L0.799988 9.66002L9.59999 14.46L16.8 10.532V16.06H18.4V9.66002L9.59999 4.86002Z"
-                        fill="currentColor"
-                      />
-                    </svg>
-                  </span>
-                  <span className="navbar__link-text">
-                    Chuyển trạng thái hệ thống
-                  </span>
-                </NavLink>
-              </li>
-
               <li className="navbar__item">
                 <NavLink to="duyet-hoc-phan" className={getNavLinkClass}>
                   <span className="navbar__link-icon">
@@ -233,62 +213,12 @@ export default function PDTLayout({ children }: PropsWithChildren) {
                   </span>
                 </NavLink>
               </li>
-
-              <li className="navbar__item">
-                <NavLink to="tao-lop-hoc-phan" className={getNavLinkClass}>
-                  <span className="navbar__link-icon">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 512 512"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M256 512a256 256 0 1 0 0-512 256 256 0 1 0 0 512zM232 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"
-                      />
-                    </svg>
-                  </span>
-                  <span className="navbar__link-text">Tạo lớp học phần</span>
-                </NavLink>
-              </li>
-
-              <li className="navbar__item">
-                <NavLink to="quan-ly" className={getNavLinkClass}>
-                  <span className="navbar__link-icon">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 640 640"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M384 224L480 224L480 160L384 160L384 224zM96 224L96 144C96 117.5 117.5 96 144 96L496 96C522.5 96 544 117.5 544 144L544 240C544 266.5 522.5 288 496 288L144 288C117.5 288 96 266.5 96 240L96 224zM256 480L480 480L480 416L256 416L256 480zM96 480L96 400C96 373.5 117.5 352 144 352L496 352C522.5 352 544 373.5 544 400L544 496C544 522.5 522.5 544 496 544L144 544C117.5 544 96 522.5 96 496L96 480z"
-                      />
-                    </svg>
-                  </span>
-                  <span className="navbar__link-text">Quản lý nội bộ</span>
-                </NavLink>
-              </li>
-
-              <li className="navbar__item">
-                <NavLink to="thong-ke-dashboard" className={getNavLinkClass}>
-                  <span className="navbar__link-icon ">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 640 640"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M256 144C256 117.5 277.5 96 304 96L336 96C362.5 96 384 117.5 384 144L384 496C384 522.5 362.5 544 336 544L304 544C277.5 544 256 522.5 256 496L256 144zM64 336C64 309.5 85.5 288 112 288L144 288C170.5 288 192 309.5 192 336L192 496C192 522.5 170.5 544 144 544L112 544C85.5 544 64 522.5 64 496L64 336zM496 160L528 160C554.5 160 576 181.5 576 208L576 496C576 522.5 554.5 544 528 544L496 544C469.5 544 448 522.5 448 496L448 208C448 181.5 469.5 160 496 160z"
-                      />
-                    </svg>
-                  </span>
-                  <span className="navbar__link-text">Thống kê dữ liệu</span>
-                </NavLink>
-              </li>
             </ul>
           </nav>
         </div>
       </aside>
 
+      {/* Main */}
       <main className="layout__main">
         <header className="header__menu">
           <button
@@ -337,9 +267,8 @@ export default function PDTLayout({ children }: PropsWithChildren) {
             </div>
           </div>
         </header>
-        <section className="main__body">
-          {children ?? <Outlet />}
-        </section>
+
+        <section className="main__body">{children ?? <Outlet />}</section>
       </main>
 
       {sidebarOpen && (

@@ -14,6 +14,7 @@ function formatRole(role?: string) {
     case "sinh_vien":
       return "Sinh viên";
     case "giang_vien":
+    case "giao_vien":
       return "Giảng viên";
     case "phong_dao_tao":
       return "Phòng đào tạo";
@@ -26,20 +27,19 @@ function formatRole(role?: string) {
   }
 }
 
-import type { PropsWithChildren } from "react";
-
-export default function PDTLayout({ children }: PropsWithChildren) {
+export default function SinhVienLayout() {
   const { sidebarOpen, setSidebarOpen } = useSidebar();
   const location = useLocation();
   const dispatch = useAppDispatch();
   const { user, token } = useAppSelector(selectAuth);
   const [showSetting, setShowSetting] = useState(false);
 
-  // ✅ Chặn người không phải PĐT hoặc chưa đăng nhập
-  if (!token || !user || user.loai_tai_khoan !== "phong_dao_tao") {
+  // ✅ Guard: chỉ cho sinh viên đã đăng nhập
+  if (!token || !user || user.loai_tai_khoan !== "sinh_vien") {
     return <Navigate to="/" replace />;
   }
 
+  // Đóng sidebar khi đổi route
   useEffect(() => {
     setSidebarOpen(false);
   }, [location.pathname, setSidebarOpen]);
@@ -64,7 +64,7 @@ export default function PDTLayout({ children }: PropsWithChildren) {
     return () => m.removeEventListener?.("change", onChange);
   }, [setSidebarOpen]);
 
-  // Dropdown user + language + ripple
+  // Dropdown user + language + ripple (giống GVLayout)
   useEffect(() => {
     const accountClick = document.getElementById("user__icon");
     const accountPopup = document.getElementById("modal");
@@ -146,6 +146,7 @@ export default function PDTLayout({ children }: PropsWithChildren) {
 
   return (
     <div className="layout">
+      {/* SIDEBAR */}
       <aside
         id="app-sidebar"
         className={`layout__sidebar ${sidebarOpen ? "is-open" : ""}`}
@@ -154,6 +155,7 @@ export default function PDTLayout({ children }: PropsWithChildren) {
         <div className="sidebar__logo">
           <img src={logo} alt="logo" className="logo-img" />
         </div>
+
         <div className="sidebar__info">
           <div className="sidebar__user">
             <div className="user__icon">
@@ -173,9 +175,7 @@ export default function PDTLayout({ children }: PropsWithChildren) {
             </div>
             <div className="user__body">
               <p className="user__name">{user?.ho_ten}</p>
-              <p className="user__score">
-                {user?.ma_so_sinh_vien || user?.ma_so_nhan_vien || ""}
-              </p>
+              <p className="user__score">{user?.ma_so_sinh_vien || ""}</p>
               <p className="user__role">{formatRole(user?.loai_tai_khoan)}</p>
             </div>
           </div>
@@ -186,7 +186,7 @@ export default function PDTLayout({ children }: PropsWithChildren) {
           <nav className="navbar" onClick={closeSidebarOnNavClick}>
             <ul className="navbar__list">
               <li className="navbar__item">
-                <NavLink to="chuyen-trang-thai" className={getNavLinkClass}>
+                <NavLink to="dang-ky-hoc-phan" className={getNavLinkClass}>
                   <span className="navbar__link-icon">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -203,14 +203,12 @@ export default function PDTLayout({ children }: PropsWithChildren) {
                       />
                     </svg>
                   </span>
-                  <span className="navbar__link-text">
-                    Chuyển trạng thái hệ thống
-                  </span>
+                  <span className="navbar__link-text">Đăng ký học phần</span>
                 </NavLink>
               </li>
 
               <li className="navbar__item">
-                <NavLink to="duyet-hoc-phan" className={getNavLinkClass}>
+                <NavLink to="ghi-danh" className={getNavLinkClass}>
                   <span className="navbar__link-icon">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -228,31 +226,59 @@ export default function PDTLayout({ children }: PropsWithChildren) {
                       />
                     </svg>
                   </span>
-                  <span className="navbar__link-text">
-                    Duyệt danh sách học phần
-                  </span>
+                  <span className="navbar__link-text">Đăng ký ghi danh</span>
                 </NavLink>
               </li>
 
               <li className="navbar__item">
-                <NavLink to="tao-lop-hoc-phan" className={getNavLinkClass}>
+                <NavLink to="tra-cuu" className={getNavLinkClass}>
                   <span className="navbar__link-icon">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 512 512"
+                      width="20"
+                      height="21"
+                      viewBox="0 0 20 21"
+                      fill="none"
                     >
                       <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M8 4.45999C6.93913 4.45999 5.92172 4.88142 5.17157 5.63157C4.42143 6.38171 4 7.39913 4 8.45999C4 9.52086 4.42143 10.5383 5.17157 11.2884C5.92172 12.0386 6.93913 12.46 8 12.46C9.06087 12.46 10.0783 12.0386 10.8284 11.2884C11.5786 10.5383 12 9.52086 12 8.45999C12 7.39913 11.5786 6.38171 10.8284 5.63157C10.0783 4.88142 9.06087 4.45999 8 4.45999ZM2 8.45999C1.99988 7.5157 2.22264 6.58471 2.65017 5.74274C3.0777 4.90077 3.69792 4.17159 4.4604 3.61452C5.22287 3.05745 6.10606 2.68821 7.03815 2.53683C7.97023 2.38545 8.92488 2.45621 9.82446 2.74335C10.724 3.03048 11.5432 3.5259 12.2152 4.18929C12.8872 4.85268 13.3931 5.66533 13.6919 6.56113C13.9906 7.45693 14.0737 8.41059 13.9343 9.34455C13.795 10.2785 13.4372 11.1664 12.89 11.936L17.707 16.753C17.8892 16.9416 17.99 17.1942 17.9877 17.4564C17.9854 17.7186 17.8802 17.9694 17.6948 18.1548C17.5094 18.3402 17.2586 18.4454 16.9964 18.4477C16.7342 18.4499 16.4816 18.3492 16.293 18.167L11.477 13.351C10.5794 13.9893 9.52335 14.3682 8.42468 14.4461C7.326 14.5241 6.22707 14.2981 5.2483 13.793C4.26953 13.2878 3.44869 12.523 2.87572 11.5823C2.30276 10.6417 1.99979 9.56143 2 8.45999Z"
                         fill="currentColor"
-                        d="M256 512a256 256 0 1 0 0-512 256 256 0 1 0 0 512zM232 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"
                       />
                     </svg>
                   </span>
-                  <span className="navbar__link-text">Tạo lớp học phần</span>
+                  <span className="navbar__link-text">Tra cứu học phần</span>
                 </NavLink>
               </li>
 
               <li className="navbar__item">
-                <NavLink to="quan-ly" className={getNavLinkClass}>
+                <NavLink
+                  to="lich-su-dang-ky-hoc-phan"
+                  className={getNavLinkClass}
+                >
+                  <span className="navbar__link-icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="21"
+                      viewBox="0 0 20 21"
+                      fill="none"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M12 2.46002C6.48 2.46002 2 6.94002 2 12.46C2 17.98 6.48 22.46 12 22.46C17.52 22.46 22 17.98 22 12.46C22 6.94002 17.52 2.46002 12 2.46002ZM7 7.46002H14V9.46002H7V7.46002ZM7 10.46H14V12.46H7V10.46ZM10 15.46H7V13.46H10V15.46ZM14.05 18.82L11.22 15.99L12.63 14.58L14.04 15.99L17.59 12.46L19 13.87L14.05 18.82Z"
+                        fill="currentColor"
+                      />
+                    </svg>
+                  </span>
+                  <span className="navbar__link-text">Lịch sử đăng ký</span>
+                </NavLink>
+              </li>
+
+              <li className="navbar__item">
+                <NavLink to="xem-tkb" className={getNavLinkClass}>
                   <span className="navbar__link-icon">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -260,28 +286,28 @@ export default function PDTLayout({ children }: PropsWithChildren) {
                     >
                       <path
                         fill="currentColor"
-                        d="M384 224L480 224L480 160L384 160L384 224zM96 224L96 144C96 117.5 117.5 96 144 96L496 96C522.5 96 544 117.5 544 144L544 240C544 266.5 522.5 288 496 288L144 288C117.5 288 96 266.5 96 240L96 224zM256 480L480 480L480 416L256 416L256 480zM96 480L96 400C96 373.5 117.5 352 144 352L496 352C522.5 352 544 373.5 544 400L544 496C544 522.5 522.5 544 496 544L144 544C117.5 544 96 522.5 96 496L96 480z"
+                        d="M224 64C206.3 64 192 78.3 192 96L192 128L160 128C124.7 128 96 156.7 96 192L96 240L544 240L544 192C544 156.7 515.3 128 480 128L448 128L448 96C448 78.3 433.7 64 416 64C398.3 64 384 78.3 384 96L384 128L256 128L256 96C256 78.3 241.7 64 224 64zM96 288L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 288L96 288z"
                       />
                     </svg>
                   </span>
-                  <span className="navbar__link-text">Quản lý nội bộ</span>
+                  <span className="navbar__link-text">Xem TKB</span>
                 </NavLink>
               </li>
 
               <li className="navbar__item">
-                <NavLink to="thong-ke-dashboard" className={getNavLinkClass}>
-                  <span className="navbar__link-icon ">
+                <NavLink to="thanh-toan-hoc-phi" className={getNavLinkClass}>
+                  <span className="navbar__link-icon">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 640 640"
                     >
                       <path
                         fill="currentColor"
-                        d="M256 144C256 117.5 277.5 96 304 96L336 96C362.5 96 384 117.5 384 144L384 496C384 522.5 362.5 544 336 544L304 544C277.5 544 256 522.5 256 496L256 144zM64 336C64 309.5 85.5 288 112 288L144 288C170.5 288 192 309.5 192 336L192 496C192 522.5 170.5 544 144 544L112 544C85.5 544 64 522.5 64 496L64 336zM496 160L528 160C554.5 160 576 181.5 576 208L576 496C576 522.5 554.5 544 528 544L496 544C469.5 544 448 522.5 448 496L448 208C448 181.5 469.5 160 496 160z"
+                        d="M128 128C92.7 128 64 156.7 64 192L64 448C64 483.3 92.7 512 128 512L512 512C547.3 512 576 483.3 576 448L576 192C576 156.7 547.3 128 512 128L128 128zM320 224C373 224 416 267 416 320C416 373 373 416 320 416C267 416 224 373 224 320C224 267 267 224 320 224zM512 248C512 252.4 508.4 256.1 504 255.5C475 251.9 452.1 228.9 448.5 200C448 195.6 451.6 192 456 192L504 192C508.4 192 512 195.6 512 200L512 248zM128 392C128 387.6 131.6 383.9 136 384.5C165 388.1 187.9 411.1 191.5 440C192 444.4 188.4 448 184 448L136 448C131.6 448 128 444.4 128 440L128 392zM136 255.5C131.6 256 128 252.4 128 248L128 200C128 195.6 131.6 192 136 192L184 192C188.4 192 192.1 195.6 191.5 200C187.9 229 164.9 251.9 136 255.5zM504 384.5C508.4 384 512 387.6 512 392L512 440C512 444.4 508.4 448 504 448L456 448C451.6 448 447.9 444.4 448.5 440C452.1 411 475.1 388.1 504 384.5z"
                       />
                     </svg>
                   </span>
-                  <span className="navbar__link-text">Thống kê dữ liệu</span>
+                  <span className="navbar__link-text">Thanh toán</span>
                 </NavLink>
               </li>
             </ul>
@@ -289,6 +315,7 @@ export default function PDTLayout({ children }: PropsWithChildren) {
         </div>
       </aside>
 
+      {/* MAIN */}
       <main className="layout__main">
         <header className="header__menu">
           <button
@@ -307,8 +334,9 @@ export default function PDTLayout({ children }: PropsWithChildren) {
           </button>
 
           <h1 className="header__title">
-            TRƯỜNG ĐẠI HỌC SƯ PHẠM THÀNH PHỐ HỒ CHÍ MINH
+            HỆ THỐNG SINH VIÊN - TRƯỜNG ĐH SƯ PHẠM TP.HCM
           </h1>
+
           <div className="header__user">
             <div className="header__country" id="header__country">
               <img className="header__country-img" src={vnFlag} alt="vn" />
@@ -329,7 +357,10 @@ export default function PDTLayout({ children }: PropsWithChildren) {
             </div>
             <div className="modal" id="modal">
               <div className="name__student">
-                <h6>{user?.ho_ten}</h6>
+                <h6>
+                  {user?.ho_ten}{" "}
+                  {user?.ma_so_sinh_vien ? `- ${user.ma_so_sinh_vien}` : ""}
+                </h6>
               </div>
               <div className="sign__out">
                 <button onClick={handleLogout}>Đăng xuất</button>
@@ -337,8 +368,9 @@ export default function PDTLayout({ children }: PropsWithChildren) {
             </div>
           </div>
         </header>
+
         <section className="main__body">
-          {children ?? <Outlet />}
+          <Outlet />
         </section>
       </main>
 
