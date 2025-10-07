@@ -67,7 +67,9 @@ const Toast: React.FC<{
           }}
         >
           {/* simple X fallback to avoid external icon dependency */}
-          <span style={{ display: "inline-block", lineHeight: 0 }}>&#10005;</span>
+          <span style={{ display: "inline-block", lineHeight: 0 }}>
+            &#10005;
+          </span>
         </button>
       </div>
       <div className="toast__progress" style={{ width: `${progress}%` }} />
