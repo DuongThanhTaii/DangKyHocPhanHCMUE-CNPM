@@ -20,6 +20,7 @@ import TruongKhoaLayout from "./layouts/TruongKhoaLayout";
 import TkDuyetHocPhan from "./pages/tk/DuyetHocPhan-TK";
 
 import SinhVienLayout from "./layouts/SVLayout";
+import GhiDanhHocPhan from "./pages/sv/GhiDanhHocPhan";
 
 export const router = createBrowserRouter([
   { path: "/", element: <LoginPage /> },
@@ -81,11 +82,12 @@ export const router = createBrowserRouter([
     path: "/sv",
     element: <SinhVienLayout />,
     children: [
-      // {
-      //   index: true,
-      //   element: <Navigate to="dang-ky-hoc-phan" replace />,
-      // },
+      {
+        index: true,
+        element: <Navigate to="ghi-danh-hoc-phan" replace />,
+      },
       // { path: "dang-ky-hoc-phan", element: <DangKyHocPhan /> },
+      { path: "ghi-danh-hoc-phan", element: <GhiDanhHocPhan /> },
     ],
   },
 

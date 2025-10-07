@@ -436,7 +436,6 @@ button.btn__quanlylhp.active {
 }
 
 .search-form {
-  width: 350px;
   display: flex;
   gap: 16px;
   height: 36px;
@@ -626,16 +625,20 @@ button.btn__quanlylhp.active {
   margin: auto;
 }
 
-.w__48 {
-  max-width: 48px;
-}
-
 .w__0 {
   width: 0px !important;
 }
 
+.w__48 {
+  max-width: 48px;
+}
+
 .w__60 {
   width: 60px !important;
+}
+
+.w__140 {
+  width: 140px !important;
 }
 
 .w__200 {
