@@ -337,9 +337,7 @@ export default function PDTLayout({ children }: PropsWithChildren) {
             </div>
           </div>
         </header>
-        <section className="main__body">
-          {children ?? <Outlet />}
-        </section>
+        <section className="main__body">{children ?? <Outlet />}</section>
       </main>
 
       {sidebarOpen && (

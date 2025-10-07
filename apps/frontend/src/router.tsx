@@ -1,6 +1,6 @@
 import React from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import ProtectedRoute from "./routes/ProtectedRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
 import PDTLayout from "./layouts/PDTLayout";
 import LoginPage from "./pages/LoginPage";
 import ChuyenTrangThai from "./pages/pdt/ChuyenTrangThai";
@@ -21,42 +21,51 @@ import TkDuyetHocPhan from "./pages/tk/DuyetHocPhan-TK";
 
 import SinhVienLayout from "./layouts/SVLayout";
 import GhiDanhHocPhan from "./pages/sv/GhiDanhHocPhan";
+import TraCuuMonHoc from "./pages/sv/TraCuuMonHoc";
 
 export const router = createBrowserRouter([
   { path: "/", element: <LoginPage /> },
+
+  // PDT - chỉ cho phong_dao_tao
   {
-    element: <ProtectedRoute />,
+    path: "/pdt",
+    element: (
+      <ProtectedRoute allow={["phong_dao_tao"]}>
+        <PDTLayout />
+      </ProtectedRoute>
+    ),
     children: [
-      {
-        path: "/pdt",
-        element: <PDTLayout />,
-        children: [
-          { index: true, element: <Navigate to="chuyen-trang-thai" replace /> },
-          { path: "chuyen-trang-thai", element: <ChuyenTrangThai /> },
-          { path: "duyet-hoc-phan", element: <PDTDuyetHocPhan /> },
-          { path: "tao-lop-hoc-phan", element: <TaoLopHocPhan /> },
-          { path: "quan-ly", element: <QuanLyNoiBo /> },
-          { path: "thong-ke-dashboard", element: <ThongKeDashboard /> },
-        ],
-      },
+      { index: true, element: <Navigate to="chuyen-trang-thai" replace /> },
+      { path: "chuyen-trang-thai", element: <ChuyenTrangThai /> },
+      { path: "duyet-hoc-phan", element: <PDTDuyetHocPhan /> },
+      { path: "tao-lop-hoc-phan", element: <TaoLopHocPhan /> },
+      { path: "quan-ly", element: <QuanLyNoiBo /> },
+      { path: "thong-ke-dashboard", element: <ThongKeDashboard /> },
     ],
   },
+
+  // GV - giang_vien
   {
-    element: <ProtectedRoute />,
+    path: "/gv",
+    element: (
+      <ProtectedRoute allow={["giang_vien"]}>
+        <GVLayout />
+      </ProtectedRoute>
+    ),
     children: [
-      {
-        path: "/gv",
-        element: <GVLayout />,
-        children: [
-          { index: true, element: <Navigate to="dashboard" replace /> },
-          { path: "dashboard", element: <GiaoVienDashboard /> },
-        ],
-      },
+      { index: true, element: <Navigate to="dashboard" replace /> },
+      { path: "dashboard", element: <GiaoVienDashboard /> },
     ],
   },
+
+  // TLK - tro_ly_khoa
   {
     path: "/tlk",
-    element: <TroLyKhoaLayout />,
+    element: (
+      <ProtectedRoute allow={["tro_ly_khoa"]}>
+        <TroLyKhoaLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         index: true,
@@ -66,28 +75,33 @@ export const router = createBrowserRouter([
       { path: "duyet-hoc-phan", element: <TlkDuyetHocPhan /> },
     ],
   },
+
+  // TK - truong_khoa
   {
     path: "/tk",
-    element: <TruongKhoaLayout />,
+    element: (
+      <ProtectedRoute allow={["truong_khoa"]}>
+        <TruongKhoaLayout />
+      </ProtectedRoute>
+    ),
     children: [
-      {
-        index: true,
-        element: <Navigate to="duyet-hoc-phan" replace />,
-      },
-
+      { index: true, element: <Navigate to="duyet-hoc-phan" replace /> },
       { path: "duyet-hoc-phan", element: <TkDuyetHocPhan /> },
     ],
   },
+
+  // SV - sinh_vien
   {
     path: "/sv",
-    element: <SinhVienLayout />,
+    element: (
+      <ProtectedRoute allow={["sinh_vien"]}>
+        <SinhVienLayout />
+      </ProtectedRoute>
+    ),
     children: [
-      {
-        index: true,
-        element: <Navigate to="ghi-danh-hoc-phan" replace />,
-      },
-      // { path: "dang-ky-hoc-phan", element: <DangKyHocPhan /> },
+      { index: true, element: <Navigate to="ghi-danh-hoc-phan" replace /> },
       { path: "ghi-danh-hoc-phan", element: <GhiDanhHocPhan /> },
+      { path: "tra-cuu-mon-hoc", element: <TraCuuMonHoc /> },
     ],
   },
 
