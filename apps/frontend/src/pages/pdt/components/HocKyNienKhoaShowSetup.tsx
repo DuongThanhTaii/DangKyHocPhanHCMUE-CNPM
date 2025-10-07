@@ -117,7 +117,7 @@ export const HocKyNienKhoaShowSetup = ({
           <label className="form__floating-label">Ngày kết thúc</label>
         </div>
 
-        <button
+        {/* <button
           type="submit"
           className="form__button btn__chung"
           disabled={submitting}
@@ -135,7 +135,7 @@ export const HocKyNienKhoaShowSetup = ({
               Set
             </>
           )}
-        </button>
+        </button> */}
       </form>
 
       {currentSemester.ten_nien_khoa && (

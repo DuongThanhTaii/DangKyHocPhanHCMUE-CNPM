@@ -634,6 +634,10 @@ button.btn__quanlylhp.active {
   width: 0px !important;
 }
 
+.w__60 {
+  width: 60px !important;
+}
+
 .w__200 {
   width: 200px !important;
 }
