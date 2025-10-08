@@ -19,9 +19,9 @@ import TlkDuyetHocPhan from "./pages/tlk/DuyetHocPhan-TLK";
 import TruongKhoaLayout from "./layouts/TruongKhoaLayout";
 import TkDuyetHocPhan from "./pages/tk/DuyetHocPhan-TK";
 
-import SinhVienLayout from "./layouts/SVLayout";
 import GhiDanhHocPhan from "./pages/sv/GhiDanhHocPhan";
 import TraCuuMonHoc from "./pages/sv/TraCuuMonHoc";
+import SVLayout from "./layouts/SVLayout";
 
 export const router = createBrowserRouter([
   { path: "/", element: <LoginPage /> },
@@ -93,11 +93,7 @@ export const router = createBrowserRouter([
   // SV - sinh_vien
   {
     path: "/sv",
-    element: (
-      <ProtectedRoute allow={["sinh_vien"]}>
-        <SinhVienLayout />
-      </ProtectedRoute>
-    ),
+    element: <SVLayout />,
     children: [
       { index: true, element: <Navigate to="ghi-danh-hoc-phan" replace /> },
       { path: "ghi-danh-hoc-phan", element: <GhiDanhHocPhan /> },

@@ -1,5 +1,7 @@
 import type { HocKyNienKhoaDTO } from "../dtos/pdtDTO";
 import type { NienKhoaWithHocKyFromDB } from "../repositories/hocKyRepository";
+import type { HocKyDTO } from "../dtos/pdtDTO";
+import { ServiceResult, ServiceResultBuilder } from "../types/serviceResult";
 import { UnitOfWork } from "../repositories/unitOfWork";
 export class HocKyService {
     constructor(private unitOfWork: UnitOfWork) { }
@@ -25,5 +27,36 @@ export class HocKyService {
                     return numA - numB;
                 }),
         }));
+
+    }
+    async GetHocKyHienHanh(): Promise<ServiceResult<HocKyDTO | null>> {
+        try {
+            const hocKy = await this.unitOfWork.hocKyRepository.findHocKyHienHanh();
+
+            if (!hocKy) {
+                return ServiceResultBuilder.success(
+                    "Không có học kỳ hiện hành",
+                    null
+                );
+            }
+
+            const data: HocKyDTO = {
+                id: hocKy.id,
+                tenHocKy: hocKy.ten_hoc_ky,
+                ngayBatDau: hocKy.ngay_bat_dau ?? null,
+                ngayKetThuc: hocKy.ngay_ket_thuc ?? null,
+            };
+
+            return ServiceResultBuilder.success(
+                "Lấy thông tin học kỳ hiện hành thành công",
+                data
+            );
+        } catch (error) {
+            console.error("Error getting hoc ky hien hanh:", error);
+            return ServiceResultBuilder.failure(
+                "Lỗi hệ thống khi lấy học kỳ hiện hành",
+                "INTERNAL_ERROR"
+            );
+        }
     }
 }

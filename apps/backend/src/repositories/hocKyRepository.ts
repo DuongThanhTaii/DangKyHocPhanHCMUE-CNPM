@@ -43,4 +43,11 @@ export class HocKyRepository extends BaseRepository<hoc_ky> {
             },
         });
     }
+    async findHocKyHienHanh(): Promise<hoc_ky | null> {
+        return this.model.findFirst({
+            where: {
+                trang_thai_hien_tai: true
+            }
+        });
+    }
 }

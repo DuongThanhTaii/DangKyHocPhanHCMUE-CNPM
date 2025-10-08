@@ -12,7 +12,6 @@ export class KyPhaseService {
         request: CreateBulkKyPhaseRequest
     ): Promise<ServiceResult<KyPhaseResponseDTO[]>> {
         try {
-            // Validate input
             if (!request.hocKyId || !request.phases || request.phases.length === 0) {
                 return ServiceResultBuilder.failure(
                     "Thông tin học kỳ và danh sách phase không được để trống",
@@ -20,7 +19,6 @@ export class KyPhaseService {
                 );
             }
 
-            // Validate từng phase
             for (const phaseItem of request.phases) {
                 if (!phaseItem.phase || !phaseItem.startAt || !phaseItem.endAt) {
                     return ServiceResultBuilder.failure(
@@ -48,14 +46,12 @@ export class KyPhaseService {
             }
 
             const result = await this.unitOfWork.transaction(async (tx) => {
-                // Xóa tất cả phases cũ của học kỳ này
                 await (tx as any).ky_phase.deleteMany({
                     where: {
                         hoc_ky_id: request.hocKyId,
                     },
                 });
 
-                // Prepare data for bulk insert
                 const dataForDB = request.phases.map((phaseItem) => ({
                     hoc_ky_id: request.hocKyId,
                     phase: phaseItem.phase,
@@ -64,15 +60,14 @@ export class KyPhaseService {
                     is_enabled: false,
                 }));
 
-                // Bulk insert
                 await (tx as any).ky_phase.createMany({
                     data: dataForDB,
                 });
 
-                // Lấy lại data vừa tạo để trả về
                 return await (tx as any).ky_phase.findMany({
                     where: {
                         hoc_ky_id: request.hocKyId,
+
                     },
                     orderBy: {
                         start_at: "asc",
@@ -80,7 +75,6 @@ export class KyPhaseService {
                 });
             });
 
-            // Map DB model -> Response DTO
             const responseData: KyPhaseResponseDTO[] = result.map((item: any) => ({
                 id: item.id,
                 hocKyId: item.hoc_ky_id,
