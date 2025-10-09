@@ -29,6 +29,9 @@ importers:
       react-router-dom:
         specifier: ^7.9.1
         version: 7.9.1(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      redux:
+        specifier: ^5.0.1
+        version: 5.0.1
       redux-persist:
         specifier: ^6.0.0
         version: 6.0.0(react@19.1.1)(redux@5.0.1)

@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useLocation, Navigate } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "../styles/reset.css";
 import "../styles/menu.css";
 import logo from "../../public/assets/img/logo2.png";
