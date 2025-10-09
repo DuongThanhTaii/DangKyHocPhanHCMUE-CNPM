@@ -1,8 +1,10 @@
+// src/pages/pdt/DuyetHocPhan.tsx
 import { useEffect, useMemo, useState } from "react";
 import "../../styles/reset.css";
 import "../../styles/menu.css";
 import { fetchJSON } from "../../utils/fetchJSON";
 import Fuse from "fuse.js";
+import { useModalContext } from "../../hook/ModalContext";
 
 /* ================= Types ================= */
 type Role = "pdt" | "truong_khoa" | "tro_ly_khoa" | "";
@@ -50,6 +52,8 @@ const STATUS_COLOR: Record<TrangThaiDeXuat, string> = {
 
 /* ================= Component ================= */
 export default function DuyetHocPhan() {
+  const { openNotify } = useModalContext();
+
   const [userRole, setUserRole] = useState<Role>("");
 
   const [dsDeXuat, setDsDeXuat] = useState<DeXuatHocPhan[]>([]);
@@ -113,6 +117,10 @@ export default function DuyetHocPhan() {
         setTempSelectedHocKyId(current.hoc_ky_id);
         setTempSelectedNienKhoa(current.ten_nien_khoa);
         await fetchData(current.hoc_ky_id);
+        openNotify(
+          `Đã tự chọn học kỳ hiện tại: ${current.ma_hoc_ky} (${current.ten_nien_khoa})`,
+          "info"
+        );
       }
       setError(null);
     } catch (err) {
@@ -120,6 +128,7 @@ export default function DuyetHocPhan() {
       setError(
         "Lỗi khi tải danh sách học kỳ. Vui lòng kiểm tra quyền truy cập."
       );
+      openNotify("Không tải được danh sách học kỳ", "error");
     } finally {
       setLoading(false);
     }
@@ -142,11 +151,13 @@ export default function DuyetHocPhan() {
       setDsDeXuat(safeArr);
       setFilteredDsDeXuat(safeArr);
       setError(null);
+      openNotify(`Đã tải ${safeArr.length} đề xuất học phần`, "info");
     } catch (err) {
       console.error("Lỗi tải dữ liệu đề xuất:", err);
       setError("Lỗi tải dữ liệu đề xuất.");
       setDsDeXuat([]);
       setFilteredDsDeXuat([]);
+      openNotify("Không tải được danh sách đề xuất", "error");
     } finally {
       setLoading(false);
     }
@@ -164,9 +175,14 @@ export default function DuyetHocPhan() {
         throw new Error(res?.error || "Thao tác thất bại");
       }
 
+      openNotify(
+        hanhDong === "duyet" ? "Đã duyệt đề xuất" : "Đã từ chối đề xuất",
+        "success"
+      );
       fetchData(selectedHocKyId);
     } catch (err) {
       console.error("Handle action error:", err);
+      openNotify("Thao tác thất bại", "error");
     }
   };
 
@@ -175,6 +191,7 @@ export default function DuyetHocPhan() {
     const eligible = filterEligibleForBulk(filteredDsDeXuat);
     const ids = eligible.map((x) => x.id);
     if (!ids.length) {
+      openNotify("Không có mục nào hợp lệ để cập nhật", "warning");
       return;
     }
 
@@ -188,9 +205,16 @@ export default function DuyetHocPhan() {
         throw new Error(res?.error || "Không thể cập nhật hàng loạt");
       }
 
+      openNotify(
+        `${hanhDong === "duyet" ? "Đã duyệt" : "Đã từ chối"} ${
+          ids.length
+        } đề xuất`,
+        "success"
+      );
       fetchData(selectedHocKyId);
     } catch (err) {
       console.error("Bulk action error:", err);
+      openNotify("Cập nhật hàng loạt thất bại", "error");
     }
   };
 
@@ -234,9 +258,19 @@ export default function DuyetHocPhan() {
 
   /* -------- Handlers -------- */
   const handleConfirmSelection = () => {
-    if (!tempSelectedHocKyId) return;
+    if (!tempSelectedHocKyId) {
+      openNotify("Vui lòng chọn Học kỳ trước khi xác nhận", "warning");
+      return;
+    }
     setSelectedHocKyId(tempSelectedHocKyId);
     fetchData(tempSelectedHocKyId);
+    const hk = dsHocKy.find((x) => x.hoc_ky_id === tempSelectedHocKyId);
+    if (hk) {
+      openNotify(
+        `Đã chọn Học kỳ ${hk.ma_hoc_ky} (${hk.ten_nien_khoa})`,
+        "info"
+      );
+    }
   };
 
   /* -------- Render -------- */

@@ -1,6 +1,7 @@
 // apps/frontend/src/pages/tlk/LenDanhSachHocPhan.tsx
 import React, { useEffect, useMemo, useState } from "react";
 import Fuse from "fuse.js";
+import { useModalContext } from "../../hook/ModalContext";
 
 type MonHoc = {
   id: string;
@@ -19,6 +20,8 @@ type HocKyHienHanh = {
 const API = import.meta.env.VITE_API_URL;
 
 const LenDanhSachHocPhan: React.FC = () => {
+  const { openNotify } = useModalContext();
+
   const [monHocs, setMonHocs] = useState<MonHoc[]>([]);
   const [filteredMonHocs, setFilteredMonHocs] = useState<MonHoc[]>([]);
   const [searchValue, setSearchValue] = useState("");
@@ -43,25 +46,44 @@ const LenDanhSachHocPhan: React.FC = () => {
   );
 
   const fetchHocKyHienHanh = async () => {
-    const res = await fetch(`${API}/hien-hanh`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (!res.ok) throw new Error("Không lấy được học kỳ hiện hành");
-    const data: HocKyHienHanh = await res.json();
-    setHocKyHienHanh(data);
+    try {
+      const res = await fetch(`${API}/hien-hanh`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Không lấy được học kỳ hiện hành");
+      const data: HocKyHienHanh = await res.json();
+      setHocKyHienHanh(data);
+      openNotify?.(
+        `Học kỳ hiện hành: ${data.ten_hoc_ky} • Niên khóa ${data.nien_khoa}`,
+        "info"
+      );
+    } catch (err) {
+      console.error(err);
+      openNotify?.("Không lấy được học kỳ hiện hành", "warning");
+      setHocKyHienHanh(null);
+    }
   };
 
   const fetchMonHocs = async () => {
-    const res = await fetch(`${API}/tlk/mon-hoc`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const out = await res.json();
-    if (res.ok && Array.isArray(out.data)) {
-      setMonHocs(out.data);
-      setFilteredMonHocs(out.data);
-    } else {
+    try {
+      const res = await fetch(`${API}/tlk/mon-hoc`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const out = await res.json();
+      if (res.ok && Array.isArray(out.data)) {
+        setMonHocs(out.data);
+        setFilteredMonHocs(out.data);
+        openNotify?.(`Đã tải ${out.data.length} môn học`, "info");
+      } else {
+        setMonHocs([]);
+        setFilteredMonHocs([]);
+        openNotify?.("Không có dữ liệu môn học", "warning");
+      }
+    } catch (err) {
+      console.error(err);
       setMonHocs([]);
       setFilteredMonHocs([]);
+      openNotify?.("Lỗi khi tải danh sách môn học", "error");
     }
   };
 
@@ -69,8 +91,7 @@ const LenDanhSachHocPhan: React.FC = () => {
     (async () => {
       try {
         setLoading(true);
-        //await fetchHocKyHienHanh();
-        await fetchMonHocs();
+        await Promise.all([fetchHocKyHienHanh(), fetchMonHocs()]);
       } finally {
         setLoading(false);
       }
@@ -79,27 +100,53 @@ const LenDanhSachHocPhan: React.FC = () => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!searchValue.trim()) setFilteredMonHocs(monHocs);
-    else setFilteredMonHocs(fuse.search(searchValue).map((r) => r.item));
+    const q = searchValue.trim();
+    if (!q) {
+      setFilteredMonHocs(monHocs);
+      openNotify?.("Đã làm mới danh sách môn học", "info");
+      return;
+    }
+    const results = fuse.search(q).map((r) => r.item);
+    setFilteredMonHocs(results);
+    if (results.length === 0)
+      openNotify?.("Không tìm thấy môn học phù hợp", "warning");
+    else openNotify?.(`Tìm thấy ${results.length} môn học`, "info");
   };
 
   const toggleSelectMon = async (monHocId: string) => {
     const existed = selectedRows.find((r) => r.monHocId === monHocId);
     if (existed) {
       setSelectedRows((prev) => prev.filter((r) => r.monHocId !== monHocId));
+      openNotify?.("Đã bỏ chọn môn", "info");
       return;
     }
+    // nạp danh sách GV cho môn (nếu chưa có)
     if (!giangVienByMon[monHocId]) {
-      const res = await fetch(`${API}/tlk/giang-vien?mon_hoc_id=${monHocId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data: { data: GiangVien[] } = await res.json();
-      setGiangVienByMon((prev) => ({ ...prev, [monHocId]: data?.data ?? [] }));
+      try {
+        const res = await fetch(
+          `${API}/tlk/giang-vien?mon_hoc_id=${monHocId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        const data: { data: GiangVien[] } = await res.json();
+        setGiangVienByMon((prev) => ({
+          ...prev,
+          [monHocId]: data?.data ?? [],
+        }));
+      } catch (err) {
+        console.error(err);
+        openNotify?.(
+          "Không tải được danh sách giảng viên cho môn này",
+          "error"
+        );
+      }
     }
     setSelectedRows((prev) => [
       ...prev,
       { monHocId, soLuongLop: 1, giangVienId: "" },
     ]);
+    openNotify?.("Đã thêm môn vào danh sách đề xuất", "success");
   };
 
   const onChangeGV = (monHocId: string, giangVienId: string) =>
@@ -114,12 +161,16 @@ const LenDanhSachHocPhan: React.FC = () => {
       )
     );
 
-  const removeRow = (monHocId: string) =>
+  const removeRow = (monHocId: string) => {
     setSelectedRows((prev) => prev.filter((r) => r.monHocId !== monHocId));
+    openNotify?.("Đã xóa môn khỏi danh sách đề xuất", "info");
+  };
 
   const submitDeXuat = async () => {
-    if (!hocKyHienHanh) return alert("Chưa có học kỳ hiện hành.");
-    if (selectedRows.length === 0) return alert("Hãy chọn ít nhất 1 môn.");
+    if (!hocKyHienHanh)
+      return openNotify?.("Chưa có học kỳ hiện hành", "warning");
+    if (selectedRows.length === 0)
+      return openNotify?.("Hãy chọn ít nhất 1 môn", "warning");
 
     const body = {
       hoc_ky_id: hocKyHienHanh.hoc_ky_id,
@@ -142,11 +193,12 @@ const LenDanhSachHocPhan: React.FC = () => {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Gửi đề xuất thất bại");
-      alert("Đã gửi đề xuất mở lớp.");
+      openNotify?.(`Đã gửi đề xuất mở ${selectedRows.length} môn`, "success");
       setSelectedRows([]);
       await fetchMonHocs();
     } catch (err: any) {
-      alert(err?.message || "Lỗi mạng");
+      console.error(err);
+      openNotify?.(err?.message || "Lỗi mạng khi gửi đề xuất", "error");
     } finally {
       setSubmitting(false);
     }
@@ -165,7 +217,11 @@ const LenDanhSachHocPhan: React.FC = () => {
             <b>{hocKyHienHanh.nien_khoa}</b>
           </small>
         ) : (
-          <small>Đang tải học kỳ hiện hành…</small>
+          <small>
+            {loading
+              ? "Đang tải học kỳ hiện hành…"
+              : "Chưa có học kỳ hiện hành"}
+          </small>
         )}
       </div>
 

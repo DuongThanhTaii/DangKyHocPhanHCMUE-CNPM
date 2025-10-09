@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import "../../styles/reset.css";
 import "../../styles/menu.css";
 import { fetchJSON } from "../../utils/fetchJSON";
+import { useModalContext } from "../../hook/ModalContext";
 
 type HocPhanRow = {
   hoc_phan_id: string;
@@ -34,6 +35,8 @@ type SelectedConfig = {
 };
 
 export default function TaoLopHocPhan() {
+  const { openNotify } = useModalContext();
+
   // ========= Paging =========
   const [currentPage, setCurrentPage] = useState<number>(1);
   const itemsPerPage = 50;
@@ -76,11 +79,16 @@ export default function TaoLopHocPhan() {
         setSelectedHocKyId(cur.hoc_ky_id);
         setNkTmp(cur.ten_nien_khoa);
         setHkTmp(cur.hoc_ky_id);
+        openNotify(
+          `Đã tự chọn học kỳ hiện tại: ${cur.ma_hoc_ky} (${cur.ten_nien_khoa})`,
+          "info"
+        );
       }
       setError(null);
     } catch (e) {
       console.error(e);
       setError("Lỗi khi tải danh sách học kỳ.");
+      openNotify("Không tải được danh sách học kỳ", "error");
     } finally {
       setLoading(false);
     }
@@ -99,19 +107,19 @@ export default function TaoLopHocPhan() {
         `/api/pdt/tao-lop-hoc-phan/danh-sach?idHocKy=${encodeURIComponent(
           hocKyId
         )}`,
-        {
-          method: "GET",
-        }
+        { method: "GET" }
       );
       const data: HocPhanRow[] = Array.isArray(res) ? res : res?.data ?? [];
       setList(data);
       setFiltered(data);
       setError(null);
+      openNotify(`Đã tải ${data.length} học phần`, "info");
     } catch (e) {
       console.error(e);
       setError("Lỗi tải dữ liệu.");
       setList([]);
       setFiltered([]);
+      openNotify("Không tải được danh sách học phần", "error");
     } finally {
       setLoading(false);
     }
@@ -146,9 +154,28 @@ export default function TaoLopHocPhan() {
   }, [searchQuery, list]);
 
   // ======= Handlers =======
+
   const handleConfirmSemester = () => {
-    if (!hkTmp) return;
+    if (!nkTmp) {
+      openNotify("Vui lòng chọn Niên khóa trước", "warning");
+      return;
+    }
+    if (!hkTmp) {
+      openNotify("Vui lòng chọn Học kỳ trước khi xác nhận", "warning");
+      return;
+    }
+    if (hkTmp === selectedHocKyId) {
+      openNotify("Bạn đang ở đúng học kỳ này rồi", "info");
+      return;
+    }
     setSelectedHocKyId(hkTmp);
+    const hk = semesters.find((x) => x.hoc_ky_id === hkTmp);
+    if (hk) {
+      openNotify(
+        `Đã chọn Học kỳ ${hk.ma_hoc_ky} (${hk.ten_nien_khoa})`,
+        "success"
+      );
+    }
   };
 
   const handleCheck = (id: string) => {
@@ -197,20 +224,49 @@ export default function TaoLopHocPhan() {
     }));
   };
 
+  const validateConfig = (cfg: SelectedConfig) => {
+    // ví dụ validate nhẹ nhàng
+    if (!cfg.soLuongLop || Number(cfg.soLuongLop) <= 0)
+      return "Số lớp phải > 0";
+    if (!cfg.tietBatDau || !cfg.tietKetThuc)
+      return "Thiếu tiết bắt đầu/kết thúc";
+    if (Number(cfg.tietKetThuc) < Number(cfg.tietBatDau))
+      return "Tiết kết thúc phải >= tiết bắt đầu";
+    if (!cfg.ngayBatDau || !cfg.ngayKetThuc)
+      return "Thiếu ngày bắt đầu/kết thúc";
+    if (new Date(cfg.ngayKetThuc) < new Date(cfg.ngayBatDau))
+      return "Ngày kết thúc phải >= ngày bắt đầu";
+    if (!cfg.ngayHoc?.length) return "Chưa chọn ngày học";
+    return null;
+  };
+
   const handleSubmit = async () => {
     if (!selectedHocKyId) {
+      openNotify("Vui lòng chọn Học kỳ trước khi tạo lớp", "warning");
       return;
     }
 
-    const danhSachLop = Object.entries(selected).map(([hocPhanId, data]) => {
+    const entries = Object.entries(selected);
+    if (entries.length === 0) {
+      openNotify("Chưa chọn học phần nào để tạo lớp", "warning");
+      return;
+    }
+
+    // Validate từng config
+    for (const [hocPhanId, cfg] of entries) {
+      const msg = validateConfig(cfg);
+      if (msg) {
+        const row = list.find((hp) => hp.hoc_phan_id === hocPhanId);
+        openNotify(`HP ${row?.ma_mon || hocPhanId}: ${msg}`, "warning");
+        return;
+      }
+    }
+
+    const danhSachLop = entries.map(([hocPhanId, data]) => {
       const row = list.find((hp) => hp.hoc_phan_id === hocPhanId);
       const giangVienId = row?.giang_vien_id ?? null;
       return { hocPhanId, giangVienId, ...data };
     });
-
-    if (danhSachLop.length === 0) {
-      return;
-    }
 
     try {
       await fetchJSON("/api/pdt/tao-lop-hoc-phan", {
@@ -219,18 +275,25 @@ export default function TaoLopHocPhan() {
       });
       setSelected({});
       fetchData(selectedHocKyId);
+      openNotify(
+        `Tạo ${danhSachLop.length} lớp học phần thành công`,
+        "success"
+      );
     } catch (e) {
       console.error(e);
+      openNotify("Tạo lớp học phần thất bại", "error");
     }
   };
 
   // ======= Paging compute =======
+
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentData = filtered.slice(startIndex, endIndex);
   const totalPages = Math.ceil(filtered.length / itemsPerPage);
 
   // ======= Header text =======
+
   const currentSemester = semesters.find(
     (x) => x.hoc_ky_id === selectedHocKyId
   );
@@ -239,6 +302,7 @@ export default function TaoLopHocPhan() {
     : "";
 
   // ======= UI =======
+
   if (loading) return <p>Đang tải dữ liệu...</p>;
   if (error) return <p>{error}</p>;
 
