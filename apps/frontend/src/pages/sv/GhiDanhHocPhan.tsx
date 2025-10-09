@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+// src/features/ghi-danh/GhiDanhHocPhan.tsx
+import React, { useEffect, useRef, useState } from "react";
 import "../../styles/reset.css";
 import "../../styles/menu.css";
 import { fetchJSON } from "../../utils/fetchJSON";
 import { useModalContext } from "../../hook/ModalContext";
+import type { JSX } from "react";
 
 type HocPhan = {
   id: string;
@@ -12,10 +14,10 @@ type HocPhan = {
   so_tin_chi: number;
   ten_khoa: string;
   ten_giang_vien?: string;
-  loai_mon?: string; // "chuyen_nganh" | "tu_chon"
+  loai_mon?: "chuyen_nganh" | "tu_chon";
 };
 
-export default function GhiDanhHocPhan() {
+export default function GhiDanhHocPhan(): JSX.Element {
   const { openNotify } = useModalContext();
 
   const [hocPhanList, setHocPhanList] = useState<HocPhan[]>([]);
@@ -25,8 +27,9 @@ export default function GhiDanhHocPhan() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [selectedToCancelIds, setSelectedToCancelIds] = useState<string[]>([]);
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isNotEnrollmentPhase, setIsNotEnrollmentPhase] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isNotEnrollmentPhase, setIsNotEnrollmentPhase] =
+    useState<boolean>(false);
 
   const totalCourses = daGhiDanhList.length;
   const totalCredits = daGhiDanhList.reduce(
@@ -34,92 +37,137 @@ export default function GhiDanhHocPhan() {
     0
   );
 
+  // Chặn double-run của useEffect trong React 18 StrictMode (dev)
+  const didInit = useRef<boolean>(false);
+  // Chặn việc bắn 2 lần cùng một message (phòng trường hợp remount nhanh)
+  const lastToastKey = useRef<string | undefined>(undefined);
+
   useEffect(() => {
-    fetchData();
+    if (didInit.current) return;
+    didInit.current = true;
+    void fetchData({ silent: false });
   }, []);
 
-  const fetchData = async () => {
+  const fetchData = async ({
+    silent = false,
+  }: { silent?: boolean } = {}): Promise<void> => {
     try {
       const [hpRes, gdRes] = await Promise.all([
         fetchJSON("/api/hoc-phan/co-the-ghi-danh"),
         fetchJSON("/api/ghi-danh/my"),
       ]);
-      const dsHP = Array.isArray(hpRes) ? hpRes : hpRes?.data ?? [];
-      const dsGD = Array.isArray(gdRes) ? gdRes : gdRes?.data ?? [];
+
+      const dsHP: HocPhan[] = Array.isArray(hpRes) ? hpRes : hpRes?.data ?? [];
+      const dsGD: HocPhan[] = Array.isArray(gdRes) ? gdRes : gdRes?.data ?? [];
+
       setHocPhanList(dsHP);
       setFilteredList(dsHP);
       setDaGhiDanhList(dsGD);
-      setIsNotEnrollmentPhase(dsHP.length === 0);
+
+      const notPhase = dsHP.length === 0;
+      setIsNotEnrollmentPhase(notPhase);
+
+      if (!silent) {
+        const msg = notPhase
+          ? "Chưa tới thời hạn đăng ký ghi danh"
+          : `Đã tải ${dsHP.length} học phần có thể ghi danh • Bạn đã đăng ký ${dsGD.length} học phần`;
+
+        if (lastToastKey.current !== msg) {
+          lastToastKey.current = msg;
+          openNotify(msg, notPhase ? "warning" : "info");
+        }
+      }
     } catch (e) {
       console.error(e);
       setIsNotEnrollmentPhase(true);
+      if (!silent) openNotify("Không tải được dữ liệu ghi danh", "error");
     }
   };
 
-  const isDaGhiDanh = (hocPhanId: string) =>
+  const isDaGhiDanh = (hocPhanId: string): boolean =>
     daGhiDanhList.some((hp) => hp.hoc_phan_id === hocPhanId);
 
-  const handleCheck = (id: string) => {
+  const handleCheck = (id: string): void => {
     setSelectedIds((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
   };
 
-  const handleCancelCheck = (id: string) => {
+  const handleCancelCheck = (id: string): void => {
     setSelectedToCancelIds((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
   };
 
-  const handleSubmit = async () => {
-    if (selectedIds.length === 0)
-      return openNotify("Chưa chọn học phần để ghi danh", "warning");
+  const handleSubmit = async (): Promise<void> => {
+    if (selectedIds.length === 0) {
+      openNotify("Chưa chọn học phần để ghi danh", "warning");
+      return;
+    }
 
     try {
       await fetchJSON("/api/ghi-danh", {
         method: "POST",
         body: { hocPhanIds: selectedIds },
       });
-      openNotify("Ghi danh thành công", "success");
+      openNotify(
+        `Ghi danh thành công ${selectedIds.length} học phần`,
+        "success"
+      );
       setSelectedIds([]);
-      fetchData();
+      await fetchData({ silent: true }); // reload nhưng không hiện toast “chưa tới hạn…”
     } catch (e) {
       console.error(e);
       openNotify("Lỗi ghi danh", "error");
     }
   };
 
-  const handleCancel = async () => {
-    if (selectedToCancelIds.length === 0)
-      return openNotify("Chưa chọn học phần để hủy", "warning");
+  const handleCancel = async (): Promise<void> => {
+    if (selectedToCancelIds.length === 0) {
+      openNotify("Chưa chọn học phần để hủy", "warning");
+      return;
+    }
 
     try {
+      // Nếu backend có API bulk thì thay vòng lặp này bằng 1 request duy nhất
       for (const id of selectedToCancelIds) {
+        // id ở đây là hoc_phan_id (đã lấy từ list kết quả ghi danh)
+        // đổi URL nếu backend yêu cầu id bản ghi ghi_danh thay vì hoc_phan_id
+        // ví dụ: `/api/ghi-danh/by-hoc-phan/${id}`
         await fetchJSON(`/api/ghi-danh/${id}`, { method: "DELETE" });
       }
-      openNotify("Hủy ghi danh thành công", "success");
+      openNotify(
+        `Hủy ghi danh thành công ${selectedToCancelIds.length} học phần`,
+        "success"
+      );
       setSelectedToCancelIds([]);
-      fetchData();
+      await fetchData({ silent: true });
     } catch (e) {
       console.error(e);
       openNotify("Lỗi khi hủy ghi danh", "error");
     }
   };
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     const q = searchQuery.trim().toLowerCase();
     if (!q) {
       setFilteredList(hocPhanList);
+      openNotify("Đã làm mới danh sách học phần", "info");
       return;
     }
-    setFilteredList(
-      hocPhanList.filter(
-        (hp) =>
-          hp.ma_mon.toLowerCase().includes(q) ||
-          hp.ten_mon.toLowerCase().includes(q)
-      )
+    const filtered = hocPhanList.filter(
+      (hp) =>
+        hp.ma_mon.toLowerCase().includes(q) ||
+        hp.ten_mon.toLowerCase().includes(q)
     );
+    setFilteredList(filtered);
+
+    if (filtered.length === 0) {
+      openNotify("Không tìm thấy học phần phù hợp", "warning");
+    } else {
+      openNotify(`Tìm thấy ${filtered.length} học phần`, "info");
+    }
   };
 
   return (
@@ -132,7 +180,7 @@ export default function GhiDanhHocPhan() {
         <p className="sub__title_gd">Năm học 2025-2026 - Học kỳ HK01</p>
 
         {/* Thanh tìm kiếm */}
-        <form className="search-form search-form__gd " onSubmit={handleSearch}>
+        <form className="search-form search-form__gd" onSubmit={handleSearch}>
           <div className="form__group">
             <input
               type="text"

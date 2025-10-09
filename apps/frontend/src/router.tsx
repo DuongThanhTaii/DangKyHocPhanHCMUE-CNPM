@@ -1,4 +1,3 @@
-import React from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PDTLayout from "./layouts/PDTLayout";

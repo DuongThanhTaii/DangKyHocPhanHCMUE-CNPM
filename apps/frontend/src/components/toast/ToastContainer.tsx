@@ -2,11 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 //import { X } from "lucide-react"; // icon, có thể bỏ nếu không dùng
-import {
-  useModalContext,
-  type ToastPayload,
-  type ToastType,
-} from "../../hook/ModalContext";
+import { useModalContext, type ToastPayload } from "../../hook/ModalContext";
 import "./toast.css";
 
 type ToastItem = Required<ToastPayload>;

@@ -19,24 +19,31 @@ export default function TraCuuMonHoc() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!searchValue.trim()) {
+    const q = searchValue.trim();
+    if (!q) {
       setData([]);
+      openNotify("Vui lòng nhập từ khóa trước khi tìm kiếm", "warning");
       return;
     }
+
     setLoading(true);
     try {
       const res = await fetchJSON(
-        `/api/mon-hoc/search?q=${encodeURIComponent(searchValue.trim())}`,
-        {
-          method: "GET",
-        }
+        `/api/mon-hoc/search?q=${encodeURIComponent(q)}`,
+        { method: "GET" }
       );
       const result: MonHoc[] = Array.isArray(res) ? res : res?.data ?? [];
       setData(result);
+
+      if (result.length === 0) {
+        openNotify("Không tìm thấy môn học phù hợp", "warning");
+      } else {
+        openNotify(`Tìm thấy ${result.length} môn học`, "info");
+      }
     } catch (err) {
       console.error(err);
-      openNotify?.("Không thể tìm kiếm môn học", "error");
       setData([]);
+      openNotify("Không thể tìm kiếm môn học", "error");
     } finally {
       setLoading(false);
     }
