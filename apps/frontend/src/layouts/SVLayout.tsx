@@ -88,7 +88,7 @@ const svConfig: LayoutConfig = {
       ),
     },
     {
-      to: "xem-tkb",
+      to: "xem-thoi-khoa-bieu",
       label: "Xem TKB",
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
@@ -116,6 +116,6 @@ const svConfig: LayoutConfig = {
 
 export default function SVLayout() {
   console.log("🔍 SVLayout config:", svConfig);
-  
+
   return <BaseLayout config={svConfig} />;
 }
