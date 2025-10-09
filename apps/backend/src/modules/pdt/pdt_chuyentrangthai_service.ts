@@ -23,3 +23,24 @@ export const createBulkKyPhaseHandler: RequestHandler = async (req, res, next) =
         next(error);
     }
 };
+
+export const setHocKyHienThanhHandler: RequestHandler = async (req, res, next) => {
+    try {
+        const request = req.body;
+        const result = await serviceFactory.hocKyService.SetHocKyHienHanh(request);
+        const statusCode = result.isSuccess ? 200 : 400;
+        res.status(statusCode).json(result);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getHocKyHienHanhHandler: RequestHandler = async (_req, res, next) => {
+    try {
+        const result = await serviceFactory.hocKyService.GetHocKyHienHanh();
+        const statusCode = result.isSuccess ? 200 : 500;
+        res.status(statusCode).json(result);
+    } catch (error) {
+        next(error);
+    }
+};

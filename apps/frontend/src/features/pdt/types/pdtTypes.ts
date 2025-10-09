@@ -111,3 +111,7 @@ export const PHASE_ORDER: string[] = [
     "dang_ky_hoc_phan",
     "binh_thuong",
 ];
+
+export interface SetHocKyHienThanhRequest {
+    hocKyId: string;
+}

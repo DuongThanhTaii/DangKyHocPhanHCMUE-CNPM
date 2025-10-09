@@ -1,4 +1,4 @@
-import type { HocKyNienKhoaDTO } from "../dtos/pdtDTO";
+import type { HocKyNienKhoaDTO, SetHocKyHienThanhRequest } from "../dtos/pdtDTO";
 import type { NienKhoaWithHocKyFromDB } from "../repositories/hocKyRepository";
 import type { HocKyDTO } from "../dtos/pdtDTO";
 import { ServiceResult, ServiceResultBuilder } from "../types/serviceResult";
@@ -59,4 +59,62 @@ export class HocKyService {
             );
         }
     }
+
+    async SetHocKyHienHanh(request: SetHocKyHienThanhRequest): Promise<ServiceResult<HocKyDTO>> {
+        try {
+            if (!request.hocKyId) {
+                return ServiceResultBuilder.failure(
+                    "Học kỳ không được để trống",
+                    "INVALID_INPUT"
+                );
+            }
+
+            const existingHocKy = await this.unitOfWork.hocKyRepository.findById(request.hocKyId);
+            if (!existingHocKy) {
+                return ServiceResultBuilder.failure(
+                    "Không tìm thấy học kỳ",
+                    "HOC_KY_NOT_FOUND"
+                );
+            }
+
+            const result = await this.unitOfWork.transaction(async (tx) => {
+                await (tx as any).hoc_ky.updateMany({
+                    where: {
+                        trang_thai_hien_tai: true
+                    },
+                    data: {
+                        trang_thai_hien_tai: false
+                    }
+                });
+
+                return await (tx as any).hoc_ky.update({
+                    where: {
+                        id: request.hocKyId
+                    },
+                    data: {
+                        trang_thai_hien_tai: true
+                    }
+                });
+            });
+
+            const data: HocKyDTO = {
+                id: result.id,
+                tenHocKy: result.ten_hoc_ky,
+                ngayBatDau: result.ngay_bat_dau ?? null,
+                ngayKetThuc: result.ngay_ket_thuc ?? null,
+            };
+
+            return ServiceResultBuilder.success(
+                "Chuyển trạng thái học kỳ hiện hành thành công",
+                data
+            );
+        } catch (error) {
+            console.error("Error setting hoc ky hien hanh:", error);
+            return ServiceResultBuilder.failure(
+                "Lỗi hệ thống khi chuyển trạng thái học kỳ",
+                "INTERNAL_ERROR"
+            );
+        }
+    }
+
 }

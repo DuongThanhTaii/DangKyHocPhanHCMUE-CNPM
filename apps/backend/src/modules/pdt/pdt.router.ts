@@ -3,6 +3,8 @@ import { requireAuth, requireRole } from "../../middlewares/auth";
 import {
   getHocKyNienKhoaHandler,
   createBulkKyPhaseHandler,
+  setHocKyHienThanhHandler,
+  getHocKyHienHanhHandler,
 } from "./pdt_chuyentrangthai_service";
 
 const r = Router();
@@ -20,4 +22,12 @@ r.post(
   createBulkKyPhaseHandler
 );
 
+r.get("/hoc-ky-hien-hanh", getHocKyHienHanhHandler);
+
+r.post(
+  "/hoc-ky-hien-hanh",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  setHocKyHienThanhHandler
+);
 export default r;
