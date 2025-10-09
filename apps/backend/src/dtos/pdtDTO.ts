@@ -12,3 +12,7 @@ export interface HocKyNienKhoaDTO {
     ngayKetThuc: Date | null;
     hocKy: HocKyDTO[];
 }
+
+export interface SetHocKyHienThanhRequest {
+    hocKyId: string;
+}

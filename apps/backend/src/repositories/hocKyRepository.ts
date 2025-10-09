@@ -50,4 +50,26 @@ export class HocKyRepository extends BaseRepository<hoc_ky> {
             }
         });
     }
+
+    async resetAllTrangThaiHienTai(): Promise<{ count: number }> {
+        return this.model.updateMany({
+            where: {
+                trang_thai_hien_tai: true
+            },
+            data: {
+                trang_thai_hien_tai: false
+            }
+        });
+    }
+
+    async setTrangThaiHienTai(hocKyId: string): Promise<hoc_ky> {
+        return this.model.update({
+            where: {
+                id: hocKyId
+            },
+            data: {
+                trang_thai_hien_tai: true
+            }
+        });
+    }
 }

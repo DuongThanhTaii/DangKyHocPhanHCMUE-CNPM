@@ -1,3 +1,4 @@
 export * from "./useSetHocKyHienTai";
-export * from "./useCreateBulkKyPhase";
 export * from "./useHocKyNienKhoa";
+export * from "./useCreateBulkKyPhase";
+export * from "./useGetHocKyHienHanh";
