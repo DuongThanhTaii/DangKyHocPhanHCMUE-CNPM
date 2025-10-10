@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Fuse from "fuse.js";
 import { useModalContext } from "../../hook/ModalContext";
-
+import { tlkAPI } from "../../features/tlk/api/tlkAPI";
 type MonHoc = {
   id: string;
   ma_mon: string;
@@ -161,44 +161,26 @@ const LenDanhSachHocPhan: React.FC = () => {
       )
     );
 
-  const removeRow = (monHocId: string) => {
-    setSelectedRows((prev) => prev.filter((r) => r.monHocId !== monHocId));
-    openNotify?.("Đã xóa môn khỏi danh sách đề xuất", "info");
-  };
-
-  const submitDeXuat = async () => {
-    if (!hocKyHienHanh)
-      return openNotify?.("Chưa có học kỳ hiện hành", "warning");
-    if (selectedRows.length === 0)
-      return openNotify?.("Hãy chọn ít nhất 1 môn", "warning");
-
-    const body = {
-      hoc_ky_id: hocKyHienHanh.hoc_ky_id,
-      danhSachDeXuat: selectedRows.map((r) => ({
-        mon_hoc_id: r.monHocId,
-        so_lop_du_kien: r.soLuongLop,
-        giang_vien_id: r.giangVienId || null,
-      })),
-    };
-
+  /**
+   */
+  const addDeXuat = async (monHoc: MonHoc, giangVienId: string) => {
     try {
       setSubmitting(true);
-      const res = await fetch(`${API}/tlk/de-xuat-hoc-phan/batch`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
+
+      const result = await tlkAPI.createDeXuatHocPhan({
+        maHocPhan: monHoc.id,
+        maGiangVien: giangVienId || "", // ✅ Dùng giangVienId từ param
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Gửi đề xuất thất bại");
-      openNotify?.(`Đã gửi đề xuất mở ${selectedRows.length} môn`, "success");
-      setSelectedRows([]);
-      await fetchMonHocs();
+
+      if (result.isSuccess) {
+        openNotify?.(`Đã thêm đề xuất: ${monHoc.ten_mon}`, "success");
+        await fetchMonHocs(); // Reload
+      } else {
+        openNotify?.(result.message || "Thêm đề xuất thất bại", "error");
+      }
     } catch (err: any) {
       console.error(err);
-      openNotify?.(err?.message || "Lỗi mạng khi gửi đề xuất", "error");
+      openNotify?.(err?.message || "Lỗi khi thêm đề xuất", "error");
     } finally {
       setSubmitting(false);
     }
@@ -300,9 +282,12 @@ const LenDanhSachHocPhan: React.FC = () => {
                     {checked ? (
                       <button
                         className="btn__chung h__40"
-                        onClick={() => removeRow(mh.id)}
+                        onClick={() =>
+                          addDeXuat(mh, current?.giangVienId || "")
+                        } // ✅ Truyền giangVienId
+                        disabled={submitting}
                       >
-                        Xóa
+                        {submitting ? "Đang xử lý..." : "Thêm"}
                       </button>
                     ) : (
                       <span style={{ opacity: 0.5 }}>—</span>
@@ -324,7 +309,7 @@ const LenDanhSachHocPhan: React.FC = () => {
         {selectedRows.length > 0 && (
           <button
             className="btn__chung"
-            onClick={submitDeXuat}
+            //onClick={addDeXuat}
             disabled={submitting}
             style={{ marginTop: "1rem", padding: "8px 16px" }}
           >
