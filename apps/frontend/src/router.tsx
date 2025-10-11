@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PDTLayout from "./layouts/PDTLayout";
 import LoginPage from "./pages/LoginPage";
+import ChuyenHocKyHienHanh from "./pages/pdt/ChuyenHocKyHienHanh";
 import ChuyenTrangThai from "./pages/pdt/ChuyenTrangThai";
 import PDTDuyetHocPhan from "./pages/pdt/DuyetHocPhan-PDT";
 import TaoLopHocPhan from "./pages/pdt/TaoLopHocPhan";

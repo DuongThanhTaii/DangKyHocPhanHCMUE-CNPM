@@ -145,7 +145,6 @@ export default function ChuyenHocKyHienHanh() {
               type="submit"
               className="form__button btn__chung"
               disabled={submitting || !selectedHocKy}
-              style={{ marginTop: "16px" }}
             >
               {submitting ? "Đang xử lý..." : "Set"}
             </button>
