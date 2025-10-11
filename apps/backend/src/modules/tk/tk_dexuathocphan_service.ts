@@ -22,11 +22,31 @@ export const getDeXuatHocPhanForTruongKhoaHandler: RequestHandler = async (req, 
 
 export const updateTrangThaiByTruongKhoaHandler: RequestHandler = async (req, res, next) => {
     try {
-        const request = req.body; // { id: "uuid" }
+        const request = req.body;
         const userId = req.auth!.sub;
-        const loaiTaiKhoan = req.auth!.role; // "truong_khoa"
+        const loaiTaiKhoan = req.auth!.role;
 
         const result = await serviceFactory.deXuatHocPhanService.updateTrangThaiByTruongKhoa(
+            request,
+            userId,
+            loaiTaiKhoan
+        );
+
+        const statusCode = result.isSuccess ? 200 : 400;
+        res.status(statusCode).json(result);
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Handler mới - Từ chối đề xuất
+export const tuChoiDeXuatHocPhanHandler: RequestHandler = async (req, res, next) => {
+    try {
+        const request = req.body; // { id: "uuid" }
+        const userId = req.auth!.sub;
+        const loaiTaiKhoan = req.auth!.role;
+
+        const result = await serviceFactory.deXuatHocPhanService.tuChoiDeXuatHocPhan(
             request,
             userId,
             loaiTaiKhoan

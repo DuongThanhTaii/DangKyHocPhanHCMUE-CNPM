@@ -4,6 +4,7 @@ import { KyPhaseRepository } from "./kyPhaseRepository";
 import { DeXuatHocPhanRepository } from "./deXuatHocPhanRepository";
 import { TroLyKhoaRepository } from "./troLyKhoaRepository";
 import { TruongKhoaRepository } from "./truongKhoaRepository";
+import { HocPhanRepository } from "./hocPhanRepository";
 export class UnitOfWork {
     private static instance: UnitOfWork;
     private prisma: PrismaClient;
@@ -13,6 +14,7 @@ export class UnitOfWork {
     private _deXuatHocPhanRepository?: DeXuatHocPhanRepository;
     private _troLyKhoaRepository?: TroLyKhoaRepository;
     private _truongKhoaRepository?: TruongKhoaRepository;
+    private _hocPhanRepository?: HocPhanRepository;
     private constructor() {
         this.prisma = new PrismaClient();
     }
@@ -58,6 +60,13 @@ export class UnitOfWork {
             this._truongKhoaRepository = new TruongKhoaRepository(this.prisma);
         }
         return this._truongKhoaRepository;
+    }
+
+    get hocPhanRepository(): HocPhanRepository {
+        if (!this._hocPhanRepository) {
+            this._hocPhanRepository = new HocPhanRepository(this.prisma);
+        }
+        return this._hocPhanRepository;
     }
 
     async transaction<T>(callback: (prisma: PrismaClient) => Promise<T>): Promise<T> {

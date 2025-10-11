@@ -1,10 +1,13 @@
 import { Router } from "express";
 import { requireAuth, requireRole } from "../../middlewares/auth";
 import {
-  getHocKyNienKhoaHandler,
   createBulkKyPhaseHandler,
-  setHocKyHienThanhHandler,
   getHocKyHienHanhHandler,
+  getHocKyNienKhoaHandler,
+  setHocKyHienThanhHandler,
+  getDeXuatHocPhanForPDTHandler,
+  updateTrangThaiByPDTHandler,
+  tuChoiDeXuatHocPhanHandler, // Import thêm
 } from "./pdt_chuyentrangthai_service";
 
 const r = Router();
@@ -30,4 +33,29 @@ r.post(
   requireRole(["phong_dao_tao"]),
   setHocKyHienThanhHandler
 );
+
+// Lấy danh sách đề xuất
+r.get(
+  "/de-xuat-hoc-phan",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  getDeXuatHocPhanForPDTHandler
+);
+
+// Duyệt đề xuất
+r.patch(
+  "/de-xuat-hoc-phan/duyet",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  updateTrangThaiByPDTHandler
+);
+
+// Từ chối đề xuất
+r.patch(
+  "/de-xuat-hoc-phan/tu-choi",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  tuChoiDeXuatHocPhanHandler
+);
+
 export default r;

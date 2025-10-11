@@ -1,8 +1,10 @@
 import { DeXuatHocPhanRequest } from "../dtos/troLyKhoaDTO";
 import {
-    DeXuatHocPhanForTruongKhoaDTO,
-    UpdateTrangThaiByTruongKhoaRequest
+    DeXuatHocPhanDTO,
+    UpdateTrangThaiByTruongKhoaRequest,
+    TuChoiDeXuatHocPhanRequest
 } from "../dtos/truongKhoaDTO";
+import { UpdateTrangThaiByPDTRequest } from "../dtos/pdtDTO";
 import { UnitOfWork } from "../repositories/unitOfWork";
 import { ServiceResult, ServiceResultBuilder } from "../types/serviceResult";
 
@@ -41,7 +43,7 @@ export class DeXuatHocPhanService {
                 const dataForDeXuatHocPhan = {
                     so_lop_du_kien: 1,
                     cap_duyet_hien_tai: loaiTaiKhoan,
-                    trang_thai: "cho_duyet", // Thêm trạng thái mặc định
+                    trang_thai: "cho_duyet",
                     hoc_ky: {
                         connect: {
                             id: hocKyHienHanhID,
@@ -62,7 +64,6 @@ export class DeXuatHocPhanService {
                             id: troLyKhoa.id,
                         },
                     },
-                    // Sửa từ giang_vien_de_xuat thành giang_vien relation
                     giang_vien: {
                         connect: {
                             id: request.maGiangVien,
@@ -78,7 +79,7 @@ export class DeXuatHocPhanService {
                 const dataForDeXuatHocPhanLog = {
                     de_xuat_id: deXuatHP.id,
                     hanh_dong: "Đã tạo đề xuất",
-                    nguoi_thuc_hien: troLyKhoa.id, // Sửa từ khoa_id -> id
+                    nguoi_thuc_hien: troLyKhoa.id,
                 };
 
                 await (tx as any).de_xuat_hoc_phan_log.create({
@@ -99,21 +100,13 @@ export class DeXuatHocPhanService {
         }
     }
 
-    async getDeXuatHocPhanForTruongKhoa(
-        userId: string,
+    // Private method chung - Nhận whereCondition
+    private async getDeXuatHocPhan(
+        whereCondition: any,
         hocKyId?: string
-    ): Promise<ServiceResult<DeXuatHocPhanForTruongKhoaDTO[]>> {
+    ): Promise<ServiceResult<DeXuatHocPhanDTO[]>> {
         try {
-            // Step 1: Lấy khoa_id từ truong_khoa
-            const truongKhoa = await this.unitOfWork.truongKhoaRepository.findById(userId);
-            if (!truongKhoa) {
-                return ServiceResultBuilder.failure(
-                    "Không tìm thấy trưởng khoa",
-                    "TRUONG_KHOA_NOT_FOUND"
-                );
-            }
-
-            // Step 2: Lấy học kỳ hiện hành nếu không truyền hocKyId
+            // Step 1: Lấy học kỳ hiện hành nếu không truyền hocKyId
             let targetHocKyId = hocKyId;
             if (!targetHocKyId) {
                 const hocKyHienHanh = await this.unitOfWork.hocKyRepository.findHocKyHienHanh();
@@ -126,25 +119,57 @@ export class DeXuatHocPhanService {
                 targetHocKyId = hocKyHienHanh.id;
             }
 
-            // Step 3: Lấy đề xuất theo khoa_id và hoc_ky_id
-            const deXuatList = await this.unitOfWork.deXuatHocPhanRepository.findAllWithRelations({
-                khoa_id: truongKhoa.khoa_id,
-                hoc_ky_id: targetHocKyId, // Luôn lọc theo học kỳ
-            });
+            // Step 2: Thêm hoc_ky_id vào where condition
+            whereCondition.hoc_ky_id = targetHocKyId;
+
+            // Step 3: Query với whereCondition
+            const deXuatList = await this.unitOfWork.deXuatHocPhanRepository.findAllWithRelations(whereCondition);
 
             // Step 4: Map sang DTO
-            const data: DeXuatHocPhanForTruongKhoaDTO[] = deXuatList.map((item: any) => ({
+            const data: DeXuatHocPhanDTO[] = deXuatList.map((item: any) => ({
                 id: item.id,
                 maHocPhan: item.mon_hoc?.ma_mon || "",
                 tenHocPhan: item.mon_hoc?.ten_mon || "",
                 soTinChi: item.mon_hoc?.so_tin_chi || 0,
                 giangVien: item.giang_vien?.users?.ho_ten || "",
-                trangThai: item.trang_thai || "cho_duyet",
+                trangThai: item.trang_thai || "",
             }));
 
             return ServiceResultBuilder.success(
                 "Lấy danh sách đề xuất thành công",
                 data
+            );
+        } catch (error) {
+            console.error("Error getting de xuat hoc phan:", error);
+            return ServiceResultBuilder.failure(
+                "Lỗi hệ thống khi lấy danh sách đề xuất",
+                "INTERNAL_ERROR"
+            );
+        }
+    }
+
+    // Wrapper cho Trưởng Khoap
+    async getDeXuatHocPhanForTruongKhoa(
+        userId: string,
+        hocKyId?: string
+    ): Promise<ServiceResult<DeXuatHocPhanDTO[]>> {
+        try {
+            // Lấy khoa_id từ truong_khoa
+            const truongKhoa = await this.unitOfWork.truongKhoaRepository.findById(userId);
+            if (!truongKhoa) {
+                return ServiceResultBuilder.failure(
+                    "Không tìm thấy trưởng khoa",
+                    "TRUONG_KHOA_NOT_FOUND"
+                );
+            }
+
+            // Gọi private method với where condition
+            return this.getDeXuatHocPhan(
+                {
+                    khoa_id: truongKhoa.khoa_id,
+                    trang_thai: "cho_duyet"
+                },
+                hocKyId
             );
         } catch (error) {
             console.error("Error getting de xuat hoc phan for truong khoa:", error);
@@ -155,7 +180,19 @@ export class DeXuatHocPhanService {
         }
     }
 
-    // Method mới
+    // Wrapper cho PDT
+    async getDeXuatHocPhanForPDT(
+        hocKyId?: string
+    ): Promise<ServiceResult<DeXuatHocPhanDTO[]>> {
+        // Gọi private method - không filter theo khoa_id, chỉ filter trang_thai
+        return this.getDeXuatHocPhan(
+            {
+                trang_thai: "da_duyet_tk"
+            },
+            hocKyId
+        );
+    }
+
     async updateTrangThaiByTruongKhoa(
         request: UpdateTrangThaiByTruongKhoaRequest,
         userId: string,
@@ -194,8 +231,8 @@ export class DeXuatHocPhanService {
                 await (tx as any).de_xuat_hoc_phan.update({
                     where: { id: request.id },
                     data: {
-                        trang_thai: "da_duyet_tk", // Đã duyệt bởi trưởng khoa
-                        cap_duyet_hien_tai: loaiTaiKhoan, // Cấp tiếp theo (có thể là "phong_dao_tao")
+                        trang_thai: "da_duyet_tk",
+                        cap_duyet_hien_tai: loaiTaiKhoan,
                         updated_at: new Date(),
                     },
                 });
@@ -218,6 +255,156 @@ export class DeXuatHocPhanService {
             console.error("Error updating trang thai by truong khoa:", error);
             return ServiceResultBuilder.failure(
                 "Lỗi hệ thống khi duyệt đề xuất học phần",
+                "INTERNAL_ERROR"
+            );
+        }
+    }
+
+    async updateTrangThaiByPhongDaoTao(
+        request: UpdateTrangThaiByPDTRequest,
+        userId: string
+    ): Promise<ServiceResult<null>> {
+        try {
+            // Step 1: Kiểm tra đề xuất tồn tại
+            const deXuat = await this.unitOfWork.deXuatHocPhanRepository.findById(request.id);
+            if (!deXuat) {
+                return ServiceResultBuilder.failure(
+                    "Không tìm thấy đề xuất học phần",
+                    "DE_XUAT_NOT_FOUND"
+                );
+            }
+
+            // Step 2: Kiểm tra trạng thái (phải đã duyệt TK)
+            if (deXuat.trang_thai !== "da_duyet_tk") {
+                return ServiceResultBuilder.failure(
+                    "Đề xuất chưa được trưởng khoa duyệt",
+                    "INVALID_STATUS"
+                );
+            }
+
+            // Step 3: Lấy học kỳ hiện hành
+            const hocKyHienHanh = await this.unitOfWork.hocKyRepository.findHocKyHienHanh();
+            if (!hocKyHienHanh) {
+                return ServiceResultBuilder.failure(
+                    "Không có học kỳ hiện hành",
+                    "HOC_KY_HIEN_HANH_NOT_FOUND"
+                );
+            }
+
+            // Step 4: Transaction - Xóa đề xuất và tạo học phần mới
+            await this.unitOfWork.transaction(async (tx) => {
+                // 4.1: Tạo học phần mới
+                await (tx as any).hoc_phan.create({
+                    data: {
+                        mon_hoc_id: deXuat.mon_hoc_id,
+                        ten_hoc_phan: deXuat.mon_hoc_id,
+                        trang_thai_mo: true,
+                        id_hoc_ky: hocKyHienHanh.id,
+                    },
+                });
+
+                // 4.2: Tạo log cuối cùng trước khi xóa
+                await (tx as any).de_xuat_hoc_phan_log.create({
+                    data: {
+                        de_xuat_id: request.id,
+                        hanh_dong: "PDT đã duyệt", // ✅ Rút ngắn text
+                        nguoi_thuc_hien: userId,
+                    },
+                });
+
+                // 4.3: Xóa logs của đề xuất
+                await (tx as any).de_xuat_hoc_phan_log.deleteMany({
+                    where: { de_xuat_id: request.id },
+                });
+
+                // 4.4: Xóa đề xuất
+                await (tx as any).de_xuat_hoc_phan.delete({
+                    where: { id: request.id },
+                });
+            });
+
+            return ServiceResultBuilder.success(
+                "Duyệt đề xuất và tạo học phần thành công",
+                null
+            );
+        } catch (error) {
+            console.error("Error updating trang thai by phong dao tao:", error);
+            return ServiceResultBuilder.failure(
+                "Lỗi hệ thống khi duyệt đề xuất học phần",
+                "INTERNAL_ERROR"
+            );
+        }
+    }
+
+    // Method chung cho TK và PDT - Từ chối đề xuất
+    async tuChoiDeXuatHocPhan(
+        request: TuChoiDeXuatHocPhanRequest,
+        userId: string,
+        loaiTaiKhoan: string
+    ): Promise<ServiceResult<null>> {
+        try {
+            // Step 1: Kiểm tra đề xuất tồn tại
+            const deXuat = await this.unitOfWork.deXuatHocPhanRepository.findById(request.id);
+            if (!deXuat) {
+                return ServiceResultBuilder.failure(
+                    "Không tìm thấy đề xuất học phần",
+                    "DE_XUAT_NOT_FOUND"
+                );
+            }
+
+            // Step 2: Validate quyền từ chối theo role
+            if (loaiTaiKhoan === "truong_khoa") {
+                // TK chỉ từ chối đề xuất của khoa mình
+                const truongKhoa = await this.unitOfWork.truongKhoaRepository.findById(userId);
+                if (!truongKhoa) {
+                    return ServiceResultBuilder.failure(
+                        "Không tìm thấy trưởng khoa",
+                        "TRUONG_KHOA_NOT_FOUND"
+                    );
+                }
+                if (deXuat.khoa_id !== truongKhoa.khoa_id) {
+                    return ServiceResultBuilder.failure(
+                        "Bạn không có quyền từ chối đề xuất này",
+                        "FORBIDDEN"
+                    );
+                }
+            }
+            // PDT có thể từ chối bất kỳ đề xuất nào
+
+            // Step 3: Cập nhật trong transaction
+            await this.unitOfWork.transaction(async (tx) => {
+                // Đẩy về trạng thái chờ duyệt
+                await (tx as any).de_xuat_hoc_phan.update({
+                    where: { id: request.id },
+                    data: {
+                        trang_thai: "cho_duyet",
+                        cap_duyet_hien_tai: "tro_ly_khoa",
+                        updated_at: new Date(),
+                    },
+                });
+
+                // Tạo log
+                const hanhDong = loaiTaiKhoan === "truong_khoa"
+                    ? "TK từ chối"
+                    : "PDT từ chối";
+
+                await (tx as any).de_xuat_hoc_phan_log.create({
+                    data: {
+                        de_xuat_id: request.id,
+                        hanh_dong: hanhDong,
+                        nguoi_thuc_hien: userId,
+                    },
+                });
+            });
+
+            return ServiceResultBuilder.success(
+                "Từ chối đề xuất học phần thành công",
+                null
+            );
+        } catch (error) {
+            console.error("Error tu choi de xuat hoc phan:", error);
+            return ServiceResultBuilder.failure(
+                "Lỗi hệ thống khi từ chối đề xuất học phần",
                 "INTERNAL_ERROR"
             );
         }

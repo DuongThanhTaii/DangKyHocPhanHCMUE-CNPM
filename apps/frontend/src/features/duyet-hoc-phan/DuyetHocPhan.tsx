@@ -5,18 +5,23 @@ import "../../styles/menu.css";
 import Fuse from "fuse.js";
 import { useModalContext } from "../../hook/ModalContext";
 import { useHocKyNienKhoa, useGetHocKyHienHanh } from "../pdt/hooks";
-import { useDeXuatHocPhan } from "../tk/hooks";
 import type { DeXuatHocPhanForTruongKhoaDTO } from "../tk/types";
+import type { DuyetHocPhanProps } from "./types";
 
 /* ================= Types ================= */
-type Role = "pdt" | "truong_khoa" | "tro_ly_khoa" | "";
+type Role = "pdt" | "truong_khoa" | "tro_ly_khoa" | "phong_dao_tao" | ""; // ✅ Thêm "phong_dao_tao"
 
 interface StoredUser {
   loai_tai_khoan?: Role;
 }
 
 /* ================= Component ================= */
-export default function DuyetHocPhan() {
+export default function DuyetHocPhan({
+  data: dsDeXuat, // ✅ Nhận data từ props
+  loading: loadingDeXuat, // ✅ Nhận loading từ props
+  error: errorDeXuat, // ✅ Nhận error từ props
+  actions, // ✅ Nhận actions từ props
+}: DuyetHocPhanProps) {
   const { openNotify } = useModalContext();
 
   const {
@@ -30,14 +35,6 @@ export default function DuyetHocPhan() {
     loading: loadingHocKyHienHanh,
     error: errorHocKyHienHanh,
   } = useGetHocKyHienHanh();
-
-  // ✅ Dùng hook với action duyệt
-  const {
-    data: dsDeXuat,
-    loading: loadingDeXuat,
-    error: errorDeXuat,
-    duyetDeXuat, // ✅ Action từ hook
-  } = useDeXuatHocPhan();
 
   const [userRole, setUserRole] = useState<Role>("");
   const [filteredDsDeXuat, setFilteredDsDeXuat] = useState<
@@ -61,7 +58,7 @@ export default function DuyetHocPhan() {
   const hienThiTrangThai = (tt: string) => {
     const statusMap: Record<string, string> = {
       cho_duyet: "Chờ trưởng khoa duyệt",
-      truong_khoa_duyet: "Chờ PĐT duyệt",
+      da_duyet_tk: "Chờ PĐT duyệt",
       pdt_duyet: "PĐT đã duyệt",
       tu_choi: "Đã từ chối",
     };
@@ -81,7 +78,7 @@ export default function DuyetHocPhan() {
   const isActionEnabled = (role: Role, tt: string): boolean => {
     if (role === "tro_ly_khoa") return false;
     if (role === "truong_khoa") return tt === "cho_duyet";
-    if (role === "pdt") return tt === "truong_khoa_duyet";
+    if (role === "phong_dao_tao") return tt === "da_duyet_tk"; // ✅ Fix type
     return false;
   };
 
@@ -178,10 +175,13 @@ export default function DuyetHocPhan() {
     }
   };
 
-  // ✅ Handler tạm cho nút Từ chối (chưa có API)
+  // ✅ Handler từ chối (nếu có action)
   const handleTuChoi = (id: string) => {
-    openNotify("Chức năng từ chối đang được phát triển", "warning");
-    console.log("Từ chối đề xuất ID:", id);
+    if (actions.tuChoiDeXuat) {
+      actions.tuChoiDeXuat(id);
+    } else {
+      openNotify("Chức năng từ chối đang được phát triển", "warning");
+    }
   };
 
   /* -------- Render -------- */
@@ -304,23 +304,40 @@ export default function DuyetHocPhan() {
 
                     {userRole !== "tro_ly_khoa" && (
                       <td>
-                        {/* ✅ Nút Duyệt - có logic API */}
-                        <button
-                          className="btn__chung w50__h20 mr_10"
-                          onClick={() => duyetDeXuat(dx.id)}
-                          disabled={!canAct}
-                        >
-                          Duyệt
-                        </button>
+                        {/* Nút Duyệt */}
+                        {actions.duyetDeXuat && (
+                          <button
+                            className="btn__chung w50__h20 mr_10"
+                            onClick={() => actions.duyetDeXuat!(dx.id)}
+                            disabled={!canAct}
+                          >
+                            Duyệt
+                          </button>
+                        )}
 
-                        {/* ✅ Nút Từ chối - chưa có logic API */}
-                        <button
-                          className="btn__cancel w50__h20"
-                          onClick={() => handleTuChoi(dx.id)}
-                          disabled={!canAct}
-                        >
-                          Từ chối
-                        </button>
+                        {/* Nút Từ chối - gọi action từ props */}
+                        {actions.tuChoiDeXuat ? (
+                          <button
+                            className="btn__cancel w50__h20"
+                            onClick={() => actions.tuChoiDeXuat!(dx.id)}
+                            disabled={!canAct}
+                          >
+                            Từ chối
+                          </button>
+                        ) : (
+                          <button
+                            className="btn__cancel w50__h20"
+                            onClick={() =>
+                              openNotify(
+                                "Chức năng từ chối đang được phát triển",
+                                "warning"
+                              )
+                            }
+                            disabled={!canAct}
+                          >
+                            Từ chối
+                          </button>
+                        )}
                       </td>
                     )}
                   </tr>

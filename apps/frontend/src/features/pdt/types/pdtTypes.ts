@@ -115,3 +115,18 @@ export const PHASE_ORDER: string[] = [
 export interface SetHocKyHienThanhRequest {
     hocKyId: string;
 }
+
+
+export interface DeXuatHocPhanForPDTDTO {
+    id: string;
+    maHocPhan: string;
+    tenHocPhan: string;
+    soTinChi: number;
+    giangVien: string;
+    trangThai: string;
+}
+
+
+export interface UpdateTrangThaiByPDTRequest {
+    id: string;
+}

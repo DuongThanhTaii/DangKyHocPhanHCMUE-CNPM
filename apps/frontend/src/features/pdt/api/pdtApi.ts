@@ -1,4 +1,6 @@
 import { fetchJSON } from "../../../utils/fetchJSON";
+import type { ServiceResult } from "../../common/ServiceResult";
+import type { TuChoiDeXuatHocPhanRequest } from "../../common/types"; // ✅ Import shared type
 import type {
     HienHanh,
     NienKhoa,
@@ -9,8 +11,9 @@ import type {
     SetHocKyHienThanhRequest,
     KyPhaseResponseDTO,
     HocKyDTO,
+    DeXuatHocPhanForPDTDTO,
+    UpdateTrangThaiByPDTRequest,
 } from "../types/pdtTypes";
-import type { ServiceResult } from "../../common/ServiceResult";
 
 /**
  * PDT API Service
@@ -87,6 +90,40 @@ export const pdtApi = {
     ): Promise<ServiceResult<KyPhaseResponseDTO[]>> => {
         return await fetchJSON("/pdt/ky-phase/bulk", {
             method: "POST",
+            body: data,
+        });
+    },
+
+
+    /**
+     * ✅ Lấy danh sách đề xuất học phần cho PDT
+     */
+    getDeXuatHocPhan: async (): Promise<ServiceResult<DeXuatHocPhanForPDTDTO[]>> => {
+        return await fetchJSON("pdt/de-xuat-hoc-phan", {
+            method: "GET",
+        });
+    },
+
+    /**
+     * ✅ Duyệt đề xuất học phần (PDT)
+     */
+    duyetDeXuatHocPhan: async (
+        data: UpdateTrangThaiByPDTRequest
+    ): Promise<ServiceResult<null>> => {
+        return await fetchJSON("pdt/de-xuat-hoc-phan/duyet", {
+            method: "PATCH",
+            body: data,
+        });
+    },
+
+    /**
+     * ✅ Từ chối đề xuất học phần (shared endpoint)
+     */
+    tuChoiDeXuatHocPhan: async (
+        data: TuChoiDeXuatHocPhanRequest
+    ): Promise<ServiceResult<null>> => {
+        return await fetchJSON("pdt/de-xuat-hoc-phan/tu-choi", {
+            method: "PATCH",
             body: data,
         });
     },

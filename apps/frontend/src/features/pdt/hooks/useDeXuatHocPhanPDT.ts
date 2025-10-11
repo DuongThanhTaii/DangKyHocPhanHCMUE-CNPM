@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-import { tkApi } from "../api/tkApi";
+import { pdtApi } from "../api/pdtApi";
 import { useModalContext } from "../../../hook/ModalContext";
-import type { DeXuatHocPhanForTruongKhoaDTO } from "../types";
+import type { DeXuatHocPhanForPDTDTO } from "../types/pdtTypes";
 
 /**
- * Hook để quản lý đề xuất học phần cho Trưởng Khoa
+ * Hook để quản lý đề xuất học phần cho PDT
  */
-export const useDeXuatHocPhan = () => {
-    const [data, setData] = useState<DeXuatHocPhanForTruongKhoaDTO[]>([]);
+export const useDeXuatHocPhanPDT = () => {
+    const [data, setData] = useState<DeXuatHocPhanForPDTDTO[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const { openNotify } = useModalContext();
@@ -20,7 +20,7 @@ export const useDeXuatHocPhan = () => {
         setError(null);
 
         try {
-            const result = await tkApi.getDeXuatHocPhan();
+            const result = await pdtApi.getDeXuatHocPhan();
 
             if (result.isSuccess && result.data) {
                 setData(result.data);
@@ -45,7 +45,7 @@ export const useDeXuatHocPhan = () => {
         try {
             setLoading(true);
 
-            const result = await tkApi.duyetDeXuatHocPhan({ id });
+            const result = await pdtApi.duyetDeXuatHocPhan({ id });
 
             if (result.isSuccess) {
                 openNotify({
@@ -53,7 +53,7 @@ export const useDeXuatHocPhan = () => {
                     type: "success",
                     title: "Thành công",
                 });
-                await fetchData();
+                await fetchData(); // ✅ Reload danh sách
                 return true;
             } else {
                 openNotify({
@@ -84,7 +84,7 @@ export const useDeXuatHocPhan = () => {
         try {
             setLoading(true);
 
-            const result = await tkApi.tuChoiDeXuatHocPhan({ id });
+            const result = await pdtApi.tuChoiDeXuatHocPhan({ id });
 
             if (result.isSuccess) {
                 openNotify({
@@ -92,7 +92,7 @@ export const useDeXuatHocPhan = () => {
                     type: "success",
                     title: "Thành công",
                 });
-                await fetchData();
+                await fetchData(); // ✅ Reload danh sách
                 return true;
             } else {
                 openNotify({
@@ -125,7 +125,7 @@ export const useDeXuatHocPhan = () => {
         loading,
         error,
         refetch: fetchData,
-        duyetDeXuat,
+        duyetDeXuat, // ✅ Action duyệt
         tuChoiDeXuat, // ✅ Export action từ chối
     };
 };

@@ -1,4 +1,4 @@
-export interface DeXuatHocPhanForTruongKhoaDTO {
+export interface DeXuatHocPhanDTO {
     id: string;
     maHocPhan: string;
     tenHocPhan: string;
@@ -9,4 +9,8 @@ export interface DeXuatHocPhanForTruongKhoaDTO {
 
 export interface UpdateTrangThaiByTruongKhoaRequest {
     id: string;
+}
+
+export interface TuChoiDeXuatHocPhanRequest {
+    id: string; // ID của đề xuất
 }

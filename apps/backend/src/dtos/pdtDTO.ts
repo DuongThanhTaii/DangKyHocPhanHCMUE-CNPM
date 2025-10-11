@@ -16,3 +16,6 @@ export interface HocKyNienKhoaDTO {
 export interface SetHocKyHienThanhRequest {
     hocKyId: string;
 }
+export interface UpdateTrangThaiByPDTRequest {
+    id: string; // ID của đề xuất
+}

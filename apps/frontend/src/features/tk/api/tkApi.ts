@@ -1,6 +1,10 @@
-import type { ServiceResult } from "../../common/ServiceResult";
-import type { DeXuatHocPhanForTruongKhoaDTO, UpdateTrangThaiByTruongKhoaRequest } from "../types";
 import { fetchJSON } from "../../../utils/fetchJSON";
+import type { ServiceResult } from "../../common/ServiceResult";
+import type { TuChoiDeXuatHocPhanRequest } from "../../common/types"; // ✅ Import shared type
+import type {
+    DeXuatHocPhanForTruongKhoaDTO,
+    UpdateTrangThaiByTruongKhoaRequest,
+} from "../types";
 
 export const tkApi = {
     /**
@@ -13,12 +17,24 @@ export const tkApi = {
     },
 
     /**
-     *  Duyệt đề xuất học phần
+     * ✅ Duyệt đề xuất học phần
      */
     duyetDeXuatHocPhan: async (
         data: UpdateTrangThaiByTruongKhoaRequest
     ): Promise<ServiceResult<null>> => {
         return await fetchJSON("tk/de-xuat-hoc-phan/duyet", {
+            method: "PATCH",
+            body: data,
+        });
+    },
+
+    /**
+     * ✅ Từ chối đề xuất học phần (shared endpoint)
+     */
+    tuChoiDeXuatHocPhan: async (
+        data: TuChoiDeXuatHocPhanRequest
+    ): Promise<ServiceResult<null>> => {
+        return await fetchJSON("tk/de-xuat-hoc-phan/tu-choi", {
             method: "PATCH",
             body: data,
         });
