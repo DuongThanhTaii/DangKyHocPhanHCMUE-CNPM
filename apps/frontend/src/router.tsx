@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PDTLayout from "./layouts/PDTLayout";
 import LoginPage from "./pages/LoginPage";
+import ChuyenHocKyHienHanh from "./pages/pdt/ChuyenHocKyHienHanh";
 import ChuyenTrangThai from "./pages/pdt/ChuyenTrangThai";
 import PDTDuyetHocPhan from "./pages/pdt/DuyetHocPhan-PDT";
 import TaoLopHocPhan from "./pages/pdt/TaoLopHocPhan";
@@ -21,8 +22,8 @@ import TkDuyetHocPhan from "./pages/tk/DuyetHocPhan-TK";
 import SVLayout from "./layouts/SVLayout";
 import GhiDanhHocPhan from "./pages/sv/GhiDanhHocPhan";
 import TraCuuMonHoc from "./pages/sv/TraCuuMonHoc";
-import SVLayout from "./layouts/SVLayout";
-import ChuyenHocKyHienHanh from "./pages/pdt/ChuyenHocKyHienHanh";
+import LichSuDangKy from "./pages/sv/LichSuDangKyHocPhan";
+import XemThoiKhoaBieu from "./pages/sv/XemThoiKhoaBieu";
 
 export const router = createBrowserRouter([
   { path: "/", element: <LoginPage /> },
