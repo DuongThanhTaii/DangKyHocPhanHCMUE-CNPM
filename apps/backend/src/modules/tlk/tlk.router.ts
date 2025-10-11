@@ -2,6 +2,7 @@
 import { Router } from "express";
 import { requireAuth, requireRole } from "../../middlewares/auth";
 import { tlkService } from "./tlk.lendanhsachhocphan";
+import { createDeXuatHocPhanHandler } from "./tlk_dexuathocphan_service";
 
 const r = Router();
 
@@ -87,5 +88,10 @@ r.post(
 //     res.json({ data });
 //   }
 // );
-
+r.post(
+  "/de-xuat-hoc-phan",
+  requireAuth,
+  requireRole(["tro_ly_khoa"]),
+  createDeXuatHocPhanHandler
+);
 export default r;

@@ -19,9 +19,10 @@ import TlkDuyetHocPhan from "./pages/tlk/DuyetHocPhan-TLK";
 import TruongKhoaLayout from "./layouts/TruongKhoaLayout";
 import TkDuyetHocPhan from "./pages/tk/DuyetHocPhan-TK";
 
-import SVLayout from "./layouts/SVLayout";
 import GhiDanhHocPhan from "./pages/sv/GhiDanhHocPhan";
 import TraCuuMonHoc from "./pages/sv/TraCuuMonHoc";
+import SVLayout from "./layouts/SVLayout";
+import ChuyenHocKyHienHanh from "./pages/pdt/ChuyenHocKyHienHanh";
 import LichSuDangKy from "./pages/sv/LichSuDangKyHocPhan";
 import XemThoiKhoaBieu from "./pages/sv/XemThoiKhoaBieu";
 

@@ -1,4 +1,5 @@
 import { UnitOfWork } from "../repositories/unitOfWork";
+import { DeXuatHocPhanService } from "./deXuatHocPhanService";
 import { HocKyService } from "./hocKyService";
 import { KyPhaseService } from "./kyPhaseService";
 
@@ -8,7 +9,7 @@ export class ServiceFactory {
 
     private _hocKyService?: HocKyService;
     private _kyPhaseService?: KyPhaseService;
-
+    private _deXuatHocPhanService?: DeXuatHocPhanService;
     private constructor() {
         this.unitOfWork = UnitOfWork.getInstance();
     }
@@ -32,5 +33,12 @@ export class ServiceFactory {
             this._kyPhaseService = new KyPhaseService(this.unitOfWork);
         }
         return this._kyPhaseService;
+    }
+
+    get deXuatHocPhanService() {
+        if (!this._deXuatHocPhanService) {
+            this._deXuatHocPhanService = new DeXuatHocPhanService(this.unitOfWork);
+        }
+        return this._deXuatHocPhanService;
     }
 }
