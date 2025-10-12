@@ -9,6 +9,7 @@ import {
   updateTrangThaiByPDTHandler,
   tuChoiDeXuatHocPhanHandler, // Import thêm
 } from "./pdt_chuyentrangthai_service";
+import sinhVienRouter from "./pdt_crud_sv_service";
 
 const r = Router();
 
@@ -58,4 +59,11 @@ r.patch(
   tuChoiDeXuatHocPhanHandler
 );
 
+// CRUD sinh viên
+r.use(
+  "/sinh-vien",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  sinhVienRouter
+);
 export default r;
