@@ -341,7 +341,7 @@ export class DeXuatHocPhanService {
                     where: { id: request.id },
                     data: {
                         trang_thai: "da_duyet_pdt",
-                        cap_duyet_hien_tai: loaiTaiKhoan, // "phong_dao_tao"
+                        cap_duyet_hien_tai: null, // ✅ Set NULL vì đã duyệt xong
                         updated_at: new Date(),
                     },
                 });
