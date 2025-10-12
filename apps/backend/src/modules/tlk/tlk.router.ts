@@ -48,6 +48,13 @@ r.get(
 );
 
 // Tạo đề xuất
+r.get(
+  "/de-xuat-hoc-phan",
+  requireAuth,
+  requireRole(["tro_ly_khoa"]),
+  getDeXuatHocPhanForTroLyKhoaHandler
+);
+
 r.post(
   "/de-xuat-hoc-phan",
   requireAuth,
@@ -56,11 +63,6 @@ r.post(
 );
 
 // Lấy tất cả đề xuất của khoa
-r.get(
-  "/de-xuat-hoc-phan",
-  requireAuth,
-  requireRole(["tro_ly_khoa"]),
-  getDeXuatHocPhanForTroLyKhoaHandler
-);
+
 
 export default r;
