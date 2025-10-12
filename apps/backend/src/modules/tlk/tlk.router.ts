@@ -2,7 +2,10 @@
 import { Router } from "express";
 import { requireAuth, requireRole } from "../../middlewares/auth";
 import { tlkService } from "./tlk.lendanhsachhocphan";
-import { createDeXuatHocPhanHandler } from "./tlk_dexuathocphan_service";
+import {
+  createDeXuatHocPhanHandler,
+  getDeXuatHocPhanForTroLyKhoaHandler // Import thêm
+} from "./tlk_dexuathocphan_service";
 
 const r = Router();
 
@@ -22,7 +25,7 @@ r.get(
   requireAuth,
   requireRole(["tro_ly_khoa"]),
   async (req, res) => {
-    console.log(req.auth)
+    console.log(req.auth);
     const user_id = (req.auth as any).sub as string | undefined;
     if (!user_id)
       return res.status(400).json({ error: "Không xác định tài khoản" });
@@ -44,54 +47,20 @@ r.get(
   }
 );
 
-r.post(
-  "/de-xuat-hoc-phan/batch",
-  requireAuth,
-  requireRole(["tro_ly_khoa"]),
-  async (req, res) => {
-    const khoa_id = (req.auth as any).khoa_id as string | undefined;
-    const nguoi_tao_id = req.auth!.sub;
-    const { hoc_ky_id, danhSachDeXuat } = req.body;
-    if (!khoa_id)
-      return res.status(400).json({ error: "Không xác định khoa của TLK" });
-    if (
-      !hoc_ky_id ||
-      !Array.isArray(danhSachDeXuat) ||
-      danhSachDeXuat.length === 0
-    )
-      return res.status(400).json({ error: "Dữ liệu không hợp lệ" });
-    try {
-      const result = await tlkService.batchDeXuatHocPhan(
-        khoa_id,
-        nguoi_tao_id,
-        hoc_ky_id,
-        danhSachDeXuat
-      );
-      res.json(result);
-    } catch (e: any) {
-      res.status(400).json({ error: e.message });
-    }
-  }
-);
-
-// // Thêm route mới cho lên danh sách học phần
-// r.get(
-//   "/tlk/len-danh-sach-hoc-phan",
-//   requireAuth,
-//   requireRole(["tro_ly_khoa"]),
-//   async (req, res) => {
-//     const khoa_id = (req.auth as any).khoa_id as string | undefined;
-//     const hoc_ky_id = req.query.hoc_ky_id as string;
-//     if (!khoa_id || !hoc_ky_id)
-//       return res.status(400).json({ error: "Thiếu khoa_id hoặc hoc_ky_id" });
-//     const data = await tlkService.lenDanhSachHocPhan(khoa_id, hoc_ky_id);
-//     res.json({ data });
-//   }
-// );
+// Tạo đề xuất
 r.post(
   "/de-xuat-hoc-phan",
   requireAuth,
   requireRole(["tro_ly_khoa"]),
   createDeXuatHocPhanHandler
 );
+
+// Lấy tất cả đề xuất của khoa
+r.get(
+  "/de-xuat-hoc-phan",
+  requireAuth,
+  requireRole(["tro_ly_khoa"]),
+  getDeXuatHocPhanForTroLyKhoaHandler
+);
+
 export default r;

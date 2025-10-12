@@ -148,7 +148,39 @@ export class DeXuatHocPhanService {
         }
     }
 
-    // Wrapper cho Trưởng Khoap
+    // Wrapper cho Trợ Lý Khoa - Lấy tất cả đề xuất của khoa
+    async getDeXuatHocPhanForTroLyKhoa(
+        userId: string,
+        hocKyId?: string
+    ): Promise<ServiceResult<DeXuatHocPhanDTO[]>> {
+        try {
+            // Lấy khoa_id từ tro_ly_khoa
+            const troLyKhoa = await this.unitOfWork.troLyKhoaRepository.findById(userId);
+            if (!troLyKhoa) {
+                return ServiceResultBuilder.failure(
+                    "Không tìm thấy trợ lý khoa",
+                    "TRO_LY_KHOA_NOT_FOUND"
+                );
+            }
+
+            // Gọi private method - Không filter trang_thai, lấy hết
+            return this.getDeXuatHocPhan(
+                {
+                    khoa_id: troLyKhoa.khoa_id
+                    // Không có trang_thai filter
+                },
+                hocKyId
+            );
+        } catch (error) {
+            console.error("Error getting de xuat hoc phan for tro ly khoa:", error);
+            return ServiceResultBuilder.failure(
+                "Lỗi hệ thống khi lấy danh sách đề xuất",
+                "INTERNAL_ERROR"
+            );
+        }
+    }
+
+    // Wrapper cho Trưởng Khoa
     async getDeXuatHocPhanForTruongKhoa(
         userId: string,
         hocKyId?: string
@@ -262,7 +294,8 @@ export class DeXuatHocPhanService {
 
     async updateTrangThaiByPhongDaoTao(
         request: UpdateTrangThaiByPDTRequest,
-        userId: string
+        userId: string,
+        loaiTaiKhoan: string
     ): Promise<ServiceResult<null>> {
         try {
             // Step 1: Kiểm tra đề xuất tồn tại
@@ -291,7 +324,7 @@ export class DeXuatHocPhanService {
                 );
             }
 
-            // Step 4: Transaction - Xóa đề xuất và tạo học phần mới
+            // Step 4: Transaction - Update đề xuất và tạo học phần
             await this.unitOfWork.transaction(async (tx) => {
                 // 4.1: Tạo học phần mới
                 await (tx as any).hoc_phan.create({
@@ -303,23 +336,23 @@ export class DeXuatHocPhanService {
                     },
                 });
 
-                // 4.2: Tạo log cuối cùng trước khi xóa
-                await (tx as any).de_xuat_hoc_phan_log.create({
+                // 4.2: Update trạng thái đề xuất (giữ lại record)
+                await (tx as any).de_xuat_hoc_phan.update({
+                    where: { id: request.id },
                     data: {
-                        de_xuat_id: request.id,
-                        hanh_dong: "PDT đã duyệt", // ✅ Rút ngắn text
-                        nguoi_thuc_hien: userId,
+                        trang_thai: "da_duyet_pdt",
+                        cap_duyet_hien_tai: loaiTaiKhoan, // "phong_dao_tao"
+                        updated_at: new Date(),
                     },
                 });
 
-                // 4.3: Xóa logs của đề xuất
-                await (tx as any).de_xuat_hoc_phan_log.deleteMany({
-                    where: { de_xuat_id: request.id },
-                });
-
-                // 4.4: Xóa đề xuất
-                await (tx as any).de_xuat_hoc_phan.delete({
-                    where: { id: request.id },
+                // 4.3: Tạo log
+                await (tx as any).de_xuat_hoc_phan_log.create({
+                    data: {
+                        de_xuat_id: request.id,
+                        hanh_dong: "PDT đã duyệt",
+                        nguoi_thuc_hien: userId,
+                    },
                 });
             });
 
@@ -377,7 +410,7 @@ export class DeXuatHocPhanService {
                 await (tx as any).de_xuat_hoc_phan.update({
                     where: { id: request.id },
                     data: {
-                        trang_thai: "cho_duyet",
+                        trang_thai: "tu_choi",
                         cap_duyet_hien_tai: "tro_ly_khoa",
                         updated_at: new Date(),
                     },

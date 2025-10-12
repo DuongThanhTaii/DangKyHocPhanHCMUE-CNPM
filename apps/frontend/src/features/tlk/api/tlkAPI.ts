@@ -1,6 +1,6 @@
 import { fetchJSON } from "../../../utils/fetchJSON";
 import type { ServiceResult } from "../../common/ServiceResult";
-import type { DeXuatHocPhanRequest } from "../types";
+import type { DeXuatHocPhanRequest, DeXuatHocPhanForTroLyKhoaDTO } from "../types";
 
 
 export const tlkAPI = {
@@ -12,5 +12,11 @@ export const tlkAPI = {
             method: "POST",
             body: data,
         });
-    }
+    },
+
+    getDeXuatHocPhan: async (): Promise<ServiceResult<DeXuatHocPhanForTroLyKhoaDTO[]>> => {
+        return await fetchJSON("tlk/de-xuat-hoc-phan", {
+            method: "GET",
+        });
+    },
 }
