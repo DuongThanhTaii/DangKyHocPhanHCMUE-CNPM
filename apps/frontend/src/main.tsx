@@ -10,6 +10,9 @@ import { ModalProvider } from "./hook/ModalContext";
 import ToastContainer from "./components/toast/ToastContainer";
 import "./components/toast/toast.css";
 
+import ConfirmRoot from "./components/confirm/ConfirmRoot";
+import "./components/confirm/confirm.css";
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Provider store={store}>
@@ -18,6 +21,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <ModalProvider>
             <RouterProvider router={router} />
             <ToastContainer />
+            <ConfirmRoot />
           </ModalProvider>
         </SidebarProvider>
       </PersistGate>
