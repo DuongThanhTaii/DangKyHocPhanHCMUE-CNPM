@@ -23,3 +23,21 @@ export const createDeXuatHocPhanHandler: RequestHandler = async (req, res, next)
         next(error);
     }
 };
+
+// Handler mới - Lấy tất cả đề xuất của khoa
+export const getDeXuatHocPhanForTroLyKhoaHandler: RequestHandler = async (req, res, next) => {
+    try {
+        const userId = req.auth!.sub;
+        const hocKyId = req.query.hocKyId as string | undefined;
+
+        const result = await serviceFactory.deXuatHocPhanService.getDeXuatHocPhanForTroLyKhoa(
+            userId,
+            hocKyId
+        );
+
+        const statusCode = result.isSuccess ? 200 : 500;
+        res.status(statusCode).json(result);
+    } catch (error) {
+        next(error);
+    }
+};

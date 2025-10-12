@@ -62,10 +62,12 @@ export const updateTrangThaiByPDTHandler: RequestHandler = async (req, res, next
     try {
         const request = req.body; // { id: "uuid" }
         const userId = req.auth!.sub;
+        const loaiTaiKhoan = req.auth!.role;
 
         const result = await serviceFactory.deXuatHocPhanService.updateTrangThaiByPhongDaoTao(
             request,
-            userId
+            userId,
+            loaiTaiKhoan
         );
 
         const statusCode = result.isSuccess ? 200 : 400;
