@@ -123,7 +123,7 @@ pnpm dev
 
 Sau khi các tiến trình khởi động thành công:
 -   **Frontend (Giao diện người dùng):** [http://localhost:5173](http://localhost:5173) (Port mặc định của Vite)
--   **Backend (API Server):** `http://localhost:8080` (Hoặc port bạn đã cấu hình)
+-   **Backend (API Server):** [http://localhost:3000](http://localhost:3000)
 -   **Kết nối Database:** Host: `localhost`, Port: `5433`
 
 ---
