@@ -66,7 +66,7 @@ hcmue-reg/
 ### Bước 1: Clone Repository
 
 ```bash
-git clone <URL_REPOSITORY_CỦA_BẠN>
+git clone https://github.com/DuongThanhTaii/DangKyHocPhanHCMUE-CNPM.git
 cd hcmue-reg
 ```
 
