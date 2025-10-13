@@ -60,6 +60,7 @@ export default function DuyetHocPhan({
       cho_duyet: "Chờ trưởng khoa duyệt",
       da_duyet_tk: "Chờ PĐT duyệt",
       pdt_duyet: "PĐT đã duyệt",
+      da_duyet_pdt: "PDT đã duyệt",
       tu_choi: "Đã từ chối",
     };
     return statusMap[tt] || tt;
@@ -70,6 +71,7 @@ export default function DuyetHocPhan({
       cho_duyet: "#e39932ff",
       truong_khoa_duyet: "#318fabff",
       pdt_duyet: "#1ea11eff",
+      da_duyet_pdt: "#1ea11eff",
       tu_choi: "#bf2e29ff",
     };
     return colorMap[tt] || "#6c757d";
