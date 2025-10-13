@@ -22,7 +22,7 @@
 | **Monorepo** | [PNPM Workspaces](https://pnpm.io/workspaces) |
 | **Frontend** | [React](https://reactjs.org/), [Vite](https://vitejs.dev/), [Redux Toolkit](https://redux-toolkit.js.org/), [React Router](https://reactrouter.com/), [TypeScript](https://www.typescriptlang.org/) |
 | **Backend** | [Express.js](https://expressjs.com/), [Prisma](https://www.prisma.io/), [Zod](https://zod.dev/), [TypeScript](https://www.typescriptlang.org/) |
-| **Cơ sở dữ liệu** | [PostgreSQL 16](https://www.postgresql.org/) |
+| **Cơ sở dữ liệu** | [PostgreSQL 17](https://www.postgresql.org/) |
 | **Containerization** | [Docker](https://www.docker.com/), [Docker Compose](https://docs.docker.com/compose/) |
 
 ---
