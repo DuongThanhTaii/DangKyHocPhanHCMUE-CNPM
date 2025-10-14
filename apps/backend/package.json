@@ -8,7 +8,7 @@
     "seed": "ts-node-dev prisma/seed.ts"
   },
   "dependencies": {
-    "@prisma/client": "^6.16.1",
+    "@prisma/client": "6.16.3",
     "@types/node-cron": "^3.0.11",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",

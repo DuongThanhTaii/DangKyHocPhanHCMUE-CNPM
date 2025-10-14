@@ -749,8 +749,6 @@ legend {
 
 .form__group__quanly {
   position: absolute;
-  top: -20px;
-  right: 85px;
 }
 
 .form__group__quanly .form__input {
@@ -1828,4 +1826,48 @@ th {
 .title__siso {
   font-weight: 700;
   color: #172b4d;
+}
+
+/* styles/quanly.css */
+.ql__buttons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 10px;
+}
+
+.btn__add,
+.btn__sort {
+  padding: 0.5rem 1rem;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.modal-popup {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 600px;
+  margin: 100px auto;
+  position: absolute;
+  top: 0;
+  z-index: 999;
+}
+
+.container-modal-popup {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-popup-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.md-btn-add {
+  margin-top: 10px;
 }

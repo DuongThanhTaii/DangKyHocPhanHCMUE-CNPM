@@ -52,7 +52,11 @@ export class SinhVienService {
         });
 
         const user = await tx.users.create({
-          data: { ho_ten: input.ho_ten, tai_khoan_id: tk.id },
+          data: {
+            ho_ten: input.ho_ten,
+            tai_khoan_id: tk.id,
+            ma_nhan_vien: input.ma_so_sinh_vien,
+          },
         });
 
         const sv = await tx.sinh_vien.create({
