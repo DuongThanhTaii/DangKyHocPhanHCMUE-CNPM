@@ -1,8 +1,11 @@
 // src/hook/ModalContext.tsx
-import React, { createContext, useContext, useRef } from "react";
+import React, { createContext, useCallback, useContext, useRef } from "react";
 
-/* ===== Toast types (đã có) ===== */
+/* =========================
+ * Toast types
+ * ========================= */
 export type ToastType = "success" | "error" | "info" | "warning";
+
 export type ToastPayload = {
   id?: string;
   title?: string;
@@ -13,7 +16,9 @@ export type ToastPayload = {
 
 type ToastListener = (payload: ToastPayload) => void;
 
-/* ===== Confirm types (mới) ===== */
+/* =========================
+ * Confirm types
+ * ========================= */
 export type ConfirmOptions = {
   title?: string;
   message: string;
@@ -21,74 +26,92 @@ export type ConfirmOptions = {
   cancelText?: string; // default "Hủy"
   variant?: "default" | "danger";
 };
+
 type ConfirmDispatcher = (opts: ConfirmOptions) => Promise<boolean>;
 
-/* ===== API hook ===== */
-type OpenNotifyFn =
-  | ((payload: ToastPayload) => void)
-  | ((
-      message: string,
-      type?: ToastType,
-      title?: string,
-      duration?: number
-    ) => void);
+/* =========================
+ * Public API types
+ * ========================= */
+
+// Overload thay vì union function-type để TS suy luận chính xác
+export type OpenNotifyFn = {
+  (payload: ToastPayload): void;
+  (message: string, type?: ToastType, title?: string, duration?: number): void;
+};
 
 type ModalContextType = {
+  // Toast
   openNotify: OpenNotifyFn;
   subscribeNotify: (cb: ToastListener) => () => void;
 
-  // NEW:
+  // Confirm
   openConfirm: ConfirmDispatcher;
-  // ConfirmRoot sẽ "đăng ký" dispatcher này vào Provider
-  _registerConfirmDispatcher: (fn: ConfirmDispatcher) => void;
+  // Cho phép đăng ký HOẶC gỡ dispatcher (null khi unmount)
+  _registerConfirmDispatcher: (fn: ConfirmDispatcher | null) => void;
 };
+
+/* =========================
+ * Context & Provider
+ * ========================= */
 
 const ModalContext = createContext<ModalContextType | null>(null);
 
 export const ModalProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
-  /* ===== Toast ===== */
+  /* ---------- Toast ---------- */
   const toastListenersRef = useRef(new Set<ToastListener>());
 
-  const publishToast = (payload: ToastPayload) => {
-    const merged = { duration: 5000, type: "info" as ToastType, ...payload };
+  const publishToast = useCallback((payload: ToastPayload) => {
+    const merged: ToastPayload = {
+      duration: 5000,
+      type: "info",
+      ...payload,
+    };
     toastListenersRef.current.forEach((fn) => fn(merged));
-  };
+  }, []);
 
-  const openNotify: OpenNotifyFn = (...args: any[]) => {
-    if (typeof args[0] === "string") {
-      const [message, type, title, duration] = args as [
-        string,
-        ToastType | undefined,
-        string | undefined,
-        number | undefined
-      ];
-      publishToast({ message, type, title, duration });
-    } else {
-      publishToast(args[0] as ToastPayload);
-    }
-  };
+  const openNotify = useCallback<OpenNotifyFn>(
+    (...args: any[]) => {
+      if (typeof args[0] === "string") {
+        const [message, type, title, duration] = args as [
+          string,
+          ToastType | undefined,
+          string | undefined,
+          number | undefined
+        ];
+        publishToast({ message, type, title, duration });
+      } else {
+        publishToast(args[0] as ToastPayload);
+      }
+    },
+    [publishToast]
+  );
 
-  const subscribeNotify = (cb: ToastListener) => {
+  const subscribeNotify = useCallback((cb: ToastListener) => {
     toastListenersRef.current.add(cb);
-    return () => toastListenersRef.current.delete(cb);
-  };
+    return () => {
+      toastListenersRef.current.delete(cb);
+    };
+  }, []);
 
-  /* ===== Confirm ===== */
+  /* ---------- Confirm ---------- */
   const confirmDispatcherRef = useRef<ConfirmDispatcher | null>(null);
 
-  const _registerConfirmDispatcher = (fn: ConfirmDispatcher) => {
-    confirmDispatcherRef.current = fn;
-  };
+  const _registerConfirmDispatcher = useCallback(
+    (fn: ConfirmDispatcher | null) => {
+      confirmDispatcherRef.current = fn;
+    },
+    []
+  );
 
-  const openConfirm: ConfirmDispatcher = async (opts) => {
-    // Nếu ConfirmRoot chưa mount thì fallback window.confirm để không chặn luồng dev
+  const openConfirm: ConfirmDispatcher = useCallback(async (opts) => {
+    // Nếu ConfirmRoot chưa mount → fallback window.confirm để không chặn luồng dev
     if (!confirmDispatcherRef.current) {
-      return Promise.resolve(window.confirm(opts?.message || "Xác nhận?"));
+      return Promise.resolve(window.confirm(opts?.message ?? "Xác nhận?"));
     }
     return confirmDispatcherRef.current(opts);
-  };
+  }, []);
 
   return (
     <ModalContext.Provider
@@ -103,6 +126,10 @@ export const ModalProvider: React.FC<React.PropsWithChildren> = ({
     </ModalContext.Provider>
   );
 };
+
+/* =========================
+ * Hook
+ * ========================= */
 
 export const useModalContext = () => {
   const ctx = useContext(ModalContext);
