@@ -10,6 +10,7 @@ import {
   tuChoiDeXuatHocPhanHandler, // Import thêm
 } from "./pdt_chuyentrangthai_service";
 import sinhVienRouter from "./pdt_crud_sv_service";
+import { getDanhSachKhoaHandler, getPhasesByHocKyHandler } from "./pdt_kyPhase_service";
 
 const r = Router();
 
@@ -66,4 +67,19 @@ r.use(
   requireRole(["phong_dao_tao"]),
   sinhVienRouter
 );
+
+r.get(
+  "/ky-phase/:hocKyId",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  getPhasesByHocKyHandler
+);
+
+r.get(
+  "/khoa",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  getDanhSachKhoaHandler
+);
+  
 export default r;

@@ -36,3 +36,16 @@ export const UpdateSinhVienDTO = z.object({
   nganh_id: z.string().uuid().optional(),
 });
 export type TUpdateSinhVienDTO = z.infer<typeof UpdateSinhVienDTO>;
+
+export interface MonHocGhiDanhForSinhVien {
+  id: string;
+  maMonHoc: string;
+  tenMonHoc: string;
+  soTinChi: number;
+  tenKhoa: string;
+  tenGiangVien: string;
+}
+
+export interface RequestGhiDanhMonHoc {
+  id: string;
+}
