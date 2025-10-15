@@ -130,3 +130,35 @@ export interface DeXuatHocPhanForPDTDTO {
 export interface UpdateTrangThaiByPDTRequest {
     id: string;
 }
+
+export interface HocKyHienHanhDTO {
+    hocKyId: string;
+    tenHocKy: string;
+    nienKhoaId: string;
+    tenNienKhoa: string;
+    ngayBatDau: string; // ISO string
+    ngayKetThuc: string; // ISO string
+}
+
+export interface PhasesByHocKyDTO {
+    hocKyId: string;
+    tenHocKy: string;
+    phases: PhaseItemDetailDTO[];
+}
+
+export interface PhaseItemDetailDTO {
+    id: string;
+    phase: string;
+    startAt: string;
+    endAt: string;
+    isEnabled: boolean;
+}
+
+export interface GetPhasesByHocKyRequest {
+    hocKyId: string;
+}
+
+export interface KhoaDTO {
+    id: string;
+    tenKhoa: string;
+}
