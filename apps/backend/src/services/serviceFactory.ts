@@ -2,6 +2,7 @@ import { UnitOfWork } from "../repositories/unitOfWork";
 import { DeXuatHocPhanService } from "./deXuatHocPhanService";
 import { HocKyService } from "./hocKyService";
 import { KyPhaseService } from "./kyPhaseService";
+import { SinhVienService } from "./sinhVienService";
 
 export class ServiceFactory {
     private static instance: ServiceFactory;
@@ -10,6 +11,7 @@ export class ServiceFactory {
     private _hocKyService?: HocKyService;
     private _kyPhaseService?: KyPhaseService;
     private _deXuatHocPhanService?: DeXuatHocPhanService;
+    private _sinhVienService?: SinhVienService;
     private constructor() {
         this.unitOfWork = UnitOfWork.getInstance();
     }
@@ -40,5 +42,11 @@ export class ServiceFactory {
             this._deXuatHocPhanService = new DeXuatHocPhanService(this.unitOfWork);
         }
         return this._deXuatHocPhanService;
+    }
+    get sinhVienService() {
+        if (!this._sinhVienService) {
+            this._sinhVienService = new SinhVienService(this.unitOfWork);
+        }
+        return this._sinhVienService;
     }
 }

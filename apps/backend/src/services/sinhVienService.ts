@@ -1,12 +1,17 @@
 import bcrypt from "bcrypt";
 import { UnitOfWork } from "../repositories/unitOfWork";
 import { ServiceResult, ServiceResultBuilder } from "../types/serviceResult";
-import { TCreateSinhVienDTO, TUpdateSinhVienDTO } from "../dtos/sinhvienDTO";
+import {
+  TCreateSinhVienDTO,
+  TUpdateSinhVienDTO,
+  MonHocGhiDanhForSinhVien,
+  RequestGhiDanhMonHoc,
+} from "../dtos/sinhvienDTO";
 
 const ROLE_SV = "sinh_vien";
 
 export class SinhVienService {
-  constructor(private uow: UnitOfWork) {}
+  constructor(private uow: UnitOfWork) { }
 
   async list(page = 1, pageSize = 20, q?: string): Promise<ServiceResult<any>> {
     const { items, total } = await this.uow.sinhVienRepository.findPaged({
@@ -165,6 +170,162 @@ export class SinhVienService {
       return ServiceResultBuilder.success("Đã xóa tài khoản sinh viên");
     } catch (err: any) {
       return ServiceResultBuilder.failure(err?.message ?? "Xóa thất bại");
+    }
+  }
+
+  /**
+   * Lấy danh sách môn học ghi danh cho sinh viên
+   * Chỉ lấy học phần đang mở (trang_thai_mo = true)
+   */
+  async getMonHocGhiDanh(
+    hocKyId?: string
+  ): Promise<ServiceResult<MonHocGhiDanhForSinhVien[]>> {
+    try {
+      // Step 1: Lấy học kỳ hiện hành nếu không truyền hocKyId
+      let targetHocKyId = hocKyId;
+      if (!targetHocKyId) {
+        const hocKyHienHanh = await this.uow.hocKyRepository.findHocKyHienHanh();
+        if (!hocKyHienHanh) {
+          return ServiceResultBuilder.failure(
+            "Không có học kỳ hiện hành",
+            "HOC_KY_HIEN_HANH_NOT_FOUND"
+          );
+        }
+        targetHocKyId = hocKyHienHanh.id;
+      }
+
+      // Step 2: Lấy tất cả học phần đang mở
+      const hocPhanList = await this.uow.hocPhanRepository.findAllWithRelations({
+        id_hoc_ky: targetHocKyId,
+        trang_thai_mo: true,
+      });
+
+      // Step 3: Map sang DTO
+      const data: MonHocGhiDanhForSinhVien[] = hocPhanList.map((hp: any) => {
+        // Lấy giảng viên từ de_xuat_hoc_phan
+        const deXuat = hp.mon_hoc?.de_xuat_hoc_phan?.[0];
+        const tenGiangVien = deXuat?.giang_vien?.users?.ho_ten || "Chưa có giảng viên";
+
+
+        return {
+          id: hp.id,
+          maMonHoc: hp.mon_hoc?.ma_mon || "",
+          tenMonHoc: hp.mon_hoc?.ten_mon || "",
+          soTinChi: hp.mon_hoc?.so_tin_chi || 0,
+          tenKhoa: hp.mon_hoc?.khoa?.ten_khoa || "",
+          tenGiangVien,
+        };
+      });
+
+      return ServiceResultBuilder.success(
+        "Lấy danh sách môn học ghi danh thành công",
+        data
+      );
+    } catch (error) {
+      console.error("Error getting mon hoc ghi danh:", error);
+      return ServiceResultBuilder.failure(
+        "Lỗi hệ thống khi lấy danh sách môn học",
+        "INTERNAL_ERROR"
+      );
+    }
+  }
+
+  /**
+   * Ghi danh môn học
+   * @param request - { id: hoc_phan_id }
+   * @param sinhVienId - ID của sinh viên (lấy từ auth token)
+   */
+  async ghiDanhMonHoc(
+    request: RequestGhiDanhMonHoc,
+    sinhVienId: string
+  ): Promise<ServiceResult<null>> {
+    try {
+      // Step 1: Kiểm tra học phần tồn tại và đang mở
+      const hocPhan = await this.uow.hocPhanRepository.findById(request.id);
+      if (!hocPhan) {
+        return ServiceResultBuilder.failure(
+          "Không tìm thấy học phần",
+          "HOC_PHAN_NOT_FOUND"
+        );
+      }
+
+      if (!hocPhan.trang_thai_mo) {
+        return ServiceResultBuilder.failure(
+          "Học phần đã đóng, không thể ghi danh",
+          "HOC_PHAN_CLOSED"
+        );
+      }
+
+      // Step 2: Kiểm tra sinh viên đã ghi danh chưa
+      const isAlreadyRegistered = await this.uow.ghiDanhHocPhanRepository.isAlreadyRegistered(
+        sinhVienId,
+        request.id
+      );
+
+      if (isAlreadyRegistered) {
+        return ServiceResultBuilder.failure(
+          "Bạn đã ghi danh học phần này rồi",
+          "ALREADY_REGISTERED"
+        );
+      }
+
+      // Step 3: Tạo bản ghi ghi danh
+      await this.uow.ghiDanhHocPhanRepository.create({
+        sinh_vien_id: sinhVienId,
+        hoc_phan_id: request.id,
+        trang_thai: "da_ghi_danh",
+        // ngay_ghi_danh sẽ tự động set bởi DEFAULT CURRENT_TIMESTAMP
+      });
+
+      return ServiceResultBuilder.success("Ghi danh môn học thành công", null);
+    } catch (error) {
+      console.error("Error ghi danh mon hoc:", error);
+      return ServiceResultBuilder.failure(
+        "Lỗi hệ thống khi ghi danh môn học",
+        "INTERNAL_ERROR"
+      );
+    }
+  }
+
+  /**
+ * Lấy danh sách môn học đã ghi danh của sinh viên
+ * @param sinhVienId - ID của sinh viên (lấy từ auth token)
+ */
+  async getDanhSachDaGhiDanh(
+    sinhVienId: string
+  ): Promise<ServiceResult<MonHocGhiDanhForSinhVien[]>> {
+    try {
+      // Step 1: Lấy danh sách ghi danh với relations
+      const ghiDanhList = await this.uow.ghiDanhHocPhanRepository.findBySinhVienWithRelations(
+        sinhVienId
+      );
+
+      // Step 2: Map sang DTO
+      const data: MonHocGhiDanhForSinhVien[] = ghiDanhList.map((gd: any) => {
+        const hp = gd.hoc_phan;
+        const deXuat = hp?.mon_hoc?.de_xuat_hoc_phan?.[0];
+        const tenGiangVien = deXuat?.giang_vien?.users?.ho_ten || "Chưa có giảng viên";
+
+        return {
+          id: hp?.id || "",
+          maMonHoc: hp?.mon_hoc?.ma_mon || "",
+          tenMonHoc: hp?.mon_hoc?.ten_mon || "",
+          soTinChi: hp?.mon_hoc?.so_tin_chi || 0,
+          tenKhoa: hp?.mon_hoc?.khoa?.ten_khoa || "",
+          tenGiangVien,
+        };
+      });
+
+      return ServiceResultBuilder.success(
+        "Lấy danh sách môn học đã ghi danh thành công",
+        data
+      );
+    } catch (error) {
+      console.error("Error getting danh sach da ghi danh:", error);
+      return ServiceResultBuilder.failure(
+        "Lỗi hệ thống khi lấy danh sách môn học đã ghi danh",
+        "INTERNAL_ERROR"
+      );
     }
   }
 }

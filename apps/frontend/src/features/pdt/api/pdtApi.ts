@@ -13,6 +13,10 @@ import type {
     HocKyDTO,
     DeXuatHocPhanForPDTDTO,
     UpdateTrangThaiByPDTRequest,
+    HocKyHienHanhDTO,
+    PhasesByHocKyDTO,
+    GetPhasesByHocKyRequest,
+    KhoaDTO,
 } from "../types/pdtTypes";
 
 /**
@@ -54,8 +58,10 @@ export const pdtApi = {
     /**
      * ✅ Lấy thông tin học kỳ hiện hành
      */
-    getHocKyHienHanh: async (): Promise<ServiceResult<HocKyDTO>> => {
-        return await fetchJSON("/pdt/hoc-ky-hien-hanh");
+    getHocKyHienHanh: async (): Promise<ServiceResult<HocKyHienHanhDTO>> => {
+        return await fetchJSON("pdt/hoc-ky-hien-hanh", {
+            method: "GET",
+        });
     },
 
     /**
@@ -94,7 +100,6 @@ export const pdtApi = {
         });
     },
 
-
     /**
      * ✅ Lấy danh sách đề xuất học phần cho PDT
      */
@@ -125,6 +130,24 @@ export const pdtApi = {
         return await fetchJSON("pdt/de-xuat-hoc-phan/tu-choi", {
             method: "PATCH",
             body: data,
+        });
+    },
+
+    /**
+     * ✅ Lấy tất cả phases theo học kỳ ID
+     */
+    getPhasesByHocKy: async (hocKyId: string): Promise<ServiceResult<PhasesByHocKyDTO>> => {
+        return await fetchJSON(`pdt/ky-phase/${hocKyId}`, {
+            method: "GET",
+        });
+    },
+
+    /**
+     * ✅ Lấy danh sách khoa
+     */
+    getDanhSachKhoa: async (): Promise<ServiceResult<KhoaDTO[]>> => {
+        return await fetchJSON("pdt/khoa", {
+            method: "GET",
         });
     },
 };

@@ -7,6 +7,7 @@ import {
 import { UpdateTrangThaiByPDTRequest } from "../dtos/pdtDTO";
 import { UnitOfWork } from "../repositories/unitOfWork";
 import { ServiceResult, ServiceResultBuilder } from "../types/serviceResult";
+import { RequestGhiDanhMonHoc } from "../dtos/sinhvienDTO";
 
 export class DeXuatHocPhanService {
     constructor(private unitOfWork: UnitOfWork) { }
@@ -438,6 +439,101 @@ export class DeXuatHocPhanService {
             console.error("Error tu choi de xuat hoc phan:", error);
             return ServiceResultBuilder.failure(
                 "Lỗi hệ thống khi từ chối đề xuất học phần",
+                "INTERNAL_ERROR"
+            );
+        }
+    }
+
+    /**
+     * Ghi danh môn học
+     * @param request - { id: hoc_phan_id }
+     * @param sinhVienId - ID của sinh viên (lấy từ auth token)
+     */
+    async ghiDanhMonHoc(
+        request: RequestGhiDanhMonHoc,
+        sinhVienId: string
+    ): Promise<ServiceResult<null>> {
+        try {
+            // Step 1: Kiểm tra học phần tồn tại và đang mở
+            const hocPhan = await this.unitOfWork.hocPhanRepository.findById(request.id);
+            if (!hocPhan) {
+                return ServiceResultBuilder.failure(
+                    "Không tìm thấy học phần",
+                    "HOC_PHAN_NOT_FOUND"
+                );
+            }
+
+            if (!hocPhan.trang_thai_mo) {
+                return ServiceResultBuilder.failure(
+                    "Học phần đã đóng, không thể ghi danh",
+                    "HOC_PHAN_CLOSED"
+                );
+            }
+
+            // Step 2: Kiểm tra phase hiện tại của học kỳ
+            const hocKy = await this.unitOfWork.hocKyRepository.findById(hocPhan.id_hoc_ky);
+            if (!hocKy) {
+                return ServiceResultBuilder.failure(
+                    "Không tìm thấy học kỳ",
+                    "HOC_KY_NOT_FOUND"
+                );
+            }
+
+            // Lấy phase hiện tại
+            const currentPhase = await this.unitOfWork.kyPhaseRepository.findOne({
+                hoc_ky_id: hocKy.id,
+                bat_dau: { lte: new Date() },
+                ket_thuc: { gte: new Date() },
+            });
+
+            if (!currentPhase) {
+                return ServiceResultBuilder.failure(
+                    "Hiện không trong thời gian ghi danh",
+                    "NOT_IN_PHASE"
+                );
+            }
+
+            if (currentPhase.phase !== "Ghi danh") {
+                return ServiceResultBuilder.failure(
+                    `Hiện đang trong phase "${currentPhase.phase}", không thể ghi danh`,
+                    "WRONG_PHASE"
+                );
+            }
+
+            // Step 3: Kiểm tra sinh viên đã ghi danh chưa
+            const isAlreadyRegistered = await this.unitOfWork.ghiDanhHocPhanRepository.isAlreadyRegistered(
+                sinhVienId,
+                request.id
+            );
+
+            if (isAlreadyRegistered) {
+                return ServiceResultBuilder.failure(
+                    "Bạn đã ghi danh học phần này rồi",
+                    "ALREADY_REGISTERED"
+                );
+            }
+
+            // Step 4: Tạo bản ghi ghi danh
+            await this.unitOfWork.ghiDanhHocPhanRepository.create({
+                sinh_vien_id: sinhVienId,
+                hoc_phan_id: request.id,
+                trang_thai: "da_ghi_danh",
+            });
+
+            return ServiceResultBuilder.success("Ghi danh môn học thành công", null);
+        } catch (error) {
+            console.error("Error ghi danh mon hoc:", error);
+
+            // Handle database trigger error
+            if (error instanceof Error && error.message.includes("Hiện không trong phase")) {
+                return ServiceResultBuilder.failure(
+                    "Hiện không trong thời gian ghi danh của học kỳ",
+                    "NOT_IN_REGISTRATION_PHASE"
+                );
+            }
+
+            return ServiceResultBuilder.failure(
+                "Lỗi hệ thống khi ghi danh môn học",
                 "INTERNAL_ERROR"
             );
         }
