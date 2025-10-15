@@ -10,8 +10,20 @@ import {
   tuChoiDeXuatHocPhanHandler, // Import thêm
 } from "./pdt_chuyentrangthai_service";
 import sinhVienRouter from "./pdt_crud_sv_service";
-import { getDanhSachKhoaHandler, getPhasesByHocKyHandler, updateDotGhiDanhHandler } from "./pdt_kyPhase_service";
+import {
+  getDanhSachKhoaHandler,
+  getPhasesByHocKyHandler,
+  updateDotGhiDanhHandler,
+} from "./pdt_kyPhase_service";
 import { getAllDotDangKyByHocKyHandler } from "./pdt_dotDangKy_service";
+
+import {
+  getAllGiangVienHandler,
+  getGiangVienByIdHandler,
+  createGiangVienHandler,
+  updateGiangVienHandler,
+  deleteGiangVienHandler,
+} from "./pdt_crud_gv_service";
 
 const r = Router();
 
@@ -67,6 +79,42 @@ r.use(
   requireAuth,
   requireRole(["phong_dao_tao"]),
   sinhVienRouter
+);
+
+// CRUD giảng viên
+r.get(
+  "/giang-vien",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  getAllGiangVienHandler
+);
+
+r.get(
+  "/giang-vien/:id",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  getGiangVienByIdHandler
+);
+
+r.post(
+  "/giang-vien",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  createGiangVienHandler
+);
+
+r.put(
+  "/giang-vien/:id",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  updateGiangVienHandler
+);
+
+r.delete(
+  "/giang-vien/:id",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  deleteGiangVienHandler
 );
 
 r.get(

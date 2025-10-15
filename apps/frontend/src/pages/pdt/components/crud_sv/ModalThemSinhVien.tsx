@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useModalContext } from "../../../hook/ModalContext";
-import "../../../styles/reset.css";
-import "../../../styles/menu.css";
+import { useModalContext } from "../../../../hook/ModalContext";
+import "../../../../styles/reset.css";
+import "../../../../styles/menu.css";
 
 type Props = {
   isOpen: boolean;
@@ -138,7 +138,7 @@ const ModalThemSinhVien: React.FC<Props> = ({ isOpen, onClose, onCreated }) => {
 
           {/* MSSV & Tên */}
           <div className="modal-popup-row">
-            <div className="form__group pos__unset">
+            <div className="form__group ">
               <label className="pos__unset">Mã số sinh viên</label>
               <input
                 name="ma_so_sinh_vien"
