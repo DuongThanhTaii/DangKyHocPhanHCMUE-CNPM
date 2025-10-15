@@ -15,13 +15,32 @@ type CurrentSemester = {
   trang_thai?: string | null;
 };
 
+// ✅ Helper function to format date string
+const formatDateString = (
+  dateStr: string | null | undefined
+): string | null => {
+  if (!dateStr) return null;
+
+  try {
+    // ✅ Remove instanceof check - dateStr is always string | null | undefined
+    const date = new Date(dateStr);
+
+    // Check if date is valid
+    if (isNaN(date.getTime())) return null;
+
+    return date.toLocaleDateString("vi-VN");
+  } catch {
+    return null;
+  }
+};
+
 export default function ChuyenHocKyHienHanh() {
   const { data: hocKyNienKhoas, loading: loadingHocKy } = useHocKyNienKhoa();
   const { setHocKyHienHanh, loading: submitting } = useSetHocKyHienHanh();
   const {
     data: hocKyHienHanh,
     loading: loadingCurrent,
-    refetch,
+    refetch, // ✅ Now available
   } = useGetHocKyHienHanh();
 
   const [selectedNienKhoa, setSelectedNienKhoa] = useState<string>("");
@@ -30,20 +49,15 @@ export default function ChuyenHocKyHienHanh() {
 
   useEffect(() => {
     if (hocKyHienHanh && hocKyNienKhoas.length > 0) {
-      // Tìm niên khóa chứa học kỳ hiện hành
       const foundNienKhoa = hocKyNienKhoas.find((nk) =>
-        nk.hocKy.some((hk) => hk.id === hocKyHienHanh.id)
+        nk.hocKy.some((hk) => hk.id === hocKyHienHanh.hocKyId)
       );
 
       setCurrentSemester({
         ten_hoc_ky: hocKyHienHanh.tenHocKy,
         ten_nien_khoa: foundNienKhoa?.tenNienKhoa,
-        ngay_bat_dau: hocKyHienHanh.ngayBatDau
-          ? hocKyHienHanh.ngayBatDau.toLocaleDateString("vi-VN")
-          : null,
-        ngay_ket_thuc: hocKyHienHanh.ngayKetThuc
-          ? hocKyHienHanh.ngayKetThuc.toLocaleDateString("vi-VN")
-          : null,
+        ngay_bat_dau: formatDateString(hocKyHienHanh.ngayBatDau), // ✅ Use helper
+        ngay_ket_thuc: formatDateString(hocKyHienHanh.ngayKetThuc), // ✅ Use helper
         trang_thai: "Đang hoạt động",
       });
     }
@@ -78,7 +92,7 @@ export default function ChuyenHocKyHienHanh() {
     const result = await setHocKyHienHanh({ hocKyId: selectedHocKy });
 
     if (result.isSuccess) {
-      await refetch();
+      await refetch(); // ✅ Now works
     }
   };
 

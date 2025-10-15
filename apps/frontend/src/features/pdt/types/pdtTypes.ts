@@ -68,18 +68,10 @@ export interface PhaseItemDTO {
 
 export interface CreateBulkKyPhaseRequest {
     hocKyId: string;
+    hocKyStartAt: string;
+    hocKyEndAt: string;
     phases: PhaseItemDTO[];
 }
-
-export interface CreateBulkKyPhaseDTO {
-    hocKyId: string;
-    phases: Array<{
-        phase: string;
-        startAt: Date;
-        endAt: Date;
-    }>;
-}
-
 export interface KyPhaseResponseDTO {
     id: string;
     hocKyId: string;
@@ -161,4 +153,37 @@ export interface GetPhasesByHocKyRequest {
 export interface KhoaDTO {
     id: string;
     tenKhoa: string;
+}
+
+export interface UpdateDotGhiDanhRequest {
+    hocKyId: string;
+    isToanTruong: boolean; // true: áp dụng toàn trường, false: theo từng khoa
+
+    // Nếu isToanTruong = true, dùng 2 field này
+    thoiGianBatDau?: string; // ISO string
+    thoiGianKetThuc?: string; // ISO string
+    dotToanTruongId?: string;
+    // Nếu isToanTruong = false, dùng array này
+    dotTheoKhoa?: DotGhiDanhTheoKhoaDTO[];
+}
+
+export interface DotGhiDanhTheoKhoaDTO {
+    khoaId: string;
+    thoiGianBatDau: string; // ISO string
+    thoiGianKetThuc: string; // ISO string
+}
+
+// ✅ Response DTO
+export interface DotGhiDanhResponseDTO {
+    id: string;
+    hocKyId: string;
+    loaiDot: string; // luôn là "ghi_danh"
+    tenDot: string;
+    thoiGianBatDau: string;
+    thoiGianKetThuc: string;
+    isCheckToanTruong: boolean;
+    khoaId: string | null;
+    tenKhoa: string | null;
+    gioiHanTinChi: number;
+    trangThai: boolean;
 }

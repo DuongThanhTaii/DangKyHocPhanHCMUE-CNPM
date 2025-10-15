@@ -1,17 +1,18 @@
-import { useState, type FormEvent } from "react";
-import { useDanhSachKhoa } from "../../../features/pdt/hooks";
-import type { KhoaDTO } from "../../../features/pdt/types/pdtTypes";
+import { useState, useRef, type FormEvent } from "react";
+import {
+  useDanhSachKhoa,
+  useGetDotGhiDanhByHocKy,
+} from "../../../features/pdt/hooks"; // ✅ Add hook
+import {
+  KhoaConfigSection,
+  type KhoaConfigSectionRef,
+} from "./KhoaConfigSection";
+import type { UpdateDotGhiDanhRequest } from "../../../features/pdt/types/pdtTypes";
 import "../../../styles/PhaseHocKyNienKhoaSetup.css";
+
 type PhaseTime = { start: string; end: string };
 
-type KhoaPhaseConfig = {
-  id: string;
-  khoaIds: string[];
-  start: string;
-  end: string;
-};
-
-type PhaseHocKyNienKhoaSetupProps = {
+interface PhaseHocKyNienKhoaSetupProps {
   phaseNames: Record<string, string>;
   phaseOrder: string[];
   phaseTimes: Record<string, PhaseTime>;
@@ -20,14 +21,15 @@ type PhaseHocKyNienKhoaSetupProps = {
   semesterStart: string;
   semesterEnd: string;
   submitting: boolean;
+  selectedHocKyId: string;
   onPhaseTimeChange: (
     phase: string,
     field: "start" | "end",
     value: string
   ) => void;
-  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
-  onValidateKhoaConfigs?: () => boolean; // ✅ Optional callback
-};
+  onSubmit: (e: FormEvent) => void;
+  onSubmitGhiDanh: (data: UpdateDotGhiDanhRequest) => void;
+}
 
 export const PhaseHocKyNienKhoaSetup = ({
   phaseNames,
@@ -38,244 +40,129 @@ export const PhaseHocKyNienKhoaSetup = ({
   semesterStart,
   semesterEnd,
   submitting,
+  selectedHocKyId,
   onPhaseTimeChange,
   onSubmit,
+  onSubmitGhiDanh,
 }: PhaseHocKyNienKhoaSetupProps) => {
   const { data: danhSachKhoa } = useDanhSachKhoa();
 
-  console.log("🔍 Component render"); // ✅ Debug 1
-  console.log("🔍 danhSachKhoa:", danhSachKhoa); // ✅ Debug 2
-  console.log("🔍 phaseOrder:", phaseOrder); // ✅ Debug 3
+  // ✅ Fetch existing đợt ghi danh
+  const {
+    data: existingDotGhiDanh,
+    loading: loadingDotGhiDanh,
+    refetch: refetchDotGhiDanh,
+  } = useGetDotGhiDanhByHocKy(selectedHocKyId);
 
-  // ✅ Chỉ áp dụng cho phase "ghi_danh"
-  const [apDungChungGhiDanh, setApDungChungGhiDanh] = useState(true);
+  const khoaConfigRef = useRef<KhoaConfigSectionRef>(null);
 
-  // ✅ Config khoa chỉ cho phase "ghi_danh"
-  const [khoaConfigsGhiDanh, setKhoaConfigsGhiDanh] = useState<
-    KhoaPhaseConfig[]
-  >([]);
+  // ✅ Log existing data
+  console.log("📦 Existing đợt ghi danh:", existingDotGhiDanh);
 
-  // ✅ State lưu lỗi validation
-  const [validationErrors, setValidationErrors] = useState<
-    Record<string, string>
-  >({});
-
-  // Lấy danh sách khoa đã chọn
-  const getSelectedKhoaIds = (): string[] => {
-    return khoaConfigsGhiDanh.flatMap((c) => c.khoaIds);
-  };
-
-  // Lấy khoa available (chưa được chọn)
-  const getAvailableKhoa = (): KhoaDTO[] => {
-    const selectedIds = getSelectedKhoaIds();
-    return danhSachKhoa.filter((k) => !selectedIds.includes(k.id));
-  };
-
-  // Thêm 1 row config khoa
-  const addKhoaConfig = () => {
-    setKhoaConfigsGhiDanh((prev) => [
-      ...prev,
-      {
-        id: Date.now().toString(),
-        khoaIds: [],
-        start: "",
-        end: "",
-      },
-    ]);
-  };
-
-  // Xóa 1 row config khoa
-  const removeKhoaConfig = (configId: string) => {
-    setKhoaConfigsGhiDanh((prev) => prev.filter((c) => c.id !== configId));
-  };
-
-  // ✅ Update config và validate
-  const updateKhoaConfig = (
-    configId: string,
-    field: keyof KhoaPhaseConfig,
-    value: any
-  ) => {
-    setKhoaConfigsGhiDanh((prev) =>
-      prev.map((c) => (c.id === configId ? { ...c, [field]: value } : c))
-    );
-
-    // Clear error khi đang nhập
-    setValidationErrors((prev) => {
-      const newErrors = { ...prev };
-      delete newErrors[`${configId}-${field}`];
-      return newErrors;
-    });
-  };
-
-  // Toggle chọn khoa
-  const toggleKhoa = (configId: string, khoaId: string) => {
-    setKhoaConfigsGhiDanh((prev) =>
-      prev.map((c) => {
-        if (c.id !== configId) return c;
-
-        const isSelected = c.khoaIds.includes(khoaId);
-        return {
-          ...c,
-          khoaIds: isSelected
-            ? c.khoaIds.filter((id) => id !== khoaId)
-            : [...c.khoaIds, khoaId],
-        };
-      })
-    );
-  };
-
-  // Validate thời gian không xâm phạm
-  const validateKhoaConfigTime = (
-    configId: string,
-    field: "start" | "end"
-  ): { min: string; max: string } => {
-    const currentIndex = khoaConfigsGhiDanh.findIndex((c) => c.id === configId);
-    const currentConfig = khoaConfigsGhiDanh[currentIndex];
-
-    const phaseStart = phaseTimes["ghi_danh"]?.start || "";
-    const phaseEnd = phaseTimes["ghi_danh"]?.end || "";
-
-    if (field === "start") {
-      if (currentIndex > 0) {
-        const prevConfig = khoaConfigsGhiDanh[currentIndex - 1];
-        return {
-          min: prevConfig.end || phaseStart,
-          max: phaseEnd,
-        };
-      }
-      return { min: phaseStart, max: phaseEnd };
-    } else {
-      return {
-        min: currentConfig?.start || phaseStart,
-        max: phaseEnd,
-      };
-    }
-  };
-
-  // ✅ Validate toàn bộ configs
-  const validateAllKhoaConfigs = (): boolean => {
-    if (khoaConfigsGhiDanh.length === 0) return true; // ✅ Không có config -> valid
-
-    const errors: Record<string, string> = {};
-    const phaseStart = new Date(phaseTimes["ghi_danh"]?.start || "");
-    const phaseEnd = new Date(phaseTimes["ghi_danh"]?.end || "");
-
-    khoaConfigsGhiDanh.forEach((config, index) => {
-      // Check khoa chưa chọn
-      if (config.khoaIds.length === 0) {
-        errors[`${config.id}-khoa`] = "Vui lòng chọn ít nhất 1 khoa";
-      }
-
-      // Check thời gian trống
-      if (!config.start) {
-        errors[`${config.id}-start`] = "Vui lòng nhập thời gian bắt đầu";
-        return; // Skip các check khác
-      }
-      if (!config.end) {
-        errors[`${config.id}-end`] = "Vui lòng nhập thời gian kết thúc";
-        return;
-      }
-
-      const configStart = new Date(config.start);
-      const configEnd = new Date(config.end);
-
-      // Check end > start
-      if (configEnd <= configStart) {
-        errors[`${config.id}-end`] =
-          "Thời gian kết thúc phải sau thời gian bắt đầu";
-      }
-
-      // Check nằm trong khoảng ghi danh
-      if (configStart < phaseStart) {
-        errors[`${config.id}-start`] =
-          "Không được sớm hơn thời gian bắt đầu ghi danh";
-      }
-      if (configEnd > phaseEnd) {
-        errors[`${config.id}-end`] =
-          "Không được trễ hơn thời gian kết thúc ghi danh";
-      }
-
-      // Check không xâm lấn config trước
-      if (index > 0) {
-        const prevConfig = khoaConfigsGhiDanh[index - 1];
-        if (prevConfig.end) {
-          const prevEnd = new Date(prevConfig.end);
-          if (configStart < prevEnd) {
-            errors[`${config.id}-start`] =
-              "Thời gian bắt đầu phải sau khi mốc trước kết thúc";
-          }
-        }
-      }
-    });
-
-    setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const canEditPhase = (phaseKey: string, index: number): boolean => {
-    if (submitting) return false;
-    if (!semesterStart || !semesterEnd) return false;
+  const canEditPhase = (phase: string, index: number): boolean => {
     if (index === 0) return true;
-
     const prevPhase = phaseOrder[index - 1];
-    const prevTime = phaseTimes[prevPhase];
-    return !!(prevTime?.start && prevTime?.end);
+    return !!(phaseTimes[prevPhase]?.start && phaseTimes[prevPhase]?.end);
   };
 
   const getMinMaxForPhase = (
-    phaseKey: string,
+    phase: string,
     field: "start" | "end",
     index: number
-  ) => {
-    const semesterStartDate = semesterStart ? `${semesterStart}T00:00` : "";
-    const semesterEndDate = semesterEnd ? `${semesterEnd}T23:59` : "";
-
+  ): { min: string; max: string } => {
     if (field === "start") {
-      if (index > 0) {
-        const prevPhase = phaseOrder[index - 1];
-        const prevEnd = phaseTimes[prevPhase]?.end;
-        return {
-          min: prevEnd || semesterStartDate,
-          max: semesterEndDate,
-        };
-      }
-      return {
-        min: semesterStartDate,
-        max: semesterEndDate,
-      };
+      if (index === 0) return { min: "", max: "" };
+      const prevPhase = phaseOrder[index - 1];
+      const prevEnd = phaseTimes[prevPhase]?.end;
+      return { min: prevEnd || "", max: "" };
     } else {
-      const currentStart = phaseTimes[phaseKey]?.start;
-      return {
-        min: currentStart || semesterStartDate,
-        max: semesterEndDate,
-      };
+      const currentStart = phaseTimes[phase]?.start;
+      return { min: currentStart || "", max: "" };
     }
   };
 
-  const availableKhoa = getAvailableKhoa();
-  console.log("🔍 availableKhoa:", availableKhoa); // ✅ Debug 4
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    console.log("🎯 PhaseHocKyNienKhoaSetup handleSubmit CALLED!");
+    e.preventDefault();
+
+    if (khoaConfigRef.current) {
+      const isValid = khoaConfigRef.current.validate();
+      if (!isValid) {
+        console.log("❌ Validation failed");
+        return;
+      }
+    }
+
+    console.log("🚀 Calling onSubmit (handleSubmitPhases)...");
+    await onSubmit(e);
+
+    console.log("🚀 Getting khoa data for ghi danh...");
+    if (khoaConfigRef.current) {
+      const khoaData = khoaConfigRef.current.getData();
+      console.log("📦 Khoa data:", khoaData);
+
+      // ✅ Get existing IDs
+      const toanTruongDot = existingDotGhiDanh.find(
+        (dot) => dot.isCheckToanTruong
+      );
+
+      const ghiDanhRequest: UpdateDotGhiDanhRequest = {
+        hocKyId: selectedHocKyId,
+        isToanTruong: khoaData.isToanTruong,
+        thoiGianBatDau: khoaData.isToanTruong
+          ? new Date(phaseTimes["ghi_danh"]?.start || "").toISOString()
+          : undefined,
+        thoiGianKetThuc: khoaData.isToanTruong
+          ? new Date(phaseTimes["ghi_danh"]?.end || "").toISOString()
+          : undefined,
+        dotToanTruongId: khoaData.isToanTruong ? toanTruongDot?.id : undefined, // ✅ Include existing ID
+        dotTheoKhoa: khoaData.isToanTruong
+          ? undefined
+          : khoaData.dotTheoKhoa.map((dot) => {
+              // ✅ Find existing dot by khoaId
+              const existingDot = existingDotGhiDanh.find(
+                (existing) => existing.khoaId === dot.khoaId
+              );
+
+              return {
+                id: existingDot?.id, // ✅ Include existing ID or undefined for new
+                khoaId: dot.khoaId,
+                thoiGianBatDau: new Date(dot.thoiGianBatDau).toISOString(),
+                thoiGianKetThuc: new Date(dot.thoiGianKetThuc).toISOString(),
+              };
+            }),
+      };
+
+      console.log("📦 Ghi danh request with IDs:", ghiDanhRequest);
+      await onSubmitGhiDanh(ghiDanhRequest);
+
+      // ✅ Refetch after submit
+      refetchDotGhiDanh();
+    }
+  };
 
   return (
     <div className="form-section" style={{ marginTop: "2rem" }}>
       <h3 className="sub__title_chuyenphase">
         Thiết lập trạng thái hệ thống theo giai đoạn
       </h3>
-      <form
-        className="search-form phases-form"
-        onSubmit={(e) => {
-          // ✅ Validate trước khi submit
-          if (!apDungChungGhiDanh) {
-            const isValid = validateAllKhoaConfigs();
-            if (!isValid) {
-              e.preventDefault();
-              return;
-            }
-          }
-          onSubmit(e);
-        }}
-      >
-        {phaseOrder.map((phaseKey, index) => {
 
+      {/* ✅ Show loading state */}
+      {loadingDotGhiDanh && (
+        <div
+          style={{
+            padding: "10px",
+            backgroundColor: "#f0f0f0",
+            marginBottom: "10px",
+          }}
+        >
+          Đang tải đợt ghi danh hiện tại...
+        </div>
+      )}
+
+      <form className="search-form phases-form" onSubmit={handleSubmit}>
+        {phaseOrder.map((phaseKey, index) => {
+          const phaseTime = phaseTimes[phaseKey] || { start: "", end: "" };
           const canEdit = canEditPhase(phaseKey, index);
           const minMaxStart = canEdit
             ? getMinMaxForPhase(phaseKey, "start", index)
@@ -285,18 +172,9 @@ export const PhaseHocKyNienKhoaSetup = ({
             : { min: "", max: "" };
 
           const isGhiDanhPhase = phaseKey === "ghi_danh";
-          console.log(
-            "🔍 isGhiDanhPhase:",
-            isGhiDanhPhase,
-            "canEdit:",
-            canEdit,
-            "apDungChung:",
-            apDungChungGhiDanh
-          ); // ✅ Debug 7
 
           return (
             <div key={phaseKey} style={{ marginBottom: "2rem" }}>
-              {/* Row chính - CHỈ có 3 phần: tên phase, time start, time end */}
               <div className="phase-row">
                 <div className="form__group" style={{ marginBottom: 0 }}>
                   <div
@@ -317,7 +195,6 @@ export const PhaseHocKyNienKhoaSetup = ({
                   </div>
                 </div>
 
-                {/* Input thời gian bắt đầu */}
                 <div
                   className="form__group form__group__ctt"
                   style={{ marginBottom: 0 }}
@@ -326,7 +203,7 @@ export const PhaseHocKyNienKhoaSetup = ({
                     type="datetime-local"
                     className="form__input"
                     style={{ backgroundColor: canEdit ? "white" : "#f5f5f5" }}
-                    value={phaseTimes[phaseKey].start}
+                    value={phaseTime.start}
                     onChange={(e) =>
                       onPhaseTimeChange(phaseKey, "start", e.target.value)
                     }
@@ -338,7 +215,6 @@ export const PhaseHocKyNienKhoaSetup = ({
                   <label className="form__floating-label">Bắt đầu</label>
                 </div>
 
-                {/* Input thời gian kết thúc */}
                 <div
                   className="form__group form__group__ctt"
                   style={{ marginBottom: 0 }}
@@ -347,7 +223,7 @@ export const PhaseHocKyNienKhoaSetup = ({
                     type="datetime-local"
                     className="form__input"
                     style={{ backgroundColor: canEdit ? "white" : "#f5f5f5" }}
-                    value={phaseTimes[phaseKey].end}
+                    value={phaseTime.end}
                     onChange={(e) =>
                       onPhaseTimeChange(phaseKey, "end", e.target.value)
                     }
@@ -360,196 +236,29 @@ export const PhaseHocKyNienKhoaSetup = ({
                 </div>
               </div>
 
-              {/* ✅ Checkbox BÊN NGOÀI .phase-row */}
               {isGhiDanhPhase && (
-                <div className="phase-checkbox-wrapper">
-                  <label className="phase-checkbox-label">
-                    <input
-                      type="checkbox"
-                      checked={apDungChungGhiDanh}
-                      onChange={(e) => {
-                        console.log("✅ Checkbox changed:", e.target.checked);
-                        setApDungChungGhiDanh(e.target.checked);
-                      }}
-                    />
-                    <span>Áp dụng chung toàn trường</span>
-                  </label>
-                </div>
-              )}
-
-              {/* ✅ Config theo khoa */}
-              {isGhiDanhPhase && !apDungChungGhiDanh && (
-                <div className="khoa-config-container">
-                  <p className="khoa-config-title">
-                    Thiết lập riêng cho từng khoa:
-                  </p>
-
-                  {khoaConfigsGhiDanh.map((config, configIndex) => {
-                    const minMax = validateKhoaConfigTime(config.id, "start");
-                    const minMaxEnd = validateKhoaConfigTime(config.id, "end");
-
-                    const startError = validationErrors[`${config.id}-start`];
-                    const endError = validationErrors[`${config.id}-end`];
-                    const khoaError = validationErrors[`${config.id}-khoa`];
-
-                    return (
-                      <div key={config.id} className="khoa-config-row">
-                        {/* Dropdown chọn khoa */}
-                        <div className="khoa-select-container">
-                          <label className="khoa-select-label">
-                            Chọn khoa:
-                          </label>
-                          <div
-                            className="khoa-select-box"
-                            style={{
-                              borderColor: khoaError ? "#bf2e29" : "#d0d0d0",
-                            }}
-                          >
-                            {availableKhoa.map((khoa) => (
-                              <label key={khoa.id} className="khoa-select-item">
-                                <input
-                                  type="checkbox"
-                                  checked={config.khoaIds.includes(khoa.id)}
-                                  onChange={() =>
-                                    toggleKhoa(config.id, khoa.id)
-                                  }
-                                />
-                                {khoa.tenKhoa}
-                              </label>
-                            ))}
-                            {config.khoaIds.map((khoaId) => {
-                              const khoa = danhSachKhoa.find(
-                                (k) => k.id === khoaId
-                              );
-                              if (!khoa) return null;
-                              return (
-                                <label
-                                  key={khoaId}
-                                  className="khoa-select-item khoa-select-item--selected"
-                                >
-                                  <input
-                                    type="checkbox"
-                                    checked
-                                    onChange={() =>
-                                      toggleKhoa(config.id, khoaId)
-                                    }
-                                  />
-                                  {khoa.tenKhoa} ✓
-                                </label>
-                              );
-                            })}
-                          </div>
-                          {khoaError && (
-                            <span className="error-message">{khoaError}</span>
-                          )}
-                        </div>
-
-                        {/* ✅ Group 2 input time - căn giữa */}
-                        <div className="khoa-time-group">
-                          {/* Thời gian bắt đầu */}
-                          <div className="form__group form__group__ctt khoa-time-wrapper">
-                            <input
-                              type="datetime-local"
-                              className="form__input"
-                              style={{
-                                borderColor: startError ? "#bf2e29" : undefined,
-                              }}
-                              value={config.start}
-                              onChange={(e) =>
-                                updateKhoaConfig(
-                                  config.id,
-                                  "start",
-                                  e.target.value
-                                )
-                              }
-                              onBlur={() => validateAllKhoaConfigs()} // ✅ Validate khi blur
-                              min={minMax.min}
-                              max={minMax.max}
-                              required
-                            />
-                            <label className="form__floating-label">
-                              Bắt đầu
-                            </label>
-                            {startError && (
-                              <span className="error-message">
-                                * {startError}
-                              </span>
-                            )}
-                          </div>
-
-                          {/* Thời gian kết thúc */}
-                          <div className="form__group form__group__ctt khoa-time-wrapper">
-                            <input
-                              type="datetime-local"
-                              className="form__input"
-                              style={{
-                                borderColor: endError ? "#bf2e29" : undefined,
-                              }}
-                              value={config.end}
-                              onChange={(e) =>
-                                updateKhoaConfig(
-                                  config.id,
-                                  "end",
-                                  e.target.value
-                                )
-                              }
-                              onBlur={() => validateAllKhoaConfigs()} // ✅ Validate khi blur
-                              min={minMaxEnd.min}
-                              max={minMaxEnd.max}
-                              required
-                            />
-                            <label className="form__floating-label">
-                              Kết thúc
-                            </label>
-                            {endError && (
-                              <span className="error-message">
-                                * {endError}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Nút xóa */}
-                        <button
-                          type="button"
-                          onClick={() => removeKhoaConfig(config.id)}
-                          className="btn-remove-config"
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    );
-                  })}
-
-                  {/* Nút thêm config */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      console.log("✅ Add button clicked!");
-                      addKhoaConfig();
-                    }}
-                    className="btn-add-config"
-                    disabled={availableKhoa.length === 0}
-                  >
-                    <span style={{ fontSize: "16px" }}>+</span>
-                    <span>Thêm mốc thời gian cho khoa</span>
-                  </button>
-                </div>
+                <KhoaConfigSection
+                  ref={khoaConfigRef}
+                  danhSachKhoa={danhSachKhoa}
+                  phaseStartTime={phaseTime.start || ""}
+                  phaseEndTime={phaseTime.end || ""}
+                  existingDotGhiDanh={existingDotGhiDanh} // ✅ Pass existing data
+                />
               )}
             </div>
           );
         })}
 
-        {/* Nút submit */}
         <button
           type="submit"
           className="form__button btn__chung"
           style={{ marginTop: "20px" }}
-          disabled={!semesterStart || !semesterEnd || submitting}
+          disabled={false} // ✅ BYPASS for now
         >
           {submitting ? "Đang xử lý..." : "Cập nhật trạng thái"}
         </button>
       </form>
+
       <p className="phase-status">
         Trạng thái hiện tại:{" "}
         <strong>{phaseNames[currentPhase] || "Không xác định"}</strong>

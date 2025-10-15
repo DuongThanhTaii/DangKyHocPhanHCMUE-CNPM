@@ -29,3 +29,16 @@ export const getDanhSachKhoaHandler: RequestHandler = async (req, res, next) => 
         next(error);
     }
 };
+
+export const updateDotGhiDanhHandler: RequestHandler = async (req, res, next) => {
+    try {
+        const request = req.body; // UpdateDotGhiDanhRequest
+
+        const result = await serviceFactory.kyPhaseService.updateDotGhiDanh(request);
+
+        const statusCode = result.isSuccess ? 200 : 400;
+        res.status(statusCode).json(result);
+    } catch (error) {
+        next(error);
+    }
+};

@@ -10,7 +10,8 @@ import {
   tuChoiDeXuatHocPhanHandler, // Import thêm
 } from "./pdt_chuyentrangthai_service";
 import sinhVienRouter from "./pdt_crud_sv_service";
-import { getDanhSachKhoaHandler, getPhasesByHocKyHandler } from "./pdt_kyPhase_service";
+import { getDanhSachKhoaHandler, getPhasesByHocKyHandler, updateDotGhiDanhHandler } from "./pdt_kyPhase_service";
+import { getAllDotDangKyByHocKyHandler } from "./pdt_dotDangKy_service";
 
 const r = Router();
 
@@ -81,5 +82,19 @@ r.get(
   requireRole(["phong_dao_tao"]),
   getDanhSachKhoaHandler
 );
-  
+
+r.post(
+  "/dot-ghi-danh/update",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  updateDotGhiDanhHandler
+);
+
+r.get(
+  "/dot-dang-ky/:hocKyId",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  getAllDotDangKyByHocKyHandler
+);
+
 export default r;

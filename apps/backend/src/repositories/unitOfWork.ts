@@ -10,6 +10,7 @@ import { UsersRepository } from "./usersRepository";
 import { SinhVienRepository } from "./sinhVienRepository";
 import { GhiDanhHocPhanRepository } from "./ghiDanhHocPhanRepository";
 import { KhoaRepository } from "./khoaRepository";
+import { DotDangKyRepository } from "./dotDangKyRepository";
 
 
 export class UnitOfWork {
@@ -28,6 +29,7 @@ export class UnitOfWork {
   private _sinhVienRepository?: SinhVienRepository;
   private _ghiDanhHocPhanRepository?: GhiDanhHocPhanRepository;
   private _khoaRepository?: KhoaRepository;
+  private _dotDangKyRepository?: DotDangKyRepository;
   private constructor() {
     this.prisma = new PrismaClient();
   }
@@ -105,10 +107,17 @@ export class UnitOfWork {
     return this._ghiDanhHocPhanRepository;
   }
 
-  get khoaRepository(): KhoaRepository{
-    if(!this._khoaRepository)
+  get khoaRepository(): KhoaRepository {
+    if (!this._khoaRepository)
       this._khoaRepository = new KhoaRepository(this.prisma);
     return this._khoaRepository;
+  }
+
+  get dotDangKyRepository(): DotDangKyRepository {
+    if (!this._dotDangKyRepository)
+      this._dotDangKyRepository = new DotDangKyRepository(this.prisma);
+    return this._dotDangKyRepository;
+
   }
   async transaction<T>(
     callback: (prisma: PrismaClient) => Promise<T>

@@ -7,35 +7,41 @@ import type { HocKyHienHanhDTO } from "../types/pdtTypes";
  */
 export const useGetHocKyHienHanh = () => {
     const [data, setData] = useState<HocKyHienHanhDTO | null>(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            setError(null);
+    const fetchData = async () => {
+        setLoading(true);
+        setError(null);
 
-            try {
-                const result = await pdtApi.getHocKyHienHanh();
+        try {
+            const result = await pdtApi.getHocKyHienHanh();
 
-                if (result.isSuccess && result.data) {
-                    setData(result.data);
-                } else {
-                    setError(result.message || "Không thể lấy học kỳ hiện hành");
-                    setData(null);
-                }
-            } catch (err) {
-                const errorMessage =
-                    err instanceof Error ? err.message : "Lỗi không xác định";
-                setError(errorMessage);
-                setData(null);
-            } finally {
-                setLoading(false);
+            if (result.isSuccess && result.data) {
+                setData(result.data);
+            } else {
+                setError(result.message || "Không thể lấy học kỳ hiện hành");
             }
-        };
+        } catch (err: any) {
+            setError(err.message || "Có lỗi xảy ra");
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    useEffect(() => {
         fetchData();
     }, []);
 
-    return { data, loading, error };
+    // ✅ Expose refetch method
+    const refetch = () => {
+        fetchData();
+    };
+
+    return {
+        data,
+        loading,
+        error,
+        refetch, // ✅ Add refetch
+    };
 };
