@@ -195,14 +195,14 @@ const QuanLySinhVien: React.FC = () => {
               </select>
 
               <input
-                className="form__input mr_20"
+                className="form__input form__select mr_20"
                 placeholder="Lọc theo lớp..."
                 value={filterLop}
                 onChange={(e) => setFilterLop(e.target.value)}
               />
 
               <button
-                className="btn__update"
+                className="btn__chung h__40 w__100"
                 onClick={() => {
                   setFilterKhoa("");
                   setFilterNganh("");
@@ -215,10 +215,10 @@ const QuanLySinhVien: React.FC = () => {
           )}
 
           {/* Tìm kiếm */}
-          <div className="form__group form__group__quanly">
+          <div className="form__group form__group__quanly mtb_20 ">
             <input
               type="text"
-              className="form__input"
+              className="form__input h__40 w__100p"
               placeholder="Tìm kiếm theo tên, MSSV, khoa, ngành, lớp..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}

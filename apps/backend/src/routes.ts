@@ -5,6 +5,7 @@ import svRouter from "./modules/sv/sv.router";
 import tkRouter from "./modules/tk/tk.router";
 import tlkRouter from "./modules/tlk/tlk.router";
 import gvRouter from "./modules/gv/gv.router";
+import dmRouter from "./modules/dm/dm.router";
 
 const router = Router();
 
@@ -14,4 +15,6 @@ router.use("/sv", svRouter);
 router.use("/tk", tkRouter);
 router.use("/tlk", tlkRouter);
 router.use("/gv", gvRouter);
+
+router.use("/dm", dmRouter);
 export default router;

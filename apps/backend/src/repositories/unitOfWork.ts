@@ -8,10 +8,10 @@ import { HocPhanRepository } from "./hocPhanRepository";
 import { TaiKhoanRepository } from "./taiKhoanRepository";
 import { UsersRepository } from "./usersRepository";
 import { SinhVienRepository } from "./sinhVienRepository";
-import { GhiDanhHocPhanRepository } from "./ghiDanhHocPhanRepository";
 import { KhoaRepository } from "./khoaRepository";
 import { DotDangKyRepository } from "./dotDangKyRepository";
 
+import { NganhRepository } from "./nganhRepository";
 
 export class UnitOfWork {
   private static instance: UnitOfWork;
@@ -27,9 +27,11 @@ export class UnitOfWork {
   private _taiKhoanRepository?: TaiKhoanRepository;
   private _usersRepository?: UsersRepository;
   private _sinhVienRepository?: SinhVienRepository;
-  private _ghiDanhHocPhanRepository?: GhiDanhHocPhanRepository;
+
   private _khoaRepository?: KhoaRepository;
   private _dotDangKyRepository?: DotDangKyRepository;
+  private _nganhRepository?: NganhRepository;
+
   private constructor() {
     this.prisma = new PrismaClient();
   }
@@ -119,6 +121,12 @@ export class UnitOfWork {
     return this._dotDangKyRepository;
 
   }
+  get nganhRepository(): NganhRepository {
+    if (!this._nganhRepository)
+      this._nganhRepository = new NganhRepository(this.prisma);
+    return this._nganhRepository;
+  }
+
   async transaction<T>(
     callback: (prisma: PrismaClient) => Promise<T>
   ): Promise<T> {
