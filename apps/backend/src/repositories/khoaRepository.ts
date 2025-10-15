@@ -1,0 +1,13 @@
+import { PrismaClient } from "@prisma/client";
+
+export class KhoaRepository {
+  constructor(private prisma: PrismaClient) {}
+
+  listAll(activeOnly = true) {
+    return this.prisma.khoa.findMany({
+      where: activeOnly ? { trang_thai_hoat_dong: true } : {},
+      select: { id: true, ma_khoa: true, ten_khoa: true },
+      orderBy: { ten_khoa: "asc" },
+    });
+  }
+}

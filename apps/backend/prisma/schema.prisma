@@ -88,18 +88,21 @@ model dang_ky_tkb {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model dot_dang_ky {
-  id                 String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  hoc_ky_id          String    @db.Uuid
-  loai_dot           String    @default("dang_ky") @db.VarChar(20)
-  doi_tuong_loai     String    @db.VarChar(20)
-  doi_tuong_id       String?   @db.Uuid
-  gioi_han_tin_chi   Int?      @default(9999)
-  thoi_gian_bat_dau  DateTime  @db.Timestamp(6)
-  thoi_gian_ket_thuc DateTime  @db.Timestamp(6)
-  han_huy_den        DateTime? @db.Timestamp(6)
-  created_at         DateTime? @default(now()) @db.Timestamp(6)
-  updated_at         DateTime? @default(now()) @db.Timestamp(6)
-  hoc_ky             hoc_ky    @relation(fields: [hoc_ky_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  id                   String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  hoc_ky_id            String    @db.Uuid
+  loai_dot             String    @default("dang_ky") @db.VarChar(20)
+  gioi_han_tin_chi     Int?      @default(9999)
+  thoi_gian_bat_dau    DateTime  @db.Timestamp(6)
+  thoi_gian_ket_thuc   DateTime  @db.Timestamp(6)
+  han_huy_den          DateTime? @db.Timestamp(6)
+  created_at           DateTime? @default(now()) @db.Timestamp(6)
+  updated_at           DateTime? @default(now()) @db.Timestamp(6)
+  is_check_toan_truong Boolean   @default(true)
+  khoa_id              String?   @db.Uuid
+  hoc_ky               hoc_ky    @relation(fields: [hoc_ky_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  khoa                 khoa?     @relation(fields: [khoa_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_dotdk_khoa")
+
+  @@index([hoc_ky_id], map: "idx_dotdk_hk")
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -219,6 +222,7 @@ model khoa {
   updated_at           DateTime?            @default(now()) @db.Timestamp(6)
   chinh_sach_tin_chi   chinh_sach_tin_chi[]
   de_xuat_hoc_phan     de_xuat_hoc_phan[]
+  dot_dang_ky          dot_dang_ky[]
   giang_vien           giang_vien[]
   mon_hoc              mon_hoc[]
   nganh_hoc            nganh_hoc[]

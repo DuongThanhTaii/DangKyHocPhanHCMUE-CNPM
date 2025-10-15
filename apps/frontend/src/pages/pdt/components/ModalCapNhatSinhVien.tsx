@@ -102,7 +102,7 @@ const ModalCapNhatSinhVien: React.FC<Props> = ({ id, isOpen, onClose }) => {
 
         <div className="modal-popup-row">
           <div className="form__group">
-            <label>MSSV</label>
+            <label className="pos__unset">MSSV</label>
             <input
               name="ma_so_sinh_vien"
               value={form.ma_so_sinh_vien}
@@ -110,25 +110,25 @@ const ModalCapNhatSinhVien: React.FC<Props> = ({ id, isOpen, onClose }) => {
             />
           </div>
           <div className="form__group">
-            <label>Họ tên</label>
+            <label className="pos__unset">Họ tên</label>
             <input name="ho_ten" value={form.ho_ten} onChange={onChange} />
           </div>
         </div>
 
         <div className="modal-popup-row">
           <div className="form__group">
-            <label>Lớp</label>
+            <label className="pos__unset">Lớp</label>
             <input name="lop" value={form.lop} onChange={onChange} />
           </div>
           <div className="form__group">
-            <label>Niên khóa</label>
+            <label className="pos__unset">Niên khóa</label>
             <input name="khoa_hoc" value={form.khoa_hoc} onChange={onChange} />
           </div>
         </div>
 
         <div className="modal-popup-row">
           <div className="form__group">
-            <label>Mật khẩu (đổi nếu nhập)</label>
+            <label className="pos__unset">Mật khẩu mới</label>
             <input
               name="mat_khau"
               type="password"

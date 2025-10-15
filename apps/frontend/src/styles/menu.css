@@ -645,6 +645,10 @@ button.btn__quanlylhp.active {
   width: 200px !important;
 }
 
+.w__100p {
+  width: 100% !important;
+}
+
 input {
   border: 1px solid #0c4874;
 }
@@ -980,6 +984,10 @@ input.form__floating-label__quanly {
 
 .mt_20 {
   margin-top: 20px;
+}
+
+.mtb_20 {
+  margin: 20px 0 !important;
 }
 
 .mt__10 {
@@ -1870,4 +1878,9 @@ th {
 
 .md-btn-add {
   margin-top: 10px;
+}
+
+.pos__unset {
+  position: unset !important;
+  color: #172b4d !important;
 }

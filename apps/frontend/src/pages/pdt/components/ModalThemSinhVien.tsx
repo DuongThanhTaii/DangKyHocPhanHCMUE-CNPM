@@ -138,8 +138,8 @@ const ModalThemSinhVien: React.FC<Props> = ({ isOpen, onClose, onCreated }) => {
 
           {/* MSSV & Tên */}
           <div className="modal-popup-row">
-            <div className="form__group">
-              <label>Mã số sinh viên</label>
+            <div className="form__group pos__unset">
+              <label className="pos__unset">Mã số sinh viên</label>
               <input
                 name="ma_so_sinh_vien"
                 type="text"
@@ -147,7 +147,7 @@ const ModalThemSinhVien: React.FC<Props> = ({ isOpen, onClose, onCreated }) => {
               />
             </div>
             <div className="form__group">
-              <label>Tên sinh viên</label>
+              <label className="pos__unset">Tên sinh viên</label>
               <input name="ho_ten" type="text" onChange={handleChange} />
             </div>
           </div>
@@ -155,11 +155,11 @@ const ModalThemSinhVien: React.FC<Props> = ({ isOpen, onClose, onCreated }) => {
           {/* Tài khoản */}
           <div className="modal-popup-row">
             <div className="form__group">
-              <label>Tên đăng nhập</label>
+              <label className="pos__unset">Tên đăng nhập</label>
               <input name="ten_dang_nhap" type="text" onChange={handleChange} />
             </div>
             <div className="form__group">
-              <label>Mật khẩu</label>
+              <label className="pos__unset">Mật khẩu</label>
               <input name="mat_khau" type="password" onChange={handleChange} />
             </div>
           </div>
@@ -167,11 +167,11 @@ const ModalThemSinhVien: React.FC<Props> = ({ isOpen, onClose, onCreated }) => {
           {/* Lớp - Khoa */}
           <div className="modal-popup-row">
             <div className="form__group">
-              <label>Lớp</label>
+              <label className="pos__unset">Lớp</label>
               <input name="lop" type="text" onChange={handleChange} />
             </div>
             <div className="form__group">
-              <label>Khoa</label>
+              <label className="pos__unset">Khoa</label>
               <select
                 id="md-Khoa"
                 name="khoa_id"
@@ -192,7 +192,7 @@ const ModalThemSinhVien: React.FC<Props> = ({ isOpen, onClose, onCreated }) => {
           {/* Ngành - Khóa học */}
           <div className="modal-popup-row">
             <div className="form__group">
-              <label>Ngành</label>
+              <label className="pos__unset">Ngành</label>
               <select
                 id="md-Nganh"
                 name="nganh_id"
@@ -212,7 +212,7 @@ const ModalThemSinhVien: React.FC<Props> = ({ isOpen, onClose, onCreated }) => {
               </select>
             </div>
             <div className="form__group">
-              <label>Khóa học</label>
+              <label className="pos__unset">Khóa học</label>
               <input name="khoa_hoc" type="text" onChange={handleChange} />
             </div>
           </div>
@@ -220,11 +220,11 @@ const ModalThemSinhVien: React.FC<Props> = ({ isOpen, onClose, onCreated }) => {
           {/* Ngày nhập học & Excel */}
           <div className="modal-popup-row">
             <div className="form__group">
-              <label>Ngày nhập học</label>
+              <label className="pos__unset">Ngày nhập học</label>
               <input name="ngay_nhap_hoc" type="date" onChange={handleChange} />
             </div>
             <div className="form__group">
-              <label>Tải lên file Excel:</label>
+              <label className="pos__unset">Tải lên file Excel:</label>
               <input
                 id="excelUpload"
                 type="file"
