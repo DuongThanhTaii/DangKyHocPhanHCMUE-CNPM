@@ -8,9 +8,8 @@ import { HocPhanRepository } from "./hocPhanRepository";
 import { TaiKhoanRepository } from "./taiKhoanRepository";
 import { UsersRepository } from "./usersRepository";
 import { SinhVienRepository } from "./sinhVienRepository";
-import { GhiDanhHocPhanRepository } from "./ghiDanhHocPhanRepository";
 import { KhoaRepository } from "./khoaRepository";
-
+import { NganhRepository } from "./nganhRepository";
 
 export class UnitOfWork {
   private static instance: UnitOfWork;
@@ -26,8 +25,10 @@ export class UnitOfWork {
   private _taiKhoanRepository?: TaiKhoanRepository;
   private _usersRepository?: UsersRepository;
   private _sinhVienRepository?: SinhVienRepository;
-  private _ghiDanhHocPhanRepository?: GhiDanhHocPhanRepository;
+
   private _khoaRepository?: KhoaRepository;
+  private _nganhRepository?: NganhRepository;
+
   private constructor() {
     this.prisma = new PrismaClient();
   }
@@ -99,17 +100,18 @@ export class UnitOfWork {
     return this._sinhVienRepository;
   }
 
-  get ghiDanhHocPhanRepository(): GhiDanhHocPhanRepository {
-    if (!this._ghiDanhHocPhanRepository)
-      this._ghiDanhHocPhanRepository = new GhiDanhHocPhanRepository(this.prisma);
-    return this._ghiDanhHocPhanRepository;
-  }
-
-  get khoaRepository(): KhoaRepository{
-    if(!this._khoaRepository)
+  get khoaRepository(): KhoaRepository {
+    if (!this._khoaRepository)
       this._khoaRepository = new KhoaRepository(this.prisma);
     return this._khoaRepository;
   }
+
+  get nganhRepository(): NganhRepository {
+    if (!this._nganhRepository)
+      this._nganhRepository = new NganhRepository(this.prisma);
+    return this._nganhRepository;
+  }
+
   async transaction<T>(
     callback: (prisma: PrismaClient) => Promise<T>
   ): Promise<T> {
