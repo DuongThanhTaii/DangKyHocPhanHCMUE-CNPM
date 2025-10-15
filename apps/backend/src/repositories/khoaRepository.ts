@@ -1,7 +1,10 @@
-import { PrismaClient } from "@prisma/client";
+import { khoa, PrismaClient } from "@prisma/client";
+import { BaseRepository } from "./baseRepository";
 
-export class KhoaRepository {
-  constructor(private prisma: PrismaClient) {}
+export class KhoaRepository extends BaseRepository<khoa> {
+  constructor(prisma: PrismaClient) {
+    super(prisma, "khoa");
+  }
 
   listAll(activeOnly = true) {
     return this.prisma.khoa.findMany({

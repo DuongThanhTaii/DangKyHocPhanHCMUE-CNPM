@@ -12,6 +12,7 @@ import { KhoaRepository } from "./khoaRepository";
 import { DotDangKyRepository } from "./dotDangKyRepository";
 
 import { NganhRepository } from "./nganhRepository";
+import { GhiDanhHocPhanRepository } from "./ghiDanhHocPhanRepository";
 
 export class UnitOfWork {
   private static instance: UnitOfWork;
@@ -31,7 +32,7 @@ export class UnitOfWork {
   private _khoaRepository?: KhoaRepository;
   private _dotDangKyRepository?: DotDangKyRepository;
   private _nganhRepository?: NganhRepository;
-
+  private _ghiDanhHocPhanRepository?: GhiDanhHocPhanRepository;
   private constructor() {
     this.prisma = new PrismaClient();
   }
