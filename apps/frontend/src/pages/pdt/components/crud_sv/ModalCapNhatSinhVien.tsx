@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useModalContext } from "../../../hook/ModalContext";
-import "../../../styles/reset.css";
-import "../../../styles/menu.css";
+import { useModalContext } from "../../../../hook/ModalContext";
+import "../../../../styles/reset.css";
+import "../../../../styles/menu.css";
 
 type Props = {
   id: string;
