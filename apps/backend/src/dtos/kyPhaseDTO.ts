@@ -21,9 +21,10 @@ export interface PhaseItemDTO {
 
 export interface CreateBulkKyPhaseRequest {
     hocKyId: string;
+    hocKyStartAt: string;
+    hocKyEndAt: string;
     phases: PhaseItemDTO[];
 }
-
 export interface PhaseDTO {
     phase: string;
     ngayBatDau: string;

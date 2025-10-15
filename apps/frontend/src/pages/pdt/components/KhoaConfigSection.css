@@ -1,0 +1,234 @@
+.khoa-config-section {
+  margin-top: 15px;
+  margin-left: 20px;
+}
+
+.khoa-config-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.khoa-config-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.khoa-config-toggle-btn {
+  padding: 8px 16px;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.khoa-config-toggle-btn--edit {
+  background-color: #6c757d;
+}
+
+.khoa-config-toggle-btn--edit:hover {
+  background-color: #5a6268;
+}
+
+.khoa-config-toggle-btn--view {
+  background-color: #0d6efd;
+}
+
+.khoa-config-toggle-btn--view:hover {
+  background-color: #0b5ed7;
+}
+
+/* View Mode */
+.khoa-config-view {
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  margin-top: 15px;
+}
+
+.khoa-config-view__title {
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.khoa-config-view__empty {
+  color: #999;
+  font-style: italic;
+}
+
+.khoa-config-view__toan-truong {
+  font-size: 14px;
+  color: #666;
+}
+
+.khoa-config-view__toan-truong div {
+  margin-bottom: 8px;
+}
+
+.khoa-config-view__list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.khoa-config-view__item {
+  padding: 12px 15px;
+  background-color: white;
+  border-radius: 4px;
+  border: 1px solid #dee2e6;
+}
+
+.khoa-config-view__item-name {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #0d6efd;
+  font-size: 15px;
+}
+
+.khoa-config-view__item-details {
+  font-size: 13px;
+  color: #666;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.khoa-config-view__item-time {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Edit Mode */
+.khoa-config-edit__checkbox {
+  margin-bottom: 15px;
+}
+
+.khoa-config-edit__checkbox label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.khoa-config-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.khoa-config-item {
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+}
+
+.khoa-config-item__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.khoa-config-item__title {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.khoa-config-item__remove-btn {
+  padding: 6px 14px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color 0.2s;
+}
+
+.khoa-config-item__remove-btn:hover {
+  background-color: #c82333;
+}
+
+.khoa-config-item__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.khoa-config-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.khoa-config-field__label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #495057;
+}
+
+.khoa-config-field__select,
+.khoa-config-field__input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.khoa-config-field__select:focus,
+.khoa-config-field__input:focus {
+  outline: none;
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.khoa-config-add-btn {
+  padding: 10px 18px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.khoa-config-add-btn:hover {
+  background-color: #218838;
+}
+
+/* Validation Errors */
+.khoa-config-errors {
+  margin-top: 15px;
+  padding: 12px 15px;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  color: #721c24;
+}
+
+.khoa-config-errors__title {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.khoa-config-errors__list {
+  margin: 5px 0;
+  padding-left: 20px;
+}
+
+.khoa-config-errors__list li {
+  margin-bottom: 3px;
+}

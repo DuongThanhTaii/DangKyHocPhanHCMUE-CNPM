@@ -1,6 +1,6 @@
 import { fetchJSON } from "../../../utils/fetchJSON";
 import type { ServiceResult } from "../../common/ServiceResult";
-import type { TuChoiDeXuatHocPhanRequest } from "../../common/types"; // ✅ Import shared type
+import type { TuChoiDeXuatHocPhanRequest } from "../../common/types";
 import type {
     HienHanh,
     NienKhoa,
@@ -17,6 +17,8 @@ import type {
     PhasesByHocKyDTO,
     GetPhasesByHocKyRequest,
     KhoaDTO,
+    UpdateDotGhiDanhRequest, // ✅ Import
+    DotGhiDanhResponseDTO, // ✅ Import
 } from "../types/pdtTypes";
 
 /**
@@ -150,5 +152,30 @@ export const pdtApi = {
             method: "GET",
         });
     },
+
+    /**
+     * ✅ Cập nhật đợt ghi danh theo khoa
+     */
+    updateDotGhiDanh: async (
+        data: UpdateDotGhiDanhRequest
+    ): Promise<ServiceResult<DotGhiDanhResponseDTO[]>> => {
+        return await fetchJSON("pdt/dot-ghi-danh/update", {
+            method: "POST",
+            body: data,
+        });
+    },
+
+    /**
+     * ✅ Lấy danh sách đợt ghi danh theo học kỳ
+     */
+    getDotGhiDanhByHocKy: async (
+        hocKyId: string
+    ): Promise<ServiceResult<DotGhiDanhResponseDTO[]>> => {
+        return await fetchJSON(`pdt/dot-dang-ky/${hocKyId}`, {
+            method: "GET",
+        });
+    },
+
+
 };
 

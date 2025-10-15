@@ -9,6 +9,8 @@ import { TaiKhoanRepository } from "./taiKhoanRepository";
 import { UsersRepository } from "./usersRepository";
 import { SinhVienRepository } from "./sinhVienRepository";
 import { KhoaRepository } from "./khoaRepository";
+import { DotDangKyRepository } from "./dotDangKyRepository";
+
 import { NganhRepository } from "./nganhRepository";
 
 export class UnitOfWork {
@@ -27,6 +29,7 @@ export class UnitOfWork {
   private _sinhVienRepository?: SinhVienRepository;
 
   private _khoaRepository?: KhoaRepository;
+  private _dotDangKyRepository?: DotDangKyRepository;
   private _nganhRepository?: NganhRepository;
 
   private constructor() {
@@ -100,12 +103,24 @@ export class UnitOfWork {
     return this._sinhVienRepository;
   }
 
+  get ghiDanhHocPhanRepository(): GhiDanhHocPhanRepository {
+    if (!this._ghiDanhHocPhanRepository)
+      this._ghiDanhHocPhanRepository = new GhiDanhHocPhanRepository(this.prisma);
+    return this._ghiDanhHocPhanRepository;
+  }
+
   get khoaRepository(): KhoaRepository {
     if (!this._khoaRepository)
       this._khoaRepository = new KhoaRepository(this.prisma);
     return this._khoaRepository;
   }
 
+  get dotDangKyRepository(): DotDangKyRepository {
+    if (!this._dotDangKyRepository)
+      this._dotDangKyRepository = new DotDangKyRepository(this.prisma);
+    return this._dotDangKyRepository;
+
+  }
   get nganhRepository(): NganhRepository {
     if (!this._nganhRepository)
       this._nganhRepository = new NganhRepository(this.prisma);
