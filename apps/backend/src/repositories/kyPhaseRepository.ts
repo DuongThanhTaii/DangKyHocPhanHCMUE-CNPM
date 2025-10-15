@@ -42,4 +42,28 @@ export class KyPhaseRepository extends BaseRepository<ky_phase> {
             },
         });
     }
+
+    async findOne(where: any): Promise<ky_phase | null> {
+        return this.model.findFirst({ where });
+    }
+
+    async getCurrentPhase(hocKyId: string): Promise<ky_phase | null> {
+        const now = new Date();
+        return this.model.findFirst({
+            where: {
+                hoc_ky_id: hocKyId,
+                start_at: { lte: now },
+                end_at: { gte: now },
+            },
+        });
+    }
+
+    async findMany(params: {
+        where?: any;
+        orderBy?: any;
+        take?: number;
+        skip?: number;
+    }): Promise<ky_phase[]> {
+        return this.model.findMany(params);
+    }
 }

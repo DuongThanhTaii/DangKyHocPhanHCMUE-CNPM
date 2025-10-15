@@ -2,9 +2,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import "../../styles/reset.css";
 import "../../styles/menu.css";
-import { fetchJSON } from "../../utils/fetchJSON";
 import { useModalContext } from "../../hook/ModalContext";
+import { useMonHocGhiDanh, useGhiDanhMonHoc } from "../../features/sv/hooks"; // ✅ Import hooks
+import { svApi } from "../../features/sv/api/svApi";
 import type { JSX } from "react";
+import type { MonHocGhiDanhForSinhVien } from "../../features/sv/types";
 
 type HocPhan = {
   id: string;
@@ -14,13 +16,37 @@ type HocPhan = {
   so_tin_chi: number;
   ten_khoa: string;
   ten_giang_vien?: string;
-  loai_mon?: "chuyen_nganh" | "tu_chon";
 };
 
 export default function GhiDanhHocPhan(): JSX.Element {
   const { openNotify } = useModalContext();
 
-  const [hocPhanList, setHocPhanList] = useState<HocPhan[]>([]);
+  // ✅ Hook lấy danh sách môn có thể ghi danh
+  const {
+    data: monHocGhiDanhData,
+    loading: loadingMonHoc,
+    refetch: refetchMonHoc,
+  } = useMonHocGhiDanh();
+
+  // ✅ Hook xử lý ghi danh/hủy
+  const {
+    loading: submitting,
+    ghiDanhNhieuMonHoc,
+    huyGhiDanhNhieuMonHoc,
+  } = useGhiDanhMonHoc();
+
+  // ✅ Transform DTO sang HocPhan format (để giữ nguyên UI logic)
+  const hocPhanList: HocPhan[] = monHocGhiDanhData.map((mh) => ({
+    id: mh.id,
+    hoc_phan_id: mh.id,
+    ma_mon: mh.maMonHoc,
+    ten_mon: mh.tenMonHoc,
+    so_tin_chi: mh.soTinChi,
+    ten_khoa: mh.tenKhoa,
+    ten_giang_vien: mh.tenGiangVien,
+    loai_mon: undefined, // Backend cần thêm field này
+  }));
+
   const [filteredList, setFilteredList] = useState<HocPhan[]>([]);
   const [daGhiDanhList, setDaGhiDanhList] = useState<HocPhan[]>([]);
 
@@ -37,52 +63,71 @@ export default function GhiDanhHocPhan(): JSX.Element {
     0
   );
 
-  // Chặn double-run của useEffect trong React 18 StrictMode (dev)
   const didInit = useRef<boolean>(false);
-  // Chặn việc bắn 2 lần cùng một message (phòng trường hợp remount nhanh)
   const lastToastKey = useRef<string | undefined>(undefined);
 
-  useEffect(() => {
-    if (didInit.current) return;
-    didInit.current = true;
-    void fetchData({ silent: false });
-  }, []);
-
-  const fetchData = async ({
-    silent = false,
-  }: { silent?: boolean } = {}): Promise<void> => {
+  // ✅ Load danh sách đã ghi danh
+  const fetchDaGhiDanh = async () => {
     try {
-      const [hpRes, gdRes] = await Promise.all([
-        fetchJSON("/api/hoc-phan/co-the-ghi-danh"),
-        fetchJSON("/api/ghi-danh/my"),
-      ]);
-
-      const dsHP: HocPhan[] = Array.isArray(hpRes) ? hpRes : hpRes?.data ?? [];
-      const dsGD: HocPhan[] = Array.isArray(gdRes) ? gdRes : gdRes?.data ?? [];
-
-      setHocPhanList(dsHP);
-      setFilteredList(dsHP);
-      setDaGhiDanhList(dsGD);
-
-      const notPhase = dsHP.length === 0;
-      setIsNotEnrollmentPhase(notPhase);
-
-      if (!silent) {
-        const msg = notPhase
-          ? "Chưa tới thời hạn đăng ký ghi danh"
-          : `Đã tải ${dsHP.length} học phần có thể ghi danh • Bạn đã đăng ký ${dsGD.length} học phần`;
-
-        if (lastToastKey.current !== msg) {
-          lastToastKey.current = msg;
-          openNotify(msg, notPhase ? "warning" : "info");
-        }
+      const result = await svApi.getDanhSachDaGhiDanh();
+      if (result.isSuccess && result.data) {
+        // Transform DTO sang HocPhan format
+        const dsGD: HocPhan[] = result.data.map((item) => ({
+          id: item.id,
+          hoc_phan_id: item.id,
+          ma_mon: item.maMonHoc,
+          ten_mon: item.tenMonHoc,
+          so_tin_chi: item.soTinChi,
+          ten_khoa: item.tenKhoa,
+          ten_giang_vien: item.tenGiangVien,
+        }));
+        setDaGhiDanhList(dsGD);
       }
     } catch (e) {
       console.error(e);
-      setIsNotEnrollmentPhase(true);
-      if (!silent) openNotify("Không tải được dữ liệu ghi danh", "error");
+      openNotify({
+        message: "Không tải được danh sách đã ghi danh",
+        type: "error",
+      });
     }
   };
+
+  // ✅ Init: Load data lần đầu
+  useEffect(() => {
+    if (didInit.current) return;
+    didInit.current = true;
+    fetchDaGhiDanh();
+  }, []);
+
+  // ✅ Sync filteredList với hocPhanList
+  useEffect(() => {
+    setFilteredList(hocPhanList);
+  }, [monHocGhiDanhData]);
+
+  // ✅ Check trạng thái enrollment phase
+  useEffect(() => {
+    const notPhase = hocPhanList.length === 0 && !loadingMonHoc;
+    setIsNotEnrollmentPhase(notPhase);
+
+    if (!loadingMonHoc && hocPhanList.length > 0) {
+      const msg = `Đã tải ${hocPhanList.length} học phần có thể ghi danh • Bạn đã đăng ký ${daGhiDanhList.length} học phần`;
+
+      if (lastToastKey.current !== msg) {
+        lastToastKey.current = msg;
+        openNotify({
+          message: msg,
+          type: "info",
+        });
+      }
+    }
+
+    if (notPhase && !loadingMonHoc) {
+      openNotify({
+        message: "Chưa tới thời hạn đăng ký ghi danh",
+        type: "warning",
+      });
+    }
+  }, [loadingMonHoc, hocPhanList.length, daGhiDanhList.length]);
 
   const isDaGhiDanh = (hocPhanId: string): boolean =>
     daGhiDanhList.some((hp) => hp.hoc_phan_id === hocPhanId);
@@ -99,52 +144,23 @@ export default function GhiDanhHocPhan(): JSX.Element {
     );
   };
 
+  // ✅ Ghi danh nhiều môn
   const handleSubmit = async (): Promise<void> => {
-    if (selectedIds.length === 0) {
-      openNotify("Chưa chọn học phần để ghi danh", "warning");
-      return;
-    }
+    const successCount = await ghiDanhNhieuMonHoc(selectedIds);
 
-    try {
-      await fetchJSON("/api/ghi-danh", {
-        method: "POST",
-        body: { hocPhanIds: selectedIds },
-      });
-      openNotify(
-        `Ghi danh thành công ${selectedIds.length} học phần`,
-        "success"
-      );
+    if (successCount > 0) {
       setSelectedIds([]);
-      await fetchData({ silent: true }); // reload nhưng không hiện toast “chưa tới hạn…”
-    } catch (e) {
-      console.error(e);
-      openNotify("Lỗi ghi danh", "error");
+      await Promise.all([refetchMonHoc(), fetchDaGhiDanh()]); // Reload data
     }
   };
 
+  // ✅ Hủy ghi danh nhiều môn
   const handleCancel = async (): Promise<void> => {
-    if (selectedToCancelIds.length === 0) {
-      openNotify("Chưa chọn học phần để hủy", "warning");
-      return;
-    }
+    const successCount = await huyGhiDanhNhieuMonHoc(selectedToCancelIds);
 
-    try {
-      // Nếu backend có API bulk thì thay vòng lặp này bằng 1 request duy nhất
-      for (const id of selectedToCancelIds) {
-        // id ở đây là hoc_phan_id (đã lấy từ list kết quả ghi danh)
-        // đổi URL nếu backend yêu cầu id bản ghi ghi_danh thay vì hoc_phan_id
-        // ví dụ: `/api/ghi-danh/by-hoc-phan/${id}`
-        await fetchJSON(`/api/ghi-danh/${id}`, { method: "DELETE" });
-      }
-      openNotify(
-        `Hủy ghi danh thành công ${selectedToCancelIds.length} học phần`,
-        "success"
-      );
+    if (successCount > 0) {
       setSelectedToCancelIds([]);
-      await fetchData({ silent: true });
-    } catch (e) {
-      console.error(e);
-      openNotify("Lỗi khi hủy ghi danh", "error");
+      await Promise.all([refetchMonHoc(), fetchDaGhiDanh()]); // Reload data
     }
   };
 
@@ -153,7 +169,10 @@ export default function GhiDanhHocPhan(): JSX.Element {
     const q = searchQuery.trim().toLowerCase();
     if (!q) {
       setFilteredList(hocPhanList);
-      openNotify("Đã làm mới danh sách học phần", "info");
+      openNotify({
+        message: "Đã làm mới danh sách học phần",
+        type: "info",
+      });
       return;
     }
     const filtered = hocPhanList.filter(
@@ -164,9 +183,15 @@ export default function GhiDanhHocPhan(): JSX.Element {
     setFilteredList(filtered);
 
     if (filtered.length === 0) {
-      openNotify("Không tìm thấy học phần phù hợp", "warning");
+      openNotify({
+        message: "Không tìm thấy học phần phù hợp",
+        type: "warning",
+      });
     } else {
-      openNotify(`Tìm thấy ${filtered.length} học phần`, "info");
+      openNotify({
+        message: `Tìm thấy ${filtered.length} học phần`,
+        type: "info",
+      });
     }
   };
 
@@ -235,63 +260,39 @@ export default function GhiDanhHocPhan(): JSX.Element {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td colSpan={6} style={{ fontWeight: "bold" }}>
-                      Bắt buộc
-                    </td>
-                  </tr>
+                  {/* ✅ Bỏ filter, hiển thị tất cả */}
+                  {filteredList.map((hp) => (
+                    <tr
+                      key={hp.id}
+                      className={isDaGhiDanh(hp.id) ? "row__highlight" : ""}
+                    >
+                      <td>
+                        <input
+                          type="checkbox"
+                          disabled={isDaGhiDanh(hp.id)}
+                          checked={selectedIds.includes(hp.id)}
+                          onChange={() => handleCheck(hp.id)}
+                        />
+                      </td>
+                      <td>{hp.ma_mon}</td>
+                      <td>{hp.ten_mon}</td>
+                      <td>{hp.so_tin_chi}</td>
+                      <td>{hp.ten_khoa}</td>
+                      <td>{hp.ten_giang_vien || ""}</td>
+                    </tr>
+                  ))}
 
-                  {filteredList
-                    .filter((hp) => hp.loai_mon === "chuyen_nganh")
-                    .map((hp) => (
-                      <tr
-                        key={hp.id}
-                        className={isDaGhiDanh(hp.id) ? "row__highlight" : ""}
+                  {/* ✅ Hiển thị message nếu không có data */}
+                  {filteredList.length === 0 && (
+                    <tr>
+                      <td
+                        colSpan={6}
+                        style={{ textAlign: "center", padding: "20px" }}
                       >
-                        <td>
-                          <input
-                            type="checkbox"
-                            disabled={isDaGhiDanh(hp.id)}
-                            checked={selectedIds.includes(hp.id)}
-                            onChange={() => handleCheck(hp.id)}
-                          />
-                        </td>
-                        <td>{hp.ma_mon}</td>
-                        <td>{hp.ten_mon}</td>
-                        <td>{hp.so_tin_chi}</td>
-                        <td>{hp.ten_khoa}</td>
-                        <td>{hp.ten_giang_vien || ""}</td>
-                      </tr>
-                    ))}
-
-                  <tr>
-                    <td colSpan={6} style={{ fontWeight: "bold" }}>
-                      Tự chọn
-                    </td>
-                  </tr>
-
-                  {filteredList
-                    .filter((hp) => hp.loai_mon === "tu_chon")
-                    .map((hp) => (
-                      <tr
-                        key={hp.id}
-                        className={isDaGhiDanh(hp.id) ? "row__highlight" : ""}
-                      >
-                        <td>
-                          <input
-                            type="checkbox"
-                            disabled={isDaGhiDanh(hp.id)}
-                            checked={selectedIds.includes(hp.id)}
-                            onChange={() => handleCheck(hp.id)}
-                          />
-                        </td>
-                        <td>{hp.ma_mon}</td>
-                        <td>{hp.ten_mon}</td>
-                        <td>{hp.so_tin_chi}</td>
-                        <td>{hp.ten_khoa}</td>
-                        <td>{hp.ten_giang_vien || ""}</td>
-                      </tr>
-                    ))}
+                        Không có học phần nào.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
 
@@ -300,8 +301,12 @@ export default function GhiDanhHocPhan(): JSX.Element {
               </div>
 
               <div style={{ marginTop: "1rem" }}>
-                <button className="btn__chung mb_10" onClick={handleSubmit}>
-                  Xác nhận ghi danh
+                <button
+                  className="btn__chung mb_10"
+                  onClick={handleSubmit}
+                  disabled={submitting || selectedIds.length === 0}
+                >
+                  {submitting ? "Đang xử lý..." : "Xác nhận ghi danh"}
                 </button>
               </div>
             </fieldset>
@@ -344,8 +349,12 @@ export default function GhiDanhHocPhan(): JSX.Element {
               </table>
 
               <div style={{ marginTop: "1rem" }}>
-                <button className="btn__cancel mb_10" onClick={handleCancel}>
-                  Hủy ghi danh
+                <button
+                  className="btn__cancel mb_10"
+                  onClick={handleCancel}
+                  disabled={submitting || selectedToCancelIds.length === 0}
+                >
+                  {submitting ? "Đang xử lý..." : "Hủy ghi danh"}
                 </button>
               </div>
             </fieldset>

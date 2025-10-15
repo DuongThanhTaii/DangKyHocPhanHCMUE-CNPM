@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { pdtApi } from "../api/pdtApi";
-import type { HocKyHienHanhDTO } from "../types/pdtTypes";
+import type { KhoaDTO } from "../types/pdtTypes";
 
 /**
- * Hook lấy học kỳ hiện hành (đơn giản)
+ * Hook lấy danh sách khoa
  */
-export const useGetHocKyHienHanh = () => {
-    const [data, setData] = useState<HocKyHienHanhDTO | null>(null);
+export const useDanhSachKhoa = () => {
+    const [data, setData] = useState<KhoaDTO[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -16,19 +16,19 @@ export const useGetHocKyHienHanh = () => {
             setError(null);
 
             try {
-                const result = await pdtApi.getHocKyHienHanh();
+                const result = await pdtApi.getDanhSachKhoa();
 
                 if (result.isSuccess && result.data) {
                     setData(result.data);
                 } else {
-                    setError(result.message || "Không thể lấy học kỳ hiện hành");
-                    setData(null);
+                    setError(result.message || "Không thể lấy danh sách khoa");
+                    setData([]);
                 }
             } catch (err) {
                 const errorMessage =
                     err instanceof Error ? err.message : "Lỗi không xác định";
                 setError(errorMessage);
-                setData(null);
+                setData([]);
             } finally {
                 setLoading(false);
             }

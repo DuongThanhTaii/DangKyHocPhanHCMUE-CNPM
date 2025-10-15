@@ -1,27 +1,38 @@
 import { useState, useEffect } from "react";
 import { pdtApi } from "../api/pdtApi";
-import type { HocKyHienHanhDTO } from "../types/pdtTypes";
+import type { PhasesByHocKyDTO } from "../types/pdtTypes";
 
 /**
- * Hook lấy học kỳ hiện hành (đơn giản)
+ * Hook lấy tất cả phases của 1 học kỳ
+ * @param hocKyId - ID học kỳ cần query phases
  */
-export const useGetHocKyHienHanh = () => {
-    const [data, setData] = useState<HocKyHienHanhDTO | null>(null);
+export const usePhasesByHocKy = (hocKyId: string | null) => {
+    const [data, setData] = useState<PhasesByHocKyDTO | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        console.log("🔄 usePhasesByHocKy triggered, hocKyId:", hocKyId); // ✅ Thêm log
+
+        if (!hocKyId) {
+            setData(null);
+            return;
+        }
+
         const fetchData = async () => {
             setLoading(true);
             setError(null);
 
             try {
-                const result = await pdtApi.getHocKyHienHanh();
+                const result = await pdtApi.getPhasesByHocKy(hocKyId);
+
+                console.log("📡 API response:", result); // ✅ Thêm log
 
                 if (result.isSuccess && result.data) {
+                    console.log("✅ Setting data:", result.data); // ✅ Thêm log
                     setData(result.data);
                 } else {
-                    setError(result.message || "Không thể lấy học kỳ hiện hành");
+                    setError(result.message || "Không thể lấy phases");
                     setData(null);
                 }
             } catch (err) {
@@ -35,7 +46,7 @@ export const useGetHocKyHienHanh = () => {
         };
 
         fetchData();
-    }, []);
+    }, [hocKyId]); // ✅ Re-fetch khi hocKyId thay đổi
 
     return { data, loading, error };
 };

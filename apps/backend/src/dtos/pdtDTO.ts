@@ -19,3 +19,8 @@ export interface SetHocKyHienThanhRequest {
 export interface UpdateTrangThaiByPDTRequest {
     id: string; // ID của đề xuất
 }
+
+export interface KhoaDTO{
+    id: string;
+    tenKhoa: string;
+}
