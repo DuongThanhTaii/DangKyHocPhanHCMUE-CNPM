@@ -145,4 +145,45 @@ export class DotDangKyRepository extends BaseRepository<dot_dang_ky> {
             data,
         });
     }
+
+    /**
+     * Check xem đang mở đợt ghi danh cho toàn trường không
+     * @param hocKyId - ID học kỳ
+     * @returns dot_dang_ky nếu đang mở, null nếu không
+     */
+    async isGhiDanhForToanTruong(hocKyId: string): Promise<dot_dang_ky | null> {
+        const now = new Date();
+
+        return this.model.findFirst({
+            where: {
+                hoc_ky_id: hocKyId,
+                loai_dot: "ghi_danh",
+                is_check_toan_truong: true,
+                khoa_id: null,
+                thoi_gian_bat_dau: { lte: now },
+                thoi_gian_ket_thuc: { gte: now },
+            },
+        });
+    }
+
+    /**
+     * Check xem khoa có được phép ghi danh không
+     * @param hocKyId - ID học kỳ
+     * @param khoaId - ID khoa
+     * @returns dot_dang_ky nếu đang mở, null nếu không
+     */
+    async isGhiDanhForKhoa(hocKyId: string, khoaId: string): Promise<dot_dang_ky | null> {
+        const now = new Date();
+
+        return this.model.findFirst({
+            where: {
+                hoc_ky_id: hocKyId,
+                loai_dot: "ghi_danh",
+                is_check_toan_truong: false,
+                khoa_id: khoaId,
+                thoi_gian_bat_dau: { lte: now },
+                thoi_gian_ket_thuc: { gte: now },
+            },
+        });
+    }
 }

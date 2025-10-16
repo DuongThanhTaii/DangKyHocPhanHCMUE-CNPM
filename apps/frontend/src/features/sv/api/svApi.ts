@@ -1,7 +1,9 @@
 import type { ServiceResult } from "../../common/ServiceResult";
 import type {
     MonHocGhiDanhForSinhVien,
-    RequestGhiDanhMonHoc
+    RequestGhiDanhMonHoc,
+    RequestHuyGhiDanhMonHoc,
+    MonHocDaGhiDanh,
 } from "../types";
 import { fetchJSON } from "../../../utils/fetchJSON";
 
@@ -26,16 +28,24 @@ export const svApi = {
     },
 
     /**
-     * ✅ Hủy ghi danh 1 môn học
+     * ✅ Hủy ghi danh nhiều môn học
      */
-    huyGhiDanhMonHoc: async (id: string): Promise<ServiceResult<null>> => {
-        return await fetchJSON(`sv/ghi-danh/${id}`, {
+    huyGhiDanhMonHoc: async (data: RequestHuyGhiDanhMonHoc): Promise<ServiceResult<null>> => {
+        return await fetchJSON("sv/ghi-danh", {
             method: "DELETE",
+            body: data,
         });
     },
 
-    getDanhSachDaGhiDanh: async (): Promise<ServiceResult<MonHocGhiDanhForSinhVien[]>> => {
+    getDanhSachDaGhiDanh: async (): Promise<ServiceResult<MonHocDaGhiDanh[]>> => {
         return await fetchJSON("sv/ghi-danh/my", {
+            method: "GET",
+        });
+    },
+
+
+    checkTrangThaiGhiDanh: async (): Promise<ServiceResult<null>> => {
+        return await fetchJSON("sv/check-ghi-danh", {
             method: "GET",
         });
     },

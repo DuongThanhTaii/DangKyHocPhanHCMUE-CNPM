@@ -3,10 +3,14 @@ import React, { useEffect, useRef, useState } from "react";
 import "../../styles/reset.css";
 import "../../styles/menu.css";
 import { useModalContext } from "../../hook/ModalContext";
-import { useMonHocGhiDanh, useGhiDanhMonHoc } from "../../features/sv/hooks"; // ✅ Import hooks
+import {
+  useMonHocGhiDanh,
+  useGhiDanhMonHoc,
+  useCheckTrangThaiGhiDanh,
+} from "../../features/sv/hooks";
 import { svApi } from "../../features/sv/api/svApi";
 import type { JSX } from "react";
-import type { MonHocGhiDanhForSinhVien } from "../../features/sv/types";
+import type { MonHocDaGhiDanh } from "../../features/sv/types"; // ✅ Import correct type
 
 type HocPhan = {
   id: string;
@@ -18,24 +22,31 @@ type HocPhan = {
   ten_giang_vien?: string;
 };
 
+type HocPhanDaGhiDanh = HocPhan & {
+  ghi_danh_id: string;
+};
+
 export default function GhiDanhHocPhan(): JSX.Element {
   const { openNotify } = useModalContext();
 
-  // ✅ Hook lấy danh sách môn có thể ghi danh
+  const {
+    canGhiDanh,
+    loading: checkingStatus,
+    message: statusMessage,
+  } = useCheckTrangThaiGhiDanh();
+
   const {
     data: monHocGhiDanhData,
     loading: loadingMonHoc,
     refetch: refetchMonHoc,
   } = useMonHocGhiDanh();
 
-  // ✅ Hook xử lý ghi danh/hủy
   const {
     loading: submitting,
     ghiDanhNhieuMonHoc,
     huyGhiDanhNhieuMonHoc,
   } = useGhiDanhMonHoc();
 
-  // ✅ Transform DTO sang HocPhan format (để giữ nguyên UI logic)
   const hocPhanList: HocPhan[] = monHocGhiDanhData.map((mh) => ({
     id: mh.id,
     hoc_phan_id: mh.id,
@@ -44,18 +55,16 @@ export default function GhiDanhHocPhan(): JSX.Element {
     so_tin_chi: mh.soTinChi,
     ten_khoa: mh.tenKhoa,
     ten_giang_vien: mh.tenGiangVien,
-    loai_mon: undefined, // Backend cần thêm field này
   }));
 
   const [filteredList, setFilteredList] = useState<HocPhan[]>([]);
-  const [daGhiDanhList, setDaGhiDanhList] = useState<HocPhan[]>([]);
-
+  const [daGhiDanhList, setDaGhiDanhList] = useState<HocPhanDaGhiDanh[]>([]); // ✅ Use extended type
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [selectedToCancelIds, setSelectedToCancelIds] = useState<string[]>([]);
-
+  const [selectedToCancelIds, setSelectedToCancelIds] = useState<string[]>([]); // ✅ ghiDanhIds
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [isNotEnrollmentPhase, setIsNotEnrollmentPhase] =
-    useState<boolean>(false);
+
+  // ✅ Backend decides enrollment phase
+  const isNotEnrollmentPhase = !canGhiDanh;
 
   const totalCourses = daGhiDanhList.length;
   const totalCredits = daGhiDanhList.reduce(
@@ -66,15 +75,15 @@ export default function GhiDanhHocPhan(): JSX.Element {
   const didInit = useRef<boolean>(false);
   const lastToastKey = useRef<string | undefined>(undefined);
 
-  // ✅ Load danh sách đã ghi danh
+  // ✅ Fetch enrolled courses with ghiDanhId
   const fetchDaGhiDanh = async () => {
     try {
       const result = await svApi.getDanhSachDaGhiDanh();
       if (result.isSuccess && result.data) {
-        // Transform DTO sang HocPhan format
-        const dsGD: HocPhan[] = result.data.map((item) => ({
-          id: item.id,
-          hoc_phan_id: item.id,
+        const dsGD: HocPhanDaGhiDanh[] = result.data.map((item: MonHocDaGhiDanh) => ({
+          id: item.monHocId,
+          hoc_phan_id: item.monHocId,
+          ghi_danh_id: item.ghiDanhId,      // ✅ Map ghiDanhId
           ma_mon: item.maMonHoc,
           ten_mon: item.tenMonHoc,
           so_tin_chi: item.soTinChi,
@@ -104,14 +113,24 @@ export default function GhiDanhHocPhan(): JSX.Element {
     setFilteredList(hocPhanList);
   }, [monHocGhiDanhData]);
 
-  // ✅ Check trạng thái enrollment phase
+  // ✅ Show notifications based on backend status
   useEffect(() => {
-    const notPhase = hocPhanList.length === 0 && !loadingMonHoc;
-    setIsNotEnrollmentPhase(notPhase);
+    if (checkingStatus) return;
+
+    if (isNotEnrollmentPhase) {
+      const msg = statusMessage || "Chưa tới thời hạn đăng ký ghi danh";
+      if (lastToastKey.current !== msg) {
+        lastToastKey.current = msg;
+        openNotify({
+          message: msg,
+          type: "warning",
+        });
+      }
+      return;
+    }
 
     if (!loadingMonHoc && hocPhanList.length > 0) {
       const msg = `Đã tải ${hocPhanList.length} học phần có thể ghi danh • Bạn đã đăng ký ${daGhiDanhList.length} học phần`;
-
       if (lastToastKey.current !== msg) {
         lastToastKey.current = msg;
         openNotify({
@@ -120,14 +139,14 @@ export default function GhiDanhHocPhan(): JSX.Element {
         });
       }
     }
-
-    if (notPhase && !loadingMonHoc) {
-      openNotify({
-        message: "Chưa tới thời hạn đăng ký ghi danh",
-        type: "warning",
-      });
-    }
-  }, [loadingMonHoc, hocPhanList.length, daGhiDanhList.length]);
+  }, [
+    checkingStatus,
+    isNotEnrollmentPhase,
+    loadingMonHoc,
+    hocPhanList.length,
+    daGhiDanhList.length,
+    statusMessage,
+  ]);
 
   const isDaGhiDanh = (hocPhanId: string): boolean =>
     daGhiDanhList.some((hp) => hp.hoc_phan_id === hocPhanId);
@@ -138,9 +157,12 @@ export default function GhiDanhHocPhan(): JSX.Element {
     );
   };
 
-  const handleCancelCheck = (id: string): void => {
+  // ✅ Handle checkbox for cancellation - use ghiDanhId
+  const handleCancelCheck = (ghiDanhId: string): void => {
     setSelectedToCancelIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+      prev.includes(ghiDanhId) 
+        ? prev.filter((x) => x !== ghiDanhId) 
+        : [...prev, ghiDanhId]
     );
   };
 
@@ -154,7 +176,7 @@ export default function GhiDanhHocPhan(): JSX.Element {
     }
   };
 
-  // ✅ Hủy ghi danh nhiều môn
+  // ✅ Pass ghiDanhIds to cancel API
   const handleCancel = async (): Promise<void> => {
     const successCount = await huyGhiDanhNhieuMonHoc(selectedToCancelIds);
 
@@ -231,7 +253,7 @@ export default function GhiDanhHocPhan(): JSX.Element {
           </button>
         </form>
 
-        {/* Nếu chưa tới thời hạn */}
+        {/* ✅ Giữ nguyên UI này - chỉ logic thay đổi */}
         {isNotEnrollmentPhase ? (
           <p
             style={{
@@ -330,12 +352,12 @@ export default function GhiDanhHocPhan(): JSX.Element {
                 </thead>
                 <tbody>
                   {daGhiDanhList.map((hp) => (
-                    <tr key={hp.hoc_phan_id}>
+                    <tr key={hp.ghi_danh_id}> {/* ✅ Use ghiDanhId as key */}
                       <td>
                         <input
                           type="checkbox"
-                          checked={selectedToCancelIds.includes(hp.hoc_phan_id)}
-                          onChange={() => handleCancelCheck(hp.hoc_phan_id)}
+                          checked={selectedToCancelIds.includes(hp.ghi_danh_id)}
+                          onChange={() => handleCancelCheck(hp.ghi_danh_id)} 
                         />
                       </td>
                       <td>{hp.ma_mon}</td>

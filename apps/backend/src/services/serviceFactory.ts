@@ -1,4 +1,5 @@
 import { UnitOfWork } from "../repositories/unitOfWork";
+import { CheckTrangThaiForSinhVien } from "./CheckTrangThaiForSinhVien";
 import { DeXuatHocPhanService } from "./deXuatHocPhanService";
 import { DotDangKyService } from "./dotDangKyService";
 import { HocKyService } from "./hocKyService";
@@ -14,6 +15,7 @@ export class ServiceFactory {
     private _deXuatHocPhanService?: DeXuatHocPhanService;
     private _sinhVienService?: SinhVienService;
     private _dotDangKyService?: DotDangKyService;
+    private _checkTrangThaiForSinhVien?: CheckTrangThaiForSinhVien
     private constructor() {
         this.unitOfWork = UnitOfWork.getInstance();
     }
@@ -56,5 +58,12 @@ export class ServiceFactory {
             this._dotDangKyService = new DotDangKyService(this.unitOfWork);
         }
         return this._dotDangKyService;
+    }
+
+    get checkTrangThaiForSinhVien() {
+        if (!this._checkTrangThaiForSinhVien) {
+            this._checkTrangThaiForSinhVien = new CheckTrangThaiForSinhVien(this.unitOfWork);
+        }
+        return this._checkTrangThaiForSinhVien;
     }
 }

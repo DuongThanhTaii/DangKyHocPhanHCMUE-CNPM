@@ -3,8 +3,9 @@ import { requireAuth, requireRole } from "../../middlewares/auth";
 import {
   getMonHocGhiDanhHandler,
   ghiDanhMonHocHandler,
-  getDanhSachDaGhiDanhHandler, 
+  getDanhSachDaGhiDanhHandler,
 } from "./sv_monhoc_service";
+import { checkTrangThaiGhiDanhHandler, huyGhiDanhMonHocHandler } from "./sinhvien_ghiDanh_service";
 
 const r = Router();
 
@@ -36,4 +37,17 @@ r.get(
   getDanhSachDaGhiDanhHandler
 );
 
+r.get(
+  "/check-ghi-danh",
+  requireAuth,
+  requireRole(["sinh_vien"]),
+  checkTrangThaiGhiDanhHandler
+);
+
+r.delete(
+  "/ghi-danh",
+  requireAuth,
+  requireRole(["sinh_vien"]),
+  huyGhiDanhMonHocHandler
+);
 export default r;

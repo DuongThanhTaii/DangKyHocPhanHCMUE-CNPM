@@ -38,7 +38,7 @@ export const ghiDanhMonHocHandler: RequestHandler = async (req, res, next) => {
 // Handler - Lấy danh sách đã ghi danh
 export const getDanhSachDaGhiDanhHandler: RequestHandler = async (req, res, next) => {
     try {
-        const sinhVienId = req.auth!.sub; 
+        const sinhVienId = req.auth!.sub;
         const result = await serviceFactory.sinhVienService.getDanhSachDaGhiDanh(sinhVienId);
 
         const statusCode = result.isSuccess ? 200 : 500;
