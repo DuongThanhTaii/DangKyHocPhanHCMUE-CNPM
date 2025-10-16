@@ -7,11 +7,21 @@ export interface MonHocGhiDanhForSinhVien {
     tenGiangVien: string;
 }
 
+export interface MonHocDaGhiDanh {
+    ghiDanhId: string;      // ✅ ID của record GhiDanh
+    monHocId: string;       // ID môn học
+    maMonHoc: string;
+    tenMonHoc: string;
+    soTinChi: number;
+    tenKhoa: string;
+    tenGiangVien?: string;
+}
+
 /**
  * ✅ Request ghi danh 1 môn học
  */
 export interface RequestGhiDanhMonHoc {
-    id: string; // ID của học phần
+    monHocId: string; // ✅ Add this field
 }
 
 /**
@@ -21,3 +31,6 @@ export interface RequestGhiDanhBulk {
     ids: string[]; // Mảng ID học phần
 }
 
+export interface RequestHuyGhiDanhMonHoc {
+    ghiDanhIds: string[];
+}
