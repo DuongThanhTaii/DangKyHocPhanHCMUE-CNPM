@@ -46,6 +46,20 @@ export interface MonHocGhiDanhForSinhVien {
   tenGiangVien: string;
 }
 
+
 export interface RequestGhiDanhMonHoc {
-  id: string;
+  monHocId: string;
+}
+
+export interface RequestHuyGhiDanhMonHoc {
+  ghiDanhIds: string[];
+}
+export interface MonHocDaGhiDanh {
+  ghiDanhId: string;      // ID của record ghi_danh_hoc_phan
+  monHocId: string;       // ID môn học
+  maMonHoc: string;
+  tenMonHoc: string;
+  soTinChi: number;
+  tenKhoa: string;
+  tenGiangVien?: string;
 }

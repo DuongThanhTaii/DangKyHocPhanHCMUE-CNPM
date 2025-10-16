@@ -20,17 +20,12 @@ export class GhiDanhHocPhanRepository extends BaseRepository<ghi_danh_hoc_phan> 
     // Lấy danh sách học phần đã ghi danh của sinh viên
     async findBySinhVienWithRelations(sinhVienId: string): Promise<any[]> {
         return this.model.findMany({
-            where: {
-                sinh_vien_id: sinhVienId,
-            },
+            where: { sinh_vien_id: sinhVienId },
             include: {
                 hoc_phan: {
                     include: {
                         mon_hoc: {
-                            select: {
-                                ma_mon: true,
-                                ten_mon: true,
-                                so_tin_chi: true,
+                            include: {
                                 khoa: {
                                     select: {
                                         ten_khoa: true,
@@ -63,6 +58,28 @@ export class GhiDanhHocPhanRepository extends BaseRepository<ghi_danh_hoc_phan> 
             },
             orderBy: {
                 ngay_ghi_danh: "desc",
+            },
+        });
+    }
+
+    /**
+     * Tìm nhiều bản ghi theo IDs
+     */
+    async findByIds(ids: string[]): Promise<ghi_danh_hoc_phan[]> {
+        return this.model.findMany({
+            where: {
+                id: { in: ids },
+            },
+        });
+    }
+
+    /**
+     * Xóa nhiều bản ghi cùng lúc
+     */
+    async deleteMany(ids: string[]): Promise<void> {
+        await this.model.deleteMany({
+            where: {
+                id: { in: ids },
             },
         });
     }

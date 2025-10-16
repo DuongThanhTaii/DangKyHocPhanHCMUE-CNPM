@@ -18,8 +18,11 @@ export async function fetchJSON(url: string, options?: { method?: string; body?:
         return patchRes.data;
 
       case "DELETE":
-        const deleteRes = await api.delete(url);
+        const deleteRes = await api.delete(url, {
+          data: options?.body,
+        });
         return deleteRes.data;
+
 
       case "GET":
       default:
@@ -27,6 +30,9 @@ export async function fetchJSON(url: string, options?: { method?: string; body?:
         return getRes.data;
     }
   } catch (err: any) {
-    return { success: false, error: err?.message || "Unknown error" };
+    if (err.response?.data) {
+      return err.response.data;
+    }
+    return { isSuccess: false, message: err.message || "Lỗi khi gọi API", errorCode: err.code || "UNKNOWN_ERROR" };
   }
 }
