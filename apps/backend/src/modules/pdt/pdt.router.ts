@@ -25,6 +25,14 @@ import {
   deleteGiangVienHandler,
 } from "./pdt_crud_gv_service";
 
+import {
+  listMonHocHandler,
+  detailMonHocHandler,
+  createMonHocHandler,
+  updateMonHocHandler,
+  deleteMonHocHandler,
+} from "./pdt_crud_monhoc_service";
+
 const r = Router();
 
 r.get("/me", requireAuth, requireRole(["phong_dao_tao"]), (req, res) => {
@@ -116,6 +124,40 @@ r.delete(
   requireRole(["phong_dao_tao"]),
   deleteGiangVienHandler
 );
+
+// CRUD Môn học
+r.get(
+  "/mon-hoc",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  listMonHocHandler
+);
+r.get(
+  "/mon-hoc/:id",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  detailMonHocHandler
+);
+r.post(
+  "/mon-hoc",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  createMonHocHandler
+);
+r.put(
+  "/mon-hoc/:id",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  updateMonHocHandler
+);
+r.delete(
+  "/mon-hoc/:id",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  deleteMonHocHandler
+);
+
+//
 
 r.get(
   "/ky-phase/:hocKyId",

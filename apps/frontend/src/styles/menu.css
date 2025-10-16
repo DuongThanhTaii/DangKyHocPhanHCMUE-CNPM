@@ -889,6 +889,7 @@ input.form__floating-label__quanly {
   background-color: #0c4874;
   color: #fff;
   transition: 0.3s;
+  height: 40px;
 }
 
 .btn__chung:hover {

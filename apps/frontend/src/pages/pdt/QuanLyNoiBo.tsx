@@ -11,16 +11,20 @@ const QuanLySinhVien = React.lazy(
 const QuanLyGiangVien = React.lazy(
   () => import("../pdt/components/crud_gv/QuanLyGiangVien")
 );
+const QuanLyMonHoc = React.lazy(
+  () => import("../pdt/components/crud_mh/QuanLyMonHoc")
+);
 
 // Nếu bạn có thêm CRUD khác, tiếp tục lazy như trên
 // const QuanLyHocPhan = React.lazy(() => import("./QuanLyHocPhan"));
 
 // Kiểu view cho đồng nhất
-export type PDTViewKey = "sv" | "gv"; // | "hp" | "lhp" ...
+export type PDTViewKey = "sv" | "gv" | "mh"; // | "hp" | "lhp" ...
 
 const TAB_LABELS: Record<PDTViewKey, string> = {
   sv: "Quản lý sinh viên",
   gv: "Quản lý giảng viên",
+  mh: "Quản lý học phần",
 };
 
 // Helper: đồng bộ view với URL (hash) để share link nhanh
@@ -61,6 +65,12 @@ const QuanLyPDT: React.FC = () => {
         >
           {TAB_LABELS.gv}
         </button>
+        <button
+          className={`btn__quanlyhp ${view === "mh" ? "active" : ""}`}
+          onClick={() => setView("mh")}
+        >
+          {TAB_LABELS.mh}
+        </button>
         {/* 
         Ví dụ thêm tab khác:
         <button className={`btn__quanlyhp ${view === "hp" ? "active" : ""}`} onClick={() => setView("hp")}>
@@ -85,6 +95,8 @@ const QuanLyPDT: React.FC = () => {
         <Suspense fallback={<div style={{ padding: 16 }}>Đang tải...</div>}>
           {view === "sv" && <QuanLySinhVien />}
           {view === "gv" && <QuanLyGiangVien />}
+          {view === "mh" && <QuanLyMonHoc />}
+
           {/* {view === "hp" && <QuanLyHocPhan />} */}
         </Suspense>
       </div>
