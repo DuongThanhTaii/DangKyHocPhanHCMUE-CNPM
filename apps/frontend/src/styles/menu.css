@@ -1010,6 +1010,10 @@ input.form__floating-label__quanly {
   height: 40px !important;
 }
 
+.h__30 {
+  height: 30px !important;
+}
+
 .P__10__20 {
   padding: 10px 20px;
 }
@@ -1884,4 +1888,47 @@ th {
 .pos__unset {
   position: unset !important;
   color: #172b4d !important;
+}
+
+.crud_nganh {
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.crud_nganh label {
+  display: flex;
+  align-items: center;
+  font-size: 1.6rem;
+  margin-bottom: 6px;
+}
+
+.crud_nganh div label input[type="checkbox"] {
+  margin-right: 5px;
+  flex-shrink: 0;
+  height: 20px;
+  width: 20px;
+}
+
+.crud_nganh div label span {
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.crud_nganh-list {
+  background-color: #f0f0f0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  min-height: 40px;
+}
+
+.flex_col {
+  display: flex;
+  flex-direction: column;
+}
+
+.crud_monhoc_dk {
+  height: 30px;
+  margin-bottom: 10px;
+  border: 1px solid #0c4874;
 }

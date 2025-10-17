@@ -4,7 +4,7 @@ import type { LayoutConfig } from "./types";
 
 const svConfig: LayoutConfig = {
   role: "sinh_vien",
-  headerTitle: "HỆ THỐNG SINH VIÊN - TRƯỜNG ĐH SƯ PHẠM TP.HCM",
+  headerTitle: "TRƯỜNG ĐẠI HỌC SƯ PHẠM THÀNH PHỐ HỒ CHÍ MINH",
   menuItems: [
     {
       to: "dang-ky-hoc-phan",

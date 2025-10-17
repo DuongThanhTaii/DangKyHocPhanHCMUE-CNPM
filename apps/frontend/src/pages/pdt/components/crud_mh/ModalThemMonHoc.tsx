@@ -23,7 +23,11 @@ type Khoa = { id: string; ten_khoa: string };
 type Nganh = { id: string; ten_nganh: string; khoa_id: string };
 type MonHocOption = { id: string; ma_mon: string; ten_mon: string };
 
-const ModalThemMonHoc: React.FC<PropsAdd> = ({ isOpen, onClose, onCreated }) => {
+const ModalThemMonHoc: React.FC<PropsAdd> = ({
+  isOpen,
+  onClose,
+  onCreated,
+}) => {
   const { openNotify } = useModalContext();
 
   const [khoaList, setKhoaList] = useState<Khoa[]>([]);
@@ -94,12 +98,15 @@ const ModalThemMonHoc: React.FC<PropsAdd> = ({ isOpen, onClose, onCreated }) => 
     }));
   };
 
+  // Chỉ khi thêm điều kiện -> dkList có phần tử -> mới add class vào div
   const addDk = () =>
     setDkList((s) => [
       ...s,
       { mon_lien_quan_id: "", loai: "tien_quyet", bat_buoc: true },
     ]);
+
   const rmDk = (idx: number) => setDkList((s) => s.filter((_, i) => i !== idx));
+
   const updateDk = (
     idx: number,
     patch: Partial<{
@@ -149,7 +156,7 @@ const ModalThemMonHoc: React.FC<PropsAdd> = ({ isOpen, onClose, onCreated }) => 
         openNotify?.("Thêm môn học thành công", "success");
         onCreated?.();
         onClose();
-        // reset form (tuỳ chọn)
+        // reset form
         setForm({
           ma_mon: "",
           ten_mon: "",
@@ -169,6 +176,9 @@ const ModalThemMonHoc: React.FC<PropsAdd> = ({ isOpen, onClose, onCreated }) => 
 
   if (!isOpen) return null;
 
+  // Chỉ add class "crud_nganh-list" cho khối Môn điều kiện khi dkList có phần tử
+  const dkListClassName = dkList.length > 0 ? "crud_nganh-list" : "";
+
   return (
     <>
       <div className="modal-overlay" onClick={onClose}></div>
@@ -184,11 +194,19 @@ const ModalThemMonHoc: React.FC<PropsAdd> = ({ isOpen, onClose, onCreated }) => 
           <div className="modal-popup-row">
             <div className="form__group">
               <label className="pos__unset">Mã môn</label>
-              <input name="ma_mon" value={form.ma_mon} onChange={handleChange} />
+              <input
+                name="ma_mon"
+                value={form.ma_mon}
+                onChange={handleChange}
+              />
             </div>
             <div className="form__group">
               <label className="pos__unset">Tên môn</label>
-              <input name="ten_mon" value={form.ten_mon} onChange={handleChange} />
+              <input
+                name="ten_mon"
+                value={form.ten_mon}
+                onChange={handleChange}
+              />
             </div>
           </div>
 
@@ -264,9 +282,9 @@ const ModalThemMonHoc: React.FC<PropsAdd> = ({ isOpen, onClose, onCreated }) => 
 
           {/* Gán ngành */}
           <div className="modal-popup-row">
-            <div className="form__group">
+            <div className="crud_nganh">
               <label className="pos__unset">Ngành áp dụng</label>
-              <div>
+              <div className="crud_nganh-list">
                 {nganhTheoKhoa.map((n) => (
                   <label key={n.id}>
                     <input
@@ -286,16 +304,22 @@ const ModalThemMonHoc: React.FC<PropsAdd> = ({ isOpen, onClose, onCreated }) => 
 
           {/* Môn điều kiện */}
           <div className="modal-popup-row">
-            <div className="form__group">
+            <div className="crud_nganh">
               <label className="pos__unset">Môn điều kiện</label>
-              <button type="button" className="btn__chung ml_10" onClick={addDk}>
+              <button
+                type="button"
+                className="btn__chung mb_10"
+                onClick={addDk}
+              >
                 + Thêm điều kiện
               </button>
-              <div>
+
+              {/* Ban đầu không có class; sau khi bấm nút (dkList > 0) mới gán "crud_nganh-list" */}
+              <div className={dkListClassName}>
                 {dkList.map((dk, idx) => (
-                  <div key={idx}>
+                  <div className="flex_col" key={idx}>
                     <select
-                      id="md-Nganh"
+                      className="crud_monhoc_dk"
                       value={dk.mon_lien_quan_id}
                       onChange={(e) =>
                         updateDk(idx, { mon_lien_quan_id: e.target.value })
@@ -308,16 +332,18 @@ const ModalThemMonHoc: React.FC<PropsAdd> = ({ isOpen, onClose, onCreated }) => 
                         </option>
                       ))}
                     </select>
+
                     <select
-                      id="md-Nganh"
+                      className="crud_monhoc_dk"
                       value={dk.loai}
                       onChange={(e) => updateDk(idx, { loai: e.target.value })}
                     >
                       <option value="tien_quyet">Tiên quyết</option>
                       <option value="song_hanh">Song hành</option>
                     </select>
+
                     <select
-                      id="md-Nganh"
+                      className="crud_monhoc_dk"
                       value={dk.bat_buoc ? "true" : "false"}
                       onChange={(e) =>
                         updateDk(idx, { bat_buoc: e.target.value === "true" })
@@ -326,9 +352,10 @@ const ModalThemMonHoc: React.FC<PropsAdd> = ({ isOpen, onClose, onCreated }) => 
                       <option value="true">Bắt buộc</option>
                       <option value="false">Không bắt buộc</option>
                     </select>
+
                     <button
                       type="button"
-                      className="btn__cancel"
+                      className="btn__cancel h__30"
                       onClick={() => rmDk(idx)}
                     >
                       Xoá

@@ -250,7 +250,12 @@ const ModalCapNhatMonHoc: React.FC<PropsEdit> = ({ id, isOpen, onClose }) => {
         <div className="modal-popup-row">
           <div className="form__group">
             <label className="pos__unset">Khoa</label>
-            <select name="khoa_id" value={form.khoa_id} onChange={onChange}>
+            <select
+              id="md-Nganh"
+              name="khoa_id"
+              value={form.khoa_id}
+              onChange={onChange}
+            >
               <option value="">-- Chọn khoa --</option>
               {khoaList.map((k) => (
                 <option key={k.id} value={k.id}>
@@ -261,7 +266,12 @@ const ModalCapNhatMonHoc: React.FC<PropsEdit> = ({ id, isOpen, onClose }) => {
           </div>
           <div className="form__group">
             <label className="pos__unset">Loại môn</label>
-            <select name="loai_mon" value={form.loai_mon} onChange={onChange}>
+            <select
+              id="md-Nganh"
+              name="loai_mon"
+              value={form.loai_mon}
+              onChange={onChange}
+            >
               <option value="">-- Chọn --</option>
               <option value="chuyen_nganh">Chuyên ngành</option>
               <option value="dai_cuong">Đại cương</option>
@@ -274,6 +284,7 @@ const ModalCapNhatMonHoc: React.FC<PropsEdit> = ({ id, isOpen, onClose }) => {
           <div className="form__group">
             <label className="pos__unset">Là môn chung?</label>
             <select
+              id="md-Nganh"
               name="la_mon_chung"
               value={form.la_mon_chung}
               onChange={onChange}
@@ -286,26 +297,11 @@ const ModalCapNhatMonHoc: React.FC<PropsEdit> = ({ id, isOpen, onClose }) => {
 
         {/* Gán ngành */}
         <div className="modal-popup-row">
-          <div className="form__group" style={{ width: "100%" }}>
+          <div className="crud_nganh">
             <label className="pos__unset">Ngành áp dụng</label>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(2, 1fr)",
-                gap: 8,
-                maxHeight: 160,
-                overflow: "auto",
-                padding: 8,
-                border: "1px solid #ddd",
-                borderRadius: 8,
-              }}
-            >
+            <div className="crud_nganh-list">
               {nganhTheoKhoa.map((n) => (
-                <label
-                  className="pos__unset"
-                  key={n.id}
-                  style={{ display: "flex", gap: 8, alignItems: "center" }}
-                >
+                <label className="pos__unset">
                   <input
                     type="checkbox"
                     checked={Boolean(form.nganh_ids?.includes(n.id))}
@@ -323,33 +319,20 @@ const ModalCapNhatMonHoc: React.FC<PropsEdit> = ({ id, isOpen, onClose }) => {
 
         {/* Môn điều kiện */}
         <div className="modal-popup-row">
-          <div className="form__group" style={{ width: "100%" }}>
+          <div className="crud_nganh">
             <label className="pos__unset">Môn điều kiện</label>
             <button
               type="button"
-              className="btn__chung ml_10"
+              className="btn__chung mb_10"
               onClick={() => addDk()}
             >
               + Thêm điều kiện
             </button>
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 8,
-                marginTop: 8,
-              }}
-            >
+            <div className="crud_nganh-list">
               {(dkList || []).map((dk, idx) => (
-                <div
-                  key={idx}
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "2fr 1fr 1fr auto",
-                    gap: 8,
-                  }}
-                >
+                <div key={idx} className="flex_col">
                   <select
+                    className="crud_monhoc_dk"
                     value={dk.mon_lien_quan_id}
                     onChange={(e) =>
                       updateDk(idx, { mon_lien_quan_id: e.target.value })
@@ -363,6 +346,7 @@ const ModalCapNhatMonHoc: React.FC<PropsEdit> = ({ id, isOpen, onClose }) => {
                     ))}
                   </select>
                   <select
+                    className="crud_monhoc_dk"
                     value={dk.loai}
                     onChange={(e) => updateDk(idx, { loai: e.target.value })}
                   >
@@ -370,6 +354,7 @@ const ModalCapNhatMonHoc: React.FC<PropsEdit> = ({ id, isOpen, onClose }) => {
                     <option value="song_hanh">Song hành</option>
                   </select>
                   <select
+                    className="crud_monhoc_dk"
                     value={dk.bat_buoc ? "true" : "false"}
                     onChange={(e) =>
                       updateDk(idx, { bat_buoc: e.target.value === "true" })
@@ -380,7 +365,7 @@ const ModalCapNhatMonHoc: React.FC<PropsEdit> = ({ id, isOpen, onClose }) => {
                   </select>
                   <button
                     type="button"
-                    className="btn__cancel"
+                    className="btn__cancel h__30"
                     onClick={() => rmDk(idx)}
                   >
                     Xoá

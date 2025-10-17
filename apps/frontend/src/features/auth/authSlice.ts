@@ -4,8 +4,7 @@ type User = {
   id?: string;
   ho_ten?: string;
   loai_tai_khoan?: string;
-  ma_so_sinh_vien?: string;
-  ma_so_nhan_vien?: string;
+  ma_nhan_vien?: string;
 };
 
 type AuthState = { token: string | null; user: User | null };

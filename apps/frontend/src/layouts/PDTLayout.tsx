@@ -4,7 +4,7 @@ import type { LayoutConfig } from "./types";
 
 const pdtConfig: LayoutConfig = {
   role: "phong_dao_tao",
-  headerTitle: "HỆ THỐNG PHÒNG ĐÀO TẠO - TRƯỜNG ĐH SƯ PHẠM TP.HCM",
+  headerTitle: "TRƯỜNG ĐẠI HỌC SƯ PHẠM THÀNH PHỐ HỒ CHÍ MINH",
   menuItems: [
     {
       to: "chuyen-trang-thai",
