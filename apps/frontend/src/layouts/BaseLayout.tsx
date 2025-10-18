@@ -167,9 +167,7 @@ export default function BaseLayout({ config, children }: BaseLayoutProps) {
             </div>
             <div className="user__body">
               <p className="user__name">{user?.ho_ten}</p>
-              <p className="user__score">
-                {user?.ma_so_sinh_vien || user?.ma_so_nhan_vien || ""}
-              </p>
+              <p className="user__score">{user?.ma_nhan_vien}</p>
               <p className="user__role">{formatRole(user?.loai_tai_khoan)}</p>
             </div>
           </div>
@@ -231,7 +229,9 @@ export default function BaseLayout({ config, children }: BaseLayoutProps) {
             </div>
             <div className="modal" id="modal">
               <div className="name__student">
-                <h6>{user?.ho_ten}</h6>
+                <h6>
+                  {user?.ho_ten} - {user?.ma_nhan_vien}
+                </h6>
               </div>
               <div className="sign__out">
                 <button onClick={handleLogout}>Đăng xuất</button>
