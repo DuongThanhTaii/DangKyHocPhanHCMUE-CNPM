@@ -554,6 +554,7 @@ model users {
   tai_khoan_id         String?                @db.Uuid
   created_at           DateTime?              @default(now()) @db.Timestamp(6)
   updated_at           DateTime?              @default(now()) @db.Timestamp(6)
+  email                String                 @unique @db.Citext
   de_xuat_hoc_phan     de_xuat_hoc_phan[]
   de_xuat_hoc_phan_log de_xuat_hoc_phan_log[]
   giang_vien           giang_vien?

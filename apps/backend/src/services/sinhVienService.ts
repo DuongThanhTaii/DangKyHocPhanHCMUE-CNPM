@@ -8,6 +8,7 @@ import {
   RequestGhiDanhMonHoc,
   MonHocDaGhiDanh,
 } from "../dtos/sinhvienDTO";
+import { CreateEmailSinhVienWithMaSinhVien } from "../utils/emailFormat";
 
 const ROLE_SV = "sinh_vien";
 
@@ -57,11 +58,14 @@ export class SinhVienService {
           },
         });
 
+        const emailSinhVien = CreateEmailSinhVienWithMaSinhVien(input.ma_so_sinh_vien);
+
         const user = await tx.users.create({
           data: {
             ho_ten: input.ho_ten,
             tai_khoan_id: tk.id,
             ma_nhan_vien: input.ma_so_sinh_vien,
+            email: emailSinhVien,
           },
         });
 
