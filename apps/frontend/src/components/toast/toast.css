@@ -9,11 +9,10 @@
 }
 
 .toast {
-  width: 320px;
-  background: #fff;
-  border-radius: 12px;
+  width: 300px;
+  height: 48px;
+  border-radius: 10px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-  border-left: 4px solid #3b82f6;
   overflow: hidden;
   transform: translateX(120%);
   opacity: 0;
@@ -29,65 +28,101 @@
   opacity: 0;
 }
 
-/* type màu sắc */
-.toast--info {
-  border-left-color: #3b82f6;
-}
-.toast--success {
-  border-left-color: #10b981;
-}
-.toast--error {
-  border-left-color: #ef4444;
-}
-.toast--warning {
-  border-left-color: #f59e0b;
+/* Nội dung chính */
+.toast__content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 16px;
+  color: #fff;
 }
 
-/* Nội dung */
-.toast__content {
+.toast__text {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 10px 12px;
+  align-items: center;
+  gap: 8px;
+}
+
+.toast_svg svg {
+  width: 12px;
+  height: 12px;
+}
+
+.toast_svg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 23px;
+  width: 23px;
+  border-radius: 50%;
+  box-shadow: 0px 1px 5px #0000001c;
 }
 
 .toast__title {
   font-weight: 600;
   font-size: 14px;
-  color: #111827;
 }
 
 .toast__message {
   font-size: 13px;
-  color: #374151;
-  margin-top: 2px;
-  max-width: 260px;
+  max-width: 240px;
   word-wrap: break-word;
 }
 
+/* Nút X góc phải */
 .toast__close {
+  position: absolute;
+  right: 10px;
+  transform: translateY(-50%);
   border: none;
   background: none;
   cursor: pointer;
-  color: #6b7280;
-  padding: 2px;
-}
-.toast__close:hover {
-  color: #111827;
+  color: #fff;
+  padding: 4px;
+  font-size: 12px;
+  line-height: 1;
+  transition: opacity 0.2s;
 }
 
-/* Thanh progress */
-.toast__progress {
+.toast__close:hover {
+  opacity: 0.7;
+}
+
+/* Thanh tiến trình (nếu có) */
+/* .toast__progress {
   height: 3px;
-  background: #3b82f6;
-  transition: width 0.1s linear;
+  background: rgba(255, 255, 255, 0.8);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transition: width 0.2s linear;
+} */
+
+/* type màu sắc */
+.toast--info {
+  border-left-color: #2975ee;
 }
-.toast--success .toast__progress {
-  background: #10b981;
+.toast--success {
+  background: rgb(77, 154, 81);
 }
-.toast--error .toast__progress {
-  background: #ef4444;
+.toast--error {
+  background-color: rgba(216, 70, 70);
 }
-.toast--warning .toast__progress {
-  background: #f59e0b;
+.toast--warning {
+  background-color: #f59e0b;
+}
+
+.toast--info .toast_svg {
+  border-left-color: #518ded;
+}
+.toast--success .toast_svg {
+  background: rgb(97, 210, 69);
+}
+.toast--error .toast_svg {
+  background-color: rgb(255, 75, 75);
+}
+
+.toast--warning .toast_svg {
+  background-color: rgb(231, 166, 34);
 }
