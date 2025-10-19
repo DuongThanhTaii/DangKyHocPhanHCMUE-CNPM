@@ -1,0 +1,97 @@
+import { BaseMongoRepository } from "./baseMongoRepository";
+import type { ThoiKhoaBieuMonHoc } from "../../../node_modules/.prisma/client-mongo";
+
+export class ThoiKhoaBieuRepository extends BaseMongoRepository<ThoiKhoaBieuMonHoc> {
+    constructor() {
+        super("thoiKhoaBieuMonHoc"); // ✅ Tên model trong schema-mongo.prisma
+    }
+
+    /**
+     * ✅ Tìm thời khóa biểu theo mã học phần và học kỳ
+     */
+    async findByMaHocPhanAndHocKy(
+        maHocPhan: string,
+        hocKyId: string
+    ): Promise<ThoiKhoaBieuMonHoc | null> {
+        return this.model.findUnique({
+            where: {
+                maHocPhan_hocKyId: {
+                    maHocPhan,
+                    hocKyId,
+                },
+            },
+        });
+    }
+
+    /**
+     * Lấy tất cả TKB của học kỳ
+     */
+    async findByHocKy(hocKyId: string): Promise<ThoiKhoaBieuMonHoc[]> {
+        return this.model.findMany({
+            where: { hocKyId },
+            orderBy: { maHocPhan: "asc" },
+        });
+    }
+
+    /**
+     * Lấy tất cả TKB của nhiều mã học phần
+     */
+    async findByMaHocPhans(
+        maHocPhans: string[],
+        hocKyId: string
+    ): Promise<ThoiKhoaBieuMonHoc[]> {
+        return this.model.findMany({
+            where: {
+                maHocPhan: { in: maHocPhans },
+                hocKyId,
+            },
+        });
+    }
+
+    /**
+     * Update danh sách lớp
+     */
+    async updateDanhSachLop(
+        id: string,
+        danhSachLop: any[]
+    ): Promise<ThoiKhoaBieuMonHoc> {
+        return this.model.update({
+            where: { id },
+            data: { danhSachLop },
+        });
+    }
+
+    /**
+     * Thêm 1 lớp vào danh sách
+     */
+    async addLop(id: string, lopMoi: any): Promise<ThoiKhoaBieuMonHoc> {
+        const current = await this.findById(id);
+        if (!current) {
+            throw new Error("Thời khóa biểu không tồn tại");
+        }
+
+        return this.model.update({
+            where: { id },
+            data: {
+                danhSachLop: [...current.danhSachLop, lopMoi],
+            },
+        });
+    }
+
+    /**
+     * Xóa 1 lớp khỏi danh sách (theo index)
+     */
+    async removeLop(id: string, lopIndex: number): Promise<ThoiKhoaBieuMonHoc> {
+        const current = await this.findById(id);
+        if (!current) {
+            throw new Error("Thời khóa biểu không tồn tại");
+        }
+
+        const newDanhSachLop = current.danhSachLop.filter((_, index) => index !== lopIndex);
+
+        return this.model.update({
+            where: { id },
+            data: { danhSachLop: newDanhSachLop },
+        });
+    }
+}

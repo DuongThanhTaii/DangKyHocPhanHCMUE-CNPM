@@ -1,0 +1,39 @@
+// This is a separate MongoDB schema. Ignore duplicate generator/datasource warnings.
+
+generator client {
+    provider = "prisma-client-js"
+    output   = "../node_modules/.prisma/client-mongo"
+}
+
+datasource db {
+    provider = "mongodb"
+    url      = env("MONGODB_URL")
+}
+
+// Model chính - Thời khóa biểu theo học phần
+model ThoiKhoaBieuMonHoc {
+    id        String @id @default(auto()) @map("_id") @db.ObjectId
+    maHocPhan String @map("ma_hoc_phan")
+    hocKyId   String @map("hoc_ky_id")
+
+    danhSachLop DanhSachLop[]
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@unique([maHocPhan, hocKyId])
+    @@index([maHocPhan])
+    @@index([hocKyId])
+    @@map("thoi_khoa_bieu_mon_hoc")
+}
+
+// Embedded type - Nested trong ThoiKhoaBieuMonHoc
+type DanhSachLop {
+    tenLop       String   @map("ten_lop")
+    phongHoc     String?  @map("phong_hoc")
+    ngayBatDau   DateTime @map("ngay_bat_dau")
+    ngayKetThuc  DateTime @map("ngay_ket_thuc")
+    tietBatDau   Int      @map("tiet_bat_dau")
+    tietKetThuc  Int      @map("tiet_ket_thuc")
+    thuTrongTuan Int?     @map("thu_trong_tuan") // 2-7 (T2-CN)
+}

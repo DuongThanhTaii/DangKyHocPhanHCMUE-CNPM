@@ -1,3 +1,4 @@
+import type { ServiceResult } from "../features/common/ServiceResult";
 import api from "./api";
 
 export async function fetchJSON(url: string, options?: { method?: string; body?: any }) {
@@ -31,7 +32,7 @@ export async function fetchJSON(url: string, options?: { method?: string; body?:
     }
   } catch (err: any) {
     if (err.response?.data) {
-      return err.response.data;
+      return err.response.data as ServiceResult;
     }
     return { isSuccess: false, message: err.message || "Lỗi khi gọi API", errorCode: err.code || "UNKNOWN_ERROR" };
   }
