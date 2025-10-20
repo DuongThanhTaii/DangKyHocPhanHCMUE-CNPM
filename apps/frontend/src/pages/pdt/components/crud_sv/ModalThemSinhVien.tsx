@@ -39,6 +39,9 @@ const ModalThemSinhVien: React.FC<Props> = ({ isOpen, onClose, onCreated }) => {
     ngay_nhap_hoc: "",
   });
 
+  // Excel file state
+  const [excelFile, setExcelFile] = useState<File | null>(null);
+
   useEffect(() => {
     if (!isOpen) return;
     (async () => {
@@ -65,24 +68,29 @@ const ModalThemSinhVien: React.FC<Props> = ({ isOpen, onClose, onCreated }) => {
   };
 
   const handleSubmit = async () => {
-    // Validate đơn giản
+    // Mặc định username/password = MSSV nếu bỏ trống
+    const ten_dang_nhap =
+      formData.ten_dang_nhap || formData.ma_so_sinh_vien || "";
+    const mat_khau = formData.mat_khau || formData.ma_so_sinh_vien || "";
+
+    // Validate tối thiểu
     if (
       !formData.ma_so_sinh_vien ||
       !formData.ho_ten ||
-      !formData.ten_dang_nhap ||
-      !formData.mat_khau ||
+      !ten_dang_nhap ||
+      !mat_khau ||
       !formData.khoa_id
     ) {
       openNotify?.(
-        "Vui lòng nhập đủ MSSV, Họ tên, Tên đăng nhập, Mật khẩu, Khoa",
+        "Vui lòng nhập đủ MSSV, Họ tên, Khoa (tên đăng nhập/mật khẩu mặc định = MSSV nếu bỏ trống)",
         "warning"
       );
       return;
     }
 
     const payload = {
-      ten_dang_nhap: formData.ten_dang_nhap,
-      mat_khau: formData.mat_khau,
+      ten_dang_nhap,
+      mat_khau,
       ho_ten: formData.ho_ten,
       ma_so_sinh_vien: formData.ma_so_sinh_vien,
       khoa_id: formData.khoa_id,
@@ -105,21 +113,69 @@ const ModalThemSinhVien: React.FC<Props> = ({ isOpen, onClose, onCreated }) => {
       } else {
         openNotify?.(json.message || "Thêm sinh viên thất bại", "error");
       }
-    } catch (e) {
+    } catch {
       openNotify?.("Không thể gọi API", "error");
     }
   };
 
-  // Tải Excel (tuỳ backend bạn có API batch hay chưa)
+  // ============= IMPORT EXCEL (API: POST /api/import/sinh-vien) =============
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // TODO: parse XLSX hoặc gửi FormData đến API batch nếu bạn đã có
-    // Để trống theo yêu cầu hiện tại
+    const f = e.target.files?.[0] || null;
+    setExcelFile(f);
   };
-  const handleUploadExcel = () => {
-    openNotify?.(
-      "Tính năng tải Excel sẽ được bổ sung khi có API batch",
-      "info"
-    );
+
+  const handleUploadExcel = async () => {
+    if (!excelFile) {
+      openNotify?.("Vui lòng chọn file Excel (.xls, .xlsx)", "info");
+      return;
+    }
+    try {
+      const form = new FormData();
+      form.append("file", excelFile);
+
+      const res = await fetch(`${API}/import/sinh-vien`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+        body: form,
+      });
+
+      const json = await res.json();
+      if (!json.isSuccess) {
+        openNotify?.(json.message || "Import thất bại", "error");
+        return;
+      }
+
+      const summary = json.data?.summary;
+      const results = json.data?.results || [];
+      const created = summary?.created ?? 0;
+      const failed = summary?.failed ?? 0;
+
+      const firstErrors = results
+        .filter((r: any) => r.status === "failed")
+        .slice(0, 5)
+        .map((r: any) => `Dòng ${r.row}: ${r.error}`)
+        .join("\n");
+
+      openNotify?.(
+        `Import hoàn tất.\nTạo mới: ${created}\nLỗi: ${failed}${
+          failed ? `\n${firstErrors}${results.length > 5 ? "\n..." : ""}` : ""
+        }`,
+        failed ? "warning" : "success"
+      );
+
+      setExcelFile(null);
+      // FIX TS2779: không dùng optional chaining ở vế trái
+      const el = document.getElementById(
+        "excelUpload"
+      ) as HTMLInputElement | null;
+      if (el) el.value = "";
+
+      onCreated?.();
+    } catch {
+      openNotify?.("Không thể gọi API import", "error");
+    }
   };
 
   if (!isOpen) return null;
@@ -155,11 +211,15 @@ const ModalThemSinhVien: React.FC<Props> = ({ isOpen, onClose, onCreated }) => {
           {/* Tài khoản */}
           <div className="modal-popup-row">
             <div className="form__group">
-              <label className="pos__unset">Tên đăng nhập</label>
+              <label className="pos__unset">
+                Tên đăng nhập <small>(mặc định = MSSV nếu bỏ trống)</small>
+              </label>
               <input name="ten_dang_nhap" type="text" onChange={handleChange} />
             </div>
             <div className="form__group">
-              <label className="pos__unset">Mật khẩu</label>
+              <label className="pos__unset">
+                Mật khẩu <small>(mặc định = MSSV nếu bỏ trống)</small>
+              </label>
               <input name="mat_khau" type="password" onChange={handleChange} />
             </div>
           </div>

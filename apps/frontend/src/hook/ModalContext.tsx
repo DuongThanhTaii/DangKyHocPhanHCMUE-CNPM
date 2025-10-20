@@ -64,7 +64,7 @@ export const ModalProvider: React.FC<React.PropsWithChildren> = ({
 
   const publishToast = useCallback((payload: ToastPayload) => {
     const merged: ToastPayload = {
-      duration: 3000,
+      duration: 999999,
       type: "info",
       ...payload,
     };

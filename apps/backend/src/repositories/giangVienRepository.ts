@@ -1,4 +1,5 @@
 import { PrismaClient, Prisma } from "@prisma/client";
+import { CreateEmailGiangVienWithMaGiangVien } from "../utils/emailFormat";
 
 export class GiangVienRepository {
   constructor(private prisma: PrismaClient) {}
@@ -65,12 +66,15 @@ export class GiangVienRepository {
         },
       });
 
+      const emailGiangVien = CreateEmailGiangVienWithMaGiangVien(ten_dang_nhap);
+
       const users = await tx.users.create({
         data: {
           id: tai_khoan.id,
           ho_ten,
           ma_nhan_vien: ten_dang_nhap,
           tai_khoan_id: tai_khoan.id,
+          email: emailGiangVien,
         },
       });
 

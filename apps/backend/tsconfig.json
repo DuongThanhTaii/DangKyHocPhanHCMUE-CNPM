@@ -11,6 +11,6 @@
     "skipLibCheck": true,
     "types": ["node"] // <<< để TS biết 'process', Buffer, v.v.
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "src/modules/import/import.service.ts"],
   "exclude": ["node_modules", "dist"]
 }

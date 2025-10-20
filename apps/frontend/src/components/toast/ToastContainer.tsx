@@ -120,7 +120,7 @@ const ToastContainer: React.FC = () => {
         title: payload.title ?? "",
         message: payload.message,
         type: payload.type ?? "info",
-        duration: payload.duration ?? 3000,
+        duration: payload.duration ?? 999999,
       };
       setToasts((prev) => [newToast, ...prev]);
     });

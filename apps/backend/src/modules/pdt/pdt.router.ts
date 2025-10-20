@@ -33,6 +33,12 @@ import {
   deleteMonHocHandler,
 } from "./pdt_crud_monhoc_service";
 
+import {
+  importSinhVienHandler,
+  importGiangVienHandler,
+  importMonHocHandler,
+} from "../import/import.service";
+
 const r = Router();
 
 r.get("/me", requireAuth, requireRole(["phong_dao_tao"]), (req, res) => {
