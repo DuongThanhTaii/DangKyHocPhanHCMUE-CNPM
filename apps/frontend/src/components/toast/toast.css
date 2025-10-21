@@ -9,7 +9,7 @@
 }
 
 .toast {
-  width: 300px;
+  width: 320px;
   height: 48px;
   border-radius: 10px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
@@ -101,10 +101,10 @@
 
 /* type màu sắc */
 .toast--info {
-  border-left-color: #2975ee;
+  background-color: #2975ee;
 }
 .toast--success {
-  background: rgb(77, 154, 81);
+  background-color: rgb(77, 154, 81);
 }
 .toast--error {
   background-color: rgba(216, 70, 70);
@@ -114,10 +114,10 @@
 }
 
 .toast--info .toast_svg {
-  border-left-color: #518ded;
+  background-color: #518ded;
 }
 .toast--success .toast_svg {
-  background: rgb(97, 210, 69);
+  background-color: rgb(97, 210, 69);
 }
 .toast--error .toast_svg {
   background-color: rgb(255, 75, 75);
