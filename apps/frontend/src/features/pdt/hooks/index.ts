@@ -7,3 +7,4 @@ export * from "./useDeXuatHocPhanPDT";
 export * from "./useDanhSachKhoa";
 export * from "./useUpdateDotGhiDanh";
 export * from "./useGetDotGhiDanhByHocKy";
+export { usePhanBoPhongHoc } from "./usePhanBoPhongHoc";

@@ -1,7 +1,14 @@
 import { fetchJSON } from "../../../utils/fetchJSON";
 import type { ServiceResult } from "../../common/ServiceResult";
-import type { DeXuatHocPhanRequest, DeXuatHocPhanForTroLyKhoaDTO } from "../types";
-
+import type {
+    DeXuatHocPhanRequest,
+    DeXuatHocPhanForTroLyKhoaDTO,
+    HocPhanForCreateLopDTO,
+    PhongHocDTO,
+    HocKyHienHanhDTO,
+    XepTKBRequest,
+    ThoiKhoaBieuMonHocDTO,
+} from "../types";
 
 export const tlkAPI = {
     /**
@@ -20,5 +27,62 @@ export const tlkAPI = {
         });
     },
 
+    /**
+     * ✅ COPY từ PDT - Lấy học kỳ hiện hành
+     */
+    getHocKyHienHanh: async (): Promise<ServiceResult<HocKyHienHanhDTO>> => {
+        return await fetchJSON("tlk/hoc-ky-hien-hanh", {
+            method: "GET",
+        });
+    },
 
-}
+    /**
+     * ✅ COPY từ PDT - Lấy phòng học available
+     */
+    getAvailablePhongHoc: async (): Promise<ServiceResult<PhongHocDTO[]>> => {
+        return await fetchJSON("tlk/phong-hoc/available", {
+            method: "GET",
+        });
+    },
+
+    /**
+     * ✅ MOVE từ PDT - Lấy học phần để tạo lớp
+     */
+    getHocPhansForCreateLop: async (hocKyId: string): Promise<ServiceResult<HocPhanForCreateLopDTO[]>> => {
+        return await fetchJSON(`tlk/lop-hoc-phan/get-hoc-phan/${hocKyId}`, {
+            method: "GET",
+        });
+    },
+
+    /**
+     * ✅ Lấy tất cả phòng học của TLK (có thể filter theo khoa)
+     */
+    getPhongHocByTLK: async (): Promise<ServiceResult<PhongHocDTO[]>> => {
+        return await fetchJSON("tlk/phong-hoc", {
+            method: "GET",
+        });
+    },
+
+    /**
+     * ✅ Lấy TKB đã có của nhiều môn học
+     */
+    getTKBByMaHocPhans: async (
+        maHocPhans: string[],
+        hocKyId: string
+    ): Promise<ServiceResult<ThoiKhoaBieuMonHocDTO[]>> => {
+        return await fetchJSON("tlk/thoi-khoa-bieu/batch", {
+            method: "POST",
+            body: { maHocPhans, hocKyId },
+        });
+    },
+
+    /**
+     * ✅ Xếp thời khóa biểu
+     */
+    xepThoiKhoaBieu: async (data: XepTKBRequest): Promise<ServiceResult<any>> => {
+        return await fetchJSON("tlk/thoi-khoa-bieu", {
+            method: "POST",
+            body: data,
+        });
+    },
+};

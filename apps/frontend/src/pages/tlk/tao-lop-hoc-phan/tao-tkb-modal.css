@@ -1,0 +1,476 @@
+.tkb-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.tkb-modal-container {
+  background: white;
+  border-radius: 12px;
+  width: 95%;
+  max-width: 1800px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.tkb-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tkb-modal-header h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.tkb-modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.tkb-modal-close:hover {
+  color: #1f2937;
+}
+
+.tkb-modal-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  gap: 20px;
+  padding: 20px 24px;
+}
+
+.tkb-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.tkb-sidebar {
+  width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  padding-right: 12px;
+  flex-shrink: 0;
+}
+
+.tkb-sidebar-section {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.tkb-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 10px;
+}
+
+.tkb-sidebar-section .form__select {
+  width: 100% !important;
+  min-width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 12px; /* ✅ Thêm gap */
+}
+
+.btn__add-instance {
+  width: 100%;
+  background: #10b981;
+  color: white;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background 0.2s;
+  border: none;
+  cursor: pointer;
+  margin-top: 4px; /* ✅ Thêm gap nhỏ */
+}
+
+.btn__add-instance:hover {
+  background: #059669;
+}
+
+.tkb-instance-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.tkb-instance-item {
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 12px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tkb-instance-item:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+}
+
+.tkb-instance-item.selected {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.tkb-instance-item.incomplete {
+  animation: blink 1.5s infinite;
+  border-color: #fbbf24;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.tkb-instance-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.tkb-instance-index {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 14px;
+}
+
+.tkb-instance-position {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.tkb-instance-drag-handle {
+  color: #9ca3af;
+  font-size: 16px;
+  cursor: grab;
+  padding: 4px;
+  user-select: none;
+  line-height: 1;
+}
+
+.tkb-instance-drag-handle:active {
+  cursor: grabbing;
+}
+
+.tkb-instance-delete {
+  background: #fee;
+  border: none;
+  color: #dc2626;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.tkb-instance-delete:hover {
+  background: #fecaca;
+}
+
+.tkb-form {
+  background: white;
+  border: 1px solid #e5e7eb;
+}
+
+.tkb-form-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 16px;
+}
+
+.tkb-form-group {
+  margin-bottom: 16px;
+}
+
+.tkb-form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.tkb-form-group .form__select,
+.tkb-form-group .form__input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.tkb-form-group .form__select:focus,
+.tkb-form-group .form__input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.tkb-grid-container {
+  flex: 1;
+  overflow: auto;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.tkb-grid {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.tkb-grid thead th {
+  background: #0c4874;
+  color: white;
+  padding: 14px 12px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 14px;
+  border: 1px solid white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tkb-grid-header-tiet {
+  width: 120px;
+}
+
+.tkb-grid-tiet {
+  background: #c2ccd6 !important;
+  padding: 10px 8px !important;
+  text-align: center !important;
+  border: 1px solid #808080 !important;
+  font-size: 13px !important;
+  font-weight: bold !important;
+  color: rgb(23, 43, 77) !important;
+  vertical-align: middle !important;
+  width: 120px !important;
+}
+
+.tkb-tiet-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tkb-tiet-info strong {
+  color: rgb(23, 43, 77);
+  font-size: 14px;
+}
+
+.tkb-tiet-info small {
+  color: rgb(23, 43, 77);
+  font-size: 11px;
+}
+
+.tkb-grid-cell {
+  border: 1px solid #808080 !important;
+  padding: 12px !important;
+  vertical-align: middle !important;
+  text-align: center !important;
+  min-height: 100px !important;
+  height: auto !important;
+  background: white !important;
+}
+
+.tkb-grid-cell.hover {
+  background: #f0f9ff !important;
+  border-color: #3b82f6 !important;
+}
+
+.tkb-grid .class-item {
+  background: #b2d4eb !important;
+  border: 2px solid #3b82f6 !important;
+  border-radius: 6px !important;
+  padding: 10px 14px !important;
+  transition: all 0.2s !important;
+  position: relative !important;
+  display: inline-block !important;
+  text-align: center !important;
+  line-height: 1.5 !important;
+  min-width: 140px !important;
+  vertical-align: middle !important;
+}
+
+.tkb-grid .class-item:hover {
+  background: #9ec5e0 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(10, 67, 88, 0.2);
+}
+
+.tkb-grid .class-item.selected {
+  border-color: #2563eb !important;
+  background: #dbeafe !important;
+  box-shadow: 0 0 0 2px #3b82f6 !important;
+}
+
+.tkb-grid .class-item.incomplete {
+  background: #fef3c7 !important;
+  border-color: #f59e0b !important;
+  animation: pulse-card 1.5s ease-in-out infinite;
+}
+
+.tkb-grid .class-item.incomplete.no-info {
+  background: #fed7aa !important;
+  font-style: italic;
+  color: #92400e !important;
+}
+
+@keyframes pulse-card {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(0.98);
+  }
+}
+
+.tkb-grid .class-item strong {
+  font-weight: 700 !important;
+  display: block !important;
+  margin-bottom: 6px !important;
+  color: #dc2626 !important;
+  font-size: 14px !important;
+}
+
+.tkb-grid .class-item strong p {
+  margin: 2px 0 !important;
+  line-height: 1.4 !important;
+  color: #dc2626 !important;
+}
+
+.tkb-grid .class-item p {
+  margin: 3px 0 !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+  color: #0a4358 !important;
+}
+
+.tkb-grid .class-item__badge-incomplete {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: rgba(251, 191, 36, 0.95);
+  color: #78350f;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.tkb-drag-overlay {
+  background: #b2d4eb;
+  border: 2px solid #3b82f6;
+  color: #0a4358;
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  cursor: grabbing;
+}
+
+.btn__cancel {
+  background: #f3f4f6;
+  color: #374151;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn__cancel:hover {
+  background: #e5e7eb;
+}
+
+.btn__save {
+  background: #3b82f6;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn__save:hover {
+  background: #2563eb;
+}
+
+.tkb-sidebar::-webkit-scrollbar,
+.tkb-instance-list::-webkit-scrollbar,
+.tkb-grid-container::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.tkb-sidebar::-webkit-scrollbar-track,
+.tkb-instance-list::-webkit-scrollbar-track,
+.tkb-grid-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.tkb-sidebar::-webkit-scrollbar-thumb,
+.tkb-instance-list::-webkit-scrollbar-thumb,
+.tkb-grid-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.tkb-sidebar::-webkit-scrollbar-thumb:hover,
+.tkb-instance-list::-webkit-scrollbar-thumb:hover,
+.tkb-grid-container::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

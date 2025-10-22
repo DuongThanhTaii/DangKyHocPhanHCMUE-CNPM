@@ -4,11 +4,12 @@
 export interface ThongTinLopHoc {
     tenLop: string;
     phongHoc?: string;
+    phongHocId?: string; // UUID reference
     ngayBatDau: Date;
     ngayKetThuc: Date;
-    tietBatDau: number;      // 1-12
-    tietKetThuc: number;     // 1-12
-    thuTrongTuan?: number;   // 2=T2, 3=T3, ..., 7=CN
+    tietBatDau: number;
+    tietKetThuc: number;
+    thuTrongTuan?: number;
 }
 
 /**
@@ -17,33 +18,22 @@ export interface ThongTinLopHoc {
 export interface ThoiKhoaBieuMonHocDTO {
     id: string;
     maHocPhan: string;
-    hocKyId: string;
     danhSachLop: ThongTinLopHoc[];
-    createdAt: Date;
-    updatedAt: Date;
 }
 
 /**
- * DTO request - Tạo thời khóa biểu mới
+ * DTO request - Xếp thời khóa biểu
  */
-export interface CreateThoiKhoaBieuRequest {
+export interface XepTKBRequest {
     maHocPhan: string;
     hocKyId: string;
-    danhSachLop: ThongTinLopHoc[];
-}
-
-/**
- * DTO request - Update danh sách lớp
- */
-export interface UpdateDanhSachLopRequest {
-    id: string;
-    danhSachLop: ThongTinLopHoc[];
-}
-
-/**
- * DTO request - Query thời khóa biểu
- */
-export interface GetThoiKhoaBieuQuery {
-    maHocPhan?: string;
-    hocKyId?: string;
+    danhSachLop: {
+        tenLop: string;
+        phongHocId: string;
+        ngayBatDau: Date;
+        ngayKetThuc: Date;
+        tietBatDau: number;
+        tietKetThuc: number;
+        thuTrongTuan: number;
+    }[];
 }

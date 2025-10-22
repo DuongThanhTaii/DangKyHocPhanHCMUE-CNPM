@@ -19,6 +19,9 @@ import type {
     KhoaDTO,
     UpdateDotGhiDanhRequest, // ✅ Import
     DotGhiDanhResponseDTO, // ✅ Import
+    PhongHocDTO,
+    AssignPhongRequest,
+    UnassignPhongRequest,
 } from "../types/pdtTypes";
 
 /**
@@ -175,7 +178,48 @@ export const pdtApi = {
             method: "GET",
         });
     },
+    /**
+     * ✅ Lấy danh sách phòng học available (chưa được phân)
+     */
+    getAvailablePhongHoc: async (): Promise<ServiceResult<PhongHocDTO[]>> => {
+        return await fetchJSON("pdt/phong-hoc/available", {
+            method: "GET",
+        });
+    },
 
+    /**
+     * ✅ Lấy danh sách phòng học của khoa
+     */
+    getPhongHocByKhoa: async (khoaId: string): Promise<ServiceResult<PhongHocDTO[]>> => {
+        return await fetchJSON(`pdt/phong-hoc/khoa/${khoaId}`, {
+            method: "GET",
+        });
+    },
 
+    /**
+     * ✅ Gán phòng cho khoa
+     */
+    assignPhongToKhoa: async (
+        khoaId: string,
+        data: AssignPhongRequest
+    ): Promise<ServiceResult<{ count: number }>> => {
+        return await fetchJSON(`pdt/phong-hoc/khoa/${khoaId}/assign`, {
+            method: "PATCH",
+            body: data,
+        });
+    },
+
+    /**
+     * ✅ Xóa phòng khỏi khoa
+     */
+    unassignPhongFromKhoa: async (
+        khoaId: string,
+        data: UnassignPhongRequest
+    ): Promise<ServiceResult<{ count: number }>> => {
+        return await fetchJSON(`pdt/phong-hoc/khoa/${khoaId}/unassign`, {
+            method: "PATCH",
+            body: data,
+        });
+    },
 };
 

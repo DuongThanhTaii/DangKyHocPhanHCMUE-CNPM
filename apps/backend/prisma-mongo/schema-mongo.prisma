@@ -30,7 +30,7 @@ model ThoiKhoaBieuMonHoc {
 // Embedded type - Nested trong ThoiKhoaBieuMonHoc
 type DanhSachLop {
     tenLop       String   @map("ten_lop")
-    phongHoc     String?  @map("phong_hoc")
+    phongHocId   String?  @map("phong_hoc_id") // UUID reference to PostgreSQL phong table
     ngayBatDau   DateTime @map("ngay_bat_dau")
     ngayKetThuc  DateTime @map("ngay_ket_thuc")
     tietBatDau   Int      @map("tiet_bat_dau")

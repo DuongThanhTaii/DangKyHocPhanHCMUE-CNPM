@@ -5,7 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import ChuyenHocKyHienHanh from "./pages/pdt/ChuyenHocKyHienHanh";
 import ChuyenTrangThai from "./pages/pdt/ChuyenTrangThai";
 import PDTDuyetHocPhan from "./pages/pdt/DuyetHocPhan-PDT";
-import TaoLopHocPhan from "./pages/pdt/TaoLopHocPhan";
+import TaoLopHocPhan from "./pages/tlk/TaoLopHocPhan";
 import QuanLyNoiBo from "./pages/pdt/QuanLyNoiBo";
 import ThongKeDashboard from "./pages/pdt/ThongKeDashboard";
 
@@ -24,6 +24,7 @@ import TraCuuMonHoc from "./pages/sv/TraCuuMonHoc";
 import SVLayout from "./layouts/SVLayout";
 import LichSuDangKy from "./pages/sv/LichSuDangKyHocPhan";
 import XemThoiKhoaBieu from "./pages/sv/XemThoiKhoaBieu";
+import PhanBoPhongHoc from "./pages/pdt/PhanBoPhongHoc";
 
 import ResetPassword from "./pages/ResetPassword";
 
@@ -43,10 +44,10 @@ export const router = createBrowserRouter([
       { index: true, element: <Navigate to="chuyen-trang-thai" replace /> },
       { path: "chuyen-trang-thai", element: <ChuyenTrangThai /> },
       { path: "duyet-hoc-phan", element: <PDTDuyetHocPhan /> },
-      { path: "tao-lop-hoc-phan", element: <TaoLopHocPhan /> },
       { path: "quan-ly", element: <QuanLyNoiBo /> },
       { path: "thong-ke-dashboard", element: <ThongKeDashboard /> },
       { path: "chuyen-hoc-ky", element: <ChuyenHocKyHienHanh /> },
+      { path: "phan-bo-phong-hoc", element: <PhanBoPhongHoc /> },
     ],
   },
 
@@ -79,6 +80,7 @@ export const router = createBrowserRouter([
       },
       { path: "len-danh-sach-hoc-phan", element: <LenDanhSachHocPhan /> },
       { path: "duyet-hoc-phan", element: <TlkDuyetHocPhan /> },
+      { path: "tao-lop-hoc-phan", element: <TaoLopHocPhan /> },
     ],
   },
 

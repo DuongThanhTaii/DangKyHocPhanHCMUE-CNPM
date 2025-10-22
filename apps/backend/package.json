@@ -16,9 +16,11 @@
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
+    "multer": "^2.0.2",
     "node-cron": "^4.2.1",
     "nodemailer": "^7.0.9",
     "pino": "^9.9.5",
+    "xlsx": "^0.18.5",
     "zod": "^4.1.8"
   },
   "devDependencies": {
@@ -27,7 +29,9 @@
     "@types/express": "^5.0.3",
     "@types/helmet": "^4.0.0",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.0.0",
     "@types/node": "^24.3.3",
+    "@types/xlsx": "^0.0.36",
     "@types/nodemailer": "^7.0.2",
     "prisma": "^6.17.1",
     "ts-node-dev": "^2.0.0",
