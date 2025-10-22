@@ -226,6 +226,7 @@ model khoa {
   giang_vien           giang_vien[]
   mon_hoc              mon_hoc[]
   nganh_hoc            nganh_hoc[]
+  phong                phong[]
   sinh_vien            sinh_vien[]
   tro_ly_khoa          tro_ly_khoa[]
   truong_khoa          truong_khoa?
@@ -450,10 +451,12 @@ model phong {
   co_so_id              String?                 @db.Uuid
   suc_chua              Int?
   da_dc_su_dung         Boolean?                @default(false)
+  khoa_id               String?                 @db.Uuid
   lich_day_lop_hoc_phan lich_day_lop_hoc_phan[]
   lich_hoc_dinh_ky      lich_hoc_dinh_ky[]
   lop_hoc_phan          lop_hoc_phan[]
   co_so                 co_so?                  @relation(fields: [co_so_id], references: [id], onUpdate: NoAction)
+  khoa                  khoa?                   @relation(fields: [khoa_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@unique([ma_phong, co_so_id])
 }
