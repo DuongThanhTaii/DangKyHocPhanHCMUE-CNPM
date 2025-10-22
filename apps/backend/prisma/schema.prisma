@@ -449,8 +449,7 @@ model phong {
   ma_phong              String                  @db.VarChar(20)
   co_so_id              String?                 @db.Uuid
   suc_chua              Int?
-  loai_phong            String?                 @db.VarChar(30)
-  dia_diem              String?
+  da_dc_su_dung         Boolean?                @default(false)
   lich_day_lop_hoc_phan lich_day_lop_hoc_phan[]
   lich_hoc_dinh_ky      lich_hoc_dinh_ky[]
   lop_hoc_phan          lop_hoc_phan[]
@@ -490,13 +489,14 @@ model sinh_vien {
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model tai_khoan {
-  id                   String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  ten_dang_nhap        String    @unique @db.VarChar(50)
-  mat_khau             String    @db.VarChar(255)
-  loai_tai_khoan       String    @db.VarChar(20)
-  trang_thai_hoat_dong Boolean?  @default(true)
-  ngay_tao             DateTime? @default(now()) @db.Timestamp(6)
-  updated_at           DateTime? @default(now()) @db.Timestamp(6)
+  id                   String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  ten_dang_nhap        String        @unique @db.VarChar(50)
+  mat_khau             String        @db.VarChar(255)
+  loai_tai_khoan       String        @db.VarChar(20)
+  trang_thai_hoat_dong Boolean?      @default(true)
+  ngay_tao             DateTime?     @default(now()) @db.Timestamp(6)
+  updated_at           DateTime?     @default(now()) @db.Timestamp(6)
+  reset_token          reset_token[]
   users                users[]
 }
 
@@ -615,4 +615,15 @@ model playing_with_neon {
   id    Int    @id @default(autoincrement())
   name  String
   value Float? @db.Real
+}
+
+model reset_token {
+  id           String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  tai_khoan_id String    @db.Uuid
+  token        String    @unique
+  expires_at   DateTime  @db.Timestamp(6)
+  created_at   DateTime  @default(now()) @db.Timestamp(6)
+  tai_khoan    tai_khoan @relation(fields: [tai_khoan_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([expires_at], map: "idx_reset_token_expires")
 }

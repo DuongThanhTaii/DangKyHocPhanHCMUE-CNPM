@@ -14,6 +14,14 @@ body {
   font-family: "Arial", sans-serif;
 }
 
+hr {
+  margin: 24px 0px;
+  flex-shrink: 0;
+  border-width: 0px 0px thin;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
 /* ============= common ============= */
 a {
   text-decoration: none;
@@ -1931,4 +1939,15 @@ th {
   height: 30px;
   margin-bottom: 10px;
   border: 1px solid #0c4874;
+}
+
+.forget_password_text {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgb(107, 119, 140);
+  cursor: pointer;
+}
+
+.forget_password_text:hover {
+  text-decoration: underline;
 }

@@ -25,8 +25,11 @@ import SVLayout from "./layouts/SVLayout";
 import LichSuDangKy from "./pages/sv/LichSuDangKyHocPhan";
 import XemThoiKhoaBieu from "./pages/sv/XemThoiKhoaBieu";
 
+import ResetPassword from "./pages/ResetPassword";
+
 export const router = createBrowserRouter([
   { path: "/", element: <LoginPage /> },
+  { path: "/reset-password", element: <ResetPassword /> },
 
   // PDT - chỉ cho phong_dao_tao
   {

@@ -1,9 +1,10 @@
-import 'dotenv/config';
-import { PhaseSchedulerService } from './services/PhaseSchedulerService';
+import "dotenv/config";
+import { PhaseSchedulerService } from "./services/PhaseSchedulerService";
 import express, { Request, Response } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import routes from "./routes";
+import forgotRouter from "./modules/auth/forgotPassword.router";
 
 const app = express();
 app.use(helmet());
@@ -20,4 +21,5 @@ app.use("/api", routes);
 const phaseSchedulerService = PhaseSchedulerService.getInstance();
 phaseSchedulerService.start();
 
+app.use("/api/auth", forgotRouter);
 export default app;
