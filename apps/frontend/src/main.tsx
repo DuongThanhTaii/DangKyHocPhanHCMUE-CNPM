@@ -13,6 +13,9 @@ import "./components/toast/toast.css";
 import ConfirmRoot from "./components/confirm/ConfirmRoot";
 import "./components/confirm/confirm.css";
 
+import ChatbotWidget from "./components/chatbot/ChatbotWidget";
+import "./components/chatbot/chatbot.css";
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Provider store={store}>
@@ -20,6 +23,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <SidebarProvider>
           <ModalProvider>
             <RouterProvider router={router} />
+            <ChatbotWidget />
             <ToastContainer />
             <ConfirmRoot />
           </ModalProvider>

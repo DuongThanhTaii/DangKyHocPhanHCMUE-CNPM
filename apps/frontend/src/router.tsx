@@ -26,8 +26,11 @@ import LichSuDangKy from "./pages/sv/LichSuDangKyHocPhan";
 import XemThoiKhoaBieu from "./pages/sv/XemThoiKhoaBieu";
 import PhanBoPhongHoc from "./pages/pdt/PhanBoPhongHoc";
 
+import ResetPassword from "./pages/ResetPassword";
+
 export const router = createBrowserRouter([
   { path: "/", element: <LoginPage /> },
+  { path: "/reset-password", element: <ResetPassword /> },
 
   // PDT - chỉ cho phong_dao_tao
   {
