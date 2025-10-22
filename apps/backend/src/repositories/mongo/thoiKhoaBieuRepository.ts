@@ -1,9 +1,26 @@
 import { BaseMongoRepository } from "./baseMongoRepository";
-import type { ThoiKhoaBieuMonHoc } from "../../../node_modules/.prisma/client-mongo";
+import type { ThoiKhoaBieuMonHoc, DanhSachLop } from "../../../node_modules/.prisma/client-mongo";
 
 export class ThoiKhoaBieuRepository extends BaseMongoRepository<ThoiKhoaBieuMonHoc> {
     constructor() {
-        super("thoiKhoaBieuMonHoc"); // ✅ Tên model trong schema-mongo.prisma
+        super("thoiKhoaBieuMonHoc"); 
+    }
+
+    /**
+     * Tạo thời khóa biểu mới cho môn học
+     */
+    async createTKBMonHoc(
+        maHocPhan: string,
+        hocKyId: string,
+        danhSachLop: DanhSachLop[]
+    ): Promise<ThoiKhoaBieuMonHoc> {
+        return this.model.create({
+            data: {
+                maHocPhan,
+                hocKyId,
+                danhSachLop,
+            },
+        });
     }
 
     /**
@@ -64,7 +81,7 @@ export class ThoiKhoaBieuRepository extends BaseMongoRepository<ThoiKhoaBieuMonH
     /**
      * Thêm 1 lớp vào danh sách
      */
-    async addLop(id: string, lopMoi: any): Promise<ThoiKhoaBieuMonHoc> {
+    async addLop(id: string, lopMoi: DanhSachLop): Promise<ThoiKhoaBieuMonHoc> {
         const current = await this.findById(id);
         if (!current) {
             throw new Error("Thời khóa biểu không tồn tại");
@@ -93,5 +110,24 @@ export class ThoiKhoaBieuRepository extends BaseMongoRepository<ThoiKhoaBieuMonH
             where: { id },
             data: { danhSachLop: newDanhSachLop },
         });
+    }
+
+    /**
+     * Upsert: Tạo mới hoặc thêm lớp vào TKB đã có
+     */
+    async upsertLop(
+        maHocPhan: string,
+        hocKyId: string,
+        lopMoi: DanhSachLop
+    ): Promise<ThoiKhoaBieuMonHoc> {
+        const existing = await this.findByMaHocPhanAndHocKy(maHocPhan, hocKyId);
+
+        if (existing) {
+            // Đã có TKB -> Thêm lớp vào
+            return this.addLop(existing.id, lopMoi);
+        } else {
+            // Chưa có TKB -> Tạo mới
+            return this.createTKBMonHoc(maHocPhan, hocKyId, [lopMoi]);
+        }
     }
 }
