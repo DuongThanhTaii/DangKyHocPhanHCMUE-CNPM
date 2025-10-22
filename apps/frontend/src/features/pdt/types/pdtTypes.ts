@@ -187,3 +187,21 @@ export interface DotGhiDanhResponseDTO {
     gioiHanTinChi: number;
     trangThai: boolean;
 }
+
+
+// ========== PHÂN BỔ PHÒNG HỌC ==========
+
+export interface PhongHocDTO {
+    id: string;
+    maPhong: string;
+    tenCoSo: string;
+    sucChua: number;
+}
+
+export interface AssignPhongRequest {
+    phongHocIds: string[];
+}
+
+export interface UnassignPhongRequest {
+    phongHocIds: string[];
+}
