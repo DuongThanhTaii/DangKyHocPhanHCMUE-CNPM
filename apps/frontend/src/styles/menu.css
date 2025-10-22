@@ -910,9 +910,26 @@ input.form__floating-label__quanly {
   border-radius: 20px;
   transition: 0.3s;
   color: rgb(227, 45, 45);
+  background-color: #fff;
 }
 
 .btn__cancel:hover {
+  background-color: rgb(227, 45, 45);
+  color: #fff;
+  border: none;
+  box-shadow: 0 0 5px 1px rgb(143, 27, 27);
+}
+
+.btn-cancel {
+  width: 60px;
+  border: 1px solid rgb(227, 45, 45);
+  border-radius: 20px;
+  transition: 0.3s;
+  color: rgb(227, 45, 45);
+  background-color: #fff;
+}
+
+.btn-cancel:hover {
   background-color: rgb(227, 45, 45);
   color: #fff;
   border: none;

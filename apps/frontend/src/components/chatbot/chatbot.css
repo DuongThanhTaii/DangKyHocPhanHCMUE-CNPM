@@ -156,3 +156,19 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+.cbt-html table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 6px;
+}
+.cbt-html th,
+.cbt-html td {
+  border: 1px solid #e5e7eb;
+  padding: 6px 8px;
+  font-size: 13px;
+}
+.cbt-html th {
+  background: #f3f4f6;
+  font-weight: 600;
+}

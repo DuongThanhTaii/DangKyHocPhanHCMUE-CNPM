@@ -104,7 +104,9 @@ const QuanLyGiangVien: React.FC = () => {
           confirmText: "Xoá",
           cancelText: "Hủy",
         })
-      : Promise.resolve(window.confirm("Bạn có chắc muốn xoá giảng viên này?")));
+      : Promise.resolve(
+          window.confirm("Bạn có chắc muốn xoá giảng viên này?")
+        ));
     if (!ok) return;
 
     try {
@@ -202,7 +204,7 @@ const QuanLyGiangVien: React.FC = () => {
                   <td className="w40">
                     <div className="btn__quanly__container">
                       <button
-                        className="btn__cancel w50__h20"
+                        className="btn-cancel w50__h20"
                         onClick={() => handleDelete(gv.id)}
                       >
                         Xóa

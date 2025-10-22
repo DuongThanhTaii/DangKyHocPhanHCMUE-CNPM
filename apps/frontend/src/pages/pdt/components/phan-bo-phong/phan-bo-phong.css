@@ -3,7 +3,6 @@
   flex-direction: column;
   height: 100%;
   background: #f9fafb;
-  padding: 24px;
   gap: 20px;
 }
 
@@ -32,6 +31,7 @@
   gap: 20px;
   flex: 1;
   overflow: hidden;
+  margin: -20px 20px 0 20px;
 }
 
 /* ========== KHOA LIST SIDEBAR ========== */
@@ -39,12 +39,13 @@
 .khoa-list-sidebar {
   width: 320px;
   background: white;
-  border-radius: 12px;
+  border-radius: 20px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   flex-shrink: 0;
+  border: 1px solid #ccc;
 }
 
 .khoa-list-header {
@@ -89,7 +90,7 @@
 
 .khoa-item {
   padding: 16px;
-  border-radius: 8px;
+  border-radius: 20px;
   margin-bottom: 8px;
   cursor: pointer;
   transition: all 0.2s;
@@ -136,11 +137,12 @@
 .phong-hoc-main {
   flex: 1;
   background: white;
-  border-radius: 12px;
+  border-radius: 20px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  border: 1px solid #ccc;
 }
 
 .phong-hoc-header {
@@ -173,22 +175,17 @@
 .btn-them-phong {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
-  background: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s;
+  border: 1px solid #172b4d;
+  border-radius: 20px;
+  background-color: #0c4874;
+  color: #fff;
+  transition: 0.3s;
+  height: 40px;
 }
 
 .btn-them-phong:hover:not(:disabled) {
-  background: #2563eb;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+  background-color: #347db0;
+  box-shadow: 0 0 5px 1px #0c4874;
 }
 
 .btn-them-phong:disabled {
@@ -470,10 +467,11 @@
   gap: 12px;
   padding: 14px;
   border: 2px solid #e5e7eb;
-  border-radius: 8px;
+  border-radius: 20px;
   cursor: pointer;
   transition: all 0.2s;
   background: white;
+  margin-right: 5px;
 }
 
 .phong-item-modal:hover {
@@ -534,19 +532,19 @@
 }
 
 .btn-cancel {
-  padding: 10px 20px;
-  background: #f3f4f6;
-  color: #374151;
-  border: none;
-  border-radius: 8px;
-  font-weight: 500;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s;
+  width: 60px;
+  border: 1px solid rgb(227, 45, 45);
+  border-radius: 20px;
+  transition: 0.3s;
+  color: rgb(227, 45, 45);
+  background-color: #fff;
 }
 
 .btn-cancel:hover:not(:disabled) {
-  background: #e5e7eb;
+  background-color: rgb(227, 45, 45);
+  color: #fff;
+  border: none;
+  box-shadow: 0 0 5px 1px rgb(143, 27, 27);
 }
 
 .btn-cancel:disabled {

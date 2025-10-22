@@ -39,9 +39,8 @@ export default function PhanBoPhongHoc() {
 
   return (
     <div className="phan-bo-phong-container">
-      <div className="phan-bo-phong-header">
-        <h1>Phân Bổ Phòng Học</h1>
-        <p className="phan-bo-phong-subtitle">Quản lý phòng học cho các khoa</p>
+      <div className="body__title">
+        <p className="body__title-text">CHUYỂN HỌC KỲ HIỆN HÀNH</p>
       </div>
 
       <div className="phan-bo-phong-body">

@@ -1,49 +1,36 @@
-export type ChatbotReply =
-  | { text: string } // ưu tiên trường text
-  | { answer?: string; response?: string; reply?: string; output?: string }
-  | Record<string, unknown>;
+// apps/frontend/src/services/chatbot.ts
+export type VectorItem = { chunk: string; source?: string; distance?: number };
+export type ChatbotPayload =
+  | { type: "table"; data: string } // HTML string
+  | {
+      type: "course";
+      data: { ten_mon: string; description: string; match_score: number };
+    }
+  | { type: "vector_search"; results: VectorItem[]; message?: string }
+  | { type: "error"; message: string }
+  | Record<string, any>;
 
 const API_BASE =
   import.meta.env.VITE_CHATBOT_API_BASE || "http://localhost:8000";
 
-const TOPK_DEFAULT = Number(import.meta.env.VITE_CHATBOT_TOPK_DEFAULT ?? 2);
-
-export async function queryChatbot(
+export async function queryChatbotRaw(
   query: string,
-  topK: number = TOPK_DEFAULT
-): Promise<string> {
+  topK: number
+): Promise<ChatbotPayload> {
   const res = await fetch(`${API_BASE}/query`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ query, top_k: topK }),
   });
 
-  // Hệ thống bận hoặc chưa OK: FastAPI trả 503 với { detail: { error, status } }
   if (!res.ok) {
     let detail = "Request failed";
     try {
       const j = await res.json();
       if (j?.detail?.error)
         detail = `${j.detail.error} (status: ${j.detail.status})`;
-      else if (j?.detail)
-        detail =
-          typeof j.detail === "string" ? j.detail : JSON.stringify(j.detail);
-    } catch {
-      // ignore
-    }
+    } catch {}
     throw new Error(detail);
   }
-
-  const data: ChatbotReply = await res.json();
-
-  // Cố gắng lấy ra chuỗi phản hồi "đẹp"
-  const text =
-    (data as any).text ??
-    (data as any).answer ??
-    (data as any).response ??
-    (data as any).reply ??
-    (data as any).output ??
-    JSON.stringify(data);
-
-  return String(text);
+  return (await res.json()) as ChatbotPayload;
 }

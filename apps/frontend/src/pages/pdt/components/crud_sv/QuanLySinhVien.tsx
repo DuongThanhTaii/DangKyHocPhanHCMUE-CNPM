@@ -246,7 +246,7 @@ const QuanLySinhVien: React.FC = () => {
                   <td className="w40">
                     <div className="btn__quanly__container">
                       <button
-                        className="btn__cancel w50__h20"
+                        className="btn-cancel w50__h20"
                         onClick={() => handleDeleteSinhVien(sv.id)}
                       >
                         Xóa

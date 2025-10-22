@@ -1,53 +1,128 @@
-import { useEffect, useRef, useState } from "react";
-import { queryChatbot } from "../../services/chatbot";
+import React, { useEffect, useRef, useState } from "react";
+// ⬇️ type-only import để không phát sinh import runtime
+import type { ChatbotPayload, VectorItem } from "../../services/chatbot";
 
-type Message = {
-  id: string;
-  role: "user" | "bot" | "system";
-  text: string;
-};
+/** ====== Types ====== */
+type UserMsg = { id: string; role: "user"; text: string };
+type BotMsg =
+  | { id: string; role: "bot" | "system"; payload: ChatbotPayload }
+  | { id: string; role: "system"; payload: { text: string } };
+type Message = UserMsg | BotMsg;
 
 const uid = () => Math.random().toString(36).slice(2);
 
-// ==== Draggable FAB config ====
-const FAB_SIZE = 56; // px (khớp CSS)
-const PANEL_W = 380; // px (khớp CSS .cbt-panel width)
-const PANEL_H = 520; // px (khớp CSS .cbt-panel height)
-const EDGE_PAD = 12; // lề an toàn
-const CLICK_DRAG_THRESHOLD = 6; // px — kéo > 6px mới tính là drag
-const POS_KEY = "chatbot_fab_pos"; // localStorage key
+/** ====== Draggable FAB config ====== */
+const FAB_SIZE = 56;
+const PANEL_W = 380;
+const PANEL_H = 520;
+const EDGE_PAD = 12;
+const CLICK_DRAG_THRESHOLD = 6;
+const POS_KEY = "chatbot_fab_pos";
 
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
 }
 
+/** ====== Render bot payload theo type ====== */
+function renderBotPayload(
+  payload: ChatbotPayload | { text: string }
+): React.ReactNode {
+  if ("text" in payload) {
+    return <div className="cbt-bubble">{payload.text}</div>;
+  }
+
+  const p = payload as ChatbotPayload & Record<string, any>;
+  const t = p?.type as string | undefined;
+
+  if (t === "error") {
+    return <div className="cbt-bubble">⚠️ {p.message}</div>;
+  }
+
+  if (t === "table") {
+    return (
+      <div
+        className="cbt-bubble cbt-html"
+        // HTML từ backend (bảng) — đảm bảo nguồn tin cậy
+        dangerouslySetInnerHTML={{ __html: String(p.data ?? "") }}
+      />
+    );
+  }
+
+  if (t === "course") {
+    const d = (p.data ?? {}) as {
+      ten_mon: string;
+      description: string;
+      match_score: number;
+    };
+    return (
+      <div className="cbt-bubble">
+        <div style={{ fontWeight: 600 }}>{d.ten_mon}</div>
+        <div style={{ opacity: 0.95, marginTop: 4 }}>{d.description}</div>
+        <div style={{ fontSize: 12, opacity: 0.7, marginTop: 6 }}></div>
+      </div>
+    );
+  }
+
+  if (t === "vector_search") {
+    const r: VectorItem[] = (p.results as VectorItem[]) || [];
+    if (!r.length) {
+      return (
+        <div className="cbt-bubble">
+          {p.message || "Không tìm thấy thông tin phù hợp trong Sổ tay."}
+        </div>
+      );
+    }
+    return (
+      <div className="cbt-bubble">
+        <div style={{ fontWeight: 600, marginBottom: 6 }}>Kết quả gần nhất</div>
+        {r.map((it, i) => (
+          <div key={i} style={{ marginBottom: 10 }}>
+            <div style={{ whiteSpace: "pre-wrap" }}>{it.chunk}</div>
+            <div style={{ fontSize: 12, opacity: 0.7, marginTop: 4 }}>
+              {typeof it.distance === "number" ? it.distance.toFixed(4) : "—"}
+            </div>
+            {i < r.length - 1 && (
+              <hr style={{ marginTop: 8, marginBottom: 8 }} />
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // Fallback
+  return <div className="cbt-bubble">{JSON.stringify(p)}</div>;
+}
+
 export default function ChatbotWidget() {
+  /** ====== UI state ====== */
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: uid(),
       role: "system",
-      text: "Xin chào 👋 Mình là Chatbot HCMUE. Bạn cần gì cứ hỏi nhé!",
+      payload: {
+        text: "Xin chào 👋 Mình là Chatbot HCMUE. Bạn cần gì cứ hỏi nhé!",
+      },
     },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [topK, setTopK] = useState<number>(
-    Number(import.meta.env.VITE_CHATBOT_TOPK_DEFAULT ?? 2)
+    Number(import.meta.env.VITE_CHATBOT_TOPK_DEFAULT ?? 1)
   );
-
-  // ===== Scroll to bottom when open/messages change
   const bottomRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (open) bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [open, messages.length]);
 
-  // ====== Draggable FAB state
+  /** ====== FAB position (draggable + persist) ====== */
   const [fabPos, setFabPos] = useState<{ x: number; y: number }>(() => {
-    // default: góc phải dưới
     const W = typeof window !== "undefined" ? window.innerWidth : 1280;
     const H = typeof window !== "undefined" ? window.innerHeight : 720;
-    const saved = localStorage.getItem(POS_KEY);
+    const saved =
+      typeof window !== "undefined" ? localStorage.getItem(POS_KEY) : null;
     if (saved) {
       try {
         const p = JSON.parse(saved);
@@ -60,7 +135,6 @@ export default function ChatbotWidget() {
     return { x: W - FAB_SIZE - 20, y: H - FAB_SIZE - 20 };
   });
 
-  // keep pos in bounds on resize
   useEffect(() => {
     const onResize = () => {
       setFabPos((p) => ({
@@ -72,7 +146,6 @@ export default function ChatbotWidget() {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  // pointer drag refs
   const dragStartRef = useRef<{
     x: number;
     y: number;
@@ -117,15 +190,13 @@ export default function ChatbotWidget() {
     (e.target as HTMLElement).releasePointerCapture?.(e.pointerId);
     dragStartRef.current = null;
     document.body.classList.remove("cbt-noselect");
-    // lưu lại
     localStorage.setItem(POS_KEY, JSON.stringify(fabPos));
-    // nếu không kéo (drag), coi như click toggle
     if (!draggedRef.current) {
       setOpen((v) => !v);
     }
   };
 
-  // ====== Panel position (bật gần bóng, không tràn màn hình)
+  /** ====== Panel position relative to FAB ====== */
   const [panelPos, setPanelPos] = useState<{ top: number; left: number }>({
     top: 0,
     left: 0,
@@ -136,47 +207,45 @@ export default function ChatbotWidget() {
     const W = window.innerWidth;
     const H = window.innerHeight;
 
-    // ưu tiên mở panel phía trên và lệch sang trái một chút để sát bóng
-    // nếu không đủ chỗ phía trên thì mở phía dưới
     const preferTop = fabPos.y - PANEL_H - 12 >= EDGE_PAD;
     const top = preferTop
       ? fabPos.y - PANEL_H - 12
       : clamp(fabPos.y + FAB_SIZE + 12, EDGE_PAD, H - PANEL_H - EDGE_PAD);
 
-    // đặt panel sao cho mép phải panel khớp (gần) bóng
     let left = fabPos.x + FAB_SIZE - PANEL_W;
-    // nếu lệch ra ngoài trái/phải thì kẹp lại
     left = clamp(left, EDGE_PAD, W - PANEL_W - EDGE_PAD);
 
     setPanelPos({ top, left });
   }, [open, fabPos]);
 
-  // ====== Chat logic
-  const send = async () => {
+  /** ====== Chat logic ====== */
+  async function send() {
     const q = input.trim();
     if (!q || loading) return;
 
-    const userMsg: Message = { id: uid(), role: "user", text: q };
+    const userMsg: UserMsg = { id: uid(), role: "user", text: q };
     setMessages((m) => [...m, userMsg]);
     setInput("");
     setLoading(true);
     try {
-      const reply = await queryChatbot(q, topK);
-      const botMsg: Message = { id: uid(), role: "bot", text: reply };
+      // chú ý: dùng queryChatbotRaw để nhận payload có type
+      const { queryChatbotRaw } = await import("../../services/chatbot");
+      const payload = await queryChatbotRaw(q, topK);
+      const botMsg: BotMsg = { id: uid(), role: "bot", payload };
       setMessages((m) => [...m, botMsg]);
     } catch (err: any) {
-      const botMsg: Message = {
+      const botMsg: BotMsg = {
         id: uid(),
         role: "system",
-        text:
-          "⚠️ Xin lỗi, hiện không thể xử lý yêu cầu. " +
-          (err?.message ? `\nChi tiết: ${err.message}` : ""),
+        payload: {
+          text: "⚠️ Xin lỗi, không thể xử lý yêu cầu.\n" + (err?.message || ""),
+        },
       };
       setMessages((m) => [...m, botMsg]);
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -188,7 +257,7 @@ export default function ChatbotWidget() {
 
   return (
     <>
-      {/* Bóng tròn nổi — chuyển sang absolute (left/top) để kéo thả */}
+      {/* FAB — kéo thả khắp màn hình */}
       <button
         aria-label="Open Chatbot"
         className="cbt-fab"
@@ -200,7 +269,7 @@ export default function ChatbotWidget() {
         💬
       </button>
 
-      {/* Khung chat đặt theo vị trí đã tính */}
+      {/* Panel chat */}
       {open && (
         <div
           className="cbt-panel"
@@ -209,16 +278,6 @@ export default function ChatbotWidget() {
           <div className="cbt-header">
             <div className="cbt-title">Chatbot HCMUE</div>
             <div className="cbt-actions">
-              <label className="cbt-topk">
-                top_k:
-                <input
-                  type="number"
-                  min={1}
-                  max={10}
-                  value={topK}
-                  onChange={(e) => setTopK(Number(e.target.value || 2))}
-                />
-              </label>
               <button
                 className="cbt-close"
                 onClick={() => setOpen(false)}
@@ -232,7 +291,13 @@ export default function ChatbotWidget() {
           <div className="cbt-body">
             {messages.map((m) => (
               <div key={m.id} className={`cbt-msg ${m.role}`}>
-                <div className="cbt-bubble">{m.text}</div>
+                {m.role === "user" ? (
+                  <div className="cbt-bubble">{m.text}</div>
+                ) : (
+                  renderBotPayload(
+                    m.payload as ChatbotPayload | { text: string }
+                  )
+                )}
               </div>
             ))}
             {loading && (
