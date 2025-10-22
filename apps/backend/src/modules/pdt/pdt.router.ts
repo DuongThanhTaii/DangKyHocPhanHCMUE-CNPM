@@ -33,6 +33,15 @@ import {
   deleteMonHocHandler,
 } from "./pdt_crud_monhoc_service";
 
+import { getHocPhansForCreateLopHandler } from "./pdt_curd_lop_hoc_phan_service";
+
+import {
+  getAvailablePhongHocHandler,
+  getAllPhongHocByKhoaIdHandler,
+  assignPhongHocByKhoaIdHandler,
+  unassignPhongHocByKhoaIdHandler,
+} from "./pdt_phong_hoc_service";
+
 const r = Router();
 
 r.get("/me", requireAuth, requireRole(["phong_dao_tao"]), (req, res) => {
@@ -185,6 +194,35 @@ r.get(
   requireAuth,
   requireRole(["phong_dao_tao"]),
   getAllDotDangKyByHocKyHandler
+);
+
+// Phòng học
+r.get(
+  "/phong-hoc/available",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  getAvailablePhongHocHandler
+);
+
+r.get(
+  "/phong-hoc/khoa/:khoaId",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  getAllPhongHocByKhoaIdHandler
+);
+
+r.patch(
+  "/phong-hoc/khoa/:khoaId/assign",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  assignPhongHocByKhoaIdHandler
+);
+
+r.patch(
+  "/phong-hoc/khoa/:khoaId/unassign",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  unassignPhongHocByKhoaIdHandler
 );
 
 export default r;
