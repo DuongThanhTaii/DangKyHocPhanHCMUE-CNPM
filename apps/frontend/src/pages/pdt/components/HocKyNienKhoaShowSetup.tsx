@@ -18,6 +18,7 @@ type HocKyNienKhoaShowSetupProps = {
   semesterEnd: string;
   currentSemester: CurrentSemester;
   semesterMessage: string;
+  showDateFields?: boolean; // ✅ Add this
   showSetButton?: boolean; // ✅ Thêm prop này
   onChangeNienKhoa: (value: string) => void;
   onChangeHocKy: (value: string) => void;
@@ -36,6 +37,7 @@ export const HocKyNienKhoaShowSetup = ({
   semesterEnd,
   currentSemester,
   semesterMessage,
+  showDateFields = true, // ✅ Default true for backward compatibility
   showSetButton = false, // ✅ Default là false
   onChangeNienKhoa,
   onChangeHocKy,
@@ -53,7 +55,9 @@ export const HocKyNienKhoaShowSetup = ({
   return (
     <div className="form-section">
       <h3 className="sub__title_chuyenphase">
-        Thiết lập Niên khóa &amp; Học kỳ hiện tại
+        {showSetButton
+          ? "Thiết lập Niên khóa & Học kỳ hiện tại"
+          : "Chọn Niên khóa & Học kỳ"}
       </h3>
 
       <form className="search-form" onSubmit={onSubmit}>
@@ -95,29 +99,34 @@ export const HocKyNienKhoaShowSetup = ({
           <label className="form__label">Học kỳ</label>
         </div>
 
-        <div className="form__group form__group__ctt">
-          <input
-            type="date"
-            className="form__input"
-            value={semesterStart}
-            onChange={(e) => onChangeStart(e.target.value)}
-            disabled={submitting}
-            required
-          />
-          <label className="form__floating-label">Ngày bắt đầu</label>
-        </div>
+        {/* ✅ Conditionally show date fields */}
+        {showDateFields && (
+          <>
+            <div className="form__group form__group__ctt">
+              <input
+                type="date"
+                className="form__input"
+                value={semesterStart}
+                onChange={(e) => onChangeStart(e.target.value)}
+                disabled={submitting}
+                required
+              />
+              <label className="form__floating-label">Ngày bắt đầu</label>
+            </div>
 
-        <div className="form__group form__group__ctt">
-          <input
-            type="date"
-            className="form__input"
-            value={semesterEnd}
-            onChange={(e) => onChangeEnd(e.target.value)}
-            disabled={submitting}
-            required
-          />
-          <label className="form__floating-label">Ngày kết thúc</label>
-        </div>
+            <div className="form__group form__group__ctt">
+              <input
+                type="date"
+                className="form__input"
+                value={semesterEnd}
+                onChange={(e) => onChangeEnd(e.target.value)}
+                disabled={submitting}
+                required
+              />
+              <label className="form__floating-label">Ngày kết thúc</label>
+            </div>
+          </>
+        )}
 
         {/* ✅ Hiện button Set nếu showSetButton = true */}
         {showSetButton && (
