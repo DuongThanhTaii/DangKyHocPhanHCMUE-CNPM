@@ -455,7 +455,7 @@ export class DeXuatHocPhanService {
     ): Promise<ServiceResult<null>> {
         try {
             // Step 1: Kiểm tra học phần tồn tại và đang mở
-            const hocPhan = await this.unitOfWork.hocPhanRepository.findById(request.id);
+            const hocPhan = await this.unitOfWork.hocPhanRepository.findById(request.monHocId);
             if (!hocPhan) {
                 return ServiceResultBuilder.failure(
                     "Không tìm thấy học phần",
@@ -503,7 +503,7 @@ export class DeXuatHocPhanService {
             // Step 3: Kiểm tra sinh viên đã ghi danh chưa
             const isAlreadyRegistered = await this.unitOfWork.ghiDanhHocPhanRepository.isAlreadyRegistered(
                 sinhVienId,
-                request.id
+                request.monHocId
             );
 
             if (isAlreadyRegistered) {
@@ -516,7 +516,7 @@ export class DeXuatHocPhanService {
             // Step 4: Tạo bản ghi ghi danh
             await this.unitOfWork.ghiDanhHocPhanRepository.create({
                 sinh_vien_id: sinhVienId,
-                hoc_phan_id: request.id,
+                hoc_phan_id: request.monHocId,
                 trang_thai: "da_ghi_danh",
             });
 

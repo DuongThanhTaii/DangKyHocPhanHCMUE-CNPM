@@ -3,7 +3,9 @@ import { CheckTrangThaiForSinhVien } from "./CheckTrangThaiForSinhVien";
 import { DeXuatHocPhanService } from "./deXuatHocPhanService";
 import { DotDangKyService } from "./dotDangKyService";
 import { HocKyService } from "./hocKyService";
+import { HocPhanService } from "./hocPhanService";
 import { KyPhaseService } from "./kyPhaseService";
+import { PhongHocService } from "./phongHocService";
 import { SinhVienService } from "./sinhVienService";
 
 export class ServiceFactory {
@@ -15,7 +17,9 @@ export class ServiceFactory {
     private _deXuatHocPhanService?: DeXuatHocPhanService;
     private _sinhVienService?: SinhVienService;
     private _dotDangKyService?: DotDangKyService;
-    private _checkTrangThaiForSinhVien?: CheckTrangThaiForSinhVien
+    private _checkTrangThaiForSinhVien?: CheckTrangThaiForSinhVien;
+    private _hocphanService?: HocPhanService;
+    private _phongHocService?: PhongHocService;
     private constructor() {
         this.unitOfWork = UnitOfWork.getInstance();
     }
@@ -60,6 +64,19 @@ export class ServiceFactory {
         return this._dotDangKyService;
     }
 
+    get hocphanService() {
+        if (!this._hocphanService) {
+            this._hocphanService = new HocPhanService();
+        }
+        return this._hocphanService;
+    }
+
+    get phongHocService() {
+        if (!this._phongHocService) {
+            this._phongHocService = new PhongHocService();
+        }
+        return this._phongHocService;
+    }
     get checkTrangThaiForSinhVien() {
         if (!this._checkTrangThaiForSinhVien) {
             this._checkTrangThaiForSinhVien = new CheckTrangThaiForSinhVien(this.unitOfWork);
