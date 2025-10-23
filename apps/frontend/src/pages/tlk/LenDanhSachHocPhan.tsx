@@ -192,22 +192,21 @@ const LenDanhSachHocPhan: React.FC = () => {
         <p className="body__title-text">LÊN DANH SÁCH HỌC PHẦN</p>
       </div>
 
-      <div style={{ marginBottom: 8, opacity: 0.85 }}>
-        {hocKyHienHanh ? (
-          <small>
-            Học kỳ hiện hành: <b>{hocKyHienHanh.ten_hoc_ky}</b> — Niên khóa{" "}
-            <b>{hocKyHienHanh.nien_khoa}</b>
-          </small>
-        ) : (
-          <small>
-            {loading
-              ? "Đang tải học kỳ hiện hành…"
-              : "Chưa có học kỳ hiện hành"}
-          </small>
-        )}
-      </div>
-
       <div className="body__inner">
+        <div style={{ marginBottom: 14, opacity: 0.85 }}>
+          {hocKyHienHanh ? (
+            <small>
+              Học kỳ hiện hành: <b>{hocKyHienHanh.ten_hoc_ky}</b> — Niên khóa{" "}
+              <b>{hocKyHienHanh.nien_khoa}</b>
+            </small>
+          ) : (
+            <small>
+              {loading
+                ? "Đang tải học kỳ hiện hành…"
+                : "Chưa có học kỳ hiện hành"}
+            </small>
+          )}
+        </div>
         <form className="search-form" onSubmit={handleSearch}>
           <div className="form__group form__group__ctt">
             <input

@@ -26,6 +26,9 @@ import LichSuDangKy from "./pages/sv/LichSuDangKyHocPhan";
 import XemThoiKhoaBieu from "./pages/sv/XemThoiKhoaBieu";
 import PhanBoPhongHoc from "./pages/pdt/PhanBoPhongHoc";
 
+import GVLopHocPhanList from "./pages/gv/GVLopHocPhanList";
+import GVLopHocPhanDetail from "./pages/gv/GVLopHocPhanDetail";
+
 import ResetPassword from "./pages/ResetPassword";
 
 export const router = createBrowserRouter([
@@ -62,6 +65,8 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="dashboard" replace /> },
       { path: "dashboard", element: <GiaoVienDashboard /> },
+      { path: "lop-hoc-phan", element: <GVLopHocPhanList /> },
+      { path: "lop-hoc-phan/:id", element: <GVLopHocPhanDetail /> },
     ],
   },
 

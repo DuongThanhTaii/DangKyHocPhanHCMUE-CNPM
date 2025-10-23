@@ -284,7 +284,7 @@ export default function TaoLopHocPhan() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="form__input"
-            style={{ width: 400 }}
+            style={{ width: "100%" }}
           />
         </div>
 
@@ -336,7 +336,7 @@ export default function TaoLopHocPhan() {
       {showTKBModal && selectedHocKyId && (
         <TaoThoiKhoaBieuModal
           danhSachLop={currentData}
-          hocKyId={selectedHocKyId} 
+          hocKyId={selectedHocKyId}
           onClose={() => setShowTKBModal(false)}
           onSuccess={handleTKBSuccess}
         />
