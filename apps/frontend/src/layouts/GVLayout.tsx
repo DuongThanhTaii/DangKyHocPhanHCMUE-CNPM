@@ -172,9 +172,7 @@ export default function GVLayout() {
             </div>
             <div className="user__body">
               <p className="user__name">{user?.ho_ten}</p>
-              <p className="user__score">
-                {user?.ma_so_sinh_vien || user?.ma_so_nhan_vien || ""}
-              </p>
+              <p className="user__score">{user?.ma_nhan_vien || ""}</p>
               <p className="user__role">{formatRole(user?.loai_tai_khoan)}</p>
             </div>
           </div>
@@ -200,7 +198,7 @@ export default function GVLayout() {
               </li>
 
               <li className="navbar__item">
-                <NavLink to="lop-hoc" className={getNavLinkClass}>
+                <NavLink to="lop-hoc-phan" className={getNavLinkClass}>
                   <span className="navbar__link-icon">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
