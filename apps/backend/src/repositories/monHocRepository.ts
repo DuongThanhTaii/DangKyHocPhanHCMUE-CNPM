@@ -1,4 +1,5 @@
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient, Prisma, mon_hoc } from "@prisma/client";
+import { BaseRepository } from "./baseRepository";
 
 export type MonHocFilter = {
   q?: string;
@@ -10,8 +11,10 @@ export type MonHocFilter = {
   pageSize?: number;
 };
 
-export class MonHocRepository {
-  constructor(private prisma: PrismaClient) {}
+export class MonHocRepository extends BaseRepository<mon_hoc> {
+  constructor(prisma: PrismaClient) {
+    super(prisma, "mon_hoc");
+  }
 
   async findPaged(filter: MonHocFilter) {
     const {
@@ -28,11 +31,11 @@ export class MonHocRepository {
       AND: [
         q
           ? {
-              OR: [
-                { ma_mon: { contains: q, mode: "insensitive" } },
-                { ten_mon: { contains: q, mode: "insensitive" } },
-              ],
-            }
+            OR: [
+              { ma_mon: { contains: q, mode: "insensitive" } },
+              { ten_mon: { contains: q, mode: "insensitive" } },
+            ],
+          }
           : {},
         khoa_id ? { khoa_id } : {},
         loai_mon ? { loai_mon } : {},
@@ -88,15 +91,20 @@ export class MonHocRepository {
     });
   }
 
-  findByMaMon(ma_mon: string) {
-    return this.prisma.mon_hoc.findUnique({ where: { ma_mon } });
+  /**
+   * Tìm môn học theo mã môn
+   */
+  async findByMaMon(maMon: string) {
+    return this.model.findFirst({
+      where: { ma_mon: maMon },
+    });
   }
 
   /**
    * Tạo mon_hoc + gán ngành + điều kiện.
    * Chú ý: không include nặng — trả về id, FE/Service load lại detail sau.
    */
-  async create(data: {
+  async createMonHoc(data: {
     ma_mon: string;
     ten_mon: string;
     so_tin_chi: number;
@@ -171,7 +179,7 @@ export class MonHocRepository {
   /**
    * Cập nhật mon_hoc + (tuỳ chọn) replace danh sách ngành & điều kiện
    */
-  async update(
+  async updateMonHoc(
     id: string,
     data: Partial<{
       ma_mon: string;
@@ -238,7 +246,7 @@ export class MonHocRepository {
    * Xoá môn học.
    * Tuỳ hệ quả, có thể chặn nếu đang có hoc_phan phụ thuộc.
    */
-  async delete(id: string, opts?: { force?: boolean }) {
+  async deleteMonHoc(id: string, opts?: { force?: boolean }) {
     return this.prisma.$transaction(async (tx) => {
       if (!opts?.force) {
         const countHP = await tx.hoc_phan.count({ where: { mon_hoc_id: id } });
