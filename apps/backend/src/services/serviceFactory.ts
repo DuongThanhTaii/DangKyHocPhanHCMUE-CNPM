@@ -7,6 +7,7 @@ import { HocPhanService } from "./hocPhanService";
 import { KyPhaseService } from "./kyPhaseService";
 import { PhongHocService } from "./phongHocService";
 import { SinhVienService } from "./sinhVienService";
+import { GiangVienService } from "./giangVienService";
 
 export class ServiceFactory {
     private static instance: ServiceFactory;
@@ -20,6 +21,7 @@ export class ServiceFactory {
     private _checkTrangThaiForSinhVien?: CheckTrangThaiForSinhVien;
     private _hocphanService?: HocPhanService;
     private _phongHocService?: PhongHocService;
+    private _giangVienService?: GiangVienService;
     private constructor() {
         this.unitOfWork = UnitOfWork.getInstance();
     }
@@ -76,6 +78,12 @@ export class ServiceFactory {
             this._phongHocService = new PhongHocService();
         }
         return this._phongHocService;
+    }
+    get giangVienService() {
+        if (!this._giangVienService) {
+            this._giangVienService = new GiangVienService();
+        }
+        return this._giangVienService;
     }
     get checkTrangThaiForSinhVien() {
         if (!this._checkTrangThaiForSinhVien) {

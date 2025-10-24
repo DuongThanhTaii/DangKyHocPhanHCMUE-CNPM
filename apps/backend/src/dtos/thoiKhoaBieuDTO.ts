@@ -27,6 +27,8 @@ export interface ThoiKhoaBieuMonHocDTO {
 export interface XepTKBRequest {
     maHocPhan: string;
     hocKyId: string;
+    giangVienId?: string; // ✅ Thêm giảng viên ID (optional)
+    soLuongToiDa?: number; // Optional, default 50
     danhSachLop: {
         tenLop: string;
         phongHocId: string;

@@ -18,6 +18,8 @@ import { MonHocRepository } from "./monHocRepository";
 import { NganhRepository } from "./nganhRepository";
 import { GhiDanhHocPhanRepository } from "./ghiDanhHocPhanRepository";
 import { PhongRepository } from "./phongRepository";
+import { LopHocPhanRepository } from "./lopHocPhanRepository";
+import { DangKyHocPhanRepository } from "./dangKyHocPhanRepository";
 
 export class UnitOfWork {
   private static instance: UnitOfWork;
@@ -43,6 +45,8 @@ export class UnitOfWork {
   private _nganhRepository?: NganhRepository;
   private _ghiDanhHocPhanRepository?: GhiDanhHocPhanRepository;
   private _phongRepository?: PhongRepository;
+  private _lopHocPhanRepository?: LopHocPhanRepository;
+  private _dangKyHocPhanRepository?: DangKyHocPhanRepository;
   private constructor() {
     this.prisma = new PrismaClient();
   }
@@ -155,6 +159,18 @@ export class UnitOfWork {
     if (!this._phongRepository)
       this._phongRepository = new PhongRepository(this.prisma);
     return this._phongRepository;
+  }
+
+  get lopHocPhanRepository(): LopHocPhanRepository {
+    if (!this._lopHocPhanRepository)
+      this._lopHocPhanRepository = new LopHocPhanRepository(this.prisma);
+    return this._lopHocPhanRepository;
+  }
+
+  get dangKyHocPhanRepository(): DangKyHocPhanRepository {
+    if (!this._dangKyHocPhanRepository)
+      this._dangKyHocPhanRepository = new DangKyHocPhanRepository(this.prisma);
+    return this._dangKyHocPhanRepository;
   }
 
   async transaction<T>(

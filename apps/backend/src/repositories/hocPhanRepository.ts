@@ -52,8 +52,8 @@ export class HocPhanRepository extends BaseRepository<hoc_phan> {
     }
 
     /**
-  * Lấy danh sách học phần để tạo lớp (kèm số SV ghi danh)
-  */
+     * Lấy danh sách học phần để tạo lớp (kèm số SV ghi danh)
+     */
     async findForCreateLop(hocKyId: string): Promise<any[]> {
         return this.model.findMany({
             where: {
@@ -62,6 +62,7 @@ export class HocPhanRepository extends BaseRepository<hoc_phan> {
             include: {
                 mon_hoc: {
                     select: {
+                        id: true, // ✅ Thêm id
                         ma_mon: true,
                         ten_mon: true,
                         so_tin_chi: true,
@@ -73,6 +74,7 @@ export class HocPhanRepository extends BaseRepository<hoc_phan> {
                             select: {
                                 giang_vien: {
                                     select: {
+                                        id: true, // ✅ Lấy giảng viên ID
                                         users: {
                                             select: {
                                                 ho_ten: true, // ✅ ho_ten nằm ở users, không phải giang_vien
@@ -99,6 +101,18 @@ export class HocPhanRepository extends BaseRepository<hoc_phan> {
                         },
                     },
                 },
+            },
+        });
+    }
+
+    /**
+     * Tìm học phần theo môn học và học kỳ
+     */
+    async findByMonHocAndHocKy(monHocId: string, hocKyId: string) {
+        return this.model.findFirst({
+            where: {
+                mon_hoc_id: monHocId,
+                id_hoc_ky: hocKyId,
             },
         });
     }

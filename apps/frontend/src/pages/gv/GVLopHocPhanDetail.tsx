@@ -45,15 +45,15 @@ export default function GVLopHocPhanDetail() {
     setInfo(r.data);
   };
   const loadDocs = async () => {
-    const r = await fetchJSON(`/api/gv/lop-hoc-phan/${id}/tai-lieu`);
+    const r = await fetchJSON(`/gv/lop-hoc-phan/${id}/tai-lieu`);
     setDocs(r.data || []);
   };
   const loadSVs = async () => {
-    const r = await fetchJSON(`/api/gv/lop-hoc-phan/${id}/sinh-vien`);
+    const r = await fetchJSON(`/gv/lop-hoc-phan/${id}/sinh-vien`);
     setSvs(r.data || []);
   };
   const loadGrades = async () => {
-    const r = await fetchJSON(`/api/gv/lop-hoc-phan/${id}/diem`);
+    const r = await fetchJSON(`/gv/lop-hoc-phan/${id}/diem`);
     const map: Record<string, number | ""> = {};
     (r.data || []).forEach((g: any) => (map[g.sinh_vien_id] = g.diem_so ?? ""));
     setGrades(map);

@@ -23,7 +23,7 @@ export default function GVLopHocPhanList() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetchJSON("/api/gv/lop-hoc-phan");
+        const res = await fetchJSON("/gv/lop-hoc-phan");
         setRows(res.data || []);
       } finally {
         setLoading(false);

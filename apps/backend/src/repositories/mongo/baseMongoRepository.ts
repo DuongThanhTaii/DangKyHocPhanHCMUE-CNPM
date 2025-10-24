@@ -1,25 +1,23 @@
 import { PrismaClient as PrismaClientMongo } from "../../../node_modules/.prisma/client-mongo";
-import { getMongoClient } from "../../db/mongoClient";
 
-export abstract class BaseMongoRepository<T> {
-    protected modelName: string;
+type ModelName = Uncapitalize<Exclude<keyof PrismaClientMongo, `$${string}` | symbol>>;
 
-    constructor(modelName: string) {
+export class BaseMongoRepository<T> {
+    protected prisma: PrismaClientMongo;
+    protected modelName: ModelName;
+
+    constructor(modelName: ModelName) {
+        this.prisma = new PrismaClientMongo({
+            transactionOptions: {
+                maxWait: 2000,
+                timeout: 5000,
+            },
+        });
         this.modelName = modelName;
     }
 
-    /**
-     * Get MongoDB Prisma Client
-     */
-    protected get client(): PrismaClientMongo {
-        return getMongoClient();
-    }
-
-    /**
-     * Get model from client
-     */
     protected get model() {
-        return (this.client as any)[this.modelName];
+        return (this.prisma as any)[this.modelName];
     }
 
     /**

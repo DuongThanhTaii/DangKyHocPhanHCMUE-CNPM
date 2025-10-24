@@ -23,3 +23,21 @@ export interface ThoiKhoaBieuMonHocDTO {
     maHocPhan: string;
     danhSachLop: ThongTinLopHoc[];
 }
+
+/**
+ * Request type - Xếp thời khóa biểu
+ */
+export interface XepThoiKhoaBieuRequest {
+    maHocPhan: string;
+    hocKyId: string;
+    giangVienId?: string; // ✅ Thêm giảng viên ID (optional)
+    danhSachLop: {
+        tenLop: string;
+        phongHocId: string;
+        ngayBatDau: Date;
+        ngayKetThuc: Date;
+        tietBatDau: number;
+        tietKetThuc: number;
+        thuTrongTuan: number;
+    }[];
+}

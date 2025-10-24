@@ -33,4 +33,30 @@ export class DeXuatHocPhanRepository extends BaseRepository<de_xuat_hoc_phan> {
       },
     });
   }
+
+  /**
+   * Tìm đề xuất theo học kỳ và môn học (đã duyệt PDT)
+   */
+  async findByHocKyAndMonHocs(hocKyId: string, monHocIds: string[]) {
+    return this.model.findMany({
+      where: {
+        hoc_ky_id: hocKyId,
+        mon_hoc_id: { in: monHocIds },
+        trang_thai: "da_duyet_pdt",
+      },
+      select: {
+        mon_hoc_id: true,
+        giang_vien_de_xuat: true,
+        giang_vien: {
+          select: {
+            users: {
+              select: {
+                ho_ten: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
 }

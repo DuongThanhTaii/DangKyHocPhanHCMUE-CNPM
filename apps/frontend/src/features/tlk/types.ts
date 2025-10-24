@@ -24,6 +24,7 @@ export interface HocPhanForCreateLopDTO {
     soTinChi: number;
     soSinhVienGhiDanh: number;
     tenGiangVien: string;
+    giangVienId: string;
 }
 
 export interface HocKyHienHanhDTO {
