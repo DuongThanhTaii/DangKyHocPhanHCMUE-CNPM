@@ -1,5 +1,5 @@
 // src/features/tao-lop-hoc-phan/TaoLopHocPhan.tsx
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "../../styles/reset.css";
 import "../../styles/menu.css";
 import { fetchJSON } from "../../utils/fetchJSON";
@@ -41,7 +41,6 @@ export default function TaoLopHocPhan() {
     fetchData,
   } = useHocPhansForCreateLop();
 
-  // ✅ Dùng hook riêng cho TLK (để lấy default)
   const {
     hocKyHienHanh,
     loading: loadingHocKy,
@@ -50,7 +49,7 @@ export default function TaoLopHocPhan() {
 
   // ========= States =========
   const [selectedNienKhoa, setSelectedNienKhoa] = useState<string>("");
-  const [selectedHocKyId, setSelectedHocKyId] = useState<string>(""); // ✅ Đây mới là học kỳ được chọn
+  const [selectedHocKyId, setSelectedHocKyId] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filtered, setFiltered] = useState(hocPhans);
   const [selected, setSelected] = useState<Record<string, SelectedConfig>>({});
@@ -58,8 +57,24 @@ export default function TaoLopHocPhan() {
   const itemsPerPage = 50;
   const [showTKBModal, setShowTKBModal] = useState(false);
 
-  // ========= Auto-select first niên khóa & học kỳ =========
+  // ✅ Merge tất cả auto-select logic vào 1 useEffect duy nhất
   useEffect(() => {
+    // ✅ 1. Auto-select học kỳ hiện hành (ưu tiên cao nhất)
+    if (hocKyHienHanh?.hoc_ky_id && hocKyNienKhoas.length > 0) {
+      // Tìm niên khóa chứa học kỳ hiện hành
+      for (const nk of hocKyNienKhoas) {
+        const foundHK = nk.hocKy.find(
+          (hk) => hk.id === hocKyHienHanh.hoc_ky_id
+        );
+        if (foundHK) {
+          setSelectedNienKhoa(nk.id);
+          setSelectedHocKyId(foundHK.id);
+          return; // ✅ Exit early
+        }
+      }
+    }
+
+    // ✅ 2. Fallback: Auto-select first niên khóa nếu chưa có selection
     if (hocKyNienKhoas.length > 0 && !selectedNienKhoa) {
       const firstNK = hocKyNienKhoas[0];
       setSelectedNienKhoa(firstNK.id);
@@ -67,21 +82,14 @@ export default function TaoLopHocPhan() {
         setSelectedHocKyId(firstNK.hocKy[0].id);
       }
     }
-  }, [hocKyNienKhoas, selectedNienKhoa]);
+  }, [hocKyNienKhoas, hocKyHienHanh, selectedNienKhoa]); // ✅ Chỉ re-run khi dependencies thay đổi
 
-  // ========= Auto-select học kỳ hiện hành =========
-  useEffect(() => {
-    if (hocKyHienHanh?.hoc_ky_id && !selectedHocKyId) {
-      setSelectedHocKyId(hocKyHienHanh.hoc_ky_id);
-    }
-  }, [hocKyHienHanh, selectedHocKyId]);
-
-  // ========= Fetch data when học kỳ changes =========
+  // ✅ Fetch data khi học kỳ thay đổi (separate effect)
   useEffect(() => {
     if (selectedHocKyId) {
       fetchData(selectedHocKyId);
     }
-  }, [selectedHocKyId]); // ✅ Chỉ cần 1 useEffect này
+  }, [selectedHocKyId, fetchData]);
 
   // ========= Filter data =========
   useEffect(() => {
@@ -101,6 +109,37 @@ export default function TaoLopHocPhan() {
     }
     setCurrentPage(1);
   }, [searchQuery, hocPhans]);
+
+  // ✅ Tính toán paging trước
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentData = filtered.slice(startIndex, startIndex + itemsPerPage);
+  const totalPages = Math.ceil(filtered.length / itemsPerPage);
+
+  // ✅ Lấy giangVienId từ học phần được chọn trong modal
+  const giangVienId = useMemo(() => {
+    // Lấy từ học phần đầu tiên trong currentData (trang hiện tại)
+    if (currentData.length > 0) {
+      return currentData[0]?.giangVienId;
+    }
+    return undefined;
+  }, [currentData]);
+
+  console.log("🔍 [TaoLopHocPhan] currentData:", currentData);
+  console.log("🔍 [TaoLopHocPhan] giangVienId:", giangVienId);
+
+  const currentNK = hocKyNienKhoas.find((nk) => nk.id === selectedNienKhoa);
+  const currentHK = currentNK?.hocKy.find((hk) => hk.id === selectedHocKyId);
+
+  const currentSemester = {
+    ten_hoc_ky: currentHK?.tenHocKy || null,
+    ten_nien_khoa: currentNK?.tenNienKhoa || null,
+    ngay_bat_dau: currentHK?.ngayBatDau
+      ? new Date(currentHK.ngayBatDau).toISOString().split("T")[0]
+      : null,
+    ngay_ket_thuc: currentHK?.ngayKetThuc
+      ? new Date(currentHK.ngayKetThuc).toISOString().split("T")[0]
+      : null,
+  };
 
   // ========= Handlers =========
   const handleChangeNienKhoa = (nienKhoaId: string) => {
@@ -226,26 +265,7 @@ export default function TaoLopHocPhan() {
     }
   };
 
-  // ========= Paging =========
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentData = filtered.slice(startIndex, startIndex + itemsPerPage);
-  const totalPages = Math.ceil(filtered.length / itemsPerPage);
-
-  const currentNK = hocKyNienKhoas.find((nk) => nk.id === selectedNienKhoa);
-  const currentHK = currentNK?.hocKy.find((hk) => hk.id === selectedHocKyId);
-
-  const currentSemester = {
-    ten_hoc_ky: currentHK?.tenHocKy || null,
-    ten_nien_khoa: currentNK?.tenNienKhoa || null,
-    ngay_bat_dau: currentHK?.ngayBatDau
-      ? new Date(currentHK.ngayBatDau).toISOString().split("T")[0]
-      : null,
-    ngay_ket_thuc: currentHK?.ngayKetThuc
-      ? new Date(currentHK.ngayKetThuc).toISOString().split("T")[0]
-      : null,
-  };
-
-  // ========= Loading & Error States =========
+  // ========= Loading & Error States (ĐẶT SAU TẤT CẢ HOOKS) =========
   if (loadingSemesters || loadingHocKy) return <p>Đang tải dữ liệu...</p>;
   if (errorSemesters) return <p>{errorSemesters}</p>;
   if (errorHocKy) return <p>{errorHocKy}</p>;
@@ -332,11 +352,12 @@ export default function TaoLopHocPhan() {
         ))}
       </div>
 
-      {/* ✅ Truyền selectedHocKyId thay vì hocKyHienHanh */}
+      {/* ✅ Truyền giangVienId vào modal */}
       {showTKBModal && selectedHocKyId && (
         <TaoThoiKhoaBieuModal
           danhSachLop={currentData}
           hocKyId={selectedHocKyId}
+          giangVienId={giangVienId} // ✅ Truyền giangVienId
           onClose={() => setShowTKBModal(false)}
           onSuccess={handleTKBSuccess}
         />

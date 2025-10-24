@@ -43,6 +43,7 @@ interface Props {
   hocKyId: string;
   onClose: () => void;
   onSuccess?: () => void;
+  giangVienId?: string; // ✅ Nhận giảng viên ID từ parent
 }
 
 export default function TaoThoiKhoaBieuModal({
@@ -50,6 +51,7 @@ export default function TaoThoiKhoaBieuModal({
   danhSachLop,
   hocKyId,
   onSuccess,
+  giangVienId, // ✅ Destructure giangVienId
 }: Props) {
   const { openNotify } = useModalContext();
   const { xepTKB, submitting } = useXepThoiKhoaBieu();
@@ -83,17 +85,40 @@ export default function TaoThoiKhoaBieuModal({
       setLoading(true);
       try {
         const maHocPhans = danhSachLop.map((lop) => lop.maHocPhan);
+        console.log("🔍 [TKB] Fetching TKB for:", maHocPhans);
+
         const result = await tlkAPI.getTKBByMaHocPhans(maHocPhans, hocKyId);
+
+        console.log("🔍 [TKB] API Response:", result);
 
         if (result.isSuccess && result.data) {
           const existingInstances = convertTKBToInstances(
             result.data,
             danhSachLop
           );
+
+          console.log("🔍 [TKB] Converted instances:", existingInstances);
+          console.log(
+            "🔍 [TKB] Instance flags:",
+            existingInstances.map((i) => ({
+              id: i.id,
+              isFromBackend: i.isFromBackend,
+              isReadonly: i.isReadonly,
+              hasAllData: !!(
+                i.position &&
+                i.tietBatDau &&
+                i.tietKetThuc &&
+                i.phongHocId &&
+                i.ngayBatDau &&
+                i.ngayKetThuc
+              ),
+            }))
+          );
+
           setInstances(existingInstances);
         }
       } catch (error) {
-        console.error("Error fetching TKB:", error);
+        console.error("❌ [TKB] Error fetching TKB:", error);
         openNotify({
           message: "Lỗi tải thời khóa biểu",
           type: "error",
@@ -113,14 +138,30 @@ export default function TaoThoiKhoaBieuModal({
   ): ClassInstance[] => {
     const instances: ClassInstance[] = [];
 
+    console.log("🔍 [Convert] Input TKB data:", tkbData);
+    console.log("🔍 [Convert] Input danhSachLop:", danhSachLop);
+
     tkbData.forEach((tkb) => {
       const lopData = danhSachLop.find(
         (lop) => lop.maHocPhan === tkb.maHocPhan
       );
-      if (!lopData) return;
 
-      tkb.danhSachLop.forEach((lop) => {
-        instances.push({
+      console.log(`🔍 [Convert] Processing ${tkb.maHocPhan}:`, {
+        tkb,
+        lopData,
+      });
+
+      if (!lopData) {
+        console.warn(
+          `⚠️ [Convert] Không tìm thấy lopData cho ${tkb.maHocPhan}`
+        );
+        return;
+      }
+
+      tkb.danhSachLop.forEach((lop, index) => {
+        console.log(`🔍 [Convert] Processing lop ${index}:`, lop);
+
+        const instance: ClassInstance = {
           id: lop.id || `existing-${Date.now()}-${Math.random()}`,
           maLopHP: tkb.maHocPhan,
           tenMon: lopData.tenHocPhan,
@@ -137,8 +178,8 @@ export default function TaoThoiKhoaBieuModal({
           tietKetThuc: lop.tietKetThuc,
 
           // ✅ Map cả phongHocId và tenPhongHoc
-          phongHocId: lop.phongHocId, // UUID từ BE
-          tenPhongHoc: lop.phongHoc, // Tên phòng để hiển thị
+          phongHocId: lop.phongHocId,
+          tenPhongHoc: lop.phongHoc,
 
           // ✅ Map ngày bắt đầu/kết thúc
           ngayBatDau: new Date(lop.ngayBatDau).toISOString().split("T")[0],
@@ -147,10 +188,14 @@ export default function TaoThoiKhoaBieuModal({
           // ✅ Đánh dấu từ BE
           isFromBackend: true,
           isReadonly: true,
-        });
+        };
+
+        console.log(`✅ [Convert] Created instance:`, instance);
+        instances.push(instance);
       });
     });
 
+    console.log("🔍 [Convert] Final instances:", instances);
     return instances;
   };
 
@@ -274,8 +319,12 @@ export default function TaoThoiKhoaBieuModal({
 
   // ✅ Hàm validate và lưu TKB
   const handleSave = async () => {
-    // ✅ Chỉ lấy buổi học MỚI
+    console.log("🔍 [Save] All instances:", instances);
+    console.log("🔍 [Save] giangVienId from props:", giangVienId); // ✅ Debug
+
     const newInstances = instances.filter((inst) => !inst.isFromBackend);
+
+    console.log("🔍 [Save] New instances only:", newInstances);
 
     const incompleteInstances = newInstances.filter(
       (inst) =>
@@ -303,21 +352,30 @@ export default function TaoThoiKhoaBieuModal({
       return;
     }
 
-    // ✅ Group instances theo maHocPhan
+    // ✅ Group instances theo maHocPhan VÀ giangVienId
     const groupedByMaHP = newInstances.reduce((acc, inst) => {
-      if (!acc[inst.maLopHP]) {
-        acc[inst.maLopHP] = [];
-      }
-      acc[inst.maLopHP].push(inst);
-      return acc;
-    }, {} as Record<string, ClassInstance[]>);
+      // Tìm học phần tương ứng để lấy giangVienId
+      const hocPhan = danhSachLop.find((hp) => hp.id === inst.lopHocPhanId);
+      const key = `${inst.maLopHP}_${hocPhan?.giangVienId || "unknown"}`;
 
-    // ✅ Tạo request cho từng học phần
-    const requests = Object.entries(groupedByMaHP).map(
-      ([maHocPhan, lopInstances]) => ({
-        maHocPhan,
+      if (!acc[key]) {
+        acc[key] = {
+          maHocPhan: inst.maLopHP,
+          giangVienId: hocPhan?.giangVienId,
+          instances: [],
+        };
+      }
+
+      acc[key].instances.push(inst);
+      return acc;
+    }, {} as Record<string, { maHocPhan: string; giangVienId?: string; instances: ClassInstance[] }>);
+
+    // ✅ Tạo request cho từng nhóm
+    const requests = Object.values(groupedByMaHP).map((group) => {
+      const baseRequest = {
+        maHocPhan: group.maHocPhan,
         hocKyId,
-        danhSachLop: lopInstances.map((inst, index) => ({
+        danhSachLop: group.instances.map((inst, index) => ({
           tenLop: `${inst.maLopHP}_${index + 1}`,
           phongHocId: inst.phongHocId!,
           ngayBatDau: new Date(inst.ngayBatDau!),
@@ -326,12 +384,21 @@ export default function TaoThoiKhoaBieuModal({
           tietKetThuc: inst.tietKetThuc!,
           thuTrongTuan: inst.position!.thu,
         })),
-      })
-    );
+      };
+
+      if (group.giangVienId) {
+        return { ...baseRequest, giangVienId: group.giangVienId };
+      }
+
+      return baseRequest;
+    });
+
+    console.log("🔍 [Save] Final requests:", requests); // ✅ Debug
 
     // ✅ Call API cho từng học phần
     let successCount = 0;
     for (const req of requests) {
+      console.log("🔍 [Save] Sending request:", req); // ✅ Debug
       const result = await xepTKB(req);
       if (result.success) {
         successCount++;
