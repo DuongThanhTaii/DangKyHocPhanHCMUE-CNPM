@@ -30,6 +30,15 @@ const withToken = (init: RequestInit = {}) => {
   return { ...init, headers };
 };
 
+// Map giá trị trong DB -> nhãn hiển thị
+const LOAI_MON_LABEL: Record<string, string> = {
+  tu_chon: "Tự chọn",
+  chuyen_nganh: "Chuyên ngành",
+  dai_cuong: "Đại cương",
+};
+
+const formatLoaiMon = (v?: string | null) => (v ? LOAI_MON_LABEL[v] ?? v : "-");
+
 const QuanLyMonHoc: React.FC = () => {
   const { openNotify, openConfirm } = useModalContext();
 
@@ -92,7 +101,13 @@ const QuanLyMonHoc: React.FC = () => {
     if (search.trim()) {
       const q = search.toLowerCase();
       list = list.filter((mh) =>
-        [mh.ma_mon, mh.ten_mon, mh.khoa?.ten_khoa, mh.loai_mon]
+        [
+          mh.ma_mon,
+          mh.ten_mon,
+          mh.khoa?.ten_khoa,
+          mh.loai_mon,
+          formatLoaiMon(mh.loai_mon), // thêm nhãn tiếng Việt để search
+        ]
           .filter(Boolean)
           .some((v) => String(v).toLowerCase().includes(q))
       );
@@ -223,7 +238,7 @@ const QuanLyMonHoc: React.FC = () => {
                   <td>{mh.ten_mon}</td>
                   <td>{mh.so_tin_chi}</td>
                   <td>{mh.khoa?.ten_khoa}</td>
-                  <td>{mh.loai_mon}</td>
+                  <td>{formatLoaiMon(mh.loai_mon)}</td>
                   <td>{mh.la_mon_chung ? "Có" : "Không"}</td>
                   <td>
                     {mh.mon_hoc_nganh
@@ -278,7 +293,6 @@ const QuanLyMonHoc: React.FC = () => {
             loadMonHoc();
             openNotify?.("Đã thêm môn học", "success");
           }}
-          // nếu modal cần notify lỗi/validation bên trong, gọi openNotify trong chính modal đó
         />
       )}
 

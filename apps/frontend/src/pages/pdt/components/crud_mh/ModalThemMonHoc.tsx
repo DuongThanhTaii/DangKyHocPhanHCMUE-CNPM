@@ -181,197 +181,204 @@ const ModalThemMonHoc: React.FC<PropsAdd> = ({
 
   return (
     <>
-      <div className="modal-overlay" onClick={onClose}></div>
-      <div className="modal-popup">
-        <form onSubmit={(e) => e.preventDefault()}>
-          <div className="modal-header">
-            <h1>Thêm môn học</h1>
-            <button type="button" className="md-btn-cancel" onClick={onClose}>
-              X
-            </button>
-          </div>
+      <div className="modal-overlay" onClick={onClose}>
+        <div className="modal-popup">
+          <form onSubmit={(e) => e.preventDefault()}>
+            <div className="modal-header">
+              <h1>Thêm môn học</h1>
+              <button type="button" className="md-btn-cancel" onClick={onClose}>
+                X
+              </button>
+            </div>
 
-          <div className="modal-popup-row">
-            <div className="form__group">
-              <label className="pos__unset">Mã môn</label>
-              <input
-                name="ma_mon"
-                value={form.ma_mon}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="form__group">
-              <label className="pos__unset">Tên môn</label>
-              <input
-                name="ten_mon"
-                value={form.ten_mon}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-
-          <div className="modal-popup-row">
-            <div className="form__group">
-              <label className="pos__unset">Số tín chỉ</label>
-              <input
-                name="so_tin_chi"
-                type="number"
-                min={1}
-                value={form.so_tin_chi}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="form__group">
-              <label className="pos__unset">Thứ tự học</label>
-              <input
-                name="thu_tu_hoc"
-                type="number"
-                min={1}
-                value={form.thu_tu_hoc}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-
-          <div className="modal-popup-row">
-            <div className="form__group">
-              <label className="pos__unset">Khoa</label>
-              <select
-                id="md-Nganh"
-                name="khoa_id"
-                value={form.khoa_id}
-                onChange={handleChange}
-              >
-                <option value="">-- Chọn khoa --</option>
-                {khoaList.map((k) => (
-                  <option key={k.id} value={k.id}>
-                    {k.ten_khoa}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="form__group">
-              <label className="pos__unset">Loại môn</label>
-              <select
-                id="md-Nganh"
-                name="loai_mon"
-                value={form.loai_mon}
-                onChange={handleChange}
-              >
-                <option value="chuyen_nganh">Chuyên ngành</option>
-                <option value="dai_cuong">Đại cương</option>
-                <option value="tu_chon">Tự chọn</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="modal-popup-row">
-            <div className="form__group">
-              <label className="pos__unset">Là môn chung?</label>
-              <select
-                id="md-Nganh"
-                name="la_mon_chung"
-                value={form.la_mon_chung}
-                onChange={handleChange}
-              >
-                <option value="false">Không</option>
-                <option value="true">Có</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Gán ngành */}
-          <div className="modal-popup-row">
-            <div className="crud_nganh">
-              <label className="pos__unset">Ngành áp dụng</label>
-              <div className="crud_nganh-list">
-                {nganhTheoKhoa.map((n) => (
-                  <label key={n.id}>
-                    <input
-                      type="checkbox"
-                      checked={form.nganh_ids.includes(n.id)}
-                      onChange={() => toggleNganh(n.id)}
-                    />
-                    <span>{n.ten_nganh}</span>
-                  </label>
-                ))}
-                {nganhTheoKhoa.length === 0 && (
-                  <i>Chọn Khoa để hiện danh sách ngành…</i>
-                )}
+            <div className="modal-popup-row">
+              <div className="form__group">
+                <label className="pos__unset">Mã môn</label>
+                <input
+                  name="ma_mon"
+                  value={form.ma_mon}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="form__group">
+                <label className="pos__unset">Tên môn</label>
+                <input
+                  name="ten_mon"
+                  value={form.ten_mon}
+                  onChange={handleChange}
+                />
               </div>
             </div>
-          </div>
 
-          {/* Môn điều kiện */}
-          <div className="modal-popup-row">
-            <div className="crud_nganh">
-              <label className="pos__unset">Môn điều kiện</label>
+            <div className="modal-popup-row">
+              <div className="form__group">
+                <label className="pos__unset">Số tín chỉ</label>
+                <input
+                  name="so_tin_chi"
+                  type="number"
+                  min={1}
+                  value={form.so_tin_chi}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="form__group">
+                <label className="pos__unset">Thứ tự học</label>
+                <input
+                  name="thu_tu_hoc"
+                  type="number"
+                  min={1}
+                  value={form.thu_tu_hoc}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+
+            <div className="modal-popup-row">
+              <div className="form__group">
+                <label className="pos__unset">Khoa</label>
+                <select
+                  id="md-Nganh"
+                  name="khoa_id"
+                  value={form.khoa_id}
+                  onChange={handleChange}
+                >
+                  <option value="">-- Chọn khoa --</option>
+                  {khoaList.map((k) => (
+                    <option key={k.id} value={k.id}>
+                      {k.ten_khoa}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="form__group">
+                <label className="pos__unset">Loại môn</label>
+                <select
+                  id="md-Nganh"
+                  name="loai_mon"
+                  value={form.loai_mon}
+                  onChange={handleChange}
+                >
+                  <option value="chuyen_nganh">Chuyên ngành</option>
+                  <option value="dai_cuong">Đại cương</option>
+                  <option value="tu_chon">Tự chọn</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="modal-popup-row">
+              <div className="form__group">
+                <label className="pos__unset">Là môn chung?</label>
+                <select
+                  id="md-Nganh"
+                  name="la_mon_chung"
+                  value={form.la_mon_chung}
+                  onChange={handleChange}
+                >
+                  <option value="false">Không</option>
+                  <option value="true">Có</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Gán ngành */}
+            <div className="modal-popup-row">
+              <div className="crud_nganh">
+                <label className="pos__unset">Ngành áp dụng</label>
+                <div className="crud_nganh-list">
+                  {nganhTheoKhoa.map((n) => (
+                    <label key={n.id}>
+                      <input
+                        type="checkbox"
+                        checked={form.nganh_ids.includes(n.id)}
+                        onChange={() => toggleNganh(n.id)}
+                      />
+                      <span>{n.ten_nganh}</span>
+                    </label>
+                  ))}
+                  {nganhTheoKhoa.length === 0 && (
+                    <i>Chọn Khoa để hiện danh sách ngành…</i>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Môn điều kiện */}
+            <div className="modal-popup-row">
+              <div className="crud_nganh">
+                <label className="pos__unset">Môn điều kiện</label>
+                <button
+                  type="button"
+                  className="btn__chung mb_10"
+                  onClick={addDk}
+                >
+                  + Thêm điều kiện
+                </button>
+
+                {/* Ban đầu không có class; sau khi bấm nút (dkList > 0) mới gán "crud_nganh-list" */}
+                <div className={dkListClassName}>
+                  {dkList.map((dk, idx) => (
+                    <div className="flex_col" key={idx}>
+                      <select
+                        className="crud_monhoc_dk"
+                        value={dk.mon_lien_quan_id}
+                        onChange={(e) =>
+                          updateDk(idx, { mon_lien_quan_id: e.target.value })
+                        }
+                      >
+                        <option value="">-- Chọn môn --</option>
+                        {allMonHoc.map((m) => (
+                          <option key={m.id} value={m.id}>
+                            {m.ma_mon} — {m.ten_mon}
+                          </option>
+                        ))}
+                      </select>
+
+                      <select
+                        className="crud_monhoc_dk"
+                        value={dk.loai}
+                        onChange={(e) =>
+                          updateDk(idx, { loai: e.target.value })
+                        }
+                      >
+                        <option value="tien_quyet">Tiên quyết</option>
+                        <option value="song_hanh">Song hành</option>
+                      </select>
+
+                      <select
+                        className="crud_monhoc_dk"
+                        value={dk.bat_buoc ? "true" : "false"}
+                        onChange={(e) =>
+                          updateDk(idx, { bat_buoc: e.target.value === "true" })
+                        }
+                      >
+                        <option value="true">Bắt buộc</option>
+                        <option value="false">Không bắt buộc</option>
+                      </select>
+
+                      <button
+                        type="button"
+                        className="btn__cancel h__30"
+                        onClick={() => rmDk(idx)}
+                      >
+                        Xoá
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="modal-popup-row">
               <button
                 type="button"
-                className="btn__chung mb_10"
-                onClick={addDk}
+                className="md-btn-add"
+                onClick={handleSubmit}
               >
-                + Thêm điều kiện
+                Thêm
               </button>
-
-              {/* Ban đầu không có class; sau khi bấm nút (dkList > 0) mới gán "crud_nganh-list" */}
-              <div className={dkListClassName}>
-                {dkList.map((dk, idx) => (
-                  <div className="flex_col" key={idx}>
-                    <select
-                      className="crud_monhoc_dk"
-                      value={dk.mon_lien_quan_id}
-                      onChange={(e) =>
-                        updateDk(idx, { mon_lien_quan_id: e.target.value })
-                      }
-                    >
-                      <option value="">-- Chọn môn --</option>
-                      {allMonHoc.map((m) => (
-                        <option key={m.id} value={m.id}>
-                          {m.ma_mon} — {m.ten_mon}
-                        </option>
-                      ))}
-                    </select>
-
-                    <select
-                      className="crud_monhoc_dk"
-                      value={dk.loai}
-                      onChange={(e) => updateDk(idx, { loai: e.target.value })}
-                    >
-                      <option value="tien_quyet">Tiên quyết</option>
-                      <option value="song_hanh">Song hành</option>
-                    </select>
-
-                    <select
-                      className="crud_monhoc_dk"
-                      value={dk.bat_buoc ? "true" : "false"}
-                      onChange={(e) =>
-                        updateDk(idx, { bat_buoc: e.target.value === "true" })
-                      }
-                    >
-                      <option value="true">Bắt buộc</option>
-                      <option value="false">Không bắt buộc</option>
-                    </select>
-
-                    <button
-                      type="button"
-                      className="btn__cancel h__30"
-                      onClick={() => rmDk(idx)}
-                    >
-                      Xoá
-                    </button>
-                  </div>
-                ))}
-              </div>
             </div>
-          </div>
-
-          <div className="modal-popup-row">
-            <button type="button" className="md-btn-add" onClick={handleSubmit}>
-              Thêm
-            </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </>
   );

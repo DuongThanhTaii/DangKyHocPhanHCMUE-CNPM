@@ -182,132 +182,149 @@ const ModalThemSinhVien: React.FC<Props> = ({ isOpen, onClose, onCreated }) => {
 
   return (
     <>
-      <div className="modal-overlay" onClick={onClose}></div>
-      <div className="modal-popup">
-        <form onSubmit={(e) => e.preventDefault()}>
-          <div className="modal-header">
-            <h1>Thêm sinh viên</h1>
-            <button type="button" className="md-btn-cancel" onClick={onClose}>
-              X
-            </button>
-          </div>
+      <div className="modal-overlay" onClick={onClose}>
+        <div className="modal-popup">
+          <form onSubmit={(e) => e.preventDefault()}>
+            <div className="modal-header">
+              <h1>Thêm sinh viên</h1>
+              <button type="button" className="md-btn-cancel" onClick={onClose}>
+                X
+              </button>
+            </div>
 
-          {/* MSSV & Tên */}
-          <div className="modal-popup-row">
-            <div className="form__group ">
-              <label className="pos__unset">Mã số sinh viên</label>
-              <input
-                name="ma_so_sinh_vien"
-                type="text"
-                onChange={handleChange}
-              />
+            {/* MSSV & Tên */}
+            <div className="modal-popup-row">
+              <div className="form__group ">
+                <label className="pos__unset">Mã số sinh viên</label>
+                <input
+                  name="ma_so_sinh_vien"
+                  type="text"
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="form__group">
+                <label className="pos__unset">Tên sinh viên</label>
+                <input name="ho_ten" type="text" onChange={handleChange} />
+              </div>
             </div>
-            <div className="form__group">
-              <label className="pos__unset">Tên sinh viên</label>
-              <input name="ho_ten" type="text" onChange={handleChange} />
-            </div>
-          </div>
 
-          {/* Tài khoản */}
-          <div className="modal-popup-row">
-            <div className="form__group">
-              <label className="pos__unset">
-                Tên đăng nhập <small>(mặc định = MSSV nếu bỏ trống)</small>
-              </label>
-              <input name="ten_dang_nhap" type="text" onChange={handleChange} />
+            {/* Tài khoản */}
+            <div className="modal-popup-row">
+              <div className="form__group">
+                <label className="pos__unset">
+                  Tên đăng nhập <small>(mặc định = MSSV nếu bỏ trống)</small>
+                </label>
+                <input
+                  name="ten_dang_nhap"
+                  type="text"
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="form__group">
+                <label className="pos__unset">
+                  Mật khẩu <small>(mặc định = MSSV nếu bỏ trống)</small>
+                </label>
+                <input
+                  name="mat_khau"
+                  type="password"
+                  onChange={handleChange}
+                />
+              </div>
             </div>
-            <div className="form__group">
-              <label className="pos__unset">
-                Mật khẩu <small>(mặc định = MSSV nếu bỏ trống)</small>
-              </label>
-              <input name="mat_khau" type="password" onChange={handleChange} />
-            </div>
-          </div>
 
-          {/* Lớp - Khoa */}
-          <div className="modal-popup-row">
-            <div className="form__group">
-              <label className="pos__unset">Lớp</label>
-              <input name="lop" type="text" onChange={handleChange} />
+            {/* Lớp - Khoa */}
+            <div className="modal-popup-row">
+              <div className="form__group">
+                <label className="pos__unset">Lớp</label>
+                <input name="lop" type="text" onChange={handleChange} />
+              </div>
+              <div className="form__group">
+                <label className="pos__unset">Khoa</label>
+                <select
+                  id="md-Khoa"
+                  name="khoa_id"
+                  value={formData.khoa_id}
+                  onChange={handleChange}
+                >
+                  <option value="">-- Chọn khoa --</option>
+                  {Array.isArray(danhSachKhoa) &&
+                    danhSachKhoa.map((khoa) => (
+                      <option key={khoa.id} value={khoa.id}>
+                        {khoa.ten_khoa}
+                      </option>
+                    ))}
+                </select>
+              </div>
             </div>
-            <div className="form__group">
-              <label className="pos__unset">Khoa</label>
-              <select
-                id="md-Khoa"
-                name="khoa_id"
-                value={formData.khoa_id}
-                onChange={handleChange}
+
+            {/* Ngành - Khóa học */}
+            <div className="modal-popup-row">
+              <div className="form__group">
+                <label className="pos__unset">Ngành</label>
+                <select
+                  id="md-Nganh"
+                  name="nganh_id"
+                  value={formData.nganh_id}
+                  onChange={handleChange}
+                >
+                  <option value="">-- Chọn ngành --</option>
+                  {danhSachNganh
+                    .filter(
+                      (n) => !formData.khoa_id || n.khoa_id === formData.khoa_id
+                    )
+                    .map((nganh) => (
+                      <option key={nganh.id} value={nganh.id}>
+                        {nganh.ten_nganh}
+                      </option>
+                    ))}
+                </select>
+              </div>
+              <div className="form__group">
+                <label className="pos__unset">Khóa học</label>
+                <input name="khoa_hoc" type="text" onChange={handleChange} />
+              </div>
+            </div>
+
+            {/* Ngày nhập học & Excel */}
+            <div className="modal-popup-row">
+              <div className="form__group">
+                <label className="pos__unset">Ngày nhập học</label>
+                <input
+                  name="ngay_nhap_hoc"
+                  type="date"
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="form__group">
+                <label className="pos__unset">Tải lên file Excel:</label>
+                <input
+                  id="excelUpload"
+                  type="file"
+                  accept=".xls,.xlsx"
+                  onChange={handleFileChange}
+                />
+              </div>
+            </div>
+
+            {/* Nút */}
+            <div className="modal-popup-row">
+              <button
+                type="button"
+                className="md-btn-add"
+                onClick={handleSubmit}
               >
-                <option value="">-- Chọn khoa --</option>
-                {Array.isArray(danhSachKhoa) &&
-                  danhSachKhoa.map((khoa) => (
-                    <option key={khoa.id} value={khoa.id}>
-                      {khoa.ten_khoa}
-                    </option>
-                  ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Ngành - Khóa học */}
-          <div className="modal-popup-row">
-            <div className="form__group">
-              <label className="pos__unset">Ngành</label>
-              <select
-                id="md-Nganh"
-                name="nganh_id"
-                value={formData.nganh_id}
-                onChange={handleChange}
+                Thêm thủ công
+              </button>
+              <button
+                type="button"
+                className="md-btn-add"
+                onClick={handleUploadExcel}
               >
-                <option value="">-- Chọn ngành --</option>
-                {danhSachNganh
-                  .filter(
-                    (n) => !formData.khoa_id || n.khoa_id === formData.khoa_id
-                  )
-                  .map((nganh) => (
-                    <option key={nganh.id} value={nganh.id}>
-                      {nganh.ten_nganh}
-                    </option>
-                  ))}
-              </select>
+                Tải từ Excel
+              </button>
             </div>
-            <div className="form__group">
-              <label className="pos__unset">Khóa học</label>
-              <input name="khoa_hoc" type="text" onChange={handleChange} />
-            </div>
-          </div>
-
-          {/* Ngày nhập học & Excel */}
-          <div className="modal-popup-row">
-            <div className="form__group">
-              <label className="pos__unset">Ngày nhập học</label>
-              <input name="ngay_nhap_hoc" type="date" onChange={handleChange} />
-            </div>
-            <div className="form__group">
-              <label className="pos__unset">Tải lên file Excel:</label>
-              <input
-                id="excelUpload"
-                type="file"
-                accept=".xls,.xlsx"
-                onChange={handleFileChange}
-              />
-            </div>
-          </div>
-
-          {/* Nút */}
-          <div className="modal-popup-row">
-            <button type="button" className="md-btn-add" onClick={handleSubmit}>
-              Thêm thủ công
-            </button>
-            <button
-              type="button"
-              className="md-btn-add"
-              onClick={handleUploadExcel}
-            >
-              Tải từ Excel
-            </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </>
   );

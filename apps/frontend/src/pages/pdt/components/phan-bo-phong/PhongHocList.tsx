@@ -89,7 +89,7 @@ export default function PhongHocList({
             />
           </svg>
           <p>Chưa có phòng học nào</p>
-          <button className="btn-them-phong-empty" onClick={onOpenThemPhong}>
+          <button className=" btn__chung" onClick={onOpenThemPhong}>
             Thêm phòng học đầu tiên
           </button>
         </div>
