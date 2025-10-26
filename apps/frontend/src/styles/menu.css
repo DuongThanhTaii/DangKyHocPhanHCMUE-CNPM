@@ -306,13 +306,13 @@ button.btn__quanlylhp.active {
 
 .modal {
   position: absolute;
+  width: 240px;
   top: 50px; /* ngay dưới hình tròn (100 + 10px margin) */
   right: 20px;
   background-color: #fff;
   border: 1px solid #ccc;
   border-radius: 15px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  display: none;
   z-index: 100;
 }
 
@@ -327,22 +327,46 @@ button.btn__quanlylhp.active {
 .sign__out {
   padding: 16px;
 }
+.name__student {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-.sign__out {
-  border-top: 1px solid rgba(0, 0, 0, 0.12);
+.border_bottom {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
 }
 .sign__out button {
-  display: block;
   border-radius: 15px;
   width: 100%;
   background: #ffff;
   height: 35px;
   border: solid 1px;
   color: rgb(107, 119, 140);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sign__out button:hover {
   background-color: rgba(20, 50, 102, 0.04);
+}
+
+.sign__out svg {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+.sign__out svg path {
+  fill: #0d47a1;
+}
+
+.change__password button {
+  margin-top: 8px;
+  border-radius: 0px;
+  border: none;
 }
 .user__icon-img {
   width: 70%; /* Hoặc 100% tùy bạn, thường 60–80% là vừa */
@@ -799,6 +823,8 @@ input.form__floating-label__quanly {
   display: inline-block;
   padding: 20px;
   border-radius: 20px;
+  max-height: 100vh;
+  overflow-y: auto;
 }
 
 .modal-popup .md-btn-cancel {
@@ -960,6 +986,10 @@ input.form__floating-label__quanly {
   display: inline-flex;
   align-items: center;
   gap: 10px;
+}
+
+.p__0 {
+  padding: 0px !important;
 }
 
 .w20__h20 {
@@ -1280,7 +1310,7 @@ input.form__floating-label__quanly {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 999; /* Đảm bảo nằm trên tất cả */
+  z-index: 999 !important;
 }
 
 /* Modal thông báo (NotifyModal) */
@@ -1885,9 +1915,8 @@ th {
   padding: 20px;
   border-radius: 8px;
   width: 600px;
-  margin: 100px auto;
+  margin: 35px auto;
   position: absolute;
-  top: 0;
   z-index: 999;
 }
 

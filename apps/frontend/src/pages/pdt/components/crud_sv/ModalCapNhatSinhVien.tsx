@@ -91,57 +91,62 @@ const ModalCapNhatSinhVien: React.FC<Props> = ({ id, isOpen, onClose }) => {
 
   return (
     <>
-      <div className="modal-overlay" onClick={onClose}></div>
-      <div className="modal-popup">
-        <div className="modal-header">
-          <h1>Chỉnh sửa sinh viên</h1>
-          <button type="button" className="md-btn-cancel" onClick={onClose}>
-            X
-          </button>
-        </div>
+      <div className="modal-overlay" onClick={onClose}>
+        <div className="modal-popup">
+          <div className="modal-header">
+            <h1>Chỉnh sửa sinh viên</h1>
+            <button type="button" className="md-btn-cancel" onClick={onClose}>
+              X
+            </button>
+          </div>
 
-        <div className="modal-popup-row">
-          <div className="form__group">
-            <label className="pos__unset">MSSV</label>
-            <input
-              name="ma_so_sinh_vien"
-              value={form.ma_so_sinh_vien}
-              onChange={onChange}
-            />
+          <div className="modal-popup-row">
+            <div className="form__group">
+              <label className="pos__unset">MSSV</label>
+              <input
+                name="ma_so_sinh_vien"
+                value={form.ma_so_sinh_vien}
+                onChange={onChange}
+              />
+            </div>
+            <div className="form__group">
+              <label className="pos__unset">Họ tên</label>
+              <input name="ho_ten" value={form.ho_ten} onChange={onChange} />
+            </div>
           </div>
-          <div className="form__group">
-            <label className="pos__unset">Họ tên</label>
-            <input name="ho_ten" value={form.ho_ten} onChange={onChange} />
-          </div>
-        </div>
 
-        <div className="modal-popup-row">
-          <div className="form__group">
-            <label className="pos__unset">Lớp</label>
-            <input name="lop" value={form.lop} onChange={onChange} />
+          <div className="modal-popup-row">
+            <div className="form__group">
+              <label className="pos__unset">Lớp</label>
+              <input name="lop" value={form.lop} onChange={onChange} />
+            </div>
+            <div className="form__group">
+              <label className="pos__unset">Niên khóa</label>
+              <input
+                name="khoa_hoc"
+                value={form.khoa_hoc}
+                onChange={onChange}
+              />
+            </div>
           </div>
-          <div className="form__group">
-            <label className="pos__unset">Niên khóa</label>
-            <input name="khoa_hoc" value={form.khoa_hoc} onChange={onChange} />
-          </div>
-        </div>
 
-        <div className="modal-popup-row">
-          <div className="form__group">
-            <label className="pos__unset">Mật khẩu mới</label>
-            <input
-              name="mat_khau"
-              type="password"
-              value={form.mat_khau}
-              onChange={onChange}
-            />
+          <div className="modal-popup-row">
+            <div className="form__group">
+              <label className="pos__unset">Mật khẩu mới</label>
+              <input
+                name="mat_khau"
+                type="password"
+                value={form.mat_khau}
+                onChange={onChange}
+              />
+            </div>
           </div>
-        </div>
 
-        <div className="modal-popup-row">
-          <button className="md-btn-add" onClick={onSave}>
-            Lưu
-          </button>
+          <div className="modal-popup-row">
+            <button className="md-btn-add" onClick={onSave}>
+              Lưu
+            </button>
+          </div>
         </div>
       </div>
     </>
