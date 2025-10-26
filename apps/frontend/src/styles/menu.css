@@ -823,8 +823,9 @@ input.form__floating-label__quanly {
   display: inline-block;
   padding: 20px;
   border-radius: 20px;
-  max-height: 100vh;
+  max-height: 93vh;
   overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 .modal-popup .md-btn-cancel {
