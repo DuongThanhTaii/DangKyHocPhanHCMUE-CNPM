@@ -6,6 +6,7 @@ import {
   useSetHocKyHienHanh,
   useGetHocKyHienHanh,
 } from "../../features/pdt/hooks";
+import { useModalContext } from "../../hook/ModalContext";
 
 type CurrentSemester = {
   ten_hoc_ky?: string | null;
@@ -35,6 +36,7 @@ const formatDateString = (
 };
 
 export default function ChuyenHocKyHienHanh() {
+  const { openNotify } = useModalContext();
   const { data: hocKyNienKhoas, loading: loadingHocKy } = useHocKyNienKhoa();
   const { setHocKyHienHanh, loading: submitting } = useSetHocKyHienHanh();
   const {
@@ -46,11 +48,28 @@ export default function ChuyenHocKyHienHanh() {
   const [selectedNienKhoa, setSelectedNienKhoa] = useState<string>("");
   const [selectedHocKy, setSelectedHocKy] = useState<string>("");
   const [currentSemester, setCurrentSemester] = useState<CurrentSemester>({});
+  const [selectedKhoa, setSelectedKhoa] = useState<string>("all");
+
+  // TODO: Fetch phase time từ API
+  const [phaseTimeData, setPhaseTimeData] = useState({
+    ghiDanh: {
+      phaseType: "ghi_danh" as const,
+      ngayBatDau: "2025-01-15T00:00:00.000Z",
+      ngayKetThuc: "2025-02-28T23:59:59.999Z",
+      trangThai: "active" as const,
+    },
+    dangKy: {
+      phaseType: "dang_ky" as const,
+      ngayBatDau: "2025-03-01T00:00:00.000Z",
+      ngayKetThuc: "2025-03-15T23:59:59.999Z",
+      trangThai: "upcoming" as const,
+    },
+  });
 
   useEffect(() => {
     if (hocKyHienHanh && hocKyNienKhoas.length > 0) {
       const foundNienKhoa = hocKyNienKhoas.find((nk) =>
-        nk.hocKy.some((hk) => hk.id === hocKyHienHanh.hocKyId)
+        nk.hocKy.some((hk) => hk.id === hocKyHienHanh.id)
       );
 
       setCurrentSemester({
@@ -94,6 +113,22 @@ export default function ChuyenHocKyHienHanh() {
     if (result.isSuccess) {
       await refetch(); // ✅ Now works
     }
+  };
+
+  const handleUpdatePhaseTime = (
+    phaseType: "ghi_danh" | "dang_ky",
+    startDate: string,
+    endDate: string
+  ) => {
+    // TODO: Call API to update phase time
+    console.log("Update phase time:", { phaseType, startDate, endDate });
+
+    openNotify({
+      message: `API chỉnh thời gian ${
+        phaseType === "ghi_danh" ? "Ghi Danh" : "Đăng Ký"
+      } đang được phát triển`,
+      type: "info",
+    });
   };
 
   const matchedNienKhoa = hocKyNienKhoas.find(

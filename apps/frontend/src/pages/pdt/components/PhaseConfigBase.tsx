@@ -5,12 +5,8 @@ import {
   useEffect,
   type ChangeEvent,
 } from "react";
-import type {
-  KhoaDTO,
-  DotGhiDanhResponseDTO,
-  UpdateDotGhiDanhRequest,
-} from "../../../features/pdt/types/pdtTypes";
-import "./KhoaConfigSection.css"; // ✅ Import CSS
+import type { KhoaDTO } from "../../../features/pdt/types/pdtTypes";
+import "./KhoaConfigSection.css";
 
 export interface KhoaConfig {
   khoaId: string;
@@ -18,7 +14,7 @@ export interface KhoaConfig {
   thoiGianKetThuc: string;
 }
 
-export interface KhoaConfigSectionRef {
+export interface PhaseConfigRef {
   validate: () => boolean;
   getData: () => {
     isToanTruong: boolean;
@@ -26,33 +22,27 @@ export interface KhoaConfigSectionRef {
   };
 }
 
-export interface KhoaPhaseConfig {
+export interface ExistingDotConfig {
   id: string;
-  khoaIds: string[];
-  start: string;
-  end: string;
+  khoaId?: string | null; // ✅ Allow null
+  tenKhoa?: string | null; // ✅ Allow null
+  thoiGianBatDau: string;
+  thoiGianKetThuc: string;
+  isCheckToanTruong: boolean;
 }
 
-interface KhoaConfigSectionProps {
+interface PhaseConfigBaseProps {
+  title: string;
   danhSachKhoa: KhoaDTO[];
   phaseStartTime: string;
   phaseEndTime: string;
-  existingDotGhiDanh?: DotGhiDanhResponseDTO[];
-  onSubmit: (data: UpdateDotGhiDanhRequest) => Promise<void>; // ✅ Add onSubmit prop
+  existingData?: ExistingDotConfig[];
+  onSubmit?: (data: any) => Promise<void>; // ✅ Add submit callback
 }
 
-export const KhoaConfigSection = forwardRef<
-  KhoaConfigSectionRef,
-  KhoaConfigSectionProps
->(
+export const PhaseConfigBase = forwardRef<PhaseConfigRef, PhaseConfigBaseProps>(
   (
-    {
-      danhSachKhoa,
-      phaseStartTime,
-      phaseEndTime,
-      existingDotGhiDanh = [],
-      onSubmit,
-    },
+    { title, danhSachKhoa, phaseStartTime, phaseEndTime, existingData = [], onSubmit },
     ref
   ) => {
     const [isToanTruong, setIsToanTruong] = useState(true);
@@ -60,9 +50,11 @@ export const KhoaConfigSection = forwardRef<
     const [isEditMode, setIsEditMode] = useState(false);
     const [validationErrors, setValidationErrors] = useState<string[]>([]);
     const [savedKhoaConfigs, setSavedKhoaConfigs] = useState<KhoaConfig[]>([]);
+    const [submitting, setSubmitting] = useState(false);
 
+    // ✅ Load existing data
     useEffect(() => {
-      if (existingDotGhiDanh.length === 0) {
+      if (existingData.length === 0) {
         setIsEditMode(true);
         setIsToanTruong(true);
         setKhoaConfigs([]);
@@ -70,15 +62,12 @@ export const KhoaConfigSection = forwardRef<
         return;
       }
 
-      const hasToanTruong = existingDotGhiDanh.some(
-        (dot) => dot.isCheckToanTruong
-      );
-
+      const hasToanTruong = existingData.some((dot) => dot.isCheckToanTruong);
       setIsToanTruong(hasToanTruong);
       setIsEditMode(false);
 
       if (!hasToanTruong) {
-        const configs = existingDotGhiDanh
+        const configs = existingData
           .filter((dot) => !dot.isCheckToanTruong && dot.khoaId)
           .map((dot) => ({
             khoaId: dot.khoaId!,
@@ -92,16 +81,25 @@ export const KhoaConfigSection = forwardRef<
 
         setKhoaConfigs(configs);
         setSavedKhoaConfigs(configs);
-      } else {
-        setKhoaConfigs([]);
-        setSavedKhoaConfigs([]);
       }
-    }, [existingDotGhiDanh]);
+    }, [existingData]);
 
-    const handleToggleMode = () => {
+    const handleToggleMode = async () => {
       if (isEditMode) {
-        if (!validate()) {
-          return;
+        if (!validate()) return;
+
+        // ✅ Call submit when saving
+        if (onSubmit) {
+          setSubmitting(true);
+          try {
+            const data = {
+              isToanTruong,
+              dotTheoKhoa: isToanTruong ? [] : khoaConfigs,
+            };
+            await onSubmit(data);
+          } finally {
+            setSubmitting(false);
+          }
         }
       }
       setIsEditMode(!isEditMode);
@@ -134,9 +132,7 @@ export const KhoaConfigSection = forwardRef<
 
     const handleToggleToanTruong = (checked: boolean) => {
       if (checked) {
-        if (khoaConfigs.length > 0) {
-          setSavedKhoaConfigs([...khoaConfigs]);
-        }
+        if (khoaConfigs.length > 0) setSavedKhoaConfigs([...khoaConfigs]);
         setKhoaConfigs([]);
       } else {
         if (savedKhoaConfigs.length > 0) {
@@ -168,11 +164,8 @@ export const KhoaConfigSection = forwardRef<
           if (!config.khoaId) {
             errors.push(`Cấu hình ${index + 1}: Chưa chọn khoa`);
           }
-          if (!config.thoiGianBatDau) {
-            errors.push(`Cấu hình ${index + 1}: Chưa nhập thời gian bắt đầu`);
-          }
-          if (!config.thoiGianKetThuc) {
-            errors.push(`Cấu hình ${index + 1}: Chưa nhập thời gian kết thúc`);
+          if (!config.thoiGianBatDau || !config.thoiGianKetThuc) {
+            errors.push(`Cấu hình ${index + 1}: Chưa nhập đủ thời gian`);
           }
 
           if (config.thoiGianBatDau && config.thoiGianKetThuc) {
@@ -181,37 +174,14 @@ export const KhoaConfigSection = forwardRef<
               new Date(config.thoiGianKetThuc)
             ) {
               errors.push(
-                `Cấu hình ${
-                  index + 1
-                }: Thời gian bắt đầu phải trước thời gian kết thúc`
-              );
-            }
-          }
-
-          if (phaseStartTime && config.thoiGianBatDau) {
-            if (new Date(config.thoiGianBatDau) < new Date(phaseStartTime)) {
-              errors.push(
-                `Cấu hình ${
-                  index + 1
-                }: Thời gian bắt đầu không được trước thời gian bắt đầu giai đoạn`
-              );
-            }
-          }
-
-          if (phaseEndTime && config.thoiGianKetThuc) {
-            if (new Date(config.thoiGianKetThuc) > new Date(phaseEndTime)) {
-              errors.push(
-                `Cấu hình ${
-                  index + 1
-                }: Thời gian kết thúc không được sau thời gian kết thúc giai đoạn`
+                `Cấu hình ${index + 1}: Thời gian bắt đầu phải trước kết thúc`
               );
             }
           }
         });
 
         const khoaIds = khoaConfigs.map((c) => c.khoaId).filter((id) => id);
-        const uniqueKhoaIds = new Set(khoaIds);
-        if (khoaIds.length !== uniqueKhoaIds.size) {
+        if (khoaIds.length !== new Set(khoaIds).size) {
           errors.push("Không được chọn trùng khoa");
         }
       }
@@ -229,11 +199,9 @@ export const KhoaConfigSection = forwardRef<
     }));
 
     const formatDateTime = (dateString: string) => {
-      const date = new Date(dateString);
-      return date.toLocaleString("vi-VN", {
+      return new Date(dateString).toLocaleString("vi-VN", {
         hour: "2-digit",
         minute: "2-digit",
-        second: "2-digit",
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
@@ -242,9 +210,7 @@ export const KhoaConfigSection = forwardRef<
 
     const renderViewMode = () => {
       if (isToanTruong) {
-        const toanTruongDot = existingDotGhiDanh.find(
-          (dot) => dot.isCheckToanTruong
-        );
+        const toanTruongDot = existingData.find((dot) => dot.isCheckToanTruong);
 
         return (
           <div className="khoa-config-view">
@@ -254,11 +220,11 @@ export const KhoaConfigSection = forwardRef<
             {toanTruongDot ? (
               <div className="khoa-config-view__toan-truong">
                 <div>
-                  <strong>Thời gian bắt đầu:</strong>{" "}
+                  <strong>Bắt đầu:</strong>{" "}
                   {formatDateTime(toanTruongDot.thoiGianBatDau)}
                 </div>
                 <div>
-                  <strong>Thời gian kết thúc:</strong>{" "}
+                  <strong>Kết thúc:</strong>{" "}
                   {formatDateTime(toanTruongDot.thoiGianKetThuc)}
                 </div>
               </div>
@@ -268,9 +234,7 @@ export const KhoaConfigSection = forwardRef<
           </div>
         );
       } else {
-        const khoaDots = existingDotGhiDanh.filter(
-          (dot) => !dot.isCheckToanTruong
-        );
+        const khoaDots = existingData.filter((dot) => !dot.isCheckToanTruong);
 
         return (
           <div className="khoa-config-view">
@@ -279,17 +243,17 @@ export const KhoaConfigSection = forwardRef<
             </div>
             {khoaDots.length > 0 ? (
               <div className="khoa-config-view__list">
-                {khoaDots.map((dot, index) => (
+                {khoaDots.map((dot, idx) => (
                   <div key={dot.id} className="khoa-config-view__item">
                     <div className="khoa-config-view__item-name">
-                      {index + 1}. {dot.tenKhoa || "N/A"}
+                      {idx + 1}. {dot.tenKhoa || "N/A"}
                     </div>
                     <div className="khoa-config-view__item-details">
-                      <div className="khoa-config-view__item-time">
+                      <div>
                         <strong>Bắt đầu:</strong>{" "}
                         {formatDateTime(dot.thoiGianBatDau)}
                       </div>
-                      <div className="khoa-config-view__item-time">
+                      <div>
                         <strong>Kết thúc:</strong>{" "}
                         {formatDateTime(dot.thoiGianKetThuc)}
                       </div>
@@ -308,7 +272,7 @@ export const KhoaConfigSection = forwardRef<
     return (
       <div className="khoa-config-section">
         <div className="khoa-config-header">
-          <h4 className="khoa-config-title">Thiết lập đợt ghi danh</h4>
+          <h4 className="khoa-config-title">{title}</h4>
           <button
             type="button"
             onClick={handleToggleMode}
@@ -317,8 +281,9 @@ export const KhoaConfigSection = forwardRef<
                 ? "khoa-config-toggle-btn--edit"
                 : "khoa-config-toggle-btn--view"
             }`}
+            disabled={submitting}
           >
-            {isEditMode ? "💾 Lưu và xem" : "✏️ Chỉnh sửa"}
+            {submitting ? "Đang lưu..." : isEditMode ? "💾 Lưu và xem" : "✏️ Chỉnh sửa"}
           </button>
         </div>
 
@@ -345,9 +310,7 @@ export const KhoaConfigSection = forwardRef<
                   {khoaConfigs.map((config, index) => (
                     <div key={index} className="khoa-config-item">
                       <div className="khoa-config-item__header">
-                        <span className="khoa-config-item__title">
-                          Cấu hình {index + 1}
-                        </span>
+                        <span>Cấu hình {index + 1}</span>
                         <button
                           type="button"
                           onClick={() => handleRemoveKhoaConfig(index)}
@@ -359,9 +322,7 @@ export const KhoaConfigSection = forwardRef<
 
                       <div className="khoa-config-item__fields">
                         <div className="khoa-config-field">
-                          <label className="khoa-config-field__label">
-                            Khoa:
-                          </label>
+                          <label>Khoa:</label>
                           <select
                             value={config.khoaId}
                             onChange={(e: ChangeEvent<HTMLSelectElement>) =>
@@ -383,9 +344,7 @@ export const KhoaConfigSection = forwardRef<
                         </div>
 
                         <div className="khoa-config-field">
-                          <label className="khoa-config-field__label">
-                            Thời gian bắt đầu:
-                          </label>
+                          <label>Thời gian bắt đầu:</label>
                           <input
                             type="datetime-local"
                             value={config.thoiGianBatDau}
@@ -396,16 +355,12 @@ export const KhoaConfigSection = forwardRef<
                                 e.target.value
                               )
                             }
-                            min={phaseStartTime}
-                            max={config.thoiGianKetThuc || phaseEndTime}
                             className="khoa-config-field__input"
                           />
                         </div>
 
                         <div className="khoa-config-field">
-                          <label className="khoa-config-field__label">
-                            Thời gian kết thúc:
-                          </label>
+                          <label>Thời gian kết thúc:</label>
                           <input
                             type="datetime-local"
                             value={config.thoiGianKetThuc}
@@ -416,8 +371,6 @@ export const KhoaConfigSection = forwardRef<
                                 e.target.value
                               )
                             }
-                            min={config.thoiGianBatDau || phaseStartTime}
-                            max={phaseEndTime}
                             className="khoa-config-field__input"
                           />
                         </div>
@@ -440,8 +393,8 @@ export const KhoaConfigSection = forwardRef<
               <div className="khoa-config-errors">
                 <div className="khoa-config-errors__title">❌ Lỗi:</div>
                 <ul className="khoa-config-errors__list">
-                  {validationErrors.map((error, index) => (
-                    <li key={index}>{error}</li>
+                  {validationErrors.map((error, idx) => (
+                    <li key={idx}>{error}</li>
                   ))}
                 </ul>
               </div>
@@ -453,4 +406,4 @@ export const KhoaConfigSection = forwardRef<
   }
 );
 
-KhoaConfigSection.displayName = "KhoaConfigSection";
+PhaseConfigBase.displayName = "PhaseConfigBase";

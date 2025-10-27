@@ -13,6 +13,9 @@ import { HocKyNienKhoaShowSetup } from "./components/HocKyNienKhoaShowSetup";
 import { PhaseHocKyNienKhoaSetup } from "./components/PhaseHocKyNienKhoaSetup";
 import type { SetHocKyHienTaiRequest, PhaseItemDTO } from "../../features/pdt";
 import { toDatetimeLocal } from "../../utils/dateHelpers";
+import KhoaFilterForPhase from "./components/KhoaFilterForPhase";
+import PhaseTimeEditor from "./components/PhaseTimeEditor";
+import { useModalContext } from "../../hook/ModalContext";
 
 type PhaseTime = { start: string; end: string };
 
@@ -48,6 +51,8 @@ const getEmptyPhaseTimes = (): Record<string, PhaseTime> => {
 };
 
 export default function ChuyenTrangThai() {
+  const { openNotify } = useModalContext();
+
   // ✅ Dùng hooks
   const { data: hocKyNienKhoas, loading: loadingHocKy } = useHocKyNienKhoa();
   const { setHocKyHienTai, loading: submittingHocKy } = useSetHocKyHienTai();
@@ -82,8 +87,13 @@ export default function ChuyenTrangThai() {
   useEffect(() => {
     if (!hocKyHienHanh) return;
 
+    console.log(
+      "🔍 [ChuyenTrangThai] Auto-selecting from hocKyHienHanh:",
+      hocKyHienHanh
+    );
+
     setSelectedNienKhoa(hocKyHienHanh.nienKhoaId);
-    setSelectedHocKyId(hocKyHienHanh.hocKyId);
+    setSelectedHocKyId(hocKyHienHanh.id);
 
     setSemesterStart(
       hocKyHienHanh.ngayBatDau ? hocKyHienHanh.ngayBatDau.split("T")[0] : ""
@@ -102,6 +112,12 @@ export default function ChuyenTrangThai() {
         ? hocKyHienHanh.ngayKetThuc.split("T")[0]
         : "",
     });
+
+    console.log(
+      "✅ [ChuyenTrangThai] Set selectedNienKhoa:",
+      hocKyHienHanh.nienKhoaId
+    );
+    console.log("✅ [ChuyenTrangThai] Set selectedHocKyId:", hocKyHienHanh.id);
   }, [hocKyHienHanh]);
 
   // ✅ Load phases khi có data
@@ -146,18 +162,6 @@ export default function ChuyenTrangThai() {
     setCurrentPhase("");
     setMessage("");
   };
-
-  // ✅ Auto-select niên khóa và học kỳ đầu tiên
-  useEffect(() => {
-    if (hocKyNienKhoas.length > 0 && !selectedHocKyId) {
-      const firstNienKhoa = hocKyNienKhoas[0];
-      setSelectedNienKhoa(firstNienKhoa.id);
-
-      if (firstNienKhoa.hocKy.length > 0) {
-        setSelectedHocKyId(firstNienKhoa.hocKy[0].id);
-      }
-    }
-  }, [hocKyNienKhoas, selectedHocKyId]);
 
   // ✅ Khi đổi niên khóa
   const handleChangeNienKhoa = (value: string) => {
@@ -225,7 +229,6 @@ export default function ChuyenTrangThai() {
     }));
   };
 
-  // ✅ Submit phases
   const handleSubmitPhases = async (e: FormEvent) => {
     console.log("🔥🔥🔥 handleSubmitPhases CALLED!");
     console.log("📦 Event:", e);
@@ -349,6 +352,53 @@ export default function ChuyenTrangThai() {
     }
   }, [selectedHocKyId, selectedNienKhoa, hocKyNienKhoas]);
 
+  // ✅ New state for Khoa filter
+  const [selectedKhoa, setSelectedKhoa] = useState<string>("all");
+
+  // ✅ Mock phase time data (TODO: fetch from API)
+  const ghiDanhPhaseData = {
+    label: "📝 Phase Ghi Danh",
+    start: phaseTimes["ghi_danh"]?.start || "",
+    end: phaseTimes["ghi_danh"]?.end || "",
+    status: (currentPhase === "ghi_danh" ? "active" : "upcoming") as
+      | "active"
+      | "upcoming"
+      | "ended",
+  };
+
+  const dangKyPhaseData = {
+    label: "📚 Phase Đăng Ký Học Phần",
+    start: phaseTimes["dang_ky_hoc_phan"]?.start || "",
+    end: phaseTimes["dang_ky_hoc_phan"]?.end || "",
+    status: (currentPhase === "dang_ky_hoc_phan" ? "active" : "upcoming") as
+      | "active"
+      | "upcoming"
+      | "ended",
+  };
+
+  const handleUpdatePhaseTime = (
+    phaseType: "ghi_danh" | "dang_ky",
+    start: string,
+    end: string
+  ) => {
+    // TODO: Call API to update phase time
+    console.log("Update phase time:", { phaseType, start, end });
+
+    openNotify({
+      message: `API chỉnh thời gian ${
+        phaseType === "ghi_danh" ? "Ghi Danh" : "Đăng Ký"
+      } đang được phát triển`,
+      type: "info",
+    });
+
+    // ✅ Update local state for preview
+    const phaseKey = phaseType === "ghi_danh" ? "ghi_danh" : "dang_ky_hoc_phan";
+    setPhaseTimes((prev) => ({
+      ...prev,
+      [phaseKey]: { start, end },
+    }));
+  };
+
   return (
     <section className="main__body">
       <div className="body__title">
@@ -375,7 +425,7 @@ export default function ChuyenTrangThai() {
           currentSemester={currentSemester}
           semesterMessage={semesterMessage}
           onChangeNienKhoa={handleChangeNienKhoa}
-          onChangeHocKy={handleChangeHocKy} // ✅ Trigger load phases mới
+          onChangeHocKy={handleChangeHocKy}
           onChangeStart={setSemesterStart}
           onChangeEnd={setSemesterEnd}
           onSubmit={handleSubmitSemester}
@@ -391,7 +441,7 @@ export default function ChuyenTrangThai() {
           semesterStart={semesterStart}
           semesterEnd={semesterEnd}
           submitting={submittingPhase || ghiDanhLoading || submitting}
-          selectedHocKyId={selectedHocKyId || ""} // ✅ Dòng 316: Convert null to ""
+          selectedHocKyId={selectedHocKyId || ""}
           onPhaseTimeChange={handlePhaseTimeChange}
           onSubmit={handleSubmitPhases}
           onSubmitGhiDanh={handleSubmitGhiDanh}
