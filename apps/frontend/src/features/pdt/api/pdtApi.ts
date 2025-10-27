@@ -22,6 +22,8 @@ import type {
     PhongHocDTO,
     AssignPhongRequest,
     UnassignPhongRequest,
+    UpdateDotDangKyRequest, // ✅ Import
+    DotDangKyResponseDTO, // ✅ Import
 } from "../types/pdtTypes";
 
 /**
@@ -218,6 +220,23 @@ export const pdtApi = {
     ): Promise<ServiceResult<{ count: number }>> => {
         return await fetchJSON(`pdt/phong-hoc/khoa/${khoaId}/unassign`, {
             method: "PATCH",
+            body: data,
+        });
+    },
+
+    /**
+     * ✅ Lấy danh sách đợt đăng ký học phần theo học kỳ
+     */
+    getDotDangKyByHocKy: async (hocKyId: string): Promise<ServiceResult<DotDangKyResponseDTO[]>> => {
+        return await fetchJSON(`pdt/dot-dang-ky?hoc_ky_id=${hocKyId}`);
+    },
+
+    /**
+     * ✅ Cập nhật/Tạo mới đợt đăng ký học phần
+     */
+    updateDotDangKy: async (data: UpdateDotDangKyRequest): Promise<ServiceResult<null>> => {
+        return await fetchJSON("pdt/dot-dang-ky", {
+            method: "PUT",
             body: data,
         });
     },

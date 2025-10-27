@@ -42,4 +42,34 @@ export class CheckTrangThaiForSinhVien {
             return ServiceResultBuilder.failure("Lỗi hệ thống, vui lòng thử lại sau");
         }
     }
+
+    /**
+     * Check phase đăng ký học phần có đang mở không
+     */
+    async checkPhaseDangKyHocPhan(hocKyId: string): Promise<ServiceResult<null>> {
+        try {
+            // Lấy phase hiện tại đang enabled
+            const currentPhase = await this.unitOfWork.kyPhaseRepository.getPhaseEnabled(hocKyId);
+
+            if (!currentPhase) {
+                return ServiceResultBuilder.failure("Chưa có phase nào đang mở", "NO_ACTIVE_PHASE");
+            }
+
+            // Check xem có phải phase đăng ký học phần không
+            if (currentPhase.phase === "dang_ky_hoc_phan") {
+                return ServiceResultBuilder.success("Phase đăng ký học phần đang mở", null);
+            } else {
+                return ServiceResultBuilder.failure(
+                    `Đang ở phase: ${currentPhase.phase}. Chưa đến phase đăng ký học phần`,
+                    "WRONG_PHASE"
+                );
+            }
+        } catch (error) {
+            console.error("Error checking phase dang ky:", error);
+            return ServiceResultBuilder.failure(
+                "Lỗi khi kiểm tra phase đăng ký",
+                "INTERNAL_ERROR"
+            );
+        }
+    }
 }

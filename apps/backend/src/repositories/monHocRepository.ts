@@ -101,6 +101,16 @@ export class MonHocRepository extends BaseRepository<mon_hoc> {
   }
 
   /**
+   * Lấy danh sách môn học theo IDs
+   */
+  async findByIds(ids: string[]) {
+    return this.model.findMany({
+      where: { id: { in: ids } },
+      select: { id: true, ma_mon: true },
+    });
+  }
+
+  /**
    * Tạo mon_hoc + gán ngành + điều kiện.
    * Chú ý: không include nặng — trả về id, FE/Service load lại detail sau.
    */

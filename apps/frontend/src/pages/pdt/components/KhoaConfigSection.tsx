@@ -8,6 +8,7 @@ import {
 import type {
   KhoaDTO,
   DotGhiDanhResponseDTO,
+  UpdateDotGhiDanhRequest,
 } from "../../../features/pdt/types/pdtTypes";
 import "./KhoaConfigSection.css"; // ✅ Import CSS
 
@@ -37,6 +38,7 @@ interface KhoaConfigSectionProps {
   phaseStartTime: string;
   phaseEndTime: string;
   existingDotGhiDanh?: DotGhiDanhResponseDTO[];
+  onSubmit: (data: UpdateDotGhiDanhRequest) => Promise<void>; // ✅ Add onSubmit prop
 }
 
 export const KhoaConfigSection = forwardRef<
@@ -44,7 +46,13 @@ export const KhoaConfigSection = forwardRef<
   KhoaConfigSectionProps
 >(
   (
-    { danhSachKhoa, phaseStartTime, phaseEndTime, existingDotGhiDanh = [] },
+    {
+      danhSachKhoa,
+      phaseStartTime,
+      phaseEndTime,
+      existingDotGhiDanh = [],
+      onSubmit,
+    },
     ref
   ) => {
     const [isToanTruong, setIsToanTruong] = useState(true);

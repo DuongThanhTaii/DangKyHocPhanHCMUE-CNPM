@@ -102,6 +102,11 @@ export class KyPhaseService {
                     where: { hoc_ky_id: request.hocKyId },
                 });
 
+                // ✅ Step 2.5: Xóa tất cả dot_dang_ky cũ
+                await (tx as any).dot_dang_ky.deleteMany({
+                    where: { hoc_ky_id: request.hocKyId },
+                });
+
                 // ✅ Step 3: Tạo phases mới
                 const phasesData = request.phases.map((phase) => ({
                     hoc_ky_id: request.hocKyId,
@@ -114,6 +119,38 @@ export class KyPhaseService {
                 await (tx as any).ky_phase.createMany({
                     data: phasesData,
                 });
+
+                // ✅ Step 3.5: Tự động tạo 2 đợt: ghi_danh và dang_ky (toàn trường)
+                const ghiDanhPhase = request.phases.find(p => p.phase === 'ghi_danh');
+                const dangKyPhase = request.phases.find(p => p.phase === 'dang_ky_hoc_phan');
+
+                if (ghiDanhPhase) {
+                    await (tx as any).dot_dang_ky.create({
+                        data: {
+                            hoc_ky_id: request.hocKyId,
+                            loai_dot: 'ghi_danh',
+                            is_check_toan_truong: true,
+                            thoi_gian_bat_dau: new Date(ghiDanhPhase.startAt),
+                            thoi_gian_ket_thuc: new Date(ghiDanhPhase.endAt),
+                            gioi_han_tin_chi: 50,
+                            khoa_id: null,
+                        },
+                    });
+                }
+
+                if (dangKyPhase) {
+                    await (tx as any).dot_dang_ky.create({
+                        data: {
+                            hoc_ky_id: request.hocKyId,
+                            loai_dot: 'dang_ky',
+                            is_check_toan_truong: true,
+                            thoi_gian_bat_dau: new Date(dangKyPhase.startAt),
+                            thoi_gian_ket_thuc: new Date(dangKyPhase.endAt),
+                            gioi_han_tin_chi: 9999,
+                            khoa_id: null,
+                        },
+                    });
+                }
 
                 // ✅ Step 4: Lấy danh sách phases vừa tạo
                 return await (tx as any).ky_phase.findMany({
@@ -459,4 +496,5 @@ export class KyPhaseService {
             );
         }
     }
+
 }

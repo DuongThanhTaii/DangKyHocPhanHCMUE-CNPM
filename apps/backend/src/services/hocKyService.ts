@@ -1,6 +1,6 @@
 import type { HocKyNienKhoaDTO, SetHocKyHienThanhRequest } from "../dtos/pdtDTO";
 import type { NienKhoaWithHocKyFromDB } from "../repositories/hocKyRepository";
-import type { HocKyDTO } from "../dtos/pdtDTO";
+import type { HocKyDTO, HocKyHienHanhDTO } from "../dtos/pdtDTO";
 import { ServiceResult, ServiceResultBuilder } from "../types/serviceResult";
 import { UnitOfWork } from "../repositories/unitOfWork";
 export class HocKyService {
@@ -29,7 +29,7 @@ export class HocKyService {
         }));
 
     }
-    async GetHocKyHienHanh(): Promise<ServiceResult<HocKyDTO | null>> {
+    async GetHocKyHienHanh(): Promise<ServiceResult<HocKyHienHanhDTO | null>> {
         try {
             const hocKy = await this.unitOfWork.hocKyRepository.findHocKyHienHanh();
 
@@ -40,11 +40,13 @@ export class HocKyService {
                 );
             }
 
-            const data: HocKyDTO = {
+            const data: HocKyHienHanhDTO = {
                 id: hocKy.id,
-                tenHocKy: hocKy.ten_hoc_ky,
-                ngayBatDau: hocKy.ngay_bat_dau ?? null,
-                ngayKetThuc: hocKy.ngay_ket_thuc ?? null,
+                tenHocKy: hocKy.tenHocKy,
+                nienKhoaId: hocKy.nienKhoaId,
+                tenNienKhoa: hocKy.tenNienKhoa,
+                ngayBatDau: hocKy.ngayBatDau,
+                ngayKetThuc: hocKy.ngayKetThuc
             };
 
             return ServiceResultBuilder.success(

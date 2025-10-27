@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { usePhanBoPhongHoc } from "../../features/pdt/hooks";
+import { usePhanBoPhongHoc } from "../../features/pdt/hooks/usePhanBoPhongHoc";
 import KhoaList from "./components/phan-bo-phong/KhoaList";
 import PhongHocList from "./components/phan-bo-phong/PhongHocList";
 import ThemPhongModal from "./components/phan-bo-phong/ThemPhongModal";

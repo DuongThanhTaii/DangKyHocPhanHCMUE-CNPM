@@ -1,12 +1,14 @@
 import { useState, useRef, type FormEvent } from "react";
 import {
-  useDanhSachKhoa,
   useGetDotGhiDanhByHocKy,
-} from "../../../features/pdt/hooks"; // ✅ Add hook
-import {
-  KhoaConfigSection,
-  type KhoaConfigSectionRef,
-} from "./KhoaConfigSection";
+  useGetDotDangKyByHocKy,
+  useDanhSachKhoa,
+  useUpdateDotGhiDanh, // ✅ Add this import
+  useUpdateDotDangKy, // ✅ Add this import
+} from "../../../features/pdt/hooks";
+import { GhiDanhConfig } from "./GhiDanhConfig";
+import { DangKyConfig } from "./DangKyConfig";
+import type { PhaseConfigRef } from "./PhaseConfigBase";
 import type { UpdateDotGhiDanhRequest } from "../../../features/pdt/types/pdtTypes";
 import "../../../styles/PhaseHocKyNienKhoaSetup.css";
 
@@ -31,249 +33,290 @@ interface PhaseHocKyNienKhoaSetupProps {
   onSubmitGhiDanh: (data: UpdateDotGhiDanhRequest) => void;
 }
 
-export const PhaseHocKyNienKhoaSetup = ({
+export function PhaseHocKyNienKhoaSetup({
   phaseNames,
   phaseOrder,
   phaseTimes,
   currentPhase,
   message,
-  semesterStart,
-  semesterEnd,
   submitting,
   selectedHocKyId,
   onPhaseTimeChange,
   onSubmit,
   onSubmitGhiDanh,
-}: PhaseHocKyNienKhoaSetupProps) => {
-  const { data: danhSachKhoa } = useDanhSachKhoa();
+}: PhaseHocKyNienKhoaSetupProps) {
+  const ghiDanhConfigRef = useRef<PhaseConfigRef>(null);
+  const dangKyConfigRef = useRef<PhaseConfigRef>(null);
 
-  // ✅ Fetch existing đợt ghi danh
-  const {
-    data: existingDotGhiDanh,
-    loading: loadingDotGhiDanh,
-    refetch: refetchDotGhiDanh,
-  } = useGetDotGhiDanhByHocKy(selectedHocKyId);
+  const { data: existingDotGhiDanh = [], refetch: refetchDotGhiDanh } =
+    useGetDotGhiDanhByHocKy(selectedHocKyId);
 
-  const khoaConfigRef = useRef<KhoaConfigSectionRef>(null);
+  const { data: existingDotDangKy = [], refetch: refetchDotDangKy } =
+    useGetDotDangKyByHocKy(selectedHocKyId);
 
-  // ✅ Log existing data
-  console.log("📦 Existing đợt ghi danh:", existingDotGhiDanh);
+  const { data: danhSachKhoa = [] } = useDanhSachKhoa();
 
-  const canEditPhase = (phase: string, index: number): boolean => {
-    if (index === 0) return true;
-    const prevPhase = phaseOrder[index - 1];
-    return !!(phaseTimes[prevPhase]?.start && phaseTimes[prevPhase]?.end);
-  };
+  // ✅ Use hooks correctly
+  const { updateDotGhiDanh } = useUpdateDotGhiDanh();
+  const { updateDotDangKy } = useUpdateDotDangKy();
 
-  const getMinMaxForPhase = (
-    phase: string,
-    field: "start" | "end",
-    index: number
-  ): { min: string; max: string } => {
-    if (field === "start") {
-      if (index === 0) return { min: "", max: "" };
-      const prevPhase = phaseOrder[index - 1];
-      const prevEnd = phaseTimes[prevPhase]?.end;
-      return { min: prevEnd || "", max: "" };
-    } else {
-      const currentStart = phaseTimes[phase]?.start;
-      return { min: currentStart || "", max: "" };
-    }
-  };
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    console.log("🎯 PhaseHocKyNienKhoaSetup handleSubmit CALLED!");
-    e.preventDefault();
-
-    if (khoaConfigRef.current) {
-      const isValid = khoaConfigRef.current.validate();
-      if (!isValid) {
-        console.log("❌ Validation failed");
-        return;
-      }
-    }
-
-    console.log("🚀 Calling onSubmit (handleSubmitPhases)...");
-    await onSubmit(e);
-
-    console.log("🚀 Getting khoa data for ghi danh...");
-    if (khoaConfigRef.current) {
-      const khoaData = khoaConfigRef.current.getData();
-      console.log("📦 Khoa data:", khoaData);
-
-      // ✅ Get existing IDs
-      const toanTruongDot = existingDotGhiDanh.find(
-        (dot) => dot.isCheckToanTruong
-      );
-
-      const ghiDanhRequest: UpdateDotGhiDanhRequest = {
-        hocKyId: selectedHocKyId,
-        isToanTruong: khoaData.isToanTruong,
-        thoiGianBatDau: khoaData.isToanTruong
-          ? new Date(phaseTimes["ghi_danh"]?.start || "").toISOString()
-          : undefined,
-        thoiGianKetThuc: khoaData.isToanTruong
-          ? new Date(phaseTimes["ghi_danh"]?.end || "").toISOString()
-          : undefined,
-        dotToanTruongId: khoaData.isToanTruong ? toanTruongDot?.id : undefined, // ✅ Include existing ID
-        dotTheoKhoa: khoaData.isToanTruong
-          ? undefined
-          : khoaData.dotTheoKhoa.map((dot) => {
-              // ✅ Find existing dot by khoaId
-              const existingDot = existingDotGhiDanh.find(
-                (existing) => existing.khoaId === dot.khoaId
-              );
-
-              return {
-                id: existingDot?.id, // ✅ Include existing ID or undefined for new
-                khoaId: dot.khoaId,
-                thoiGianBatDau: new Date(dot.thoiGianBatDau).toISOString(),
-                thoiGianKetThuc: new Date(dot.thoiGianKetThuc).toISOString(),
-              };
-            }),
-      };
-
-      console.log("📦 Ghi danh request with IDs:", ghiDanhRequest);
-      await onSubmitGhiDanh(ghiDanhRequest);
-
-      // ✅ Refetch after submit
+  // ✅ Handle Ghi Danh submit
+  const handleSubmitGhiDanh = async (data: any) => {
+    const result = await updateDotGhiDanh(data);
+    if (result.isSuccess) {
       refetchDotGhiDanh();
     }
   };
 
-  return (
-    <div className="form-section" style={{ marginTop: "2rem" }}>
-      <h3 className="sub__title_chuyenphase">
-        Thiết lập trạng thái hệ thống theo giai đoạn
-      </h3>
+  // ✅ Handle Đăng Ký submit
+  const handleSubmitDangKy = async (data: any) => {
+    const result = await updateDotDangKy(data);
+    if (result.isSuccess) {
+      refetchDotDangKy();
+    }
+  };
 
-      {/* ✅ Show loading state */}
-      {loadingDotGhiDanh && (
-        <div
-          style={{
-            padding: "10px",
-            backgroundColor: "#f0f0f0",
-            marginBottom: "10px",
-          }}
-        >
-          Đang tải đợt ghi danh hiện tại...
-        </div>
+  const [editingPhase, setEditingPhase] = useState<string | null>(null);
+  const [tempStart, setTempStart] = useState("");
+  const [tempEnd, setTempEnd] = useState("");
+  const [validationError, setValidationError] = useState("");
+
+  // ✅ Format datetime-local to readable Vietnamese format
+  const formatDateTime = (dateTimeStr: string) => {
+    if (!dateTimeStr) return "Chưa thiết lập";
+    const date = new Date(dateTimeStr);
+    return date.toLocaleString("vi-VN", {
+      hour: "2-digit",
+      minute: "2-digit",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+
+  const handleStartEdit = (phase: string) => {
+    const phaseTime = phaseTimes[phase];
+    setEditingPhase(phase);
+    setTempStart(phaseTime?.start || "");
+    setTempEnd(phaseTime?.end || "");
+    setValidationError("");
+  };
+
+  const handleSaveEdit = () => {
+    if (!editingPhase || !tempStart || !tempEnd) {
+      setValidationError("Vui lòng nhập đầy đủ thời gian");
+      return;
+    }
+
+    const hasOverlap = phaseOrder.some((phase) => {
+      if (phase === editingPhase) return false;
+      const otherPhase = phaseTimes[phase];
+      if (!otherPhase?.start || !otherPhase?.end) return false;
+
+      const newStart = new Date(tempStart);
+      const newEnd = new Date(tempEnd);
+      const otherStart = new Date(otherPhase.start);
+      const otherEnd = new Date(otherPhase.end);
+
+      return (
+        (newStart >= otherStart && newStart <= otherEnd) ||
+        (newEnd >= otherStart && newEnd <= otherEnd) ||
+        (newStart <= otherStart && newEnd >= otherEnd)
+      );
+    });
+
+    if (hasOverlap) {
+      setValidationError("Thời gian trùng với phase khác!");
+      return;
+    }
+
+    onPhaseTimeChange(editingPhase, "start", tempStart);
+    onPhaseTimeChange(editingPhase, "end", tempEnd);
+    setEditingPhase(null);
+    setValidationError("");
+  };
+
+  const handleCancelEdit = () => {
+    setEditingPhase(null);
+    setTempStart("");
+    setTempEnd("");
+    setValidationError("");
+  };
+
+  return (
+    <div className="form-section" style={{ marginTop: "24px" }}>
+      <h3 className="sub__title_chuyenphase">Quản lý thời gian các phase</h3>
+
+      <table className="table" style={{ marginTop: "16px" }}>
+        <thead>
+          <tr>
+            <th style={{ width: "25%" }}>Tên phase</th>
+            <th style={{ width: "30%" }}>Ngày bắt đầu</th>
+            <th style={{ width: "30%" }}>Ngày kết thúc</th>
+            <th style={{ width: "15%" }}>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          {phaseOrder.map((phase) => {
+            const isEditing = editingPhase === phase;
+            const phaseTime = phaseTimes[phase];
+            const isCurrent = currentPhase === phase;
+
+            return (
+              <tr key={phase} className={isCurrent ? "row__highlight" : ""}>
+                <td>
+                  <strong>{phaseNames[phase] || phase}</strong>
+                  {isCurrent && (
+                    <span
+                      style={{
+                        marginLeft: "8px",
+                        color: "#16a34a",
+                        fontSize: "12px",
+                        fontWeight: 600,
+                      }}
+                    >
+                      (Hiện tại)
+                    </span>
+                  )}
+                </td>
+
+                <td>
+                  {isEditing ? (
+                    <input
+                      type="datetime-local"
+                      className="form__input"
+                      value={tempStart}
+                      onChange={(e) => setTempStart(e.target.value)}
+                      style={{ width: "100%" }}
+                    />
+                  ) : (
+                    <span>{formatDateTime(phaseTime?.start)}</span>
+                  )}
+                </td>
+
+                <td>
+                  {isEditing ? (
+                    <input
+                      type="datetime-local"
+                      className="form__input"
+                      value={tempEnd}
+                      onChange={(e) => setTempEnd(e.target.value)}
+                      style={{ width: "100%" }}
+                    />
+                  ) : (
+                    <span>{formatDateTime(phaseTime?.end)}</span>
+                  )}
+                </td>
+
+                <td>
+                  {isEditing ? (
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "8px",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <button
+                        className="btn__chung"
+                        onClick={handleSaveEdit}
+                        style={{ padding: "6px 12px", fontSize: "14px" }}
+                        disabled={submitting}
+                      >
+                        ✅
+                      </button>
+                      <button
+                        className="btn__cancel"
+                        onClick={handleCancelEdit}
+                        style={{ padding: "6px 12px", fontSize: "14px" }}
+                        disabled={submitting}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      className="btn__chung"
+                      onClick={() => handleStartEdit(phase)}
+                      style={{ padding: "6px 12px", fontSize: "14px" }}
+                      disabled={submitting}
+                    >
+                      ✏️
+                    </button>
+                  )}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+
+      {validationError && (
+        <p style={{ color: "red", marginTop: "8px", fontSize: "14px" }}>
+          ⚠️ {validationError}
+        </p>
       )}
 
-      <form className="search-form phases-form" onSubmit={handleSubmit}>
-        {phaseOrder.map((phaseKey, index) => {
-          const phaseTime = phaseTimes[phaseKey] || { start: "", end: "" };
-          const canEdit = canEditPhase(phaseKey, index);
-          const minMaxStart = canEdit
-            ? getMinMaxForPhase(phaseKey, "start", index)
-            : { min: "", max: "" };
-          const minMaxEnd = canEdit
-            ? getMinMaxForPhase(phaseKey, "end", index)
-            : { min: "", max: "" };
-
-          const isGhiDanhPhase = phaseKey === "ghi_danh";
-
-          return (
-            <div key={phaseKey} style={{ marginBottom: "2rem" }}>
-              <div className="phase-row">
-                <div className="form__group" style={{ marginBottom: 0 }}>
-                  <div
-                    className="form__select"
-                    style={{ padding: "10px 12px" }}
-                  >
-                    <strong>{phaseNames[phaseKey]}</strong>
-                    {currentPhase === phaseKey && (
-                      <span
-                        style={{
-                          marginLeft: 8,
-                          color: "var(--green, #1A9E55)",
-                        }}
-                      >
-                        (đang mở)
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <div
-                  className="form__group form__group__ctt"
-                  style={{ marginBottom: 0 }}
-                >
-                  <input
-                    type="datetime-local"
-                    className="form__input"
-                    style={{ backgroundColor: canEdit ? "white" : "#f5f5f5" }}
-                    value={phaseTime.start}
-                    onChange={(e) =>
-                      onPhaseTimeChange(phaseKey, "start", e.target.value)
-                    }
-                    disabled={!canEdit}
-                    required={canEdit}
-                    min={minMaxStart.min}
-                    max={minMaxStart.max}
-                  />
-                  <label className="form__floating-label">Bắt đầu</label>
-                </div>
-
-                <div
-                  className="form__group form__group__ctt"
-                  style={{ marginBottom: 0 }}
-                >
-                  <input
-                    type="datetime-local"
-                    className="form__input"
-                    style={{ backgroundColor: canEdit ? "white" : "#f5f5f5" }}
-                    value={phaseTime.end}
-                    onChange={(e) =>
-                      onPhaseTimeChange(phaseKey, "end", e.target.value)
-                    }
-                    disabled={!canEdit}
-                    required={canEdit}
-                    min={minMaxEnd.min}
-                    max={minMaxEnd.max}
-                  />
-                  <label className="form__floating-label">Kết thúc</label>
-                </div>
-              </div>
-
-              {isGhiDanhPhase && (
-                <KhoaConfigSection
-                  ref={khoaConfigRef}
-                  danhSachKhoa={danhSachKhoa}
-                  phaseStartTime={phaseTime.start || ""}
-                  phaseEndTime={phaseTime.end || ""}
-                  existingDotGhiDanh={existingDotGhiDanh} // ✅ Pass existing data
-                />
-              )}
-            </div>
-          );
-        })}
-
-        <button
-          type="submit"
-          className="form__button btn__chung"
-          style={{ marginTop: "20px" }}
-          disabled={false} // ✅ BYPASS for now
-        >
-          {submitting ? "Đang xử lý..." : "Cập nhật trạng thái"}
-        </button>
-      </form>
-
-      <p className="phase-status">
-        Trạng thái hiện tại:{" "}
-        <strong>{phaseNames[currentPhase] || "Không xác định"}</strong>
-      </p>
       {message && (
         <p
-          className={`phase-message ${
-            message.includes("✅")
-              ? "phase-message--success"
-              : "phase-message--error"
-          }`}
+          style={{
+            marginTop: "16px",
+            color: message.includes("✅") ? "green" : "red",
+            whiteSpace: "pre-line",
+          }}
         >
           {message}
         </p>
       )}
+
+      <div style={{ marginTop: "16px", textAlign: "center" }}>
+        <button
+          type="button"
+          className="btn__chung"
+          onClick={(e) => onSubmit(e as any)}
+          disabled={submitting || !selectedHocKyId}
+        >
+          {submitting ? "Đang cập nhật..." : "Cập nhật trạng thái hệ thống"}
+        </button>
+      </div>
+
+      {/* ✅ Section Ghi Danh */}
+      <div
+        style={{
+          marginTop: "40px",
+          borderTop: "2px solid #0c4874",
+          paddingTop: "20px",
+        }}
+      >
+        <GhiDanhConfig
+          ref={ghiDanhConfigRef}
+          danhSachKhoa={danhSachKhoa}
+          phaseStartTime={phaseTimes["ghi_danh"]?.start || ""}
+          phaseEndTime={phaseTimes["ghi_danh"]?.end || ""}
+          existingData={existingDotGhiDanh}
+          hocKyId={selectedHocKyId}
+          onSubmit={handleSubmitGhiDanh}
+        />
+      </div>
+
+      {/* ✅ Section Đăng Ký Học Phần */}
+      <div
+        style={{
+          marginTop: "40px",
+          borderTop: "2px solid #0c4874",
+          paddingTop: "20px",
+        }}
+      >
+        <DangKyConfig
+          ref={dangKyConfigRef}
+          danhSachKhoa={danhSachKhoa}
+          phaseStartTime={phaseTimes["dang_ky_hoc_phan"]?.start || ""}
+          phaseEndTime={phaseTimes["dang_ky_hoc_phan"]?.end || ""}
+          existingData={existingDotDangKy}
+          hocKyId={selectedHocKyId}
+          onSubmit={handleSubmitDangKy}
+        />
+      </div>
     </div>
   );
-};
+}

@@ -124,7 +124,7 @@ export interface UpdateTrangThaiByPDTRequest {
 }
 
 export interface HocKyHienHanhDTO {
-    hocKyId: string;
+    id: string;
     tenHocKy: string;
     nienKhoaId: string;
     tenNienKhoa: string;
@@ -188,7 +188,6 @@ export interface DotGhiDanhResponseDTO {
     trangThai: boolean;
 }
 
-
 // ========== PHÂN BỔ PHÒNG HỌC ==========
 
 export interface PhongHocDTO {
@@ -204,4 +203,62 @@ export interface AssignPhongRequest {
 
 export interface UnassignPhongRequest {
     phongHocIds: string[];
+}
+
+// ========== PHASE MANAGEMENT ==========
+
+export interface PhaseTimeConfigDTO {
+    phaseType: "ghi_danh" | "dang_ky";
+    ngayBatDau: string;
+    ngayKetThuc: string;
+    trangThai: "active" | "upcoming" | "ended";
+}
+
+export interface UpdatePhaseTimeRequest {
+    phaseType: "ghi_danh" | "dang_ky";
+    ngayBatDau: string;
+    ngayKetThuc: string;
+}
+
+export interface GetPhaseTimeResponse {
+    ghiDanh: PhaseTimeConfigDTO | null;
+    dangKy: PhaseTimeConfigDTO | null;
+}
+
+// ✅ Response đợt đăng ký (giống cấu trúc ghi danh)
+export interface DotDangKyResponseDTO {
+    id: string;
+    hocKyId: string;
+    loaiDot: string;
+    thoiGianBatDau: string;
+    thoiGianKetThuc: string;
+    hanHuyDen: string | null;
+    isCheckToanTruong: boolean;
+    khoaId: string | null;
+    tenKhoa: string | null;
+    gioiHanTinChi: number;
+}
+
+export interface DotDangKyTheoKhoaDTO {
+    id?: string;
+    khoaId: string;
+    thoiGianBatDau: string;
+    thoiGianKetThuc: string;
+    hanHuyDen?: string;
+    gioiHanTinChi?: number;
+}
+
+export interface UpdateDotDangKyRequest {
+    hocKyId: string;
+    isToanTruong: boolean;
+    gioiHanTinChi?: number;
+
+    // Nếu isToanTruong = true
+    thoiGianBatDau?: string;
+    thoiGianKetThuc?: string;
+    hanHuyDen?: string;
+    dotToanTruongId?: string;
+
+    // Nếu isToanTruong = false
+    dotTheoKhoa?: DotDangKyTheoKhoaDTO[];
 }

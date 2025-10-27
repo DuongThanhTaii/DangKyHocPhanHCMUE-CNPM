@@ -8,6 +8,8 @@ import { KyPhaseService } from "./kyPhaseService";
 import { PhongHocService } from "./phongHocService";
 import { SinhVienService } from "./sinhVienService";
 import { GiangVienService } from "./giangVienService";
+import { LopHocPhanSinhVienService } from "./lopHocPhanSinhVienService";
+import { DangKyHocPhanSinhVienService } from "./dangKyHocPhanSinhVienService";
 
 export class ServiceFactory {
     private static instance: ServiceFactory;
@@ -22,6 +24,8 @@ export class ServiceFactory {
     private _hocphanService?: HocPhanService;
     private _phongHocService?: PhongHocService;
     private _giangVienService?: GiangVienService;
+    private _lopHocPhanSinhVienService?: LopHocPhanSinhVienService;
+    private _dangKyHocPhanSinhVienService?: DangKyHocPhanSinhVienService;
     private constructor() {
         this.unitOfWork = UnitOfWork.getInstance();
     }
@@ -90,5 +94,19 @@ export class ServiceFactory {
             this._checkTrangThaiForSinhVien = new CheckTrangThaiForSinhVien(this.unitOfWork);
         }
         return this._checkTrangThaiForSinhVien;
+    }
+
+    get lopHocPhanSinhVienService() {
+        if (!this._lopHocPhanSinhVienService) {
+            this._lopHocPhanSinhVienService = new LopHocPhanSinhVienService();
+        }
+        return this._lopHocPhanSinhVienService;
+    }
+
+    get dangKyHocPhanSinhVienService() {
+        if (!this._dangKyHocPhanSinhVienService) {
+            this._dangKyHocPhanSinhVienService = new DangKyHocPhanSinhVienService();
+        }
+        return this._dangKyHocPhanSinhVienService;
     }
 }

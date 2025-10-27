@@ -31,6 +31,7 @@ import GVLopHocPhanDetail from "./pages/gv/GVLopHocPhanDetail";
 
 import ResetPassword from "./pages/ResetPassword";
 import GVThoiKhoaBieu from "./pages/gv/GVThoiKhoaBieu";
+import DangKyHocPhan from "./pages/sv/DangKyHocPhan";
 
 export const router = createBrowserRouter([
   { path: "/", element: <LoginPage /> },
@@ -115,6 +116,7 @@ export const router = createBrowserRouter([
       { path: "tra-cuu-mon-hoc", element: <TraCuuMonHoc /> },
       { path: "lich-su-dang-ky-hoc-phan", element: <LichSuDangKy /> },
       { path: "xem-thoi-khoa-bieu", element: <XemThoiKhoaBieu /> },
+      { path: "dang-ky-hoc-phan", element: <DangKyHocPhan /> },
     ],
   },
 

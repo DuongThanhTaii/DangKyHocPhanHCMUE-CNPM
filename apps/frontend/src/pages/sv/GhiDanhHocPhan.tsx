@@ -83,7 +83,7 @@ export default function GhiDanhHocPhan(): JSX.Element {
         const dsGD: HocPhanDaGhiDanh[] = result.data.map((item: MonHocDaGhiDanh) => ({
           id: item.monHocId,
           hoc_phan_id: item.monHocId,
-          ghi_danh_id: item.ghiDanhId,      // ✅ Map ghiDanhId
+          ghi_danh_id: item.ghiDanhId,     
           ma_mon: item.maMonHoc,
           ten_mon: item.tenMonHoc,
           so_tin_chi: item.soTinChi,

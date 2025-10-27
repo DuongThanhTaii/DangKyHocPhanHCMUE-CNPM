@@ -1,5 +1,6 @@
 import type { hoc_ky, PrismaClient } from "@prisma/client";
 import { BaseRepository } from "./baseRepository";
+import { HocKyHienHanhDTO } from "../dtos/pdtDTO";
 
 export type NienKhoaWithHocKyFromDB = {
   id: string;
@@ -43,10 +44,18 @@ export class HocKyRepository extends BaseRepository<hoc_ky> {
       },
     });
   }
-  async findHocKyHienHanh(): Promise<hoc_ky | null> {
+  async findHocKyHienHanh(): Promise<HocKyHienHanhDTO | null> {
     return this.model.findFirst({
       where: {
         trang_thai_hien_tai: true,
+      },
+      include: {
+        nien_khoa: {
+          select: {
+            id: true,
+            ten_nien_khoa: true,
+          },
+        },
       },
     });
   }

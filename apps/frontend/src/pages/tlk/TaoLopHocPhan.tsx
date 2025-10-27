@@ -283,15 +283,13 @@ export default function TaoLopHocPhan() {
           loadingHocKy={loadingSemesters}
           submitting={false}
           selectedNienKhoa={selectedNienKhoa}
-          selectedHocKy={selectedHocKyId} // ✅ Học kỳ được select
+          selectedHocKy={selectedHocKyId}
           semesterStart=""
           semesterEnd=""
           currentSemester={currentSemester}
           semesterMessage=""
-          showDateFields={false}
-          showSetButton={false}
           onChangeNienKhoa={handleChangeNienKhoa}
-          onChangeHocKy={setSelectedHocKyId} // ✅ Update khi user chọn
+          onChangeHocKy={setSelectedHocKyId}
           onChangeStart={() => {}}
           onChangeEnd={() => {}}
           onSubmit={(e) => e.preventDefault()}
