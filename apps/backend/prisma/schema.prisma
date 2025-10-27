@@ -74,16 +74,13 @@ model dang_ky_hoc_phan {
 
 /// This table contains exclusion constraints and requires additional setup for migrations. Visit https://pris.ly/d/exclusion-constraints for more info.
 model dang_ky_tkb {
-  id               String                   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  dang_ky_id       String                   @db.Uuid
-  sinh_vien_id     String                   @db.Uuid
-  lop_hoc_phan_id  String                   @db.Uuid
-  thu              Int
-  tiet_range       Unsupported("int4range")
-  hieu_luc         Boolean?                 @default(true)
-  dang_ky_hoc_phan dang_ky_hoc_phan         @relation(fields: [dang_ky_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  lop_hoc_phan     lop_hoc_phan             @relation(fields: [lop_hoc_phan_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  sinh_vien        sinh_vien                @relation(fields: [sinh_vien_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  id               String           @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  dang_ky_id       String           @db.Uuid
+  sinh_vien_id     String           @db.Uuid
+  lop_hoc_phan_id  String           @db.Uuid
+  dang_ky_hoc_phan dang_ky_hoc_phan @relation(fields: [dang_ky_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  lop_hoc_phan     lop_hoc_phan     @relation(fields: [lop_hoc_phan_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  sinh_vien        sinh_vien        @relation(fields: [sinh_vien_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
