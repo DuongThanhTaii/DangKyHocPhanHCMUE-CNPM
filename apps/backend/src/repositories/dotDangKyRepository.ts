@@ -166,21 +166,79 @@ export class DotDangKyRepository extends BaseRepository<dot_dang_ky> {
         });
     }
 
-    /**
-     * Check xem khoa có được phép ghi danh không
-     * @param hocKyId - ID học kỳ
-     * @param khoaId - ID khoa
-     * @returns dot_dang_ky nếu đang mở, null nếu không
-     */
-    async isGhiDanhForKhoa(hocKyId: string, khoaId: string): Promise<dot_dang_ky | null> {
-        const now = new Date();
 
-        return this.model.findFirst({
+    /**
+     * Tìm tất cả đợt đăng ký theo học kỳ
+     */
+    async findByHocKy(hocKyId: string) {
+        return this.model.findMany({
+            where: {
+                hoc_ky_id: hocKyId,
+            },
+            include: {
+                khoa: {
+                    select: {
+                        ten_khoa: true,
+                    },
+                },
+            },
+            orderBy: [
+                { is_check_toan_truong: "desc" },
+                { loai_dot: "asc" },
+                { thoi_gian_bat_dau: "asc" },
+            ],
+        });
+    }
+
+    /**
+     * Tìm đợt đăng ký theo học kỳ và loại đợt
+     */
+    async findByHocKyAndLoai(hocKyId: string, loaiDot: string) {
+        return this.model.findMany({
+            where: {
+                hoc_ky_id: hocKyId,
+                loai_dot: loaiDot,
+            },
+            include: {
+                khoa: {
+                    select: {
+                        ten_khoa: true,
+                    },
+                },
+            },
+            orderBy: [
+                { is_check_toan_truong: "desc" },
+                { thoi_gian_bat_dau: "asc" },
+            ],
+        });
+    }
+
+    /**
+     * Check đợt ghi danh có đang mở cho khoa không
+     */
+    async isGhiDanhForKhoa(khoaId: string, hocKyId: string): Promise<boolean> {
+        const now = new Date();
+        const count = await this.model.count({
             where: {
                 hoc_ky_id: hocKyId,
                 loai_dot: "ghi_danh",
-                is_check_toan_truong: false,
                 khoa_id: khoaId,
+                thoi_gian_bat_dau: { lte: now },
+                thoi_gian_ket_thuc: { gte: now },
+            },
+        });
+        return count > 0;
+    }
+
+    /**
+     * Lấy đợt đăng ký đang mở theo học kỳ
+     */
+    async findActiveDotDangKy(hoc_ky_id: string) {
+        const now = new Date();
+        return this.model.findFirst({
+            where: {
+                hoc_ky_id,
+                loai_dot: "dang_ky",
                 thoi_gian_bat_dau: { lte: now },
                 thoi_gian_ket_thuc: { gte: now },
             },
