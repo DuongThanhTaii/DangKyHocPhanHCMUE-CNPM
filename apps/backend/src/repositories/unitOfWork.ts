@@ -20,6 +20,9 @@ import { GhiDanhHocPhanRepository } from "./ghiDanhHocPhanRepository";
 import { PhongRepository } from "./phongRepository";
 import { LopHocPhanRepository } from "./lopHocPhanRepository";
 import { DangKyHocPhanRepository } from "./dangKyHocPhanRepository";
+import { LichSuDangKyRepository } from "./lichSuDangKyRepository";
+import { ChiTietLichSuDangKyRepository } from "./chiTietLichSuDangKyRepository";
+import { DangKyTKBRepository } from "./dangKyTKBRepository";
 
 export class UnitOfWork {
   private static instance: UnitOfWork;
@@ -47,6 +50,9 @@ export class UnitOfWork {
   private _phongRepository?: PhongRepository;
   private _lopHocPhanRepository?: LopHocPhanRepository;
   private _dangKyHocPhanRepository?: DangKyHocPhanRepository;
+  private _lichSuDangKyRepository?: LichSuDangKyRepository;
+  private _chiTietLichSuDangKyRepository?: ChiTietLichSuDangKyRepository;
+  private _dangKyTKBRepository?: DangKyTKBRepository;
   private constructor() {
     this.prisma = new PrismaClient();
   }
@@ -171,6 +177,29 @@ export class UnitOfWork {
     if (!this._dangKyHocPhanRepository)
       this._dangKyHocPhanRepository = new DangKyHocPhanRepository(this.prisma);
     return this._dangKyHocPhanRepository;
+  }
+
+  get lichSuDangKyRepository() {
+    if (!this._lichSuDangKyRepository) {
+      this._lichSuDangKyRepository = new LichSuDangKyRepository(this.prisma);
+    }
+    return this._lichSuDangKyRepository;
+  }
+
+  get chiTietLichSuDangKyRepository() {
+    if (!this._chiTietLichSuDangKyRepository) {
+      this._chiTietLichSuDangKyRepository = new ChiTietLichSuDangKyRepository(
+        this.prisma
+      );
+    }
+    return this._chiTietLichSuDangKyRepository;
+  }
+
+  get dangKyTKBRepository() {
+    if (!this._dangKyTKBRepository) {
+      this._dangKyTKBRepository = new DangKyTKBRepository(this.prisma);
+    }
+    return this._dangKyTKBRepository;
   }
 
   async transaction<T>(

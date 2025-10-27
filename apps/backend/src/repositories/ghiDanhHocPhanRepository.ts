@@ -146,5 +146,17 @@ export class GhiDanhHocPhanRepository extends BaseRepository<ghi_danh_hoc_phan> 
         });
     }
 
-
+    /**
+     * Check sinh viên đã ghi danh học phần chưa
+     */
+    async isStudentRegistered(sinh_vien_id: string, hoc_phan_id: string): Promise<boolean> {
+        const count = await this.model.count({
+            where: {
+                sinh_vien_id,
+                hoc_phan_id,
+                trang_thai: "da_ghi_danh",
+            },
+        });
+        return count > 0;
+    }
 }

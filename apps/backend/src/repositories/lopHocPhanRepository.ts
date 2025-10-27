@@ -151,4 +151,57 @@ export class LopHocPhanRepository extends BaseRepository<lop_hoc_phan> {
       },
     });
   }
+
+  /**
+   * Lấy lớp học phần theo học kỳ (đang mở)
+   */
+  async findByHocKyForSinhVien(hocKyId: string) {
+    return this.model.findMany({
+      where: {
+        hoc_phan: { id_hoc_ky: hocKyId },
+        trang_thai_lop: "dang_mo",
+      },
+      include: {
+        hoc_phan: { include: { mon_hoc: true } },
+        giang_vien: { select: { users: { select: { ho_ten: true } } } },
+      },
+    });
+  }
+
+  /**
+   * Tìm lớp học phần theo môn học (mã môn hoặc UUID) và học kỳ
+   */
+  async findByMonHocAndHocKy(mon_hoc_identifier: string, hoc_ky_id: string) {
+    // Check if identifier is UUID or mã môn
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(mon_hoc_identifier);
+
+    return this.model.findMany({
+      where: {
+        hoc_phan: {
+          ...(isUuid
+            ? { mon_hoc_id: mon_hoc_identifier }
+            : { mon_hoc: { ma_mon: mon_hoc_identifier } }
+          ),
+          id_hoc_ky: hoc_ky_id,
+        },
+        trang_thai_lop: "dang_mo",
+      },
+      include: {
+        hoc_phan: {
+          include: {
+            mon_hoc: true,
+          },
+        },
+        giang_vien: {
+          select: {
+            users: {
+              select: {
+                ho_ten: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
 }

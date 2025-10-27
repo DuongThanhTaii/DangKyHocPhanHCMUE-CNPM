@@ -58,6 +58,21 @@ export class KyPhaseRepository extends BaseRepository<ky_phase> {
         });
     }
 
+    /**
+     * Lấy phase đang enabled (is_enabled = true) theo học kỳ
+     */
+    async getPhaseEnabled(hocKyId: string): Promise<ky_phase | null> {
+        return this.model.findFirst({
+            where: {
+                hoc_ky_id: hocKyId,
+                is_enabled: true,
+            },
+            orderBy: {
+                start_at: 'desc',
+            },
+        });
+    }
+
     async findMany(params: {
         where?: any;
         orderBy?: any;
