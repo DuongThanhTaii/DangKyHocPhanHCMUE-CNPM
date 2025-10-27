@@ -15,7 +15,11 @@ import {
   getPhasesByHocKyHandler,
   updateDotGhiDanhHandler,
 } from "./pdt_kyPhase_service";
-import { getAllDotDangKyByHocKyHandler } from "./pdt_dotDangKy_service";
+import {
+  getAllDotDangKyByHocKyHandler,
+  getDotDangKyByHocKyHandler,
+  updateDotDangKyHandler,
+} from "./pdt_dotDangKy_service";
 
 import {
   getAllGiangVienHandler,
@@ -189,6 +193,22 @@ r.post(
   updateDotGhiDanhHandler
 );
 
+// ✅ Đợt đăng ký học phần
+r.get(
+  "/dot-dang-ky",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  getDotDangKyByHocKyHandler
+);
+
+r.put(
+  "/dot-dang-ky",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  updateDotDangKyHandler
+);
+
+// Đợt đăng ký toàn bộ (deprecated route - giữ để backward compatible)
 r.get(
   "/dot-dang-ky/:hocKyId",
   requireAuth,
@@ -196,7 +216,7 @@ r.get(
   getAllDotDangKyByHocKyHandler
 );
 
-// Phòng học
+// ✅ Phòng học
 r.get(
   "/phong-hoc/available",
   requireAuth,
@@ -211,15 +231,15 @@ r.get(
   getAllPhongHocByKhoaIdHandler
 );
 
-r.patch(
-  "/phong-hoc/khoa/:khoaId/assign",
+r.post(
+  "/phong-hoc/assign",
   requireAuth,
   requireRole(["phong_dao_tao"]),
   assignPhongHocByKhoaIdHandler
 );
 
-r.patch(
-  "/phong-hoc/khoa/:khoaId/unassign",
+r.post(
+  "/phong-hoc/unassign",
   requireAuth,
   requireRole(["phong_dao_tao"]),
   unassignPhongHocByKhoaIdHandler

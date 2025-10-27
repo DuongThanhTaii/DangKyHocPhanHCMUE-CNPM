@@ -5,6 +5,15 @@ export interface HocKyDTO {
     ngayKetThuc: Date | null;
 }
 
+export interface HocKyHienHanhDTO {
+    id: string;
+    tenHocKy: string;
+    nienKhoaId?: string;
+    tenNienKhoa?: string;
+    ngayBatDau: string | null; // ISO string
+    ngayKetThuc: string | null; // ISO string
+}
+
 export interface HocKyNienKhoaDTO {
     id: string;
     tenNienKhoa: string;
@@ -20,7 +29,7 @@ export interface UpdateTrangThaiByPDTRequest {
     id: string; // ID của đề xuất
 }
 
-export interface KhoaDTO{
+export interface KhoaDTO {
     id: string;
     tenKhoa: string;
 }
