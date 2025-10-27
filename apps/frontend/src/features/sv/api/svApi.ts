@@ -4,22 +4,25 @@ import type {
     RequestGhiDanhMonHoc,
     RequestHuyGhiDanhMonHoc,
     MonHocDaGhiDanh,
+    CheckPhaseDangKyResponse,
+    DanhSachLopHocPhanDTO,
+    DanhSachLopDaDangKyDTO,
+    DangKyHocPhanRequest,
+    HuyDangKyHocPhanRequest,
+    ChuyenLopHocPhanRequest,
+    LopHocPhanItemDTO,
 } from "../types";
 import { fetchJSON } from "../../../utils/fetchJSON";
 
 export const svApi = {
-    /**
-     * Lấy danh sách môn học có thể ghi danh
-     */
+    // ========== GHI DANH ==========
+
     getMonHocGhiDanh: async (): Promise<ServiceResult<MonHocGhiDanhForSinhVien[]>> => {
         return await fetchJSON("sv/mon-hoc-ghi-danh", {
             method: "GET",
         });
     },
 
-    /**
-     * ✅ Ghi danh 1 môn học
-     */
     ghiDanhMonHoc: async (data: RequestGhiDanhMonHoc): Promise<ServiceResult<null>> => {
         return await fetchJSON("sv/ghi-danh", {
             method: "POST",
@@ -27,9 +30,6 @@ export const svApi = {
         });
     },
 
-    /**
-     * ✅ Hủy ghi danh nhiều môn học
-     */
     huyGhiDanhMonHoc: async (data: RequestHuyGhiDanhMonHoc): Promise<ServiceResult<null>> => {
         return await fetchJSON("sv/ghi-danh", {
             method: "DELETE",
@@ -43,10 +43,60 @@ export const svApi = {
         });
     },
 
-
     checkTrangThaiGhiDanh: async (): Promise<ServiceResult<null>> => {
         return await fetchJSON("sv/check-ghi-danh", {
             method: "GET",
         });
+    },
+
+    // ========== ĐĂNG KÝ HỌC PHẦN ==========
+
+    checkPhaseDangKy: async (hocKyId: string): Promise<ServiceResult<null>> => {
+        return await fetchJSON(`sv/check-phase-dang-ky?hoc_ky_id=${hocKyId}`);
+    },
+
+    getDanhSachLopHocPhan: async (hocKyId: string): Promise<ServiceResult<DanhSachLopHocPhanDTO>> => {
+        return await fetchJSON(`sv/lop-hoc-phan?hoc_ky_id=${hocKyId}`);
+    },
+
+    getLopDaDangKy: async (hocKyId: string): Promise<ServiceResult<DanhSachLopDaDangKyDTO>> => {
+        return await fetchJSON(`sv/lop-da-dang-ky?hoc_ky_id=${hocKyId}`);
+    },
+
+    dangKyLopHocPhan: async (data: DangKyHocPhanRequest): Promise<ServiceResult<null>> => {
+        return await fetchJSON("sv/dang-ky-hoc-phan", {
+            method: "POST",
+            body: data,
+        });
+    },
+
+    /**
+     * ✅ Hủy đăng ký học phần (1 lớp)
+     */
+    huyDangKyLopHocPhan: async (data: HuyDangKyHocPhanRequest): Promise<ServiceResult<null>> => {
+        return await fetchJSON("sv/huy-dang-ky-hoc-phan", {
+            method: "POST", // ✅ Backend uses POST
+            body: data,
+        });
+    },
+
+    /**
+     * ✅ Chuyển lớp học phần
+     */
+    chuyenLopHocPhan: async (data: ChuyenLopHocPhanRequest): Promise<ServiceResult<null>> => {
+        return await fetchJSON("sv/chuyen-lop-hoc-phan", {
+            method: "POST",
+            body: data,
+        });
+    },
+
+    /**
+     * ✅ Load danh sách lớp chưa đăng ký theo môn (để chuyển lớp)
+     */
+    getLopChuaDangKyByMonHoc: async (
+        monHocId: string,
+        hocKyId: string
+    ): Promise<ServiceResult<LopHocPhanItemDTO[]>> => {
+        return await fetchJSON(`sv/lop-hoc-phan/mon-hoc?mon_hoc_id=${monHocId}&hoc_ky_id=${hocKyId}`);
     },
 };

@@ -96,9 +96,7 @@ export default function GVThoiKhoaBieu() {
   // ========= Auto-select học kỳ hiện hành khi load =========
   useEffect(() => {
     if (hocKyHienHanh && flatHocKys.length > 0 && !selectedHocKyId) {
-      const hkHienHanh = flatHocKys.find(
-        (hk) => hk.id === hocKyHienHanh.hocKyId
-      );
+      const hkHienHanh = flatHocKys.find((hk) => hk.id === hocKyHienHanh.id);
 
       if (hkHienHanh) {
         setSelectedNienKhoa(hkHienHanh.tenNienKhoa);
