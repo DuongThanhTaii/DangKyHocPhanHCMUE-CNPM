@@ -146,27 +146,12 @@ export function HocKyNienKhoaShowSetup({
                 d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"
                 fill="currentColor"
               />
+              ko d
             </svg>
             Set
           </>
         )}
       </button>
-
-      {/* Current semester info */}
-      {currentSemester.ten_nien_khoa && (
-        <p className="phase" style={{ marginTop: "8px" }}>
-          Học kỳ hiện tại:{" "}
-          <strong>
-            <span className="span__hk-nk">
-              {currentSemester.ten_hoc_ky} ({currentSemester.ten_nien_khoa})
-            </span>
-            <br />
-            {currentSemester.ngay_bat_dau && currentSemester.ngay_ket_thuc
-              ? `Từ ${currentSemester.ngay_bat_dau} đến ${currentSemester.ngay_ket_thuc}`
-              : "Chưa có ngày bắt đầu và kết thúc"}
-          </strong>
-        </p>
-      )}
 
       {/* Message */}
       {semesterMessage && (
