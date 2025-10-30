@@ -151,6 +151,7 @@ model hoc_ky {
   ket_qua_hoc_phan     ket_qua_hoc_phan[]
   ky_phase             ky_phase[]
   lich_su_dang_ky      lich_su_dang_ky[]
+  mien_giam_hoc_phi    mien_giam_hoc_phi[]
   payment_transactions payment_transactions[]
 
   @@unique([ma_hoc_ky, id_nien_khoa])
@@ -478,6 +479,7 @@ model sinh_vien {
   hoc_phi              hoc_phi[]
   ket_qua_hoc_phan     ket_qua_hoc_phan[]
   lich_su_dang_ky      lich_su_dang_ky[]
+  mien_giam_hoc_phi    mien_giam_hoc_phi[]
   payment_transactions payment_transactions[]
   users                users                  @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   khoa                 khoa                   @relation(fields: [khoa_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
@@ -626,4 +628,21 @@ model reset_token {
   tai_khoan    tai_khoan @relation(fields: [tai_khoan_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   @@index([expires_at], map: "idx_reset_token_expires")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model mien_giam_hoc_phi {
+  id           String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  sinh_vien_id String    @db.Uuid
+  hoc_ky_id    String    @db.Uuid
+  loai         String    @db.VarChar(50)
+  ti_le_giam   Decimal?  @db.Decimal(5, 2)
+  mien_phi     Boolean?  @default(false)
+  ghi_chu      String?
+  hoc_ky       hoc_ky    @relation(fields: [hoc_ky_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_mg_hk")
+  sinh_vien    sinh_vien @relation(fields: [sinh_vien_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_mg_sv")
+
+  @@unique([sinh_vien_id, hoc_ky_id, loai], map: "uq_mg_sv_hk_loai")
+  @@index([hoc_ky_id], map: "idx_mg_hk")
+  @@index([sinh_vien_id], map: "idx_mg_sv")
 }
