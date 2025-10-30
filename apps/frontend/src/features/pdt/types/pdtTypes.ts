@@ -198,10 +198,12 @@ export interface PhongHocDTO {
 }
 
 export interface AssignPhongRequest {
+    khoaId?: string; // ✅ Optional - will be merged in API call
     phongHocIds: string[];
 }
 
 export interface UnassignPhongRequest {
+    khoaId?: string; // ✅ Optional - will be merged in API call
     phongHocIds: string[];
 }
 
