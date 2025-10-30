@@ -135,4 +135,46 @@ export class DangKyHocPhanRepository extends BaseRepository<dang_ky_hoc_phan> {
             },
         });
     }
+
+    /**
+     * Lấy danh sách lớp đã đăng ký của sinh viên theo học kỳ (full include)
+     */
+    async findRegisteredWithFullInclude(sinh_vien_id: string, hoc_ky_id: string) {
+        return this.model.findMany({
+            where: {
+                sinh_vien_id,
+                trang_thai: "da_dang_ky",
+                lop_hoc_phan: {
+                    hoc_phan: {
+                        id_hoc_ky: hoc_ky_id,
+                    },
+                },
+            },
+            include: {
+                lop_hoc_phan: {
+                    include: {
+                        hoc_phan: {
+                            include: {
+                                mon_hoc: true,
+                            },
+                        },
+                        lich_hoc_dinh_ky: {
+                            include: {
+                                phong: true,
+                            },
+                        },
+                        giang_vien: {
+                            select: {
+                                users: {
+                                    select: {
+                                        ho_ten: true,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        });
+    }
 }

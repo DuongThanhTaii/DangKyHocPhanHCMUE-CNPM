@@ -269,8 +269,67 @@ export class LopHocPhanSinhVienService {
         }
     }
 
+    /**
+     * Tra cứu học phần - Lấy tất cả lớp học phần của học kỳ (kèm TKB)
+     */
+    async traCuuHocPhan(hoc_ky_id: string): Promise<ServiceResult<any[]>> {
+        try {
+            // ✅ Repository lo query
+            const lopHocPhans = await this.uow.lopHocPhanRepository.findAllByHocKyWithDetails(hoc_ky_id);
+
+            // ✅ Service chỉ lo map DTO
+            const monHocMap = new Map<string, any>();
+
+            lopHocPhans.forEach((lop: any) => {
+                const maMon = lop.hoc_phan.mon_hoc.ma_mon;
+
+                if (!monHocMap.has(maMon)) {
+                    monHocMap.set(maMon, {
+                        maMon: lop.hoc_phan.mon_hoc.ma_mon,
+                        tenMon: lop.hoc_phan.mon_hoc.ten_mon,
+                        soTinChi: lop.hoc_phan.mon_hoc.so_tin_chi,
+                        loaiMon: lop.hoc_phan.mon_hoc.loai_mon,
+                        danhSachLop: [],
+                    });
+                }
+
+                // Format TKB thành string
+                const tkbFormatted = lop.lich_hoc_dinh_ky
+                    .map((lich: any) => {
+                        const thu = this.getThuName(lich.thu);
+                        const tiet = `${lich.tiet_bat_dau} - ${lich.tiet_ket_thuc}`;
+                        const phong = lich.phong?.ma_phong || "TBA";
+                        return `${thu}, Tiết(${tiet}), ${phong}`;
+                    })
+                    .join("\n");
+
+                monHocMap.get(maMon)!.danhSachLop.push({
+                    id: lop.id,
+                    maLop: lop.ma_lop,
+                    giangVien: lop.giang_vien?.users?.ho_ten || "Chưa phân công",
+                    soLuongToiDa: lop.so_luong_toi_da,
+                    soLuongHienTai: lop.so_luong_hien_tai,
+                    conSlot: lop.so_luong_toi_da - lop.so_luong_hien_tai,
+                    thoiKhoaBieu: tkbFormatted || "Chưa có lịch",
+                });
+            });
+
+            // Convert Map to Array và đánh STT
+            const result = Array.from(monHocMap.values()).map((item, index) => ({
+                stt: index + 1,
+                ...item,
+            }));
+
+            return ServiceResultBuilder.success("Tra cứu học phần thành công", result);
+        } catch (error) {
+            console.error("Error tra cuu hoc phan:", error);
+            return ServiceResultBuilder.failure("Lỗi khi tra cứu học phần", "INTERNAL_ERROR");
+        }
+    }
+
+    // Helper method
     private getThuName(thu: number): string {
-        const map: Record<number, string> = {
+        const thuMap: { [key: number]: string } = {
             1: "Chủ Nhật",
             2: "Thứ Hai",
             3: "Thứ Ba",
@@ -279,6 +338,6 @@ export class LopHocPhanSinhVienService {
             6: "Thứ Sáu",
             7: "Thứ Bảy",
         };
-        return map[thu] || "";
+        return thuMap[thu] || "N/A";
     }
 }
