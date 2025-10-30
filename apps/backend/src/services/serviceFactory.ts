@@ -10,6 +10,8 @@ import { SinhVienService } from "./sinhVienService";
 import { GiangVienService } from "./giangVienService";
 import { LopHocPhanSinhVienService } from "./lopHocPhanSinhVienService";
 import { DangKyHocPhanSinhVienService } from "./dangKyHocPhanSinhVienService";
+import { GvLopHocPhanService } from "./gvLopHocPhanService";
+import { LichSuDangKySinhVienService } from "./lichSuDangKySinhVienService";
 
 export class ServiceFactory {
     private static instance: ServiceFactory;
@@ -26,6 +28,8 @@ export class ServiceFactory {
     private _giangVienService?: GiangVienService;
     private _lopHocPhanSinhVienService?: LopHocPhanSinhVienService;
     private _dangKyHocPhanSinhVienService?: DangKyHocPhanSinhVienService;
+    private _gvLopHocPhanService?: GvLopHocPhanService;
+    private _lichSuDangKySinhVienService?: LichSuDangKySinhVienService;
     private constructor() {
         this.unitOfWork = UnitOfWork.getInstance();
     }
@@ -108,5 +112,19 @@ export class ServiceFactory {
             this._dangKyHocPhanSinhVienService = new DangKyHocPhanSinhVienService();
         }
         return this._dangKyHocPhanSinhVienService;
+    }
+
+    get gvLopHocPhanService() {
+        if (!this._gvLopHocPhanService) {
+            this._gvLopHocPhanService = new GvLopHocPhanService();
+        }
+        return this._gvLopHocPhanService;
+    }
+
+    get lichSuDangKySinhVienService() {
+        if (!this._lichSuDangKySinhVienService) {
+            this._lichSuDangKySinhVienService = new LichSuDangKySinhVienService();
+        }
+        return this._lichSuDangKySinhVienService;
     }
 }

@@ -1,133 +1,250 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "../../styles/reset.css";
 import "../../styles/menu.css";
-import { fetchJSON } from "../../utils/fetchJSON";
-import { useModalContext } from "../../hook/ModalContext";
-
-type MonHoc = {
-  ma_mon: string;
-  ten_mon: string;
-  so_tin_chi: number;
-  loai_mon?: "tu_chon" | "chuyen_nganh" | string;
-};
+import { useTraCuuHocPhan } from "../../features/sv/hooks";
+import { useGetHocKyHienHanh } from "../../features/pdt/hooks/useGetHocKyHienHanh";
+import { useHocKyNienKhoa } from "../../features/pdt/hooks/useHocKyNienKhoa";
+import type { HocKyDTO } from "../../features/pdt/types/pdtTypes";
+import type { MonHocTraCuuDTO } from "../../features/sv/types";
 
 export default function TraCuuMonHoc() {
-  const { openNotify } = useModalContext();
-  const [searchValue, setSearchValue] = useState<string>("");
-  const [data, setData] = useState<MonHoc[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  // ✅ Load học kỳ hiện hành
+  const { data: hocKyHienHanh, loading: loadingHocKyHienHanh } =
+    useGetHocKyHienHanh();
+  const { data: hocKyNienKhoas, loading: loadingHocKy } = useHocKyNienKhoa();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const q = searchValue.trim();
-    if (!q) {
-      setData([]);
-      openNotify("Vui lòng nhập từ khóa trước khi tìm kiếm", "warning");
-      return;
-    }
+  // ✅ State
+  const [selectedNienKhoa, setSelectedNienKhoa] = useState<string>("");
+  const [selectedHocKyId, setSelectedHocKyId] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [loaiMonFilter, setLoaiMonFilter] = useState<string>("all");
 
-    setLoading(true);
-    try {
-      const res = await fetchJSON(
-        `/api/mon-hoc/search?q=${encodeURIComponent(q)}`,
-        { method: "GET" }
-      );
-      const result: MonHoc[] = Array.isArray(res) ? res : res?.data ?? [];
-      setData(result);
+  // ✅ Flatten học kỳ
+  const nienKhoas = useMemo(
+    () => Array.from(new Set(hocKyNienKhoas.map((nk) => nk.tenNienKhoa))),
+    [hocKyNienKhoas]
+  );
 
-      if (result.length === 0) {
-        openNotify("Không tìm thấy môn học phù hợp", "warning");
-      } else {
-        openNotify(`Tìm thấy ${result.length} môn học`, "info");
+  const flatHocKys = useMemo(() => {
+    const result: (HocKyDTO & { tenNienKhoa: string })[] = [];
+
+    hocKyNienKhoas.forEach((nienKhoa) => {
+      nienKhoa.hocKy.forEach((hk) => {
+        result.push({
+          ...hk,
+          tenNienKhoa: nienKhoa.tenNienKhoa,
+        });
+      });
+    });
+
+    return result;
+  }, [hocKyNienKhoas]);
+
+  // ✅ Fetch data
+  const { data: monHocs, loading: loadingData } =
+    useTraCuuHocPhan(selectedHocKyId);
+
+  useEffect(() => {
+    if (hocKyHienHanh && flatHocKys.length > 0 && !selectedHocKyId) {
+      const hkHienHanh = flatHocKys.find((hk) => hk.id === hocKyHienHanh.id);
+
+      if (hkHienHanh) {
+        setSelectedNienKhoa(hkHienHanh.tenNienKhoa);
+        setSelectedHocKyId(hkHienHanh.id);
       }
-    } catch (err) {
-      console.error(err);
-      setData([]);
-      openNotify("Không thể tìm kiếm môn học", "error");
-    } finally {
-      setLoading(false);
     }
-  };
+  }, [hocKyHienHanh, flatHocKys, selectedHocKyId]);
+
+  useEffect(() => {
+    setSelectedHocKyId("");
+  }, [selectedNienKhoa]);
+
+  // ✅ Filter data
+  const filteredData = useMemo(() => {
+    let result = monHocs;
+
+    // Filter by loại môn
+    if (loaiMonFilter !== "all") {
+      result = result.filter((mon) => mon.loaiMon === loaiMonFilter);
+    }
+
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const q = searchQuery.trim().toLowerCase();
+      result = result.filter(
+        (mon) =>
+          mon.maMon.toLowerCase().includes(q) ||
+          mon.tenMon.toLowerCase().includes(q)
+      );
+    }
+
+    return result;
+  }, [monHocs, loaiMonFilter, searchQuery]);
+
+  // ✅ Stats
+  const totalMons = filteredData.length;
+  const totalLops = filteredData.reduce(
+    (sum, mon) => sum + mon.danhSachLop.length,
+    0
+  );
+
+  // ✅ Render loading
+  if (loadingHocKy || loadingHocKyHienHanh) {
+    return (
+      <section className="main__body">
+        <div className="body__title">
+          <p className="body__title-text">TRA CỨU HỌC PHẦN</p>
+        </div>
+        <div
+          className="body__inner"
+          style={{ textAlign: "center", padding: 40 }}
+        >
+          Đang tải dữ liệu...
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="main__body">
       <div className="body__title">
-        <p className="body__title-text">TRA CỨU MÔN HỌC</p>
+        <p className="body__title-text">TRA CỨU HỌC PHẦN</p>
       </div>
 
       <div className="body__inner">
-        {/* Form tìm kiếm */}
-        <form className="search-form" onSubmit={handleSubmit}>
+        {/* ✅ Filters */}
+        <div className="selecy__duyethp__container">
+          {/* Niên khóa */}
+          <div className="mr_20">
+            <select
+              className="form__select w__200"
+              value={selectedNienKhoa}
+              onChange={(e) => setSelectedNienKhoa(e.target.value)}
+            >
+              <option value="">-- Chọn Niên khóa --</option>
+              {nienKhoas.map((nk) => (
+                <option key={nk} value={nk}>
+                  {nk}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Học kỳ */}
+          <div className="mr_20">
+            <select
+              className="form__select w__200"
+              value={selectedHocKyId}
+              onChange={(e) => setSelectedHocKyId(e.target.value)}
+              disabled={!selectedNienKhoa}
+            >
+              <option value="">-- Chọn Học kỳ --</option>
+              {flatHocKys
+                .filter((hk) => hk.tenNienKhoa === selectedNienKhoa)
+                .map((hk) => (
+                  <option key={hk.id} value={hk.id}>
+                    {hk.tenHocKy}
+                  </option>
+                ))}
+            </select>
+          </div>
+
+          {/* Loại môn */}
+          <div className="mr_20">
+            <select
+              className="form__select w__200"
+              value={loaiMonFilter}
+              onChange={(e) => setLoaiMonFilter(e.target.value)}
+              disabled={!selectedHocKyId}
+            >
+              <option value="all">Tất cả loại môn</option>
+              <option value="chuyen_nganh">Chuyên ngành</option>
+              <option value="dai_cuong">Đại cương</option>
+              <option value="tu_chon">Tự chọn</option>
+            </select>
+          </div>
+
+          {/* Search */}
           <div className="form__group__tracuu">
             <input
               type="text"
               className="form__input"
               placeholder=""
-              required
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              disabled={!selectedHocKyId}
             />
-            <label className="form__floating-label">Tìm kiếm môn học</label>
+            <label className="form__floating-label">
+              Tìm theo mã/tên môn
+            </label>
           </div>
+        </div>
 
-          <button type="submit" className="form__button" disabled={loading}>
-            <span className="navbar__link-icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="21"
-                viewBox="0 0 20 21"
-                fill="none"
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M8 4.45999C6.93913 4.45999 5.92172 4.88142 5.17157 5.63157C4.42143 6.38171 4 7.39913 4 8.45999C4 9.52086 4.42143 10.5383 5.17157 11.2884C5.92172 12.0386 6.93913 12.46 8 12.46C9.06087 12.46 10.0783 12.0386 10.8284 11.2884C11.5786 10.5383 12 9.52086 12 8.45999C12 7.39913 11.5786 6.38171 10.8284 5.63157C10.0783 4.88142 9.06087 4.45999 8 4.45999ZM2 8.45999C1.99988 7.5157 2.22264 6.58471 2.65017 5.74274C3.0777 4.90077 3.69792 4.17159 4.4604 3.61452C5.22287 3.05745 6.10606 2.68821 7.03815 2.53683C7.97023 2.38545 8.92488 2.45621 9.82446 2.74335C10.724 3.03048 11.5432 3.5259 12.2152 4.18929C12.8872 4.85268 13.3931 5.66533 13.6919 6.56113C13.9906 7.45693 14.0737 8.41059 13.9343 9.34455C13.795 10.2785 13.4372 11.1664 12.89 11.936L17.707 16.753C17.8892 16.9416 17.99 17.1942 17.9877 17.4564C17.9854 17.7186 17.8802 17.9694 17.6948 18.1548C17.5094 18.3402 17.2586 18.4454 16.9964 18.4477C16.7342 18.4499 16.4816 18.3492 16.293 18.167L11.477 13.351C10.5794 13.9893 9.52335 14.3682 8.42468 14.4461C7.326 14.5241 6.22707 14.2981 5.2483 13.793C4.26953 13.2878 3.44869 12.523 2.87572 11.5823C2.30276 10.6417 1.99979 9.56143 2 8.45999Z"
-                  fill="currentColor"
-                />
-              </svg>
-            </span>{" "}
-            {loading ? "Đang tìm..." : "Tìm kiếm"}
-          </button>
-        </form>
+        {/* ✅ Data Table */}
+        {loadingData ? (
+          <p style={{ textAlign: "center", padding: 40 }}>
+            Đang tải danh sách học phần...
+          </p>
+        ) : (
+          <>
+            {filteredData.map((mon: MonHocTraCuuDTO) => (
+              <fieldset key={mon.stt} className="fieldeset__dkhp mt_20">
+                <legend>
+                  {mon.stt}. {mon.maMon} - {mon.tenMon} ({mon.soTinChi} TC) -{" "}
+                  <span style={{ color: "#3b82f6" }}>
+                    {mon.loaiMon === "chuyen_nganh"
+                      ? "Chuyên ngành"
+                      : mon.loaiMon === "dai_cuong"
+                      ? "Đại cương"
+                      : "Tự chọn"}
+                  </span>
+                </legend>
 
-        {/* Kết quả */}
-        <table className="table">
-          <thead>
-            <tr>
-              <th>STT</th>
-              <th>Mã môn</th>
-              <th>Tên môn</th>
-              <th>Số tín chỉ</th>
-              <th>Loại môn</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((row, index) => (
-              <tr key={`${row.ma_mon}-${index}`}>
-                <td>{index + 1}</td>
-                <td>{row.ma_mon}</td>
-                <td>{row.ten_mon}</td>
-                <td>{row.so_tin_chi}</td>
-                <td>
-                  {row.loai_mon === "tu_chon"
-                    ? "Tự chọn"
-                    : row.loai_mon === "chuyen_nganh"
-                    ? "Bắt buộc"
-                    : "Không rõ"}
-                </td>
-              </tr>
+                <table className="table">
+                  <thead>
+                    <tr>
+                      <th>STT</th>
+                      <th>Mã lớp</th>
+                      <th>Giảng viên</th>
+                      <th>Sĩ số</th>
+                      <th>Thời khóa biểu</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {mon.danhSachLop.map((lop:any, idx:any) => (
+                      <tr key={lop.id}>
+                        <td>{idx + 1}</td>
+                        <td>{lop.maLop}</td>
+                        <td>{lop.giangVien}</td>
+                        <td>
+                          {lop.soLuongHienTai}/{lop.soLuongToiDa}
+                        </td>
+                      
+                        <td style={{ whiteSpace: "pre-line" }}>
+                          {lop.thoiKhoaBieu}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </fieldset>
             ))}
 
-            {data.length === 0 && !loading && (
-              <tr>
-                <td colSpan={5} style={{ textAlign: "center" }}>
-                  Không có dữ liệu.
-                </td>
-              </tr>
+            {filteredData.length === 0 && selectedHocKyId && (
+              <p style={{ textAlign: "center", padding: 40, color: "#6b7280" }}>
+                {searchQuery || loaiMonFilter !== "all"
+                  ? "Không tìm thấy môn học phù hợp với bộ lọc"
+                  : "Chưa có học phần nào trong học kỳ này"}
+              </p>
             )}
-          </tbody>
-        </table>
+
+            {!selectedHocKyId && (
+              <p style={{ textAlign: "center", padding: 40, color: "#6b7280" }}>
+                Vui lòng chọn học kỳ để tra cứu
+              </p>
+            )}
+          </>
+        )}
       </div>
     </section>
   );

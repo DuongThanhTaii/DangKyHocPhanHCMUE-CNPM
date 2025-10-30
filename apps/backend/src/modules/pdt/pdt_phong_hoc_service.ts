@@ -45,8 +45,7 @@ export const getAllPhongHocByKhoaIdHandler = async (req: Request, res: Response)
 // Gán phòng học cho khoa
 export const assignPhongHocByKhoaIdHandler = async (req: Request, res: Response) => {
     try {
-        const { khoaId } = req.params;
-        const { phongHocIds } = req.body;
+        const { khoaId, phongHocIds } = req.body;
 
         if (!khoaId) {
             return res.status(400).json(
@@ -75,8 +74,7 @@ export const assignPhongHocByKhoaIdHandler = async (req: Request, res: Response)
 // Xóa gán phòng học khỏi khoa
 export const unassignPhongHocByKhoaIdHandler = async (req: Request, res: Response) => {
     try {
-        const { khoaId } = req.params;
-        const { phongHocIds } = req.body;
+        const { khoaId, phongHocIds } = req.body;
 
         if (!khoaId) {
             return res.status(400).json(

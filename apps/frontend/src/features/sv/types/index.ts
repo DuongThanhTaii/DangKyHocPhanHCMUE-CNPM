@@ -62,3 +62,67 @@ export interface ChuyenLopHocPhanRequest {
     lop_hoc_phan_id_cu: string;
     lop_hoc_phan_id_moi: string;
 }
+
+// ========== LỊCH SỬ ĐĂNG KÝ ==========
+
+export interface LichSuItemDTO {
+    hanhDong: "dang_ky" | "huy";
+    thoiGian: string; // ISO string
+    monHoc: {
+        maMon: string;
+        tenMon: string;
+        soTinChi: number;
+    };
+    lopHocPhan: {
+        maLop: string;
+        tenHocPhan: string;
+    };
+}
+
+export interface LichSuDangKyDTO {
+    hocKy: {
+        tenHocKy: string;
+        maHocKy: string;
+    };
+    ngayTao: string; // ISO string
+    lichSu: LichSuItemDTO[];
+}
+
+// ========== THỜI KHÓA BIỂU ==========
+
+export interface SVTKBWeeklyItemDTO {
+    thu: number;
+    tiet_bat_dau: number;
+    tiet_ket_thuc: number;
+    phong: {
+        id: string;
+        ma_phong: string;
+    };
+    mon_hoc: {
+        ma_mon: string;
+        ten_mon: string;
+    };
+    giang_vien: string;
+    ngay_hoc: string; // ISO date string
+}
+
+// ========== TRA CỨU HỌC PHẦN ==========
+
+export interface LopHocPhanTraCuuDTO {
+    id: string;
+    maLop: string;
+    giangVien: string;
+    soLuongToiDa: number;
+    soLuongHienTai: number;
+    conSlot: number;
+    thoiKhoaBieu: string; // Multiline string
+}
+
+export interface MonHocTraCuuDTO {
+    stt: number;
+    maMon: string;
+    tenMon: string;
+    soTinChi: number;
+    loaiMon: "chuyen_nganh" | "dai_cuong" | "tu_chon";
+    danhSachLop: LopHocPhanTraCuuDTO[];
+}

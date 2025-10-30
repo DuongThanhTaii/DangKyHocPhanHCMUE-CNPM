@@ -1,189 +1,203 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import "../../styles/reset.css";
 import "../../styles/menu.css";
-import { useModalContext } from "../../hook/ModalContext";
-import { fetchJSON } from "../../utils/fetchJSON";
-
-type LichSuItem = {
-  id: string;
-  trang_thai_text: string;
-  ma_mon: string;
-  ten_mon: string;
-  so_tin_chi: number;
-  ma_so_sinh_vien?: string | null;
-  ngay_dang_ky: string;
-};
+import { useGetHocKyHienHanh } from "../../features/pdt/hooks/useGetHocKyHienHanh";
+import { useHocKyNienKhoa } from "../../features/pdt/hooks/useHocKyNienKhoa";
+import { useLichSuDangKy } from "../../features/sv/hooks";
+import type { HocKyDTO } from "../../features/pdt/types/pdtTypes";
 
 export default function LichSuDangKy() {
-  const { openNotify } = useModalContext();
+  // ✅ Load học kỳ hiện hành & danh sách học kỳ
+  const { data: hocKyHienHanh, loading: loadingHocKyHienHanh } =
+    useGetHocKyHienHanh();
+  const { data: hocKyNienKhoas, loading: loadingHocKy } = useHocKyNienKhoa();
 
-  const [lichSu, setLichSu] = useState<LichSuItem[]>([]);
-  const [namHoc, setNamHoc] = useState<string>("");
-  const [hocKy, setHocKy] = useState<string>("");
-  const [namHocList, setNamHocList] = useState<string[]>([]);
-  const [hocKyList, setHocKyList] = useState<string[]>([]);
-  const [loadingTerms, setLoadingTerms] = useState<boolean>(false);
-  const [loadingHistory, setLoadingHistory] = useState<boolean>(false);
+  const [selectedNienKhoa, setSelectedNienKhoa] = useState<string>("");
+  const [selectedHocKyId, setSelectedHocKyId] = useState<string>("");
 
-  useEffect(() => {
-    const fetchAcademicTerms = async () => {
-      try {
-        setLoadingTerms(true);
-        const res = await fetchJSON("/api/get-academic-terms", {
-          method: "GET",
+  // ✅ Flatten data - Niên khóa list
+  const nienKhoas = useMemo(
+    () => Array.from(new Set(hocKyNienKhoas.map((nk) => nk.tenNienKhoa))),
+    [hocKyNienKhoas]
+  );
+
+  // ✅ Flatten data - Học kỳ list
+  const flatHocKys = useMemo(() => {
+    const result: (HocKyDTO & { tenNienKhoa: string })[] = [];
+
+    hocKyNienKhoas.forEach((nienKhoa) => {
+      nienKhoa.hocKy.forEach((hk) => {
+        result.push({
+          ...hk,
+          tenNienKhoa: nienKhoa.tenNienKhoa,
         });
-        const ok = (res as any)?.success;
-        if (ok) {
-          const nh = (res as any).namHocList ?? [];
-          const hk = (res as any).hocKyList ?? [];
-          setNamHocList(nh);
-          setHocKyList(hk);
-          openNotify(
-            `Đã tải ${nh.length} năm học và ${hk.length} học kỳ`,
-            "info"
-          );
-        } else {
-          setNamHocList([]);
-          setHocKyList([]);
-          openNotify("Không lấy được danh sách năm học và học kỳ", "warning");
-        }
-      } catch (error) {
-        setNamHocList([]);
-        setHocKyList([]);
-        openNotify("Lỗi khi lấy danh sách năm học và học kỳ", "error");
-        console.error("Failed to fetch academic terms:", error);
-      } finally {
-        setLoadingTerms(false);
-      }
-    };
-    fetchAcademicTerms();
-  }, [openNotify]);
+      });
+    });
 
+    return result;
+  }, [hocKyNienKhoas]);
+
+  // ✅ Auto-select học kỳ hiện hành khi load
   useEffect(() => {
-    const fetchLichSu = async (currentNamHoc: string, currentHocKy: string) => {
-      try {
-        setLoadingHistory(true);
-        const qs: string[] = [];
-        if (currentNamHoc)
-          qs.push(`namHoc=${encodeURIComponent(currentNamHoc)}`);
-        if (currentHocKy) qs.push(`hocKy=${encodeURIComponent(currentHocKy)}`);
-        const url = `/api/lich-su-dang-ky${
-          qs.length ? `?${qs.join("&")}` : ""
-        }`;
+    if (hocKyHienHanh && flatHocKys.length > 0 && !selectedHocKyId) {
+      const hkHienHanh = flatHocKys.find((hk) => hk.id === hocKyHienHanh.id);
 
-        const res = await fetchJSON(url, { method: "GET" });
-        const ok = (res as any)?.success;
-        if (ok) {
-          const rows = ((res as any).data ?? []) as LichSuItem[];
-          setLichSu(rows);
-          openNotify(
-            rows.length
-              ? `Đã tải ${rows.length} dòng lịch sử`
-              : "Không có dữ liệu lịch sử cho bộ lọc hiện tại",
-            rows.length ? "info" : "warning"
-          );
-        } else {
-          setLichSu([]);
-          openNotify("Không lấy được dữ liệu lịch sử", "warning");
-        }
-      } catch {
-        setLichSu([]);
-        openNotify("Lỗi khi lấy lịch sử đăng ký", "error");
-      } finally {
-        setLoadingHistory(false);
+      if (hkHienHanh) {
+        setSelectedNienKhoa(hkHienHanh.tenNienKhoa);
+        setSelectedHocKyId(hkHienHanh.id);
       }
-    };
+    }
+  }, [hocKyHienHanh, flatHocKys, selectedHocKyId]);
 
-    fetchLichSu(namHoc, hocKy);
-  }, [namHoc, hocKy, openNotify]);
+  // ✅ Reset học kỳ khi đổi niên khóa
+  useEffect(() => {
+    setSelectedHocKyId("");
+  }, [selectedNienKhoa]);
+
+  // ✅ Fetch lịch sử đăng ký
+  const { data: lichSuData, loading: loadingLichSu } =
+    useLichSuDangKy(selectedHocKyId);
+
+  // ✅ Format datetime
+  const formatDateTime = (dateString: string) => {
+    return new Date(dateString).toLocaleString("vi-VN", {
+      hour: "2-digit",
+      minute: "2-digit",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+
+  // ✅ Format action
+  const getActionLabel = (action: string) => {
+    return action === "dang_ky" ? "Đăng ký" : "Hủy đăng ký";
+  };
+
+  const getActionColor = (action: string) => {
+    return action === "dang_ky" ? "#16a34a" : "#dc2626";
+  };
 
   return (
     <section className="main__body">
       <div className="body__title">
         <p className="body__title-text">LỊCH SỬ ĐĂNG KÝ HỌC PHẦN</p>
       </div>
-      <div className="body__inner">
-        <form
-          className="selecy__duyethp__container"
-          onSubmit={(e) => e.preventDefault()}
-        >
-          <div>
-            <select
-              className="form__select mr_20"
-              value={namHoc}
-              onChange={(e) => setNamHoc(e.target.value)}
-              disabled={loadingTerms}
-            >
-              <option value="">-- Chọn năm học --</option>
-              {namHocList.map((year) => (
-                <option key={year} value={year}>
-                  {year}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <select
-              className="form__select"
-              value={hocKy}
-              onChange={(e) => setHocKy(e.target.value)}
-              disabled={loadingTerms}
-            >
-              <option value="">-- Chọn học kỳ --</option>
-              {hocKyList.map((ky) => (
-                <option key={ky} value={ky}>
-                  {ky}
-                </option>
-              ))}
-            </select>
-          </div>
-        </form>
 
-        <table className="table">
-          <thead>
-            <tr>
-              <th>STT</th>
-              <th>Thao tác</th>
-              <th>Mã HP</th>
-              <th>Tên HP</th>
-              <th>STC</th>
-              <th>Thao tác bởi</th>
-              <th>Vào ngày</th>
-            </tr>
-          </thead>
-          <tbody>
-            {lichSu.map((item, index) => (
-              <tr
-                key={item.id}
-                className={
-                  item.trang_thai_text === "Đã hủy" ? "row-cancelled" : ""
-                }
-              >
-                <td>{index + 1}</td>
-                <td>{item.trang_thai_text}</td>
-                <td>{item.ma_mon}</td>
-                <td>{item.ten_mon}</td>
-                <td>{item.so_tin_chi}</td>
-                <td>{item.ma_so_sinh_vien || "Sinh viên"}</td>
-                <td>{new Date(item.ngay_dang_ky).toLocaleString("vi-VN")}</td>
-              </tr>
-            ))}
-            {lichSu.length === 0 && !loadingHistory && (
+      <div className="body__inner">
+        {/* Filters */}
+        <div className="selecy__duyethp__container">
+          {/* Niên khóa */}
+          <div className="mr_20">
+            <select
+              className="form__select w__200"
+              value={selectedNienKhoa}
+              onChange={(e) => setSelectedNienKhoa(e.target.value)}
+              disabled={loadingHocKy}
+            >
+              <option value="">-- Chọn Niên khóa --</option>
+              {nienKhoas.map((nk) => (
+                <option key={nk} value={nk}>
+                  {nk}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Học kỳ */}
+          <div>
+            <select
+              className="form__select w__200"
+              value={selectedHocKyId}
+              onChange={(e) => setSelectedHocKyId(e.target.value)}
+              disabled={!selectedNienKhoa || loadingHocKy}
+            >
+              <option value="">-- Chọn Học kỳ --</option>
+              {flatHocKys
+                .filter((hk) => hk.tenNienKhoa === selectedNienKhoa)
+                .map((hk) => (
+                  <option key={hk.id} value={hk.id}>
+                    {hk.tenHocKy}
+                  </option>
+                ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Table */}
+        {loadingHocKyHienHanh || loadingHocKy ? (
+          <p style={{ textAlign: "center", padding: 40 }}>
+            Đang tải dữ liệu...
+          </p>
+        ) : (
+          <table className="table">
+            <thead>
               <tr>
-                <td colSpan={7} style={{ textAlign: "center" }}>
-                  Không có dữ liệu.
-                </td>
+                <th>STT</th>
+                <th>Thao tác</th>
+                <th>Thời gian</th>
+                <th>Mã HP</th>
+                <th>Tên HP</th>
+                <th>Mã lớp</th>
+                <th>STC</th>
               </tr>
-            )}
-            {loadingHistory && (
-              <tr>
-                <td colSpan={7} style={{ textAlign: "center", opacity: 0.7 }}>
-                  Đang tải lịch sử...
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {loadingLichSu ? (
+                <tr>
+                  <td colSpan={7} style={{ textAlign: "center", padding: 20 }}>
+                    Đang tải lịch sử...
+                  </td>
+                </tr>
+              ) : !lichSuData || lichSuData.lichSu.length === 0 ? (
+                <tr>
+                  <td colSpan={7} style={{ textAlign: "center", padding: 20 }}>
+                    {selectedHocKyId
+                      ? "Chưa có lịch sử đăng ký"
+                      : "Vui lòng chọn học kỳ"}
+                  </td>
+                </tr>
+              ) : (
+                lichSuData.lichSu.map((item, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>
+                      <span
+                        style={{
+                          color: getActionColor(item.hanhDong),
+                          fontWeight: 600,
+                        }}
+                      >
+                        {getActionLabel(item.hanhDong)}
+                      </span>
+                    </td>
+                    <td>{formatDateTime(item.thoiGian)}</td>
+                    <td>{item.monHoc.maMon}</td>
+                    <td>{item.monHoc.tenMon}</td>
+                    <td>{item.lopHocPhan.maLop}</td>
+                    <td>{item.monHoc.soTinChi}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        )}
+
+        {/* Footer info */}
+        {lichSuData && (
+          <div style={{ marginTop: 16, color: "#6b7280", fontSize: 14 }}>
+            <p>
+              <strong>Học kỳ:</strong> {lichSuData.hocKy.tenHocKy} (
+              {lichSuData.hocKy.maHocKy})
+            </p>
+            <p>
+              <strong>Ngày tạo:</strong> {formatDateTime(lichSuData.ngayTao)}
+            </p>
+            <p>
+              <strong>Tổng số thao tác:</strong> {lichSuData.lichSu.length}
+            </p>
+          </div>
+        )}
       </div>
     </section>
   );

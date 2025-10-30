@@ -1,0 +1,55 @@
+.tailieu-upload-container {
+  margin-bottom: 20px;
+}
+
+.tailieu-dropzone {
+  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 40px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  background: #f9fafb;
+}
+
+.tailieu-dropzone:hover {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.tailieu-dropzone.dragging {
+  border-color: #3b82f6;
+  background: #dbeafe;
+}
+
+.tailieu-dropzone svg {
+  color: #64748b;
+  margin-bottom: 12px;
+}
+
+.dropzone-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.dropzone-hint {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.upload-progress-bar {
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 12px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+  transition: width 0.3s;
+}
