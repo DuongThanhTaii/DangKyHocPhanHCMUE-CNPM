@@ -199,28 +199,34 @@ export const pdtApi = {
     },
 
     /**
-     * ✅ Gán phòng cho khoa
+     * ✅ Gán phòng cho khoa (PATCH /phong-hoc/assign)
      */
     assignPhongToKhoa: async (
         khoaId: string,
         data: AssignPhongRequest
     ): Promise<ServiceResult<{ count: number }>> => {
-        return await fetchJSON(`pdt/phong-hoc/khoa/${khoaId}/assign`, {
+        return await fetchJSON(`pdt/phong-hoc/assign`, {
             method: "PATCH",
-            body: data,
+            body: {
+                khoaId, // ✅ Send khoaId in body
+                ...data,
+            },
         });
     },
 
     /**
-     * ✅ Xóa phòng khỏi khoa
+     * ✅ Xóa phòng khỏi khoa (PATCH /phong-hoc/unassign)
      */
     unassignPhongFromKhoa: async (
         khoaId: string,
         data: UnassignPhongRequest
     ): Promise<ServiceResult<{ count: number }>> => {
-        return await fetchJSON(`pdt/phong-hoc/khoa/${khoaId}/unassign`, {
+        return await fetchJSON(`pdt/phong-hoc/unassign`, {
             method: "PATCH",
-            body: data,
+            body: {
+                khoaId, // ✅ Send khoaId in body
+                ...data,
+            },
         });
     },
 
