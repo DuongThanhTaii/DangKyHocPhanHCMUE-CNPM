@@ -1,10 +1,9 @@
 // ======================================
 // src/pages/pdt/QuanLyPDT.tsx
-// Dashboard chuyển đổi giữa nhiều CRUD
 // ======================================
 import React, { Suspense, useEffect, useMemo, useState } from "react";
 
-// Lazy load để giảm bundle
+// Lazy load các module quản lý
 const QuanLySinhVien = React.lazy(
   () => import("../pdt/components/crud_sv/QuanLySinhVien")
 );
@@ -14,23 +13,26 @@ const QuanLyGiangVien = React.lazy(
 const QuanLyMonHoc = React.lazy(
   () => import("../pdt/components/crud_mh/QuanLyMonHoc")
 );
+const QuanLyTinChi = React.lazy(
+  () => import("../pdt/components/crud_tc/QuanLyTinChi")
+); // ✅ mới thêm
 
-// Nếu bạn có thêm CRUD khác, tiếp tục lazy như trên
-// const QuanLyHocPhan = React.lazy(() => import("./QuanLyHocPhan"));
-
-// Kiểu view cho đồng nhất
-export type PDTViewKey = "sv" | "gv" | "mh"; // | "hp" | "lhp" ...
+// Các tab hiển thị
+export type PDTViewKey = "sv" | "gv" | "mh" | "tc"; // ✅ thêm "bc"
 
 const TAB_LABELS: Record<PDTViewKey, string> = {
   sv: "Quản lý sinh viên",
   gv: "Quản lý giảng viên",
   mh: "Quản lý học phần",
+  tc: "Quản lý chính sách tín chỉ", // ✅
 };
 
-// Helper: đồng bộ view với URL (hash) để share link nhanh
+// Đồng bộ URL hash
 const getInitialView = (): PDTViewKey => {
   const hash = (window.location.hash || "").replace("#", "");
   if (hash === "gv") return "gv";
+  if (hash === "mh") return "mh";
+  if (hash === "tc") return "tc";
   return "sv";
 };
 
@@ -45,7 +47,6 @@ const setHash = (v: PDTViewKey) => {
 const QuanLyPDT: React.FC = () => {
   const [view, setView] = useState<PDTViewKey>(getInitialView());
 
-  // Khi đổi tab thì cập nhật hash để có thể reload/ share link
   useEffect(() => {
     setHash(view);
   }, [view]);
@@ -60,23 +61,23 @@ const QuanLyPDT: React.FC = () => {
           {TAB_LABELS.sv}
         </button>
         <button
-          className={`btn__quanlygv ${view === "gv" ? "active" : ""}`}
+          className={`btn__quanlysv ${view === "gv" ? "active" : ""}`}
           onClick={() => setView("gv")}
         >
           {TAB_LABELS.gv}
         </button>
         <button
-          className={`btn__quanlyhp ${view === "mh" ? "active" : ""}`}
+          className={`btn__quanlysv ${view === "mh" ? "active" : ""}`}
           onClick={() => setView("mh")}
         >
           {TAB_LABELS.mh}
         </button>
-        {/* 
-        Ví dụ thêm tab khác:
-        <button className={`btn__quanlyhp ${view === "hp" ? "active" : ""}`} onClick={() => setView("hp")}>
-          Quản lý học phần
+        <button
+          className={`btn__quanlysv ${view === "tc" ? "active" : ""}`}
+          onClick={() => setView("tc")}
+        >
+          {TAB_LABELS.tc}
         </button>
-      */}
       </div>
     ),
     [view]
@@ -90,14 +91,11 @@ const QuanLyPDT: React.FC = () => {
 
       <div className="body__inner">
         {buttons}
-
-        {/* Phần nội dung tương ứng tab */}
         <Suspense fallback={<div style={{ padding: 16 }}>Đang tải...</div>}>
           {view === "sv" && <QuanLySinhVien />}
           {view === "gv" && <QuanLyGiangVien />}
           {view === "mh" && <QuanLyMonHoc />}
-
-          {/* {view === "hp" && <QuanLyHocPhan />} */}
+          {view === "tc" && <QuanLyTinChi />} {/* ✅ thêm */}
         </Suspense>
       </div>
     </section>

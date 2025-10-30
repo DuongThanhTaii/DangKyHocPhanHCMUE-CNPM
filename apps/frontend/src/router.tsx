@@ -25,6 +25,7 @@ import SVLayout from "./layouts/SVLayout";
 import LichSuDangKy from "./pages/sv/LichSuDangKyHocPhan";
 import XemThoiKhoaBieu from "./pages/sv/XemThoiKhoaBieu";
 import PhanBoPhongHoc from "./pages/pdt/PhanBoPhongHoc";
+import BaoCaoThongKe from "./pages/pdt/ThongKeDashboard";
 
 import GVLopHocPhanList from "./pages/gv/GVLopHocPhanList";
 import GVLopHocPhanDetail from "./pages/gv/GVLopHocPhanDetail";
@@ -50,7 +51,7 @@ export const router = createBrowserRouter([
       { path: "chuyen-trang-thai", element: <ChuyenTrangThai /> },
       { path: "duyet-hoc-phan", element: <PDTDuyetHocPhan /> },
       { path: "quan-ly", element: <QuanLyNoiBo /> },
-      { path: "thong-ke-dashboard", element: <ThongKeDashboard /> },
+      { path: "thong-ke-dashboard", element: <BaoCaoThongKe /> },
       { path: "chuyen-hoc-ky", element: <ChuyenHocKyHienHanh /> },
       { path: "phan-bo-phong-hoc", element: <PhanBoPhongHoc /> },
     ],

@@ -13,6 +13,7 @@
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
+    "exceljs": "^4.4.0",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
@@ -20,6 +21,8 @@
     "node-cron": "^4.2.1",
     "nodemailer": "^7.0.9",
     "pino": "^9.9.5",
+    "puppeteer": "^24.27.0",
+    "recharts": "^3.3.0",
     "xlsx": "^0.18.5",
     "zod": "^4.1.8"
   },
