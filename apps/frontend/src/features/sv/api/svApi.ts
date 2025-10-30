@@ -11,9 +11,11 @@ import type {
     HuyDangKyHocPhanRequest,
     ChuyenLopHocPhanRequest,
     LopHocPhanItemDTO,
+    SVTKBWeeklyItemDTO,
 } from "../types";
 import { fetchJSON } from "../../../utils/fetchJSON";
-
+import type { LichSuDangKyDTO } from "../types";
+import type { MonHocTraCuuDTO } from "../types";
 export const svApi = {
     // ========== GHI DANH ==========
 
@@ -98,5 +100,36 @@ export const svApi = {
         hocKyId: string
     ): Promise<ServiceResult<LopHocPhanItemDTO[]>> => {
         return await fetchJSON(`sv/lop-hoc-phan/mon-hoc?mon_hoc_id=${monHocId}&hoc_ky_id=${hocKyId}`);
+    },
+
+    /**
+     * ✅ Lấy lịch sử đăng ký theo học kỳ
+     */
+    getLichSuDangKy: async (hocKyId: string): Promise<ServiceResult<LichSuDangKyDTO>> => {
+        return await fetchJSON(`sv/lich-su-dang-ky?hoc_ky_id=${hocKyId}`, {
+            method: "GET",
+        });
+    },
+
+    /**
+     * ✅ Lấy TKB theo tuần (sinh viên)
+     */
+    getTKBWeekly: async (
+        hocKyId: string,
+        dateStart: string, // YYYY-MM-DD
+        dateEnd: string    // YYYY-MM-DD
+    ): Promise<ServiceResult<SVTKBWeeklyItemDTO[]>> => {
+        return await fetchJSON(
+            `sv/tkb-weekly?hoc_ky_id=${hocKyId}&date_start=${dateStart}&date_end=${dateEnd}`
+        );
+    },
+
+    /**
+     * ✅ Tra cứu học phần theo học kỳ
+     */
+    traCuuHocPhan: async (
+        hocKyId: string
+    ): Promise<ServiceResult<MonHocTraCuuDTO[]>> => {
+        return await fetchJSON(`sv/tra-cuu-hoc-phan?hoc_ky_id=${hocKyId}`);
     },
 };
