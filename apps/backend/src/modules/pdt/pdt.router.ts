@@ -231,14 +231,16 @@ r.get(
   getAllPhongHocByKhoaIdHandler
 );
 
-r.post(
+// ✅ Fix: Gán phòng học (PATCH không có :khoaId trong path)
+r.patch(
   "/phong-hoc/assign",
   requireAuth,
   requireRole(["phong_dao_tao"]),
   assignPhongHocByKhoaIdHandler
 );
 
-r.post(
+// ✅ Fix: Xóa gán phòng học (PATCH không có :khoaId trong path)
+r.patch(
   "/phong-hoc/unassign",
   requireAuth,
   requireRole(["phong_dao_tao"]),
