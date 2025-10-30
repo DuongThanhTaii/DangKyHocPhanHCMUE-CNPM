@@ -314,6 +314,7 @@ button.btn__quanlylhp.active {
   border-radius: 15px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   z-index: 100;
+  display: none;
 }
 
 .modal h6,
