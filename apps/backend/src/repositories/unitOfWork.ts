@@ -23,7 +23,7 @@ import { DangKyHocPhanRepository } from "./dangKyHocPhanRepository";
 import { LichSuDangKyRepository } from "./lichSuDangKyRepository";
 import { ChiTietLichSuDangKyRepository } from "./chiTietLichSuDangKyRepository";
 import { DangKyTKBRepository } from "./dangKyTKBRepository";
-
+import { TaiLieuRepository } from "./taiLieuRepository";
 export class UnitOfWork {
   private static instance: UnitOfWork;
   private prisma: PrismaClient;
@@ -53,6 +53,7 @@ export class UnitOfWork {
   private _lichSuDangKyRepository?: LichSuDangKyRepository;
   private _chiTietLichSuDangKyRepository?: ChiTietLichSuDangKyRepository;
   private _dangKyTKBRepository?: DangKyTKBRepository;
+  private _taiLieuRepository?: TaiLieuRepository;
   private constructor() {
     this.prisma = new PrismaClient();
   }
@@ -202,6 +203,13 @@ export class UnitOfWork {
     return this._dangKyTKBRepository;
   }
 
+  get taiLieuRepository() {
+    if (!this._taiLieuRepository) {
+      this._taiLieuRepository = new TaiLieuRepository(this.prisma);
+    }
+    return this._taiLieuRepository;
+  }
+
   async transaction<T>(
     callback: (prisma: PrismaClient) => Promise<T>
   ): Promise<T> {
@@ -212,5 +220,10 @@ export class UnitOfWork {
 
   async disconnect(): Promise<void> {
     await this.prisma.$disconnect();
+  }
+
+  // Add public getter for prisma
+  get client(): PrismaClient {
+    return this.prisma;
   }
 }
