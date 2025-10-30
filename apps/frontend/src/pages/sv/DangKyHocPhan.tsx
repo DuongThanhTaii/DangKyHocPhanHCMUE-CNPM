@@ -57,8 +57,13 @@ export default function DangKyHocPhan() {
     };
   } | null>(null);
 
-  // ✅ Tìm lopHocPhanId từ lopDaDangKy (nested structure)
-  const isDaDangKy = (lopId: string) => {
+  // ✅ Check môn đã đăng ký dựa trên MÃ MÔN (không phải lopId)
+  const isDaDangKyMonHoc = (maMon: string) => {
+    return lopDaDangKy.some((mon) => mon.maMon === maMon);
+  };
+
+  // ✅ Check lớp cụ thể đã đăng ký (for modal)
+  const isDaDangKyLop = (lopId: string) => {
     return lopDaDangKy.some((mon) =>
       mon.danhSachLop.some((lop) => lop.id === lopId)
     );
@@ -225,9 +230,8 @@ export default function DangKyHocPhan() {
 
   const renderMonHocTable = (danhSachMon: MonHocInfoDTO[]) => {
     return danhSachMon.map((mon: MonHocInfoDTO, index: number) => {
-      const hasRegisteredLop = mon.danhSachLop.some((lop: LopHocPhanItemDTO) =>
-        isDaDangKy(lop.id)
-      );
+      // ✅ Check theo MÃ MÔN thay vì lopId
+      const hasRegisteredLop = isDaDangKyMonHoc(mon.maMon);
 
       return (
         <tr
@@ -239,14 +243,20 @@ export default function DangKyHocPhan() {
           <td>{mon.tenMon}</td>
           <td>{mon.soTinChi}</td>
           <td>
-            <button
-              className="btn__chung"
-              onClick={() => handleOpenModal(mon)}
-              style={{ padding: "5px 10px", fontSize: "14px" }}
-              disabled={submitting}
-            >
-              Đăng ký
-            </button>
+            {hasRegisteredLop ? (
+              <span style={{ color: "#16a34a", fontWeight: 600 }}>
+                ✓ Đã đăng ký
+              </span>
+            ) : (
+              <button
+                className="btn__chung"
+                onClick={() => handleOpenModal(mon)}
+                style={{ padding: "5px 10px", fontSize: "14px" }}
+                disabled={submitting}
+              >
+                Đăng ký
+              </button>
+            )}
           </td>
         </tr>
       );
@@ -484,7 +494,7 @@ export default function DangKyHocPhan() {
           monHoc={selectedMonHoc}
           onClose={handleCloseModal}
           onDangKy={handleDangKyLop}
-          isDaDangKy={isDaDangKy}
+          isDaDangKy={isDaDangKyLop} // ✅ Pass function check lớp cụ thể
         />
       )}
 
