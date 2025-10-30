@@ -48,12 +48,10 @@ export class KyPhaseRepository extends BaseRepository<ky_phase> {
     }
 
     async getCurrentPhase(hocKyId: string): Promise<ky_phase | null> {
-        const now = new Date();
         return this.model.findFirst({
             where: {
                 hoc_ky_id: hocKyId,
-                start_at: { lte: now },
-                end_at: { gte: now },
+                is_enabled: true,
             },
         });
     }

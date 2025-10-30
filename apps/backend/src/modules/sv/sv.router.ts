@@ -16,6 +16,13 @@ import {
 
 } from "./sinhvien_ghiDanh_service";
 import { ghiDanhMonHocHandler, getMonHocGhiDanhHandler, getDanhSachDaGhiDanhHandler } from "./sv_monhoc_service";
+import {
+  getLichSuDangKyByHocKyHandler,
+  getAllLichSuDangKyHandler,
+  getTKBSinhVienHandler,
+  getTKBWeeklyHandler,
+} from "./sv_lichSuDangKy_service";
+import { traCuuHocPhanHandler } from "./sv_traCuuHocPhan_service";
 const r = Router();
 
 r.get("/me", requireAuth, requireRole(["sinh_vien"]), (req, res) => {
@@ -111,6 +118,47 @@ r.post(
   requireAuth,
   requireRole(["sinh_vien"]),
   chuyenLopHocPhanHandler
+);
+
+// ✅ TKB sinh viên
+r.get(
+  "/tkb",
+  requireAuth,
+  requireRole(["sinh_vien"]),
+  getTKBSinhVienHandler
+);
+
+// ✅ TKB theo tuần (weekly)
+r.get(
+  "/tkb-weekly",
+  requireAuth,
+  requireRole(["sinh_vien"]),
+  getTKBWeeklyHandler
+);
+
+// ✅ Lịch sử đăng ký
+r.get(
+  "/lich-su-dang-ky",
+  requireAuth,
+  requireRole(["sinh_vien"]),
+  getLichSuDangKyByHocKyHandler
+);
+
+r.get(
+  "/lich-su-dang-ky/all",
+  requireAuth,
+  requireRole(["sinh_vien"]),
+  getAllLichSuDangKyHandler
+);
+
+// ============ TRA CỨU HỌC PHẦN ============
+
+// ✅ Tra cứu học phần (tất cả lớp của học kỳ kèm TKB)
+r.get(
+  "/tra-cuu-hoc-phan",
+  requireAuth,
+  requireRole(["sinh_vien"]),
+  traCuuHocPhanHandler
 );
 
 export default r;

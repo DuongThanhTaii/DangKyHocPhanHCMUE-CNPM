@@ -11,8 +11,16 @@ export class LopHocPhanRepository extends BaseRepository<lop_hoc_phan> {
       where: { giang_vien_id },
       orderBy: { created_at: "desc" },
       include: {
-        hoc_phan: { include: { mon_hoc: true } },
-        lich_hoc_dinh_ky: true,
+        hoc_phan: {
+          include: {
+            mon_hoc: true
+          }
+        },
+        lich_hoc_dinh_ky: {
+          include: {
+            phong: true,
+          },
+        },
       },
     });
   }
@@ -29,19 +37,37 @@ export class LopHocPhanRepository extends BaseRepository<lop_hoc_phan> {
   }
 
   async studentsOfLHP(lop_hoc_phan_id: string) {
-    return this.prisma.dang_ky_hoc_phan.findMany({
-      where: { lop_hoc_phan_id },
+    const students = await this.prisma.dang_ky_hoc_phan.findMany({
+      where: {
+        lop_hoc_phan_id,
+        trang_thai: "da_dang_ky"
+      },
       include: {
         sinh_vien: {
-          include: {
-            users: true,
-            nganh_hoc: true,
-            khoa: true,
+          select: {
+            id: true, // ✅ Thêm UUID sinh viên
+            ma_so_sinh_vien: true,
+            lop: true,
+            users: {
+              select: {
+                ho_ten: true,
+                email: true,
+              },
+            },
           },
         },
       },
       orderBy: { ngay_dang_ky: "asc" },
     });
+
+    // Map sang DTO với UUID
+    return students.map((item: any) => ({
+      id: item.sinh_vien.id, // ✅ UUID sinh viên
+      mssv: item.sinh_vien.ma_so_sinh_vien,
+      hoTen: item.sinh_vien.users.ho_ten,
+      lop: item.sinh_vien.lop,
+      email: item.sinh_vien.users.email,
+    }));
   }
 
   async documentsOfLHP(lop_hoc_phan_id: string) {
@@ -101,8 +127,11 @@ export class LopHocPhanRepository extends BaseRepository<lop_hoc_phan> {
     const mon_hoc_id = lhp.hoc_phan.mon_hoc_id;
 
     await this.prisma.$transaction(
-      items.map(({ sinh_vien_id, diem_so }) =>
-        this.prisma.ket_qua_hoc_phan.upsert({
+      items.map(({ sinh_vien_id, diem_so }) => {
+        // ✅ Logic tự động set trạng thái
+        const trang_thai = diem_so >= 4 ? "dat" : "khong_dat";
+
+        return this.prisma.ket_qua_hoc_phan.upsert({
           where: {
             sinh_vien_id_mon_hoc_id_hoc_ky_id: {
               sinh_vien_id,
@@ -110,17 +139,21 @@ export class LopHocPhanRepository extends BaseRepository<lop_hoc_phan> {
               hoc_ky_id,
             },
           },
-          update: { diem_so, lop_hoc_phan_id },
+          update: {
+            diem_so,
+            lop_hoc_phan_id,
+            trang_thai, // ✅ Update trạng thái theo điểm
+          },
           create: {
             sinh_vien_id,
             mon_hoc_id,
             hoc_ky_id,
             lop_hoc_phan_id,
             diem_so,
-            trang_thai: "da_nhap",
+            trang_thai, // ✅ Set trạng thái khi tạo mới
           },
-        })
-      )
+        });
+      })
     );
   }
 
@@ -202,6 +235,51 @@ export class LopHocPhanRepository extends BaseRepository<lop_hoc_phan> {
           },
         },
       },
+    });
+  }
+
+  /**
+   * Lấy tất cả lớp học phần của học kỳ (đang mở) kèm đầy đủ thông tin
+   */
+  async findAllByHocKyWithDetails(hoc_ky_id: string) {
+    return this.model.findMany({
+      where: {
+        hoc_phan: {
+          id_hoc_ky: hoc_ky_id,
+        },
+        trang_thai_lop: "dang_mo",
+      },
+      include: {
+        hoc_phan: {
+          include: {
+            mon_hoc: true,
+          },
+        },
+        giang_vien: {
+          select: {
+            users: {
+              select: {
+                ho_ten: true,
+              },
+            },
+          },
+        },
+        lich_hoc_dinh_ky: {
+          include: {
+            phong: true,
+          },
+        },
+      },
+      orderBy: [
+        {
+          hoc_phan: {
+            mon_hoc: {
+              ma_mon: "asc",
+            },
+          },
+        },
+        { ma_lop: "asc" },
+      ],
     });
   }
 }
