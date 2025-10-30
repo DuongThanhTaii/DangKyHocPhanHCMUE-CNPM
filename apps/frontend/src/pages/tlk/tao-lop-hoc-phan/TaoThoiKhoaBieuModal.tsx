@@ -36,6 +36,7 @@ export interface ClassInstance {
   ngayKetThuc?: string;
   isFromBackend?: boolean; // ✅ Flag để phân biệt TKB cũ/mới
   isReadonly?: boolean; // ✅ Không cho sửa/xóa
+  tenGiangVien?: string;
 }
 
 interface Props {

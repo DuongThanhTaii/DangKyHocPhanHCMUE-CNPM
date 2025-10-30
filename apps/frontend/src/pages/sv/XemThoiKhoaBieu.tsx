@@ -1,396 +1,245 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "../../styles/reset.css";
 import "../../styles/menu.css";
-import { fetchJSON } from "../../utils/fetchJSON";
-import { useModalContext } from "../../hook/ModalContext";
-import type { JSX } from "react";
+import { useSVTKBWeekly } from "../../features/sv/hooks";
+import { useTietHocConfig } from "../../features/gv/hooks";
+import { useGetHocKyHienHanh } from "../../features/pdt/hooks/useGetHocKyHienHanh";
+import { useHocKyNienKhoa } from "../../features/pdt/hooks/useHocKyNienKhoa";
+import type { HocKyDTO } from "../../features/pdt/types/pdtTypes";
+import {
+  buildWeeksFromHocKy,
+  getCurrentWeekIndexFromHocKy,
+  formatDate,
+} from "../../features/gv/utils/weekUtils";
+import type { RoomItem } from "../../features/gv/types";
+import TKBClassCard from "../tlk/tao-lop-hoc-phan/TKBClassCard";
+import type { ClassInstance } from "../tlk/tao-lop-hoc-phan/TaoThoiKhoaBieuModal";
 
-type Semester = {
-  hoc_ky_id: string;
-  ma_hoc_ky: string; // "1" | "2" | "3"
-  ten_nien_khoa: string; // "2025-2026"
-  trang_thai_hien_tai?: boolean;
-  ngay_bat_dau?: string | null; // ISO date
-  ngay_ket_thuc?: string | null; // ISO date
-};
+const WEEK_DAYS = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
 
-type ScheduleItem = {
-  ma_lop_hp: string;
-  ma_mon: string;
-  ten_mon: string;
-  gio_hoc: string; // "07:00-08:50"
-  phong_hoc?: string | null;
-  ten_giang_vien?: string | null;
-  ngay_bat_dau_lhp: string; // ISO date
-  ngay_ket_thuc_lhp: string; // ISO date
-  ngay_hoc: (string | number)[]; // ["2","3"] or [2,3]
-};
+export default function XemThoiKhoaBieu() {
+  // ========= Custom Hooks =========
+  const { data: hocKyHienHanh, loading: loadingHocKyHienHanh } =
+    useGetHocKyHienHanh();
+  const { data: hocKyNienKhoas, loading: loadingHocKy } = useHocKyNienKhoa();
+  const { config: tietHocConfig, loading: loadingConfig } = useTietHocConfig();
 
-type WeekInfo = { index: number; start: string; end: string };
-
-export default function Timetable(): JSX.Element {
-  const { openNotify } = useModalContext();
-
-  const [dsHocKy, setDsHocKy] = useState<Semester[]>([]);
-  const [dsNienKhoa, setDsNienKhoa] = useState<string[]>([]);
-
-  const [selectedHocKyId, setSelectedHocKyId] = useState<string>("");
+  // ========= State =========
   const [selectedNienKhoa, setSelectedNienKhoa] = useState<string>("");
-  const [selectedWeek, setSelectedWeek] = useState<number>(1);
+  const [selectedHocKyId, setSelectedHocKyId] = useState<string>("");
+  const [selectedWeekIndex, setSelectedWeekIndex] = useState<number>(1);
 
-  const [allScheduleData, setAllScheduleData] = useState<ScheduleItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  // ========= Computed Values - Flatten data =========
+  const nienKhoas = useMemo(
+    () => Array.from(new Set(hocKyNienKhoas.map((nk) => nk.tenNienKhoa))),
+    [hocKyNienKhoas]
+  );
 
-  const weekDays = [
-    "Thứ 2",
-    "Thứ 3",
-    "Thứ 4",
-    "Thứ 5",
-    "Thứ 6",
-    "Thứ 7",
-    "Chủ nhật",
-  ];
+  const flatHocKys = useMemo(() => {
+    const result: (HocKyDTO & { tenNienKhoa: string })[] = [];
 
-  const todayDateString = useMemo(() => {
-    const today = new Date();
-    const d = String(today.getDate()).padStart(2, "0");
-    const m = String(today.getMonth() + 1).padStart(2, "0");
-    const y = today.getFullYear();
-    return `${d}/${m}/${y}`;
-  }, []);
-
-  // ============ Fetch semesters ============
-  const fetchSemesters = async () => {
-    setLoading(true);
-    try {
-      const res = await fetchJSON("/api/metadata/semesters", { method: "GET" });
-      const semesters: Semester[] = Array.isArray(res)
-        ? res
-        : (res as any)?.data ?? [];
-      setDsHocKy(semesters);
-
-      const uniqueNienKhoa = Array.from(
-        new Set(semesters.map((hk) => hk.ten_nien_khoa))
-      );
-      setDsNienKhoa(uniqueNienKhoa);
-
-      openNotify?.(
-        `Đã tải ${semesters.length} học kỳ • ${uniqueNienKhoa.length} niên khóa`,
-        "info"
-      );
-
-      const currentSemester = semesters.find((hk) => hk.trang_thai_hien_tai);
-      if (currentSemester) {
-        setSelectedHocKyId(currentSemester.hoc_ky_id);
-        setSelectedNienKhoa(currentSemester.ten_nien_khoa);
-        openNotify?.(
-          `Tự chọn học kỳ hiện tại: HK${currentSemester.ma_hoc_ky} (${currentSemester.ten_nien_khoa})`,
-          "info"
-        );
-      }
-      setError(null);
-    } catch (err) {
-      console.error("Lỗi khi tải danh sách học kỳ:", err);
-      setError("Lỗi khi tải danh sách học kỳ.");
-      openNotify?.("Không tải được danh sách học kỳ", "error");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // ============ Fetch timetable by semester ============
-  const fetchData = async (hocKyId: string) => {
-    if (!hocKyId) {
-      setAllScheduleData([]);
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const currentSemester = dsHocKy.find((hk) => hk.hoc_ky_id === hocKyId);
-      if (!currentSemester) {
-        throw new Error("Không tìm thấy thông tin học kỳ.");
-      }
-
-      const url = `/api/thoi-khoa-bieu?hocKy=${encodeURIComponent(
-        currentSemester.ma_hoc_ky
-      )}&namHoc=${encodeURIComponent(currentSemester.ten_nien_khoa)}`;
-
-      const res = await fetchJSON(url, { method: "GET" });
-      const data: ScheduleItem[] = Array.isArray(res)
-        ? res
-        : (res as any)?.data ?? [];
-
-      setAllScheduleData(data);
-      setError(null);
-
-      openNotify?.(
-        data.length
-          ? `Đã tải ${data.length} lớp trong học kỳ đã chọn`
-          : "Không có dữ liệu thời khóa biểu cho học kỳ này",
-        data.length ? "info" : "warning"
-      );
-    } catch (err) {
-      console.error("Lỗi tải dữ liệu thời khóa biểu:", err);
-      setError("Lỗi tải dữ liệu thời khóa biểu.");
-      setAllScheduleData([]);
-      openNotify?.("Không tải được thời khóa biểu", "error");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchSemesters();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (selectedHocKyId) {
-      fetchData(selectedHocKyId);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedHocKyId]);
-
-  // ============ Tính tuần hiện tại khi có dữ liệu ============
-  useEffect(() => {
-    if (selectedHocKyId && allScheduleData.length > 0) {
-      const semester = dsHocKy.find((hk) => hk.hoc_ky_id === selectedHocKyId);
-      if (semester?.ngay_bat_dau) {
-        const firstClassDate = allScheduleData.reduce<Date>((minDate, item) => {
-          const classStartDate = new Date(item.ngay_bat_dau_lhp);
-          return classStartDate < minDate ? classStartDate : minDate;
-        }, new Date(allScheduleData[0].ngay_bat_dau_lhp));
-
-        const semesterStartDate = new Date(semester.ngay_bat_dau);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        firstClassDate.setHours(0, 0, 0, 0);
-
-        const referenceDate = today < firstClassDate ? firstClassDate : today;
-        const diffTime = referenceDate.getTime() - semesterStartDate.getTime();
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        const calculatedWeekIndex = Math.max(1, Math.floor(diffDays / 7) + 1);
-        setSelectedWeek(calculatedWeekIndex);
-      }
-    } else if (selectedHocKyId && allScheduleData.length === 0) {
-      setSelectedWeek(1);
-    }
-  }, [selectedHocKyId, dsHocKy, allScheduleData]);
-
-  const currentSemesterInfo =
-    dsHocKy.find((hk) => hk.hoc_ky_id === selectedHocKyId) || null;
-
-  // ============ Build weeks ============
-  const weeks: WeekInfo[] = useMemo(() => {
-    if (
-      !currentSemesterInfo?.ngay_bat_dau ||
-      !currentSemesterInfo?.ngay_ket_thuc
-    )
-      return [];
-
-    const startDate = new Date(currentSemesterInfo.ngay_bat_dau);
-    const endDate = new Date(currentSemesterInfo.ngay_ket_thuc);
-    const out: WeekInfo[] = [];
-
-    let currentWeekStart = new Date(startDate);
-    let i = 1;
-
-    const formatDate = (date: Date) => {
-      const d = String(date.getDate()).padStart(2, "0");
-      const m = String(date.getMonth() + 1).padStart(2, "0");
-      const y = date.getFullYear();
-      return `${d}/${m}/${y}`;
-    };
-
-    while (currentWeekStart <= endDate) {
-      const weekStart = new Date(currentWeekStart);
-      const weekEnd = new Date(currentWeekStart);
-      weekEnd.setDate(weekEnd.getDate() + 6);
-
-      out.push({
-        index: i,
-        start: formatDate(weekStart),
-        end: formatDate(weekEnd),
+    hocKyNienKhoas.forEach((nienKhoa) => {
+      nienKhoa.hocKy.forEach((hk) => {
+        result.push({
+          ...hk,
+          tenNienKhoa: nienKhoa.tenNienKhoa,
+        });
       });
-
-      currentWeekStart.setDate(currentWeekStart.getDate() + 7);
-      i++;
-    }
-    return out;
-  }, [currentSemesterInfo]);
-
-  // ============ Lọc theo tuần ============
-  const filteredSchedule = useMemo(() => {
-    if (!allScheduleData.length || !currentSemesterInfo) return [];
-
-    const selectedWeekInfo = weeks.find((w) => w.index === selectedWeek);
-    if (!selectedWeekInfo) return [];
-
-    const weekStartDate = new Date(
-      selectedWeekInfo.start.split("/").reverse().join("-")
-    );
-    const weekEndDate = new Date(
-      selectedWeekInfo.end.split("/").reverse().join("-")
-    );
-    weekEndDate.setHours(23, 59, 59, 999);
-
-    return allScheduleData.filter((item) => {
-      const classStartDate = new Date(item.ngay_bat_dau_lhp);
-      const classEndDate = new Date(item.ngay_ket_thuc_lhp);
-      return classStartDate <= weekEndDate && classEndDate >= weekStartDate;
     });
-  }, [allScheduleData, selectedWeek, currentSemesterInfo, weeks]);
 
-  // ============ Tính danh sách ngày trong tuần ============
-  const getDatesForSelectedWeek = useMemo(() => {
-    const selectedWeekInfo = weeks.find((w) => w.index === selectedWeek);
-    if (!selectedWeekInfo) return [] as string[];
+    return result;
+  }, [hocKyNienKhoas]);
 
-    const startDate = new Date(
-      selectedWeekInfo.start.split("/").reverse().join("-")
+  const currentHocKy = useMemo(
+    () => flatHocKys.find((hk) => hk.id === selectedHocKyId) || null,
+    [flatHocKys, selectedHocKyId]
+  );
+
+  const weeks = useMemo(() => {
+    if (!currentHocKy) return [];
+    return buildWeeksFromHocKy(
+      currentHocKy.ngayBatDau?.toString() || null,
+      currentHocKy.ngayKetThuc?.toString() || null
     );
+  }, [currentHocKy]);
+
+  const selectedWeek = useMemo(
+    () => weeks.find((w) => w.index === selectedWeekIndex) || null,
+    [weeks, selectedWeekIndex]
+  );
+
+  // ✅ Tính ngày trong tuần (T2 → CN)
+  const weekDates = useMemo(() => {
+    if (!selectedWeek) return Array(7).fill("");
+
+    const monday = new Date(selectedWeek.dateStart);
     const dates: string[] = [];
-    const formatDate = (date: Date) => {
-      const d = String(date.getDate()).padStart(2, "0");
-      const m = String(date.getMonth() + 1).padStart(2, "0");
-      const y = date.getFullYear();
-      return `${d}/${m}/${y}`;
-    };
+
     for (let i = 0; i < 7; i++) {
-      const date = new Date(startDate);
-      date.setDate(startDate.getDate() + i);
-      dates.push(formatDate(date));
+      const day = new Date(monday);
+      day.setDate(monday.getDate() + i);
+      dates.push(formatDate(day));
     }
+
     return dates;
-  }, [selectedWeek, weeks]);
+  }, [selectedWeek]);
 
-  // ============ Gom lớp theo ngày ============
-  const scheduleGroupedByDay = useMemo(() => {
-    const grouped: Record<string, ScheduleItem[]> = {};
-    filteredSchedule.forEach((item) => {
-      const dayMap: Record<string, string> = {
-        "2": "Thứ 2",
-        "3": "Thứ 3",
-        "4": "Thứ 4",
-        "5": "Thứ 5",
-        "6": "Thứ 6",
-        "7": "Thứ 7",
-        CN: "Chủ nhật",
-      };
+  const todayString = formatDate(new Date());
 
-      const days = item.ngay_hoc
-        .map((dayNum) => dayMap[String(dayNum).trim()])
-        .filter(Boolean) as string[];
+  // ========= Fetch TKB =========
+  const { tkb, loading: loadingTKB } = useSVTKBWeekly(
+    selectedHocKyId,
+    selectedWeek?.dateStart || "",
+    selectedWeek?.dateEnd || ""
+  );
 
-      days.forEach((dayName) => {
-        if (!grouped[dayName]) grouped[dayName] = [];
-        grouped[dayName].push(item);
-      });
-    });
-    return grouped;
-  }, [filteredSchedule]);
+  // ========= Auto-select học kỳ hiện hành khi load =========
+  useEffect(() => {
+    if (hocKyHienHanh && flatHocKys.length > 0 && !selectedHocKyId) {
+      const hkHienHanh = flatHocKys.find((hk) => hk.id === hocKyHienHanh.id);
 
-  const getSessionFromTime = (timeString?: string | null) => {
-    if (!timeString) return "N/A";
-    const [startTime] = timeString.split("-");
-    const [hour] = startTime.split(":").map(Number);
-    return hour >= 12 ? "Buổi chiều" : "Buổi sáng";
-  };
+      if (hkHienHanh) {
+        setSelectedNienKhoa(hkHienHanh.tenNienKhoa);
+        setSelectedHocKyId(hkHienHanh.id);
+      }
+    }
+  }, [hocKyHienHanh, flatHocKys, selectedHocKyId]);
 
+  // ========= Reset học kỳ & tuần khi đổi niên khóa =========
+  useEffect(() => {
+    setSelectedHocKyId("");
+    setSelectedWeekIndex(1);
+  }, [selectedNienKhoa]);
+
+  // ========= Auto-select tuần hiện tại khi chọn học kỳ =========
+  useEffect(() => {
+    if (weeks.length > 0) {
+      const currentWeek = getCurrentWeekIndexFromHocKy(weeks);
+      setSelectedWeekIndex(currentWeek);
+    } else {
+      setSelectedWeekIndex(1);
+    }
+  }, [weeks]);
+
+  // ========= Week Navigation =========
   const handlePrevWeek = () => {
-    setSelectedWeek((prev) => Math.max(1, prev - 1));
+    setSelectedWeekIndex((prev) => Math.max(1, prev - 1));
   };
 
   const handleNextWeek = () => {
-    setSelectedWeek((prev) => Math.min(weeks.length || 1, prev + 1));
+    setSelectedWeekIndex((prev) => Math.min(weeks.length, prev + 1));
   };
 
   const handleCurrentWeek = () => {
-    if (!currentSemesterInfo?.ngay_bat_dau) return;
-    const semesterStartDate = new Date(currentSemesterInfo.ngay_bat_dau);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const diffTime = today.getTime() - semesterStartDate.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    const calculatedWeekIndex = Math.max(1, Math.floor(diffDays / 7) + 1);
-    setSelectedWeek(calculatedWeekIndex);
+    if (weeks.length === 0) return;
+    setSelectedWeekIndex(getCurrentWeekIndexFromHocKy(weeks));
+  };
+
+  // ========= Render Logic =========
+  const rooms = useMemo<RoomItem[]>(() => {
+    const roomMap = new Map<string, string>();
+    tkb.forEach((item) => {
+      roomMap.set(item.phong.id, item.phong.ma_phong);
+    });
+
+    return Array.from(roomMap.entries())
+      .map(([id, ma]) => ({ id, ma }))
+      .sort((a, b) => a.ma.localeCompare(b.ma));
+  }, [tkb]);
+
+  const getCellItems = (roomId: string, dateString: string) => {
+    return tkb
+      .filter((item) => {
+        const itemDate = new Date(item.ngay_hoc).toISOString().split("T")[0];
+        return item.phong.id === roomId && itemDate === dateString;
+      })
+      .sort((a, b) => a.tiet_bat_dau - b.tiet_bat_dau);
   };
 
   const renderTableBody = () => {
-    if (loading) {
+    if (loadingTKB || loadingConfig) {
       return (
         <tr>
-          <td colSpan={8} className="loading-state">
-            Đang tải...
-          </td>
-        </tr>
-      );
-    }
-    if (error) {
-      return (
-        <tr>
-          <td colSpan={8} className="error-state">
-            Lỗi: {error}
+          <td colSpan={8} style={{ textAlign: "center", padding: 20 }}>
+            Đang tải thời khóa biểu...
           </td>
         </tr>
       );
     }
 
-    const allRooms = new Set<string>();
-    filteredSchedule.forEach((item) => {
-      if (item.phong_hoc) allRooms.add(item.phong_hoc);
-    });
-
-    const sortedRooms = Array.from(allRooms).sort();
-
-    if (sortedRooms.length === 0) {
+    if (rooms.length === 0) {
       return (
         <tr>
-          <td colSpan={8} className="empty-state">
-            Không có lớp học nào trong tuần đã chọn.
+          <td colSpan={8} style={{ textAlign: "center", padding: 20 }}>
+            Không có lịch trong tuần này.
           </td>
         </tr>
       );
     }
 
-    return sortedRooms.map((room) => (
-      <tr key={room}>
-        <td className="tkb__phong">
-          <p>{room}</p>
-        </td>
-        {weekDays.map((day) => {
-          const classesForDay = scheduleGroupedByDay[day] || [];
-          const classesInRoom = classesForDay.filter(
-            (cls) => cls.phong_hoc === room
-          );
-
+    return rooms.map((room) => (
+      <tr key={room.id}>
+        <td className="tkb-room">{room.ma}</td>
+        {weekDates.map((dateString, dayIndex) => {
+          const items = getCellItems(room.id, dateString);
           return (
-            <td key={day}>
-              {classesInRoom.map((cls) => (
-                <div
-                  key={`${day}-${cls.ma_lop_hp}-${cls.phong_hoc}-${cls.gio_hoc}`}
-                  className="class-item"
-                >
-                  <strong>
-                    <p>{cls.ten_mon}</p>
-                    <p>({cls.ma_mon})</p>
-                  </strong>
-                  <p>Buổi: {getSessionFromTime(cls.gio_hoc)}</p>
-                  <p>Giờ: {cls.gio_hoc}</p>
-                  <p>Phòng: {cls.phong_hoc}</p>
-                  <p className="tkb__gv">
-                    GV: {cls.ten_giang_vien || "Chưa phân công"}
-                  </p>
-                </div>
-              ))}
+            <td key={dayIndex} className="tkb-cell">
+              {items.map((item, i) => {
+                const classInstance: ClassInstance = {
+                  id: `${item.mon_hoc.ma_mon}_${i}`,
+                  maLopHP: item.mon_hoc.ma_mon,
+                  tenMon: item.mon_hoc.ten_mon,
+                  tenLop: item.mon_hoc.ten_mon,
+                  lopHocPhanId: item.phong.id,
+                  tenGiangVien: item.giang_vien,
+                  position: { thu: item.thu, tiet: item.tiet_bat_dau },
+                  tietBatDau: item.tiet_bat_dau,
+                  tietKetThuc: item.tiet_ket_thuc,
+                  phongHocId: item.phong.id,
+                  tenPhongHoc: item.phong.ma_phong,
+                  ngayBatDau: new Date(item.ngay_hoc)
+                    .toISOString()
+                    .split("T")[0],
+                  ngayKetThuc: new Date(item.ngay_hoc)
+                    .toISOString()
+                    .split("T")[0],
+                  isFromBackend: true,
+                  isReadonly: true,
+                };
+
+                return (
+                  <TKBClassCard
+                    key={i}
+                    instance={classInstance}
+                    isSelected={false}
+                    isComplete={true}
+                    isForSinhVien={true}
+                  />
+                );
+              })}
             </td>
           );
         })}
       </tr>
     ));
   };
+
+  // ========= Render =========
+  if (loadingHocKy || loadingConfig || loadingHocKyHienHanh) {
+    return (
+      <section className="main__body">
+        <div className="body__title">
+          <p className="body__title-text">THỜI KHÓA BIỂU</p>
+        </div>
+        <div
+          className="body__inner"
+          style={{ textAlign: "center", padding: 40 }}
+        >
+          Đang tải dữ liệu...
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="main__body">
@@ -399,27 +248,25 @@ export default function Timetable(): JSX.Element {
       </div>
 
       <div className="body__inner">
+        {/* Filters */}
         <div className="selecy__duyethp__container">
-          {/* Dropdown Niên khóa */}
+          {/* Niên khóa */}
           <div className="mr_20">
             <select
               className="form__select w__200"
               value={selectedNienKhoa}
-              onChange={(e) => {
-                setSelectedNienKhoa(e.target.value);
-                setSelectedHocKyId("");
-              }}
+              onChange={(e) => setSelectedNienKhoa(e.target.value)}
             >
               <option value="">-- Chọn Niên khóa --</option>
-              {dsNienKhoa.map((nienKhoa) => (
-                <option key={nienKhoa} value={nienKhoa}>
-                  {nienKhoa}
+              {nienKhoas.map((nk) => (
+                <option key={nk} value={nk}>
+                  {nk}
                 </option>
               ))}
             </select>
           </div>
 
-          {/* Dropdown Học kỳ */}
+          {/* Học kỳ */}
           <div className="mr_20">
             <select
               className="form__select w__200"
@@ -428,43 +275,40 @@ export default function Timetable(): JSX.Element {
               disabled={!selectedNienKhoa}
             >
               <option value="">-- Chọn Học kỳ --</option>
-              {dsHocKy
-                .filter((hk) => hk.ten_nien_khoa === selectedNienKhoa)
+              {flatHocKys
+                .filter((hk) => hk.tenNienKhoa === selectedNienKhoa)
                 .map((hk) => (
-                  <option key={hk.hoc_ky_id} value={hk.hoc_ky_id}>
-                    Học kỳ {hk.ma_hoc_ky}
+                  <option key={hk.id} value={hk.id}>
+                    {hk.tenHocKy}
                   </option>
                 ))}
             </select>
           </div>
 
-          {/* Dropdown Tuần */}
+          {/* Tuần */}
           <div className="mr_20">
             <select
               className="form__select"
-              value={selectedWeek}
-              onChange={(e) => {
-                const v = e.target.value;
-                if (v === "") return; // giữ tuần hiện tại nếu chọn placeholder
-                setSelectedWeek(Number(v));
-              }}
-              disabled={!selectedHocKyId || weeks.length === 0}
+              value={selectedWeekIndex}
+              onChange={(e) => setSelectedWeekIndex(Number(e.target.value))}
+              disabled={!selectedHocKyId}
             >
               <option value="">-- Chọn Tuần --</option>
-              {weeks.map((week) => (
-                <option key={week.index} value={week.index}>
-                  Tuần {week.index} ({week.start} - {week.end})
+              {weeks.map((w) => (
+                <option key={w.index} value={w.index}>
+                  Tuần {w.index} ({w.dateStart} - {w.dateEnd})
                 </option>
               ))}
             </select>
           </div>
         </div>
 
+        {/* Week Navigation */}
         <div className="week-navigation-container">
           <button
-            className="btn__chung P__10__20"
+            className="btn__chung"
             onClick={handlePrevWeek}
-            disabled={selectedWeek === 1}
+            disabled={selectedWeekIndex === 1}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
               <path
@@ -474,7 +318,7 @@ export default function Timetable(): JSX.Element {
             </svg>
           </button>
 
-          <button className="btn__chung P__10__20" onClick={handleCurrentWeek}>
+          <button className="btn__chung" onClick={handleCurrentWeek}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
               <path
                 fill="#ffffff"
@@ -485,36 +329,32 @@ export default function Timetable(): JSX.Element {
           </button>
 
           <button
-            className="btn__chung P__10__20"
+            className="btn__chung"
             onClick={handleNextWeek}
-            disabled={selectedWeek === (weeks.length || 1)}
+            disabled={selectedWeekIndex === weeks.length}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
               <path
                 fill="#ffffff"
                 d="M149 100.8C161.9 93.8 177.7 94.5 190 102.6L448 272.1L448 128C448 110.3 462.3 96 480 96C497.7 96 512 110.3 512 128L512 512C512 529.7 497.7 544 480 544C462.3 544 448 529.7 448 512L448 367.9L190 537.5C177.7 545.6 162 546.3 149 539.3C136 532.3 128 518.7 128 504L128 136C128 121.3 136.1 107.8 149 100.8z"
               />
-            </svg>{" "}
+            </svg>
           </button>
         </div>
 
+        {/* TKB Table */}
         <table className="table table__tkb">
           <thead>
             <tr>
               <th>Phòng</th>
-              {weekDays.map((day, index) => (
+              {WEEK_DAYS.map((day, i) => (
                 <th
                   key={day}
                   className={
-                    getDatesForSelectedWeek[index] === todayDateString
-                      ? "highlight-today"
-                      : ""
+                    weekDates[i] === todayString ? "highlight-today" : ""
                   }
                 >
-                  {day} <br />
-                  <span className="date-number">
-                    {getDatesForSelectedWeek[index] || ""}
-                  </span>
+                  {day}
                 </th>
               ))}
             </tr>

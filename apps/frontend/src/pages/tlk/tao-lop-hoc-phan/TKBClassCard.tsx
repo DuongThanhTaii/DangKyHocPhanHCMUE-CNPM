@@ -4,12 +4,14 @@ interface Props {
   instance: ClassInstance;
   isSelected: boolean;
   isComplete: boolean;
+  isForSinhVien?: boolean;
 }
 
 export default function TKBClassCard({
   instance,
   isSelected,
   isComplete,
+  isForSinhVien = false,
 }: Props) {
   // ✅ Debug
   console.log("Instance in card:", {
@@ -48,10 +50,10 @@ export default function TKBClassCard({
 
           {instance.tietBatDau && instance.tietKetThuc && (
             <p>
-              Giờ: {instance.tietBatDau}-{instance.tietKetThuc}
+              Tiết: {instance.tietBatDau}-{instance.tietKetThuc}
             </p>
           )}
-
+          {isForSinhVien && <p>Giảng viên: {instance.tenGiangVien}</p>}
           {instance.tenPhongHoc && <p>Phòng: {instance.tenPhongHoc}</p>}
         </>
       )}
