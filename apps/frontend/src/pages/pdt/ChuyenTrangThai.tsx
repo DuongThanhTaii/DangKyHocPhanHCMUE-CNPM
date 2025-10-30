@@ -60,11 +60,11 @@ export default function ChuyenTrangThai() {
     useCreateBulkKyPhase();
   const { updateDotGhiDanh, loading: ghiDanhLoading } = useUpdateDotGhiDanh();
 
+  // ✅ THÊM: Lấy học kỳ hiện hành để auto-select
   const { data: hocKyHienHanh, loading: loadingHienHanh } =
     useGetHocKyHienHanh();
 
   const [selectedHocKyId, setSelectedHocKyId] = useState<string>("");
-
   const { data: phasesData, loading: loadingPhases } =
     usePhasesByHocKy(selectedHocKyId);
 
@@ -75,7 +75,7 @@ export default function ChuyenTrangThai() {
   const [currentSemester, setCurrentSemester] = useState<CurrentSemester>({});
   const [semesterMessage, setSemesterMessage] = useState<string>("");
 
-  // State cho phases - ✅ Now getEmptyPhaseTimes is defined
+  // State cho phases
   const [phaseTimes, setPhaseTimes] = useState<Record<string, PhaseTime>>(
     getEmptyPhaseTimes()
   );
@@ -83,46 +83,75 @@ export default function ChuyenTrangThai() {
   const [message, setMessage] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
 
-  // ✅ Load học kỳ hiện hành khi mount
+  // ✅ FIX: Auto-select học kỳ hiện hành khi mount
   useEffect(() => {
-    if (!hocKyHienHanh) return;
+    if (!hocKyHienHanh || hocKyNienKhoas.length === 0) return;
 
-    console.log(
-      "🔍 [ChuyenTrangThai] Auto-selecting from hocKyHienHanh:",
-      hocKyHienHanh
+    console.log("✅ [ChuyenTrangThai] hocKyHienHanh:", hocKyHienHanh);
+    console.log("✅ [ChuyenTrangThai] hocKyNienKhoas:", hocKyNienKhoas);
+
+    // ✅ Tìm niên khóa chứa học kỳ này
+    const foundNienKhoa = hocKyNienKhoas.find((nk) =>
+      nk.hocKy.some((hk) => hk.id === hocKyHienHanh.id)
     );
 
-    setSelectedNienKhoa(hocKyHienHanh.nienKhoaId);
-    setSelectedHocKyId(hocKyHienHanh.id);
+    if (!foundNienKhoa) {
+      console.error(
+        "❌ [ChuyenTrangThai] Không tìm thấy niên khóa cho học kỳ:",
+        hocKyHienHanh.id
+      );
+      return;
+    }
 
+    const foundHocKy = foundNienKhoa.hocKy.find(
+      (hk) => hk.id === hocKyHienHanh.id
+    );
+
+    if (!foundHocKy) {
+      console.error(
+        "❌ [ChuyenTrangThai] Không tìm thấy học kỳ:",
+        hocKyHienHanh.id
+      );
+      return;
+    }
+
+    console.log("✅ [ChuyenTrangThai] Found niên khóa:", foundNienKhoa);
+    console.log("✅ [ChuyenTrangThai] Found học kỳ:", foundHocKy);
+
+    // ✅ Set niên khóa
+    setSelectedNienKhoa(foundNienKhoa.id);
+
+    // ✅ Set học kỳ
+    setSelectedHocKyId(foundHocKy.id);
+
+    // ✅ Set ngày bắt đầu/kết thúc
     setSemesterStart(
-      hocKyHienHanh.ngayBatDau ? hocKyHienHanh.ngayBatDau.split("T")[0] : ""
+      foundHocKy.ngayBatDau
+        ? new Date(foundHocKy.ngayBatDau).toISOString().split("T")[0]
+        : ""
     );
     setSemesterEnd(
-      hocKyHienHanh.ngayKetThuc ? hocKyHienHanh.ngayKetThuc.split("T")[0] : ""
+      foundHocKy.ngayKetThuc
+        ? new Date(foundHocKy.ngayKetThuc).toISOString().split("T")[0]
+        : ""
     );
 
+    // ✅ Set current semester info
     setCurrentSemester({
-      ten_hoc_ky: hocKyHienHanh.tenHocKy,
-      ten_nien_khoa: hocKyHienHanh.tenNienKhoa,
-      ngay_bat_dau: hocKyHienHanh.ngayBatDau
-        ? hocKyHienHanh.ngayBatDau.split("T")[0]
+      ten_hoc_ky: foundHocKy.tenHocKy,
+      ten_nien_khoa: foundNienKhoa.tenNienKhoa,
+      ngay_bat_dau: foundHocKy.ngayBatDau
+        ? new Date(foundHocKy.ngayBatDau).toISOString().split("T")[0]
         : "",
-      ngay_ket_thuc: hocKyHienHanh.ngayKetThuc
-        ? hocKyHienHanh.ngayKetThuc.split("T")[0]
+      ngay_ket_thuc: foundHocKy.ngayKetThuc
+        ? new Date(foundHocKy.ngayKetThuc).toISOString().split("T")[0]
         : "",
     });
+  }, [hocKyHienHanh, hocKyNienKhoas]);
 
-    console.log(
-      "✅ [ChuyenTrangThai] Set selectedNienKhoa:",
-      hocKyHienHanh.nienKhoaId
-    );
-    console.log("✅ [ChuyenTrangThai] Set selectedHocKyId:", hocKyHienHanh.id);
-  }, [hocKyHienHanh]);
-
-  // ✅ Load phases khi có data
+  // ✅ Load phases khi có selectedHocKyId
   useEffect(() => {
-    if (selectedHocKyId && !phasesData) {
+    if (!selectedHocKyId) {
       setPhaseTimes(getEmptyPhaseTimes());
       setCurrentPhase("");
       return;
@@ -229,45 +258,34 @@ export default function ChuyenTrangThai() {
     }));
   };
 
+  // ✅ FIX: Submit phases - gọi đúng API
   const handleSubmitPhases = async (e: FormEvent) => {
-    console.log("🔥🔥🔥 handleSubmitPhases CALLED!");
-    console.log("📦 Event:", e);
-
     e.preventDefault();
-
-    console.log("📦 State before submit:");
-    console.log("  - selectedHocKyId:", selectedHocKyId);
-    console.log("  - phaseTimes:", phaseTimes);
-    console.log("  - semesterStart:", semesterStart);
-    console.log("  - semesterEnd:", semesterEnd);
-
     setMessage("");
 
     if (!selectedHocKyId) {
-      console.log("❌ No hocKyId - returning early");
       setMessage("❌ Vui lòng chọn học kỳ trước");
       return;
     }
 
-    // ✅ Validate semester dates
-    if (!semesterStart || !semesterEnd) {
-      console.log("❌ Missing semester dates");
-      setMessage("❌ Vui lòng thiết lập ngày bắt đầu/kết thúc học kỳ trước");
+    // ✅ Get học kỳ info
+    const nienKhoa = hocKyNienKhoas.find((nk) => nk.id === selectedNienKhoa);
+    const hocKy = nienKhoa?.hocKy.find((hk) => hk.id === selectedHocKyId);
+
+    if (!hocKy?.ngayBatDau || !hocKy?.ngayKetThuc) {
+      setMessage("❌ Học kỳ chưa có ngày bắt đầu/kết thúc");
       return;
     }
 
-    // Check if all phases have times
+    // ✅ Validate all phases have times
     const emptyPhases = PHASE_ORDER.filter(
       (phase) => !phaseTimes[phase]?.start || !phaseTimes[phase]?.end
     );
 
     if (emptyPhases.length > 0) {
-      console.log("❌ Empty phases found:", emptyPhases);
       setMessage("❌ Vui lòng nhập đầy đủ thời gian cho tất cả các giai đoạn");
       return;
     }
-
-    console.log("✅ All validations passed, preparing phases...");
 
     const phases: PhaseItemDTO[] = PHASE_ORDER.map((phase) => ({
       phase,
@@ -275,29 +293,18 @@ export default function ChuyenTrangThai() {
       endAt: new Date(phaseTimes[phase].end).toISOString(),
     }));
 
-    console.log("📦 Phases to submit:", JSON.stringify(phases, null, 2));
-    console.log("🚀 Calling createBulkKyPhase API...");
+    // ✅ FIX: Gọi đúng API với đúng payload
+    const result = await createBulkKyPhase({
+      hocKyId: selectedHocKyId,
+      hocKyStartAt: new Date(hocKy.ngayBatDau).toISOString().split("T")[0], // ✅ YYYY-MM-DD
+      hocKyEndAt: new Date(hocKy.ngayKetThuc).toISOString().split("T")[0], // ✅ YYYY-MM-DD
+      phases,
+    });
 
-    try {
-      const result = await createBulkKyPhase({
-        hocKyId: selectedHocKyId,
-        hocKyStartAt: semesterStart, // ✅ Pass học kỳ start date
-        hocKyEndAt: semesterEnd, // ✅ Pass học kỳ end date
-        phases,
-      });
-
-      console.log("📦 API Response:", result);
-
-      if (result.isSuccess) {
-        console.log("✅ Success!");
-        setMessage("✅ Cập nhật trạng thái hệ thống thành công");
-      } else {
-        console.log("❌ Failed:", result.message);
-        setMessage(result.message || "❌ Không thể cập nhật trạng thái");
-      }
-    } catch (error: any) {
-      console.error("💥 Exception caught:", error);
-      setMessage(`❌ Lỗi: ${error.message}`);
+    if (result.isSuccess) {
+      setMessage("✅ Cập nhật trạng thái hệ thống thành công");
+    } else {
+      setMessage(result.message || "❌ Không thể cập nhật trạng thái");
     }
   };
 
@@ -406,14 +413,14 @@ export default function ChuyenTrangThai() {
       </div>
 
       <div className="body__inner">
-        {/* Loading states */}
+        {/* ✅ Hiển thị loading state */}
         {(loadingHienHanh || loadingPhases) && (
           <p style={{ textAlign: "center", padding: "20px" }}>
             Đang tải dữ liệu...
           </p>
         )}
 
-        {/* ✅ Component học kỳ/niên khóa */}
+        {/* ✅ Component học kỳ/niên khóa (UI không đổi) */}
         <HocKyNienKhoaShowSetup
           hocKyNienKhoas={hocKyNienKhoas}
           loadingHocKy={loadingHocKy}
@@ -431,7 +438,7 @@ export default function ChuyenTrangThai() {
           onSubmit={handleSubmitSemester}
         />
 
-        {/* ✅ Component phases */}
+        {/* ✅ Component phases (UI không đổi) */}
         <PhaseHocKyNienKhoaSetup
           phaseNames={PHASE_NAMES}
           phaseOrder={PHASE_ORDER}

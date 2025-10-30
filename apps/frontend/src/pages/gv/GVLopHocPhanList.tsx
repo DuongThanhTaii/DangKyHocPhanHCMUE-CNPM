@@ -1,35 +1,11 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../styles/reset.css";
 import "../../styles/menu.css";
-import { fetchJSON } from "../../utils/fetchJSON";
-
-type Item = {
-  id: string;
-  ma_lop: string;
-  so_luong_hien_tai: number | null;
-  so_luong_toi_da: number | null;
-  hoc_phan: {
-    ten_hoc_phan: string;
-    mon_hoc: { ma_mon: string; ten_mon: string; so_tin_chi: number };
-  };
-};
+import { useGVLopHocPhan } from "../../features/gv/hooks";
 
 export default function GVLopHocPhanList() {
-  const [rows, setRows] = useState<Item[]>([]);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetchJSON("/gv/lop-hoc-phan");
-        setRows(res.data || []);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
+  const { data: rows, loading } = useGVLopHocPhan();
 
   return (
     <section className="main__body">

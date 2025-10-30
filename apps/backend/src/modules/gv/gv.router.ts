@@ -1,12 +1,19 @@
 import { Router } from "express";
 import { requireAuth, requireRole } from "../../middlewares/auth";
-import { gvLopHocPhanService as svc } from "../../services/gvLopHocPhanService";
+import { upload } from "../../middlewares/upload";
 import {
   getMyLopHocPhanHandler,
-  getTKBWeeklyHandler,
   getLopHocPhanDetailHandler,
   getStudentsOfLHPHandler,
-} from "./gv_service";
+  getDocumentsHandler,
+  uploadDocumentHandler,
+  updateDocumentHandler,
+  deleteDocumentHandler,
+  getGradesHandler,
+  upsertGradesHandler,
+  downloadDocumentHandler,
+} from "./gv_ql_lophocphan_service";
+import { getTKBWeeklyHandler } from "./gv_service";
 
 const r = Router();
 
@@ -38,7 +45,7 @@ r.get(
   getLopHocPhanDetailHandler
 );
 
-// ✅ Danh sách sinh viên đã đăng ký LHP
+// ✅ Danh sách sinh viên đăng ký LHP
 r.get(
   "/lop-hoc-phan/:id/sinh-vien",
   requireAuth,
@@ -46,61 +53,59 @@ r.get(
   getStudentsOfLHPHandler
 );
 
-// Tài liệu
+// ✅ Tài liệu
 r.get(
   "/lop-hoc-phan/:id/tai-lieu",
   requireAuth,
   requireRole(["giang_vien"]),
-  async (req, res) => {
-    const rows = await svc.documents(req.params.id, req.auth!.sub);
-    res.json({ ok: true, data: rows });
-  }
+  getDocumentsHandler
 );
 
+// ✅ Upload tài liệu (multipart/form-data)
 r.post(
-  "/lop-hoc-phan/:id/tai-lieu",
+  "/lop-hoc-phan/:id/tai-lieu/upload",
   requireAuth,
   requireRole(["giang_vien"]),
-  async (req, res) => {
-    const { ten_tai_lieu, file_path, file_type } = req.body;
-    const doc = await svc.createDocument(req.params.id, req.auth!.sub, {
-      ten_tai_lieu,
-      file_path,
-      file_type,
-    });
-    res.json({ ok: true, data: doc });
-  }
+  upload.single("file"),
+  uploadDocumentHandler
+);
+
+// ✅ Update tên tài liệu
+r.put(
+  "/lop-hoc-phan/:id/tai-lieu/:docId",
+  requireAuth,
+  requireRole(["giang_vien"]),
+  updateDocumentHandler
 );
 
 r.delete(
   "/lop-hoc-phan/:id/tai-lieu/:docId",
   requireAuth,
   requireRole(["giang_vien"]),
-  async (req, res) => {
-    await svc.deleteDocument(req.params.id, req.params.docId, req.auth!.sub);
-    res.json({ ok: true });
-  }
+  deleteDocumentHandler
 );
 
-// Điểm
+// ✅ Download tài liệu (stream file từ S3)
+r.get(
+  "/lop-hoc-phan/:id/tai-lieu/:docId/download",
+  requireAuth,
+  requireRole(["giang_vien"]),
+  downloadDocumentHandler
+);
+
+// ✅ Điểm
 r.get(
   "/lop-hoc-phan/:id/diem",
   requireAuth,
   requireRole(["giang_vien"]),
-  async (req, res) => {
-    const { rows } = await svc.getGrades(req.params.id, req.auth!.sub);
-    res.json({ ok: true, data: rows });
-  }
+  getGradesHandler
 );
 
 r.put(
   "/lop-hoc-phan/:id/diem",
   requireAuth,
   requireRole(["giang_vien"]),
-  async (req, res) => {
-    await svc.upsertGrades(req.params.id, req.auth!.sub, req.body.items || []);
-    res.json({ ok: true });
-  }
+  upsertGradesHandler
 );
 
 export default r;
