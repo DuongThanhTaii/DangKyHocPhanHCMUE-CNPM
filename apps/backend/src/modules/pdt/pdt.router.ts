@@ -45,6 +45,11 @@ import {
   assignPhongHocByKhoaIdHandler,
   unassignPhongHocByKhoaIdHandler,
 } from "./pdt_phong_hoc_service";
+import {
+  getAllChinhSachTinChiHandler,
+  createChinhSachTinChiHandler,
+  updateChinhSachTinChiHandler,
+} from "./pdt_chinhSachTinChi_service";
 
 const r = Router();
 
@@ -245,6 +250,32 @@ r.patch(
   requireAuth,
   requireRole(["phong_dao_tao"]),
   unassignPhongHocByKhoaIdHandler
+);
+
+// ============ CHÍNH SÁCH TÍN CHỈ ============
+
+// ✅ Lấy danh sách chính sách tín chỉ
+r.get(
+  "/chinh-sach-tin-chi",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  getAllChinhSachTinChiHandler
+);
+
+// ✅ Tạo chính sách tín chỉ
+r.post(
+  "/chinh-sach-tin-chi",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  createChinhSachTinChiHandler
+);
+
+// ✅ Cập nhật phí tín chỉ
+r.put(
+  "/chinh-sach-tin-chi/:id",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  updateChinhSachTinChiHandler
 );
 
 export default r;
