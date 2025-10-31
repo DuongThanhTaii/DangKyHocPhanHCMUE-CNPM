@@ -15,7 +15,6 @@ import { GiangVienRepository } from "./giangVienRepository";
 
 import { MonHocRepository } from "./monHocRepository";
 
-import { NganhRepository } from "./nganhRepository";
 import { GhiDanhHocPhanRepository } from "./ghiDanhHocPhanRepository";
 import { PhongRepository } from "./phongRepository";
 import { LopHocPhanRepository } from "./lopHocPhanRepository";
@@ -24,6 +23,8 @@ import { LichSuDangKyRepository } from "./lichSuDangKyRepository";
 import { ChiTietLichSuDangKyRepository } from "./chiTietLichSuDangKyRepository";
 import { DangKyTKBRepository } from "./dangKyTKBRepository";
 import { TaiLieuRepository } from "./taiLieuRepository";
+import { ChinhSachTinChiRepository } from "./chinhSachTinChiRepository";
+import { NganhHocRepository } from "./nganhHocRepository";
 export class UnitOfWork {
   private static instance: UnitOfWork;
   private prisma: PrismaClient;
@@ -45,7 +46,6 @@ export class UnitOfWork {
 
   private _khoaRepository?: KhoaRepository;
   private _dotDangKyRepository?: DotDangKyRepository;
-  private _nganhRepository?: NganhRepository;
   private _ghiDanhHocPhanRepository?: GhiDanhHocPhanRepository;
   private _phongRepository?: PhongRepository;
   private _lopHocPhanRepository?: LopHocPhanRepository;
@@ -54,6 +54,8 @@ export class UnitOfWork {
   private _chiTietLichSuDangKyRepository?: ChiTietLichSuDangKyRepository;
   private _dangKyTKBRepository?: DangKyTKBRepository;
   private _taiLieuRepository?: TaiLieuRepository;
+  private _chinhSachTinChiRepository?: ChinhSachTinChiRepository;
+  private _nganhHocRepository?: NganhHocRepository;
   private constructor() {
     this.prisma = new PrismaClient();
   }
@@ -156,11 +158,6 @@ export class UnitOfWork {
       this._dotDangKyRepository = new DotDangKyRepository(this.prisma);
     return this._dotDangKyRepository;
   }
-  get nganhRepository(): NganhRepository {
-    if (!this._nganhRepository)
-      this._nganhRepository = new NganhRepository(this.prisma);
-    return this._nganhRepository;
-  }
 
   get phongRepository(): PhongRepository {
     if (!this._phongRepository)
@@ -208,6 +205,20 @@ export class UnitOfWork {
       this._taiLieuRepository = new TaiLieuRepository(this.prisma);
     }
     return this._taiLieuRepository;
+  }
+
+  get chinhSachTinChiRepository() {
+    if (!this._chinhSachTinChiRepository) {
+      this._chinhSachTinChiRepository = new ChinhSachTinChiRepository(this.prisma);
+    }
+    return this._chinhSachTinChiRepository;
+  }
+
+  get nganhHocRepository() {
+    if (!this._nganhHocRepository) {
+      this._nganhHocRepository = new NganhHocRepository(this.prisma);
+    }
+    return this._nganhHocRepository;
   }
 
   async transaction<T>(

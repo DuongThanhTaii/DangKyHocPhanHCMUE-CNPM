@@ -4,14 +4,18 @@ import type {
     RequestGhiDanhMonHoc,
     RequestHuyGhiDanhMonHoc,
     MonHocDaGhiDanh,
-    CheckPhaseDangKyResponse,
     DanhSachLopHocPhanDTO,
-    DanhSachLopDaDangKyDTO,
     DangKyHocPhanRequest,
     HuyDangKyHocPhanRequest,
     ChuyenLopHocPhanRequest,
     LopHocPhanItemDTO,
     SVTKBWeeklyItemDTO,
+    MonHocInfoDTO,
+    ThanhToanHocPhiRequest,
+    ChiTietHocPhiDTO,
+    CreatePaymentRequest,
+    CreatePaymentResponse,
+    PaymentStatusResponse,
 } from "../types";
 import { fetchJSON } from "../../../utils/fetchJSON";
 import type { LichSuDangKyDTO } from "../types";
@@ -61,7 +65,7 @@ export const svApi = {
         return await fetchJSON(`sv/lop-hoc-phan?hoc_ky_id=${hocKyId}`);
     },
 
-    getLopDaDangKy: async (hocKyId: string): Promise<ServiceResult<DanhSachLopDaDangKyDTO>> => {
+    getLopDaDangKy: async (hocKyId: string): Promise<ServiceResult<MonHocInfoDTO[]>> => {
         return await fetchJSON(`sv/lop-da-dang-ky?hoc_ky_id=${hocKyId}`);
     },
 
@@ -131,5 +135,39 @@ export const svApi = {
         hocKyId: string
     ): Promise<ServiceResult<MonHocTraCuuDTO[]>> => {
         return await fetchJSON(`sv/tra-cuu-hoc-phan?hoc_ky_id=${hocKyId}`);
+    },
+
+    /**
+     * ✅ Lấy chi tiết học phí theo học kỳ
+     */
+    getChiTietHocPhi: async (hocKyId: string): Promise<ServiceResult<ChiTietHocPhiDTO>> => {
+        return await fetchJSON(`sv/hoc-phi/chi-tiet?hoc_ky_id=${hocKyId}`);
+    },
+
+    /**
+     * ✅ Thanh toán học phí (mock)
+     */
+    thanhToanHocPhi: async (data: ThanhToanHocPhiRequest): Promise<ServiceResult<any>> => {
+        return await fetchJSON("hoc-phi/thanh-toan", {
+            method: "POST",
+            body: data,
+        });
+    },
+
+    /**
+     * ✅ Tạo payment MoMo
+     */
+    createPayment: async (data: CreatePaymentRequest): Promise<ServiceResult<CreatePaymentResponse>> => {
+        return await fetchJSON("payment/create", {
+            method: "POST",
+            body: data,
+        });
+    },
+
+    /**
+     * ✅ Check trạng thái payment
+     */
+    getPaymentStatus: async (orderId: string): Promise<ServiceResult<PaymentStatusResponse>> => {
+        return await fetchJSON(`payment/status?orderId=${orderId}`);
     },
 };

@@ -12,6 +12,9 @@ import { LopHocPhanSinhVienService } from "./lopHocPhanSinhVienService";
 import { DangKyHocPhanSinhVienService } from "./dangKyHocPhanSinhVienService";
 import { GvLopHocPhanService } from "./gvLopHocPhanService";
 import { LichSuDangKySinhVienService } from "./lichSuDangKySinhVienService";
+import { HocPhiService } from "./hocPhiService";
+import { ChinhSachTinChiService } from "./chinhSachTinChiService";
+import { DanhMucService } from "./danhMucService";
 
 export class ServiceFactory {
     private static instance: ServiceFactory;
@@ -30,6 +33,9 @@ export class ServiceFactory {
     private _dangKyHocPhanSinhVienService?: DangKyHocPhanSinhVienService;
     private _gvLopHocPhanService?: GvLopHocPhanService;
     private _lichSuDangKySinhVienService?: LichSuDangKySinhVienService;
+    private _hocPhiService?: HocPhiService;
+    private _chinhSachTinChiService?: ChinhSachTinChiService;
+    private _danhMucService?: DanhMucService;
     private constructor() {
         this.unitOfWork = UnitOfWork.getInstance();
     }
@@ -126,5 +132,26 @@ export class ServiceFactory {
             this._lichSuDangKySinhVienService = new LichSuDangKySinhVienService();
         }
         return this._lichSuDangKySinhVienService;
+    }
+
+    get hocPhiService() {
+        if (!this._hocPhiService) {
+            this._hocPhiService = new HocPhiService();
+        }
+        return this._hocPhiService;
+    }
+
+    get chinhSachTinChiService() {
+        if (!this._chinhSachTinChiService) {
+            this._chinhSachTinChiService = new ChinhSachTinChiService();
+        }
+        return this._chinhSachTinChiService;
+    }
+
+    get danhMucService() {
+        if (!this._danhMucService) {
+            this._danhMucService = new DanhMucService();
+        }
+        return this._danhMucService;
     }
 }

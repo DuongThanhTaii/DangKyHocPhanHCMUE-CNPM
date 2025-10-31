@@ -33,10 +33,15 @@ import GVLopHocPhanDetail from "./pages/gv/GVLopHocPhanDetail";
 import ResetPassword from "./pages/ResetPassword";
 import GVThoiKhoaBieu from "./pages/gv/GVThoiKhoaBieu";
 import DangKyHocPhan from "./pages/sv/DangKyHocPhan";
+import ThanhToanHocPhi from "./pages/sv/ThanhToanHocPhi";
+import PaymentResult from "./pages/sv/PaymentResult";
 
 export const router = createBrowserRouter([
   { path: "/", element: <LoginPage /> },
   { path: "/reset-password", element: <ResetPassword /> },
+
+  // ✅ CRITICAL: Payment result MUST be outside authenticated routes
+  { path: "/payment/result", element: <PaymentResult /> },
 
   // PDT - chỉ cho phong_dao_tao
   {
@@ -118,6 +123,7 @@ export const router = createBrowserRouter([
       { path: "lich-su-dang-ky-hoc-phan", element: <LichSuDangKy /> },
       { path: "xem-thoi-khoa-bieu", element: <XemThoiKhoaBieu /> },
       { path: "dang-ky-hoc-phan", element: <DangKyHocPhan /> },
+      { path: "thanh-toan-hoc-phi", element: <ThanhToanHocPhi /> },
     ],
   },
 
