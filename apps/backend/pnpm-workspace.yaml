@@ -5,3 +5,4 @@ onlyBuiltDependencies:
   - '@prisma/engines'
   - bcrypt
   - prisma
+  - puppeteer
