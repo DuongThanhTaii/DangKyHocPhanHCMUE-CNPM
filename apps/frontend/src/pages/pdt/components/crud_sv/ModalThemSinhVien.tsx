@@ -182,7 +182,12 @@ const ModalThemSinhVien: React.FC<Props> = ({ isOpen, onClose, onCreated }) => {
 
   return (
     <>
-      <div className="modal-overlay" onClick={onClose}>
+      <div
+        className="modal-overlay"
+        onClick={(e) => {
+          if (e.target === e.currentTarget) onClose();
+        }}
+      >
         <div className="modal-popup">
           <form onSubmit={(e) => e.preventDefault()}>
             <div className="modal-header">

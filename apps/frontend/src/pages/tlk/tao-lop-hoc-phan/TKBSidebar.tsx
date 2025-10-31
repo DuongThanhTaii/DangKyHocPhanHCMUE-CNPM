@@ -54,7 +54,7 @@ export default function TKBSidebar({
         <select
           className="form__select"
           value={selectedLopId}
-          onChange={(e) => onSelectLop(e.target.value)} // ✅ Gọi callback
+          onChange={(e) => onSelectLop(e.target.value)}
         >
           <option value="">-- Chọn học phần --</option>
           {danhSachLop.map((lop) => (
@@ -63,7 +63,27 @@ export default function TKBSidebar({
             </option>
           ))}
         </select>
-
+        {/* Hiển thị số sinh viên ghi danh */}
+        {selectedLopId && (
+          <div
+            style={{
+              marginTop: 6,
+              fontSize: 13,
+              color: "#0c4874",
+              background: "#f3f4f6",
+              borderRadius: 6,
+              padding: "4px 10px",
+              display: "inline-block",
+              fontWeight: 500,
+            }}
+          >
+            Số sinh viên ghi danh:{" "}
+            <span style={{ color: "#2563eb", fontWeight: 700 }}>
+              {danhSachLop.find((lop) => lop.id === selectedLopId)
+                ?.soSinhVienGhiDanh ?? 0}
+            </span>
+          </div>
+        )}
         <button
           className="btn__add-instance"
           onClick={handleAddClick}

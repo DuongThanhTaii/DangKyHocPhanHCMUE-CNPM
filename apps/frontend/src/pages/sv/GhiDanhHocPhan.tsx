@@ -80,16 +80,18 @@ export default function GhiDanhHocPhan(): JSX.Element {
     try {
       const result = await svApi.getDanhSachDaGhiDanh();
       if (result.isSuccess && result.data) {
-        const dsGD: HocPhanDaGhiDanh[] = result.data.map((item: MonHocDaGhiDanh) => ({
-          id: item.monHocId,
-          hoc_phan_id: item.monHocId,
-          ghi_danh_id: item.ghiDanhId,     
-          ma_mon: item.maMonHoc,
-          ten_mon: item.tenMonHoc,
-          so_tin_chi: item.soTinChi,
-          ten_khoa: item.tenKhoa,
-          ten_giang_vien: item.tenGiangVien,
-        }));
+        const dsGD: HocPhanDaGhiDanh[] = result.data.map(
+          (item: MonHocDaGhiDanh) => ({
+            id: item.monHocId,
+            hoc_phan_id: item.monHocId,
+            ghi_danh_id: item.ghiDanhId,
+            ma_mon: item.maMonHoc,
+            ten_mon: item.tenMonHoc,
+            so_tin_chi: item.soTinChi,
+            ten_khoa: item.tenKhoa,
+            ten_giang_vien: item.tenGiangVien,
+          })
+        );
         setDaGhiDanhList(dsGD);
       }
     } catch (e) {
@@ -160,8 +162,8 @@ export default function GhiDanhHocPhan(): JSX.Element {
   // ✅ Handle checkbox for cancellation - use ghiDanhId
   const handleCancelCheck = (ghiDanhId: string): void => {
     setSelectedToCancelIds((prev) =>
-      prev.includes(ghiDanhId) 
-        ? prev.filter((x) => x !== ghiDanhId) 
+      prev.includes(ghiDanhId)
+        ? prev.filter((x) => x !== ghiDanhId)
         : [...prev, ghiDanhId]
     );
   };
@@ -352,12 +354,14 @@ export default function GhiDanhHocPhan(): JSX.Element {
                 </thead>
                 <tbody>
                   {daGhiDanhList.map((hp) => (
-                    <tr key={hp.ghi_danh_id}> {/* ✅ Use ghiDanhId as key */}
+                    <tr key={hp.ghi_danh_id}>
+                      {" "}
+                      {/* ✅ Use ghiDanhId as key */}
                       <td>
                         <input
                           type="checkbox"
                           checked={selectedToCancelIds.includes(hp.ghi_danh_id)}
-                          onChange={() => handleCancelCheck(hp.ghi_danh_id)} 
+                          onChange={() => handleCancelCheck(hp.ghi_danh_id)}
                         />
                       </td>
                       <td>{hp.ma_mon}</td>

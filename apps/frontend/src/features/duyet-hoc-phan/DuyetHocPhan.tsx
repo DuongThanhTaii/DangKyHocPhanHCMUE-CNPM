@@ -100,12 +100,12 @@ export default function DuyetHocPhan({
   useEffect(() => {
     if (hocKyHienHanh && hocKyNienKhoas.length > 0 && !selectedHocKyId) {
       const foundNienKhoa = hocKyNienKhoas.find((nk) =>
-        nk.hocKy.some((hk) => hk.id === hocKyHienHanh.hocKyId)
+        nk.hocKy.some((hk) => hk.id === hocKyHienHanh.id)
       );
 
       if (foundNienKhoa) {
-        setSelectedHocKyId(hocKyHienHanh.hocKyId);
-        setTempSelectedHocKyId(hocKyHienHanh.hocKyId);
+        setSelectedHocKyId(hocKyHienHanh.id);
+        setTempSelectedHocKyId(hocKyHienHanh.id);
         setTempSelectedNienKhoa(foundNienKhoa.id);
         openNotify(
           `Đã tự chọn học kỳ hiện tại: ${hocKyHienHanh.tenHocKy} (${foundNienKhoa.tenNienKhoa})`,
