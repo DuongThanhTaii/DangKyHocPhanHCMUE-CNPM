@@ -1,40 +1,85 @@
-/* Floating action button */
+/* ============== Mini ChatGPT – Theme Tokens ============== */
+:root {
+  --cbt-brand: #0b57d0; /* header & buttons */
+  --cbt-brand-2: #0c4874; /* hover accent / legacy tone */
+  --cbt-bg: #ffffff; /* panel bg */
+  --cbt-elev: 0 16px 48px rgba(0, 0, 0, 0.24);
+  --cbt-border: #e7ecf3;
+  --cbt-subtle: #f7f9fc;
+  --cbt-text: #0b1220;
+  --cbt-muted: #64748b;
+
+  --cbt-user: #e3f2fd; /* user bubble */
+  --cbt-bot: #ffffff; /* bot bubble */
+  --cbt-system: #fff7d6; /* system bubble */
+
+  --cbt-radius-lg: 16px;
+  --cbt-radius-md: 12px;
+  --cbt-radius-sm: 8px;
+
+  --cbt-z: 2147483000;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --cbt-brand: #4e9eff;
+    --cbt-brand-2: #2f6bb0;
+    --cbt-bg: #0f172a;
+    --cbt-elev: 0 16px 48px rgba(0, 0, 0, 0.5);
+    --cbt-border: #1e293b;
+    --cbt-subtle: #0b1220;
+    --cbt-text: #e5eefc;
+    --cbt-muted: #8aa0bf;
+
+    --cbt-user: #133a62;
+    --cbt-bot: #0f172a;
+    --cbt-system: #2a260e;
+  }
+}
+
+/* ============== Floating Action Button (Draggable) ============== */
 .cbt-fab {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
+  position: fixed; /* vị trí set bằng inline style left/top từ JS khi kéo */
   width: 56px;
   height: 56px;
   border-radius: 50%;
   border: none;
   background: #0c4874;
   color: #fff;
-  font-size: 24px;
-  cursor: pointer;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-  z-index: 2147483000; /* trên cùng */
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  font-size: 22px;
+  cursor: grab;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  z-index: calc(var(--cbt-z) + 0);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 .cbt-fab:hover {
   transform: translateY(-1px);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+}
+.cbt-fab:active {
+  cursor: grabbing;
+  transform: translateY(0);
+}
+.cbt-fab:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
 }
 
-/* Panel */
+/* ============== Panel (đặt vị trí qua inline left/top) ============== */
 .cbt-panel {
-  position: fixed;
-  right: 20px;
-  bottom: 90px;
+  position: fixed; /* left/top set inline từ JS => hỗ trợ kéo-thả */
   width: min(92vw, 380px);
   height: 520px;
   display: flex;
   flex-direction: column;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.28);
+  background: var(--cbt-bg);
+  color: var(--cbt-text);
+  border-radius: var(--cbt-radius-lg);
+  box-shadow: var(--cbt-elev);
   overflow: hidden;
-  z-index: 2147483001;
+  z-index: calc(var(--cbt-z) + 1);
   animation: cbt-pop 0.16s ease-out;
+  border: 1px solid var(--cbt-border);
 }
 @keyframes cbt-pop {
   from {
@@ -47,22 +92,41 @@
   }
 }
 
+/* ============== Header (giống ChatGPT: gọn, công cụ bên phải) ============== */
 .cbt-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
   padding: 10px 12px;
-  background: #0c4874;
+  background: linear-gradient(0deg, var(--cbt-brand), var(--cbt-brand-2));
   color: #fff;
 }
 .cbt-title {
   font-weight: 600;
+  letter-spacing: 0.2px;
 }
 .cbt-actions {
   display: flex;
   align-items: center;
   gap: 8px;
 }
+
+.cbt-minibtn {
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.12s ease;
+}
+.cbt-minibtn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
 .cbt-topk {
   display: inline-flex;
   align-items: center;
@@ -71,36 +135,55 @@
   opacity: 0.95;
 }
 .cbt-topk input {
-  width: 48px;
-  padding: 2px 6px;
-  border-radius: 6px;
-  border: none;
+  width: 52px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
 }
 
 .cbt-close {
   background: transparent;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.35);
   color: #fff;
-  font-size: 18px;
+  font-size: 16px;
   width: 28px;
   height: 28px;
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
 }
 .cbt-close:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.18);
 }
 
+/* ============== Body (mini ChatGPT: nền subtle, typographic) ============== */
 .cbt-body {
   flex: 1;
   overflow: auto;
   padding: 12px;
-  background: #f7f9fc;
+  background: var(--cbt-subtle);
+  scrollbar-width: thin;
+}
+.cbt-body::-webkit-scrollbar {
+  width: 10px;
+}
+.cbt-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+.cbt-body::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }
 
+/* ============== Message rows ============== */
 .cbt-msg {
   display: flex;
-  margin: 8px 0;
+  margin: 10px 0;
 }
 .cbt-msg.user {
   justify-content: flex-end;
@@ -110,65 +193,169 @@
   justify-content: flex-start;
 }
 
+/* ============== Bubbles (mini ChatGPT cảm giác block gọn) ============== */
 .cbt-bubble {
-  max-width: 80%;
   padding: 10px 12px;
   border-radius: 14px;
-  line-height: 1.38;
+  line-height: 1.45;
   white-space: pre-wrap;
   word-break: break-word;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  background: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  background: var(--cbt-bot);
+  border: 1px solid var(--cbt-border);
 }
 .cbt-msg.user .cbt-bubble {
-  background: #e3f2fd;
-}
-.cbt-msg.bot .cbt-bubble {
-  background: #ffffff;
+  background: var(--cbt-user);
 }
 .cbt-msg.system .cbt-bubble {
-  background: #fff3cd;
+  background: var(--cbt-system);
 }
 
+/* bubble tools (Copy, v.v.) */
+.cbt-bubble-wrap {
+  max-width: 80%;
+}
+.cbt-tools {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+.cbt-tool-btn {
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 999px;
+  border: 1px solid var(--cbt-border);
+  background: #f8fafc;
+  color: var(--cbt-text);
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.12s ease;
+}
+.cbt-tool-btn:hover {
+  background: #eef2f7;
+  transform: translateY(-1px);
+}
+@media (prefers-color-scheme: dark) {
+  .cbt-tool-btn {
+    background: #0f172a;
+    color: var(--cbt-muted);
+  }
+  .cbt-tool-btn:hover {
+    background: #122036;
+  }
+}
+
+/* ============== Input (pill, giống ChatGPT mini) ============== */
 .cbt-input {
   padding: 10px;
   display: flex;
   gap: 8px;
-  border-top: 1px solid #e7ecf3;
-  background: #fff;
+  border-top: 1px solid var(--cbt-border);
+  background: var(--cbt-bg);
 }
 .cbt-input input {
   flex: 1;
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid #d9dfeb;
+  padding: 11px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--cbt-border);
   outline: none;
+  background: transparent;
+  color: var(--cbt-text);
 }
+.cbt-input input::placeholder {
+  color: var(--cbt-muted);
+}
+
 .cbt-input button {
   padding: 10px 14px;
-  border-radius: 10px;
-  background: #0c4874;
+  border-radius: 999px;
+  background: var(--cbt-brand);
   color: #fff;
   border: none;
   cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.15s;
+  box-shadow: 0 6px 16px rgba(11, 87, 208, 0.35);
+}
+.cbt-input button:hover {
+  transform: translateY(-1px);
 }
 .cbt-input button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
+/* ============== HTML from backend (table/markdown) ============== */
+.cbt-html {
+  font-size: 14px;
+}
 .cbt-html table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 6px;
+  border: 1px solid var(--cbt-border);
+  border-radius: var(--cbt-radius-sm);
+  overflow: hidden;
 }
 .cbt-html th,
 .cbt-html td {
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--cbt-border);
   padding: 6px 8px;
   font-size: 13px;
 }
 .cbt-html th {
   background: #f3f4f6;
   font-weight: 600;
+}
+@media (prefers-color-scheme: dark) {
+  .cbt-html th {
+    background: #111827;
+  }
+}
+.cbt-html p {
+  margin: 6px 0;
+}
+.cbt-html ul,
+.cbt-html ol {
+  padding-left: 20px;
+  margin: 6px 0;
+}
+.cbt-html code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  background: rgba(2, 6, 23, 0.06);
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+@media (prefers-color-scheme: dark) {
+  .cbt-html code {
+    background: rgba(148, 163, 184, 0.18);
+  }
+}
+
+/* ============== Mini toast ============== */
+.cbt-toast {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.86);
+  color: #fff;
+  padding: 6px 10px;
+  font-size: 12px;
+  border-radius: 999px;
+  pointer-events: none;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+
+/* ============== Utility ============== */
+.cbt-noselect {
+  user-select: none !important;
+}
+
+/* ============== Mobile refinement ============== */
+@media (max-width: 420px) {
+  .cbt-panel {
+    width: calc(100vw - 16px);
+    height: min(70vh, 520px);
+  }
 }

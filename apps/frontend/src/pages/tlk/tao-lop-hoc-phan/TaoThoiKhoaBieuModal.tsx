@@ -425,7 +425,9 @@ export default function TaoThoiKhoaBieuModal({
     return (
       <div className="tkb-modal-overlay">
         <div className="tkb-modal-container">
-          <div className="tkb-modal-loading">Đang tải thời khóa biểu...</div>
+          <div className="tkb-modal-loading df_center h__40">
+            Đang tải thời khóa biểu...
+          </div>
         </div>
       </div>
     );

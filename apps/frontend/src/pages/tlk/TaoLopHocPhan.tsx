@@ -295,7 +295,7 @@ export default function TaoLopHocPhan() {
           onSubmit={(e) => e.preventDefault()}
         />
 
-        <div className="form__group__tracuu">
+        <div className="form__group__tracuu mt_20">
           <input
             type="text"
             placeholder="Tìm kiếm..."

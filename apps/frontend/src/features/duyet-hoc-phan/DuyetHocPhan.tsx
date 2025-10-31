@@ -258,7 +258,7 @@ export default function DuyetHocPhan({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="form__input"
-            style={{ width: 400 }}
+            style={{ width: "100%" }}
           />
         </div>
 

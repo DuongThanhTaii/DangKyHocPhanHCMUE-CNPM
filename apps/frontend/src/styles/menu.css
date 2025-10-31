@@ -989,6 +989,13 @@ input.form__floating-label__quanly {
   gap: 10px;
 }
 
+.btn__momo {
+  color: #fff;
+  background-color: #d82d8b;
+  border: none;
+  border-radius: 20px;
+}
+
 .p__0 {
   padding: 0px !important;
 }
@@ -1021,6 +1028,10 @@ input.form__floating-label__quanly {
 
 .mr_20 {
   margin-right: 20px;
+}
+
+.mr_8 {
+  margin-right: 8px;
 }
 
 .ml__20 {
@@ -1066,12 +1077,24 @@ input.form__floating-label__quanly {
   height: 40px !important;
 }
 
+.h__35__w__35 {
+  height: 35px !important;
+  width: 35px !important;
+}
+
 .h__30 {
   height: 30px !important;
 }
 
 .P__10__20 {
   padding: 10px 20px;
+}
+
+.df_center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
 }
 
 .sub__title_chuyenphase {
@@ -1463,6 +1486,7 @@ th {
   display: inline-flex;
   gap: 5px;
   margin-right: 10px;
+  align-items: center;
 }
 
 .thanh-toan__table {

@@ -143,6 +143,62 @@ async function getChartPNGFromContainer(
   return dataUrl;
 }
 
+/* ====== Small UI pieces ====== */
+function StatCard({ label, value }: { label: string; value: React.ReactNode }) {
+  return (
+    <div
+      style={{
+        minWidth: 220,
+        padding: "10px 14px",
+        borderRadius: 12,
+        background: "#fff",
+        boxShadow: "0 1px 6px rgba(0,0,0,0.06)",
+      }}
+    >
+      <div style={{ fontSize: 12, color: "#666" }}>{label}</div>
+      <div style={{ fontSize: 20, fontWeight: 700, marginTop: 4 }}>{value}</div>
+    </div>
+  );
+}
+
+function ChartCard({
+  title,
+  chartRef,
+  height = 320,
+  children,
+  conclusion,
+}: {
+  title: string;
+  chartRef: React.RefObject<HTMLDivElement>;
+  height?: number;
+  children: React.ReactNode;
+  conclusion?: string;
+}) {
+  return (
+    <section
+      className="chart-card"
+      style={{
+        background: "#fff",
+        borderRadius: 12,
+        boxShadow: "0 1px 6px rgba(0,0,0,0.06)",
+        padding: 12,
+      }}
+    >
+      <h3 style={{ margin: "0 0 8px", color: "#294e8dff", fontWeight: 600 }}>
+        {title}
+      </h3>
+      <div ref={chartRef} style={{ width: "100%", height }}>
+        {children}
+      </div>
+      {conclusion && (
+        <p style={{ marginTop: 6 }}>
+          <b>Kết luận:</b> {conclusion}
+        </p>
+      )}
+    </section>
+  );
+}
+
 /* ========= Component ========= */
 export default function BaoCaoThongKe() {
   const { openNotify } = useModalContext();
@@ -354,8 +410,6 @@ export default function BaoCaoThongKe() {
   // UI
   return (
     <div style={{ padding: 16 }}>
-      <h2 style={{ marginBottom: 12 }}>Thống kê & Báo cáo</h2>
-
       {/* Filters */}
       <div
         className="df"
@@ -368,13 +422,14 @@ export default function BaoCaoThongKe() {
       >
         {/* Niên khóa */}
         <select
+          className="form__input form__select"
           value={nkId}
           onChange={(e) => {
             setNkId(e.target.value);
             setHocKyId("");
           }}
         >
-          <option value="">-- Chọn niên khóa --</option>
+          <option value="">Chọn niên khóa</option>
           {nienKhoas.map((nk) => (
             <option key={nk.id} value={nk.id}>
               {nk.ten_nien_khoa}
@@ -384,11 +439,12 @@ export default function BaoCaoThongKe() {
 
         {/* Học kỳ */}
         <select
+          className="form__input form__select"
           value={hocKyId}
           onChange={(e) => setHocKyId(e.target.value)}
           disabled={!nkId}
         >
-          <option value="">-- Chọn học kỳ --</option>
+          <option value="">Chọn học kỳ</option>
           {hocKysByNK.map((hk) => (
             <option key={hk.id} value={hk.id}>
               {hk.ten_hoc_ky}
@@ -396,46 +452,48 @@ export default function BaoCaoThongKe() {
           ))}
         </select>
 
-        {/* Khoa */}
-        <select
-          value={khoaId}
-          onChange={(e) => {
-            setKhoaId(e.target.value);
-            setNganhId("");
-          }}
-        >
-          <option value="">-- Tất cả khoa --</option>
-          {khoas.map((k) => (
-            <option key={k.id} value={k.id}>
-              {k.ten_khoa}
-            </option>
-          ))}
-        </select>
+        <div>
+          {/* Khoa */}
+          <select
+            className="form__input form__select mr_8"
+            value={khoaId}
+            onChange={(e) => {
+              setKhoaId(e.target.value);
+              setNganhId("");
+            }}
+          >
+            <option value="">Tất cả khoa</option>
+            {khoas.map((k) => (
+              <option key={k.id} value={k.id}>
+                {k.ten_khoa}
+              </option>
+            ))}
+          </select>
 
-        {/* Ngành */}
-        <select
-          value={nganhId}
-          onChange={(e) => setNganhId(e.target.value)}
-          disabled={!khoaId}
-        >
-          <option value="">-- Tất cả ngành --</option>
-          {filteredNganhs.map((n) => (
-            <option key={n.id} value={n.id}>
-              {n.ten_nganh}
-            </option>
-          ))}
-        </select>
+          {/* Ngành */}
+          <select
+            className="form__input form__select"
+            value={nganhId}
+            onChange={(e) => setNganhId(e.target.value)}
+            disabled={!khoaId}
+          >
+            <option value="">Tất cả ngành</option>
+            {filteredNganhs.map((n) => (
+              <option key={n.id} value={n.id}>
+                {n.ten_nganh}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        <button onClick={loadReports} className="btn__primary">
+        <button onClick={loadReports} className="btn__update h__40">
           Tải thống kê
         </button>
 
-        <div style={{ flex: 1 }} />
-
-        <button onClick={exportExcel} className="btn__secondary">
+        <button onClick={exportExcel} className="btn__update h__40">
           Xuất Excel
         </button>
-        <button onClick={exportPDF} className="btn__secondary">
+        <button onClick={exportPDF} className="btn__update h__40">
           Xuất PDF
         </button>
       </div>
@@ -464,160 +522,122 @@ export default function BaoCaoThongKe() {
         </div>
       )}
 
-      {/* Charts */}
+      {/* Charts Grid: 2 cột -> 2 hàng cho 4 chart */}
       {loading ? (
         <p>Đang tải dữ liệu...</p>
       ) : (
-        <>
-          {/* Đăng ký theo khoa */}
-          <section style={{ margin: "12px 0" }}>
-            <h3>Đăng ký theo khoa</h3>
-            <div
-              ref={refKhoa}
-              style={{ width: "100%", height: 320, background: "#fff" }}
-            >
-              <ResponsiveContainer>
-                <BarChart
-                  data={dkTheoKhoa}
-                  margin={{ top: 10, right: 10, left: 0, bottom: 40 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis
-                    dataKey="ten_khoa"
-                    angle={-20}
-                    textAnchor="end"
-                    interval={0}
-                    height={60}
-                  />
-                  <YAxis allowDecimals={false} />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="so_dang_ky" name="Số đăng ký" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-            {ketLuanKhoa && (
-              <p style={{ marginTop: 6 }}>
-                <b>Kết luận:</b> {ketLuanKhoa}
-              </p>
-            )}
-          </section>
+        <div
+          className="charts-grid"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+            gap: 12,
+          }}
+        >
+          {/* Hàng 1 */}
+          <ChartCard
+            title="Đăng ký theo khoa"
+            chartRef={refKhoa as React.RefObject<HTMLDivElement>}
+            height={320}
+            conclusion={ketLuanKhoa || undefined}
+          >
+            <ResponsiveContainer>
+              <BarChart
+                data={dkTheoKhoa}
+                margin={{ top: 10, right: 10, left: 0, bottom: 40 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="ten_khoa"
+                  angle={-20}
+                  textAnchor="end"
+                  interval={0}
+                  height={60}
+                />
+                <YAxis allowDecimals={false} />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="so_dang_ky" name="Số đăng ký" />
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartCard>
 
-          {/* Đăng ký theo ngành */}
-          <section style={{ margin: "12px 0" }}>
-            <h3>
-              Đăng ký theo ngành {khoaId ? "(lọc theo khoa đã chọn)" : ""}
-            </h3>
-            <div
-              ref={refNganh}
-              style={{ width: "100%", height: 320, background: "#fff" }}
-            >
-              <ResponsiveContainer>
-                <BarChart
-                  data={dkTheoNganh}
-                  margin={{ top: 10, right: 10, left: 0, bottom: 40 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis
-                    dataKey="ten_nganh"
-                    angle={-20}
-                    textAnchor="end"
-                    interval={0}
-                    height={60}
-                  />
-                  <YAxis allowDecimals={false} />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="so_dang_ky" name="Số đăng ký" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-            {ketLuanNganh && (
-              <p style={{ marginTop: 6 }}>
-                <b>Kết luận:</b> {ketLuanNganh}
-              </p>
-            )}
-          </section>
+          <ChartCard
+            title={`Đăng ký theo ngành ${
+              khoaId ? "(lọc theo khoa đã chọn)" : ""
+            }`}
+            chartRef={refNganh as React.RefObject<HTMLDivElement>}
+            height={320}
+            conclusion={ketLuanNganh || undefined}
+          >
+            <ResponsiveContainer>
+              <BarChart
+                data={dkTheoNganh}
+                margin={{ top: 10, right: 10, left: 0, bottom: 40 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="ten_nganh"
+                  angle={-20}
+                  textAnchor="end"
+                  interval={0}
+                  height={60}
+                />
+                <YAxis allowDecimals={false} />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="so_dang_ky" name="Số đăng ký" />
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartCard>
 
-          {/* Tải giảng viên */}
-          <section style={{ margin: "12px 0" }}>
-            <h3>Tải giảng viên {khoaId ? "(lọc theo khoa đã chọn)" : ""}</h3>
-            <div
-              ref={refGV}
-              style={{ width: "100%", height: 360, background: "#fff" }}
-            >
-              <ResponsiveContainer>
-                {/* Vertical bar: dùng tên GV ở trục Y */}
-                <BarChart
-                  data={taiGV.slice(0, 10).reverse()} // top 10, đảo để tên ngắn gọn
-                  layout="vertical"
-                  margin={{ top: 10, right: 20, left: 60, bottom: 10 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" allowDecimals={false} />
-                  <YAxis type="category" dataKey="ho_ten" width={180} />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="so_lop" name="Số lớp" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-            {ketLuanGV && (
-              <p style={{ marginTop: 6 }}>
-                <b>Kết luận:</b> {ketLuanGV}
-              </p>
-            )}
-          </section>
+          {/* Hàng 2 */}
+          <ChartCard
+            title={`Tải giảng viên ${khoaId ? "(lọc theo khoa đã chọn)" : ""}`}
+            chartRef={refGV as React.RefObject<HTMLDivElement>}
+            height={360}
+            conclusion={ketLuanGV || undefined}
+          >
+            <ResponsiveContainer>
+              {/* Vertical bar: dùng tên GV ở trục Y */}
+              <BarChart
+                data={taiGV.slice(0, 10).reverse()} // top 10
+                layout="vertical"
+                margin={{ top: 10, right: 20, left: 60, bottom: 10 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis type="number" allowDecimals={false} />
+                <YAxis type="category" dataKey="ho_ten" width={180} />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="so_lop" name="Số lớp" />
+              </BarChart>
+            </ResponsiveContainer>
+          </ChartCard>
 
-          {/* Tài chính */}
-          <section style={{ margin: "12px 0" }}>
-            <h3>Tài chính học phí</h3>
-            <div
-              ref={refFinance}
-              style={{ width: "100%", height: 320, background: "#fff" }}
-            >
-              <ResponsiveContainer>
-                <LineChart
-                  data={financeData}
-                  margin={{ top: 10, right: 20, left: 0, bottom: 10 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip formatter={(v: any) => currency(Number(v))} />
-                  <Legend />
-                  {/* Nếu muốn Bars thay vì Lines: thêm BarChart/ComposedChart; ở đây mix Line cho gọn */}
-                  <Line type="monotone" dataKey="Thực thu" />
-                  <Line type="monotone" dataKey="Kỳ vọng" />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-            {overview?.ketLuan && (
-              <p style={{ marginTop: 6 }}>
-                <b>Kết luận:</b> {overview.ketLuan}
-              </p>
-            )}
-          </section>
-        </>
+          <ChartCard
+            title="Tài chính học phí"
+            chartRef={refFinance as React.RefObject<HTMLDivElement>}
+            height={320}
+            conclusion={overview?.ketLuan || undefined}
+          >
+            <ResponsiveContainer>
+              <LineChart
+                data={financeData}
+                margin={{ top: 10, right: 20, left: 0, bottom: 10 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip formatter={(v: any) => currency(Number(v))} />
+                <Legend />
+                <Line type="monotone" dataKey="Thực thu" />
+                <Line type="monotone" dataKey="Kỳ vọng" />
+              </LineChart>
+            </ResponsiveContainer>
+          </ChartCard>
+        </div>
       )}
-    </div>
-  );
-}
-
-/* ====== Small UI piece ====== */
-function StatCard({ label, value }: { label: string; value: React.ReactNode }) {
-  return (
-    <div
-      style={{
-        minWidth: 220,
-        padding: "10px 14px",
-        borderRadius: 12,
-        background: "#fff",
-        boxShadow: "0 1px 6px rgba(0,0,0,0.06)",
-      }}
-    >
-      <div style={{ fontSize: 12, color: "#666" }}>{label}</div>
-      <div style={{ fontSize: 20, fontWeight: 700, marginTop: 4 }}>{value}</div>
     </div>
   );
 }

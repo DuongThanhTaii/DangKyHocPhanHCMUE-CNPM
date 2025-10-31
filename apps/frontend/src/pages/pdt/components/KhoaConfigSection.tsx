@@ -353,7 +353,7 @@ export const KhoaConfigSection = forwardRef<
                           onClick={() => handleRemoveKhoaConfig(index)}
                           className="khoa-config-item__remove-btn"
                         >
-                          ✕ Xóa
+                          Xóa
                         </button>
                       </div>
 

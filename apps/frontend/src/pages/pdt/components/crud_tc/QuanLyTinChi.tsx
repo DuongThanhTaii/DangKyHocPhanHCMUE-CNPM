@@ -233,8 +233,6 @@ export default function QuanLyTinChi() {
 
   return (
     <div style={{ padding: 16 }}>
-      <h2 style={{ marginBottom: 12 }}>Quản lý chính sách tín chỉ</h2>
-
       {/* ✅ Show loading state */}
       {loading && (
         <p style={{ textAlign: "center", padding: 20 }}>Đang tải dữ liệu...</p>
@@ -255,13 +253,14 @@ export default function QuanLyTinChi() {
           >
             {/* Niên khóa */}
             <select
+              className="form__input form__select"
               value={selectedNienKhoa}
               onChange={(e) => {
                 setSelectedNienKhoa(e.target.value);
                 setForm((f) => ({ ...f, hocKyId: "" }));
               }}
             >
-              <option value="">-- Chọn niên khóa --</option>
+              <option value="">Chọn niên khóa</option>
               {nienKhoas.map((nk) => (
                 <option key={nk} value={nk}>
                   {nk}
@@ -271,13 +270,14 @@ export default function QuanLyTinChi() {
 
             {/* Học kỳ */}
             <select
+              className="form__input form__select"
               value={form.hocKyId}
               onChange={(e) =>
                 setForm((f) => ({ ...f, hocKyId: e.target.value }))
               }
               disabled={!selectedNienKhoa}
             >
-              <option value="">-- Học kỳ áp dụng --</option>
+              <option value="">Học kỳ áp dụng</option>
               {hocKysBySelectedNK.map((hk) => (
                 <option key={hk.id} value={hk.id}>
                   {hk.tenHocKy}
@@ -285,42 +285,47 @@ export default function QuanLyTinChi() {
               ))}
             </select>
 
-            {/* Khoa */}
-            <select
-              value={form.khoaId}
-              onChange={(e) => {
-                const val = e.target.value;
-                setSelectedKhoaId(val);
-                setForm((f) => ({ ...f, khoaId: val, nganhId: "" }));
-              }}
-              disabled={!form.hocKyId} // ✅ Disable if no hocKyId
-            >
-              <option value="">-- Áp dụng cho khoa (tùy chọn) --</option>
-              {khoas.map((k) => (
-                <option key={k.id} value={k.id}>
-                  {k.tenKhoa}
-                </option>
-              ))}
-            </select>
+            <div>
+              <select
+                className="form__input form__select mr_8"
+                value={form.khoaId}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setSelectedKhoaId(val);
+                  setForm((f) => ({ ...f, khoaId: val, nganhId: "" }));
+                }}
+                disabled={!form.hocKyId} // ✅ Disable if no hocKyId
+              >
+                <option value="">Áp dụng cho khoa</option>
+                {khoas.map((k) => (
+                  <option key={k.id} value={k.id}>
+                    {k.tenKhoa}
+                  </option>
+                ))}
+              </select>
 
-            {/* Ngành */}
-            <select
-              value={form.nganhId}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, nganhId: e.target.value }))
-              }
-              disabled={!form.khoaId || !form.hocKyId} // ✅ Disable if no hocKyId or khoaId
-            >
-              <option value="">-- Áp dụng cho ngành (tùy chọn) --</option>
-              {nganhs.map((n) => (
-                <option key={n.id} value={n.id}>
-                  {n.tenNganh}
-                </option>
-              ))}
-            </select>
+              {/* Ngành */}
+              <select
+                className="form__input form__select"
+                value={form.nganhId}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, nganhId: e.target.value }))
+                }
+                disabled={!form.khoaId || !form.hocKyId} // ✅ Disable if no hocKyId or khoaId
+              >
+                <option value="">Áp dụng cho ngành</option>
+                {nganhs.map((n) => (
+                  <option key={n.id} value={n.id}>
+                    {n.tenNganh}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {/* Khoa */}
 
             {/* Đơn giá */}
             <input
+              className="form__input form__select"
               type="number"
               min={0}
               step={1000}
@@ -355,7 +360,7 @@ export default function QuanLyTinChi() {
               type="button"
               onClick={handleTinhHocPhi}
               disabled={calculatingFee || !form.hocKyId}
-              className="btn__chung"
+              className="btn__update h__40"
               style={{
                 padding: "8px 16px",
                 fontSize: "14px",
@@ -377,7 +382,7 @@ export default function QuanLyTinChi() {
               >
                 <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
               </svg>
-              {calculatingFee ? "Đang tính..." : "⚡ Tính học phí hàng loạt"}
+              {calculatingFee ? "Đang tính..." : "Tính học phí hàng loạt"}
             </button>
           </div>
 
