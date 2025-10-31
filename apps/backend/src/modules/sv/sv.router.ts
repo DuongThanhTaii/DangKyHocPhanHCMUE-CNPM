@@ -23,6 +23,10 @@ import {
   getTKBWeeklyHandler,
 } from "./sv_lichSuDangKy_service";
 import { traCuuHocPhanHandler } from "./sv_traCuuHocPhan_service";
+import { getHocPhiHandler, computeTuitionHandler } from "./sv_hocPhi_service";
+import { TuitionController } from "../../interface/controllers/tuition/TuitionController";
+import { container } from "../../infrastructure/di/container";
+
 const r = Router();
 
 r.get("/me", requireAuth, requireRole(["sinh_vien"]), (req, res) => {
@@ -159,6 +163,16 @@ r.get(
   requireAuth,
   requireRole(["sinh_vien"]),
   traCuuHocPhanHandler
+);
+
+// ============ HỌC PHÍ ============
+
+// ✅ Lấy thông tin học phí (legacy - keep for backward compatibility)
+r.get(
+  "/hoc-phi",
+  requireAuth,
+  requireRole(["sinh_vien"]),
+  getHocPhiHandler
 );
 
 export default r;

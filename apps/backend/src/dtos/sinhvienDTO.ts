@@ -51,9 +51,9 @@ export interface RequestGhiDanhMonHoc {
   monHocId: string;
 }
 
-export interface RequestHuyGhiDanhMonHoc {
-  ghiDanhIds: string[];
-}
+  export interface RequestHuyGhiDanhMonHoc {
+    ghiDanhIds: string[];
+  }
 export interface MonHocDaGhiDanh {
   ghiDanhId: string;      // ID của record ghi_danh_hoc_phan
   monHocId: string;       // ID môn học
