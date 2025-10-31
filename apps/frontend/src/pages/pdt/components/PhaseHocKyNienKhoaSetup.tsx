@@ -218,31 +218,57 @@ export function PhaseHocKyNienKhoaSetup({
                       }}
                     >
                       <button
-                        className="btn__chung"
+                        className="btn__update m__0 df_center h__35__w__35"
                         onClick={handleSaveEdit}
-                        style={{ padding: "6px 12px", fontSize: "14px" }}
                         disabled={submitting}
                       >
-                        ✅
+                        <svg
+                          className=""
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 448 512"
+                        >
+                          <path
+                            fill="#ffffff"
+                            d="M434.8 70.1c14.3 10.4 17.5 30.4 7.1 44.7l-256 352c-5.5 7.6-14 12.3-23.4 13.1s-18.5-2.7-25.1-9.3l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l101.5 101.5 234-321.7c10.4-14.3 30.4-17.5 44.7-7.1z"
+                          />
+                        </svg>
                       </button>
                       <button
-                        className="btn__cancel"
+                        className="khoa-config-item__remove-btn h__35__w__35"
                         onClick={handleCancelEdit}
                         style={{ padding: "6px 12px", fontSize: "14px" }}
                         disabled={submitting}
                       >
-                        ✕
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 384 512"
+                        >
+                          <path
+                            fill="#ffffff"
+                            d="M55.1 73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L147.2 256 9.9 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192.5 301.3 329.9 438.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.8 256 375.1 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192.5 210.7 55.1 73.4z"
+                          />
+                        </svg>
                       </button>
                     </div>
                   ) : (
-                    <button
-                      className="btn__chung"
-                      onClick={() => handleStartEdit(phase)}
-                      style={{ padding: "6px 12px", fontSize: "14px" }}
-                      disabled={submitting}
-                    >
-                      ✏️
-                    </button>
+                    <div className="df_center">
+                      <button
+                        className="btn__update h__35__w__35"
+                        onClick={() => handleStartEdit(phase)}
+                        disabled={submitting}
+                      >
+                        <svg
+                          className="df_center"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 640 640"
+                        >
+                          <path
+                            fill="currentColor"
+                            d="M416.9 85.2L372 130.1L509.9 268L554.8 223.1C568.4 209.6 576 191.2 576 172C576 152.8 568.4 134.4 554.8 120.9L519.1 85.2C505.6 71.6 487.2 64 468 64C448.8 64 430.4 71.6 416.9 85.2zM338.1 164L122.9 379.1C112.2 389.8 104.4 403.2 100.3 417.8L64.9 545.6C62.6 553.9 64.9 562.9 71.1 569C77.3 575.1 86.2 577.5 94.5 575.2L222.3 539.7C236.9 535.6 250.2 527.9 261 517.1L476 301.9L338.1 164z"
+                          ></path>
+                        </svg>
+                      </button>
+                    </div>
                   )}
                 </td>
               </tr>
@@ -269,7 +295,7 @@ export function PhaseHocKyNienKhoaSetup({
         </p>
       )}
 
-      <div style={{ marginTop: "16px", textAlign: "center" }}>
+      <div style={{ marginTop: "16px" }}>
         <button
           type="button"
           className="btn__chung"
@@ -283,8 +309,8 @@ export function PhaseHocKyNienKhoaSetup({
       {/* ✅ Section Ghi Danh */}
       <div
         style={{
-          marginTop: "40px",
-          borderTop: "2px solid #0c4874",
+          marginTop: "25px",
+          borderTop: "1px solid #ccc",
           paddingTop: "20px",
         }}
       >
@@ -302,8 +328,8 @@ export function PhaseHocKyNienKhoaSetup({
       {/* ✅ Section Đăng Ký Học Phần */}
       <div
         style={{
-          marginTop: "40px",
-          borderTop: "2px solid #0c4874",
+          marginTop: "25px",
+          borderTop: "1px solid #ccc",
           paddingTop: "20px",
         }}
       >

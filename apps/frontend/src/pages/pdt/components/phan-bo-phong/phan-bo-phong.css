@@ -601,3 +601,29 @@
 .phong-list-modal::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
+
+.modal-actions.actions-with-filter {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap; /* tự xuống hàng khi hẹp */
+  margin-bottom: 12px;
+}
+
+.modal-actions .inline-filter {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.select-day {
+  min-width: 140px;
+  border-radius: 20px;
+  border-color: #3b82f6;
+  color: #3b82f6;
+  background-color: #eff6ff;
+}
+
+label {
+  color: #3b82f6;
+}

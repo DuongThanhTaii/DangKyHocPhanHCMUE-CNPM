@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { PhongHocDTO } from "../../../../features/pdt/types/pdtTypes";
+import "../../../../styles/menu.css";
 
 interface Props {
   availablePhong: PhongHocDTO[];
@@ -7,6 +8,26 @@ interface Props {
   submitting: boolean;
   onClose: () => void;
   onSubmit: (phongIds: string[]) => void;
+}
+
+/** Suy ra "dãy" (day) từ object phòng:
+ * - Ưu tiên phong.day / phong.dayName nếu backend đã có.
+ * - Nếu không, parse từ maPhong theo các pattern thường gặp: A101, A1-101, B-204, D1.203, I.203, C2_105, ...
+ */
+function inferDay(phong: any): string {
+  if (phong?.day) return String(phong.day);
+  if (phong?.dayName) return String(phong.dayName);
+  const ma = String(phong?.maPhong || "").trim();
+
+  // Ví dụ: D1-203, A2.105, C3_101 -> lấy block chữ+ số đứng đầu
+  let m = ma.match(/^([A-Za-z]+[0-9]+)[\.\-_ ]?[0-9]+/);
+  if (m) return m[1].toUpperCase();
+
+  // Ví dụ: A101, B204, C-105, D.201 -> lấy chữ cái đầu
+  m = ma.match(/^([A-Za-z])[\.\-_ ]?[0-9]+/);
+  if (m) return m[1].toUpperCase();
+
+  return "Khác";
 }
 
 export default function ThemPhongModal({
@@ -19,22 +40,44 @@ export default function ThemPhongModal({
   const [selectedPhongIds, setSelectedPhongIds] = useState<Set<string>>(
     new Set()
   );
+  const [dayFilter, setDayFilter] = useState<string>("ALL"); // "ALL" | <day>
+
+  // Danh sách dãy duy nhất (sort để dễ nhìn)
+  const uniqueDays = useMemo(() => {
+    const set = new Set<string>();
+    for (const p of availablePhong) set.add(inferDay(p));
+    return Array.from(set).sort((a, b) => a.localeCompare(b, "vi"));
+  }, [availablePhong]);
+
+  // Lọc theo dãy đang chọn
+  const filteredPhong = useMemo(() => {
+    if (dayFilter === "ALL") return availablePhong;
+    return availablePhong.filter((p) => inferDay(p) === dayFilter);
+  }, [availablePhong, dayFilter]);
 
   const handleTogglePhong = (phongId: string) => {
     const newSet = new Set(selectedPhongIds);
-    if (newSet.has(phongId)) {
-      newSet.delete(phongId);
-    } else {
-      newSet.add(phongId);
-    }
+    if (newSet.has(phongId)) newSet.delete(phongId);
+    else newSet.add(phongId);
     setSelectedPhongIds(newSet);
   };
 
+  // Chọn tất cả theo danh sách ĐANG HIỂN THỊ
   const handleSelectAll = () => {
-    if (selectedPhongIds.size === availablePhong.length) {
-      setSelectedPhongIds(new Set());
+    const visibleIds = filteredPhong.map((p) => p.id);
+    const allVisibleSelected = visibleIds.every((id) =>
+      selectedPhongIds.has(id)
+    );
+    if (allVisibleSelected) {
+      // Bỏ chọn các phòng đang hiển thị
+      const newSet = new Set(selectedPhongIds);
+      visibleIds.forEach((id) => newSet.delete(id));
+      setSelectedPhongIds(newSet);
     } else {
-      setSelectedPhongIds(new Set(availablePhong.map((p) => p.id)));
+      // Chọn thêm tất cả phòng đang hiển thị (giữ nguyên các phòng đã chọn ở dãy khác)
+      const newSet = new Set(selectedPhongIds);
+      visibleIds.forEach((id) => newSet.add(id));
+      setSelectedPhongIds(newSet);
     }
   };
 
@@ -42,6 +85,15 @@ export default function ThemPhongModal({
     if (selectedPhongIds.size === 0) return;
     onSubmit(Array.from(selectedPhongIds));
   };
+
+  const selectedCountInFiltered = useMemo(
+    () => filteredPhong.filter((p) => selectedPhongIds.has(p.id)).length,
+    [filteredPhong, selectedPhongIds]
+  );
+
+  const allVisibleSelected =
+    filteredPhong.length > 0 &&
+    filteredPhong.every((p) => selectedPhongIds.has(p.id));
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -64,43 +116,105 @@ export default function ThemPhongModal({
             </div>
           ) : (
             <>
-              <div className="modal-actions">
+              {/* Hàng hành động: Lọc dãy đặt cạnh nút Chọn tất cả */}
+              <div
+                className="modal-actions actions-with-filter"
+                style={{
+                  display: "flex",
+                  gap: 12,
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                  marginBottom: 12,
+                }}
+              >
+                {/* Bộ lọc dãy */}
+                <div
+                  className="inline-filter"
+                  style={{ display: "flex", gap: 8, alignItems: "center" }}
+                >
+                  <label htmlFor="dayFilter" style={{ whiteSpace: "nowrap" }}>
+                    Lọc dãy:
+                  </label>
+                  <select
+                    id="dayFilter"
+                    value={dayFilter}
+                    onChange={(e) => setDayFilter(e.target.value)}
+                    className="select-day"
+                    style={{ minWidth: 140 }}
+                  >
+                    <option value="ALL">Tất cả dãy</option>
+                    {uniqueDays.map((d) => (
+                      <option key={d} value={d}>
+                        {d}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Spacer để đẩy nút sang phải (có thể bỏ nếu không cần) */}
+                <div style={{ flex: 1 }} />
+
                 <button className="btn-select-all" onClick={handleSelectAll}>
-                  {selectedPhongIds.size === availablePhong.length
-                    ? "Bỏ chọn tất cả"
-                    : "Chọn tất cả"}
+                  {allVisibleSelected ? "Bỏ chọn" : "Chọn tất cả"}
                 </button>
-                <span className="selected-count">
-                  Đã chọn: {selectedPhongIds.size}/{availablePhong.length}
+
+                <span
+                  className="selected-count"
+                  style={{ fontSize: 12, opacity: 0.85 }}
+                >
+                  Đã chọn (dãy): {selectedCountInFiltered}/
+                  {filteredPhong.length}
+                  &nbsp;|&nbsp; Tổng đã chọn: {selectedPhongIds.size}
+                  &nbsp;|&nbsp; Hiển thị: {filteredPhong.length}/
+                  {availablePhong.length}
                 </span>
               </div>
 
               <div className="phong-list-modal">
-                {availablePhong.map((phong) => (
-                  <div
-                    key={phong.id}
-                    className={`phong-item-modal ${
-                      selectedPhongIds.has(phong.id) ? "selected" : ""
-                    }`}
-                    onClick={() => handleTogglePhong(phong.id)}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selectedPhongIds.has(phong.id)}
-                      onChange={() => handleTogglePhong(phong.id)}
-                      className="phong-checkbox"
-                    />
-                    <div className="phong-item-content">
-                      <div className="phong-item-header">
-                        <span className="phong-ma-modal">{phong.maPhong}</span>
-                        <span className="phong-suc-chua-badge">
-                          {phong.sucChua} SV
-                        </span>
+                {filteredPhong.map((phong) => {
+                  const day = inferDay(phong);
+                  const checked = selectedPhongIds.has(phong.id);
+                  return (
+                    <div
+                      key={phong.id}
+                      className={`phong-item-modal ${
+                        checked ? "selected" : ""
+                      }`}
+                      onClick={() => handleTogglePhong(phong.id)}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => handleTogglePhong(phong.id)}
+                        className="phong-checkbox"
+                        onClick={(e) => e.stopPropagation()} // tránh toggle 2 lần
+                      />
+                      <div className="phong-item-content">
+                        <div className="phong-item-header">
+                          <span className="phong-ma-modal">
+                            {phong.maPhong}
+                          </span>
+                          <span className="phong-suc-chua-badge">
+                            {phong.sucChua} SV
+                          </span>
+                        </div>
+                        <div
+                          className="phong-subline"
+                          style={{
+                            display: "flex",
+                            gap: 8,
+                            fontSize: 12,
+                            opacity: 0.85,
+                          }}
+                        >
+                          <span className="phong-co-so">{phong.tenCoSo}</span>
+                          <span>•</span>
+                          <span className="phong-day">Dãy: {day}</span>
+                        </div>
                       </div>
-                      <div className="phong-co-so">{phong.tenCoSo}</div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </>
           )}

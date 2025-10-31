@@ -183,7 +183,7 @@ export default function ThanhToanHocPhi() {
             {/* ========= Table Chưa thanh toán ========= */}
             {data.trangThaiThanhToan === "chua_thanh_toan" && (
               <fieldset className="fieldeset__dkhp mt_20">
-                <legend>💰 Học phí chưa thanh toán</legend>
+                <legend>Học phí chưa thanh toán</legend>
 
                 <table className="table">
                   <thead>
@@ -205,14 +205,18 @@ export default function ThanhToanHocPhi() {
                       </td>
                       <td>
                         <button
-                          className="btn__chung"
+                          className="btn__momo"
                           onClick={handleThanhToan}
                           disabled={creatingPayment} // ✅ Update
-                          style={{ padding: "6px 16px", fontSize: "14px" }}
+                          style={{
+                            padding: "6px 16px",
+                            fontSize: "14px",
+                            fontWeight: 600,
+                          }}
                         >
                           {creatingPayment
                             ? "Đang xử lý..."
-                            : "💳 Thanh toán qua MoMo"}
+                            : "Thanh toán qua MoMo"}
                         </button>
                       </td>
                     </tr>
@@ -226,9 +230,10 @@ export default function ThanhToanHocPhi() {
                       cursor: "pointer",
                       fontWeight: 600,
                       color: "#0c4874",
+                      marginBottom: 8,
                     }}
                   >
-                    📋 Xem chi tiết các môn học
+                    Xem chi tiết các môn học
                   </summary>
                   <table className="table" style={{ marginTop: 12 }}>
                     <thead>

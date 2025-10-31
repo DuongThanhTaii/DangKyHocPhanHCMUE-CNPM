@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-// ⬇️ type-only import để không phát sinh import runtime
+import { queryChatbotRaw } from "../../services/chatbot";
 import type { ChatbotPayload, VectorItem } from "../../services/chatbot";
 
 /** ====== Types ====== */
 type UserMsg = { id: string; role: "user"; text: string };
 type BotMsg =
-  | { id: string; role: "bot" | "system"; payload: ChatbotPayload }
-  | { id: string; role: "system"; payload: { text: string } };
+  | { id: string; role: "bot"; payload: ChatbotPayload }
+  | { id: string; role: "system"; payload: ChatbotPayload | { text: string } };
 type Message = UserMsg | BotMsg;
 
 const uid = () => Math.random().toString(36).slice(2);
@@ -19,66 +19,156 @@ const EDGE_PAD = 12;
 const CLICK_DRAG_THRESHOLD = 6;
 const POS_KEY = "chatbot_fab_pos";
 
-function clamp(n: number, min: number, max: number) {
-  return Math.max(min, Math.min(max, n));
+const clamp = (n: number, min: number, max: number) =>
+  Math.max(min, Math.min(max, n));
+const isUser = (m: Message): m is UserMsg => m.role === "user";
+
+/** ====== Clipboard helpers ====== */
+async function copyToClipboard(text: string): Promise<boolean> {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    let ok = false;
+    try {
+      ok = document.execCommand("copy");
+    } finally {
+      document.body.removeChild(ta);
+    }
+    return ok;
+  }
 }
 
-/** ====== Render bot payload theo type ====== */
-function renderBotPayload(
-  payload: ChatbotPayload | { text: string }
-): React.ReactNode {
-  if ("text" in payload) {
-    return <div className="cbt-bubble">{payload.text}</div>;
+/** ====== Convert payload -> plain text (phục vụ Copy) ====== */
+function payloadToPlainText(p: ChatbotPayload | { text: string }): string {
+  if ("text" in p) return String(p.text ?? "");
+
+  const t = (p as any).type as string | undefined;
+
+  if (t === "natural_answer" || t === "answer") {
+    const text = String(
+      (p as any).answer ?? (p as any).text ?? "(Không có nội dung trả lời)"
+    );
+    const r: VectorItem[] = (p as any).results || [];
+    if (!r.length) return text;
+    const refs = r
+      .map((it, i) => {
+        const chunk = String(it.chunk ?? "");
+        const src = String(it.source ?? "So_Tay");
+        const dist =
+          typeof it.distance === "number" ? it.distance.toFixed(4) : "—";
+        return `#${i + 1}\n${chunk}\nsource: ${src} · distance: ${dist}`;
+      })
+      .join("\n\n");
+    return `${text}\n\n---\nNguồn tham chiếu:\n${refs}`;
   }
 
-  const p = payload as ChatbotPayload & Record<string, any>;
-  const t = p?.type as string | undefined;
+  return JSON.stringify(p);
+}
+
+/** ====== Render bot payload theo type + tools ====== */
+function renderBotPayload(
+  payload: ChatbotPayload | { text: string },
+  onCopy?: (ok: boolean) => void
+): React.ReactElement {
+  // Wrapper tools: nhận & trả ReactElement, không dùng namespace JSX
+  const tools = (content: React.ReactElement): React.ReactElement => (
+    <div>
+      {content}
+      <div className="cbt-tools">
+        <button
+          className="cbt-tool-btn"
+          onClick={async () => {
+            const ok = await copyToClipboard(payloadToPlainText(payload));
+            onCopy?.(ok);
+          }}
+          title="Copy nội dung"
+        >
+          Copy
+        </button>
+      </div>
+    </div>
+  );
+
+  if ("text" in payload) {
+    return tools(
+      <div className="cbt-bubble">{String(payload.text ?? "")}</div>
+    );
+  }
+
+  const t = (payload as any).type as string | undefined;
 
   if (t === "error") {
-    return <div className="cbt-bubble">⚠️ {p.message}</div>;
+    return tools(
+      <div className="cbt-bubble">
+        ⚠️ {String((payload as any).message ?? "")}
+      </div>
+    );
   }
 
   if (t === "table") {
-    return (
+    const html: string = String((payload as any).data ?? "");
+    return tools(
       <div
         className="cbt-bubble cbt-html"
-        // HTML từ backend (bảng) — đảm bảo nguồn tin cậy
-        dangerouslySetInnerHTML={{ __html: String(p.data ?? "") }}
+        dangerouslySetInnerHTML={{ __html: html }} // đúng kiểu { __html: string }
       />
     );
   }
 
   if (t === "course") {
-    const d = (p.data ?? {}) as {
-      ten_mon: string;
-      description: string;
-      match_score: number;
+    const d = (payload as any).data as {
+      ten_mon?: string;
+      description?: string;
+      Description?: string;
+      match_score?: number | string;
     };
-    return (
+    const ten = String(d?.ten_mon ?? "");
+    const desc = String(d?.description ?? d?.Description ?? "");
+    const score =
+      typeof d?.match_score === "number"
+        ? d?.match_score
+        : Number(d?.match_score ?? "");
+    return tools(
       <div className="cbt-bubble">
-        <div style={{ fontWeight: 600 }}>{d.ten_mon}</div>
-        <div style={{ opacity: 0.95, marginTop: 4 }}>{d.description}</div>
-        <div style={{ fontSize: 12, opacity: 0.7, marginTop: 6 }}></div>
+        <div style={{ fontWeight: 600 }}>{ten}</div>
+        <div style={{ opacity: 0.95, marginTop: 4 }}>{desc}</div>
+        <div style={{ fontSize: 12, opacity: 0.7, marginTop: 6 }}>
+          Độ khớp: {Number.isNaN(score) ? "" : `${score}%`}
+        </div>
       </div>
     );
   }
 
   if (t === "vector_search") {
-    const r: VectorItem[] = (p.results as VectorItem[]) || [];
+    const r: VectorItem[] = (payload as any).results || [];
     if (!r.length) {
-      return (
+      return tools(
         <div className="cbt-bubble">
-          {p.message || "Không tìm thấy thông tin phù hợp trong Sổ tay."}
+          {String(
+            (payload as any).message ||
+              "Không tìm thấy thông tin phù hợp trong Sổ tay."
+          )}
         </div>
       );
     }
-    return (
+    return tools(
       <div className="cbt-bubble">
         <div style={{ fontWeight: 600, marginBottom: 6 }}>Kết quả gần nhất</div>
         {r.map((it, i) => (
           <div key={i} style={{ marginBottom: 10 }}>
-            <div style={{ whiteSpace: "pre-wrap" }}>{it.chunk}</div>
+            <div style={{ whiteSpace: "pre-wrap" }}>
+              {String(it.chunk ?? "")}
+            </div>
             <div style={{ fontSize: 12, opacity: 0.7, marginTop: 4 }}>
+              source: {String(it.source ?? "So_Tay")} · distance:{" "}
               {typeof it.distance === "number" ? it.distance.toFixed(4) : "—"}
             </div>
             {i < r.length - 1 && (
@@ -90,8 +180,22 @@ function renderBotPayload(
     );
   }
 
+  if (t === "natural_answer" || t === "answer") {
+    const text = String(
+      (payload as any).answer ??
+        (payload as any).text ??
+        "(Không có nội dung trả lời)"
+    );
+    const r: VectorItem[] = (payload as any).results || [];
+    return tools(
+      <div className="cbt-bubble">
+        <div style={{ whiteSpace: "pre-wrap" }}>{text}</div>
+      </div>
+    );
+  }
+
   // Fallback
-  return <div className="cbt-bubble">{JSON.stringify(p)}</div>;
+  return tools(<div className="cbt-bubble">{JSON.stringify(payload)}</div>);
 }
 
 export default function ChatbotWidget() {
@@ -111,6 +215,7 @@ export default function ChatbotWidget() {
   const [topK, setTopK] = useState<number>(
     Number(import.meta.env.VITE_CHATBOT_TOPK_DEFAULT ?? 1)
   );
+  const [toast, setToast] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -125,10 +230,18 @@ export default function ChatbotWidget() {
       typeof window !== "undefined" ? localStorage.getItem(POS_KEY) : null;
     if (saved) {
       try {
-        const p = JSON.parse(saved);
+        const p = JSON.parse(saved) as any;
         return {
-          x: clamp(p.x, EDGE_PAD, W - FAB_SIZE - EDGE_PAD),
-          y: clamp(p.y, EDGE_PAD, H - FAB_SIZE - EDGE_PAD),
+          x: clamp(
+            Number(p?.x ?? W - FAB_SIZE - 20),
+            EDGE_PAD,
+            W - FAB_SIZE - EDGE_PAD
+          ),
+          y: clamp(
+            Number(p?.y ?? H - FAB_SIZE - 20),
+            EDGE_PAD,
+            H - FAB_SIZE - EDGE_PAD
+          ),
         };
       } catch {}
     }
@@ -170,8 +283,7 @@ export default function ChatbotWidget() {
     if (!dragStartRef.current) return;
     const dx = e.clientX - dragStartRef.current.x;
     const dy = e.clientY - dragStartRef.current.y;
-    const dist = Math.hypot(dx, dy);
-    if (dist > CLICK_DRAG_THRESHOLD) draggedRef.current = true;
+    if (Math.hypot(dx, dy) > CLICK_DRAG_THRESHOLD) draggedRef.current = true;
 
     const nx = clamp(
       dragStartRef.current.px + dx,
@@ -191,9 +303,7 @@ export default function ChatbotWidget() {
     dragStartRef.current = null;
     document.body.classList.remove("cbt-noselect");
     localStorage.setItem(POS_KEY, JSON.stringify(fabPos));
-    if (!draggedRef.current) {
-      setOpen((v) => !v);
-    }
+    if (!draggedRef.current) setOpen((v) => !v);
   };
 
   /** ====== Panel position relative to FAB ====== */
@@ -218,8 +328,15 @@ export default function ChatbotWidget() {
     setPanelPos({ top, left });
   }, [open, fabPos]);
 
+  /** ====== Toast nhỏ (auto ẩn) ====== */
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 1400);
+    return () => clearTimeout(t);
+  }, [toast]);
+
   /** ====== Chat logic ====== */
-  async function send() {
+  const send = async () => {
     const q = input.trim();
     if (!q || loading) return;
 
@@ -228,8 +345,6 @@ export default function ChatbotWidget() {
     setInput("");
     setLoading(true);
     try {
-      // chú ý: dùng queryChatbotRaw để nhận payload có type
-      const { queryChatbotRaw } = await import("../../services/chatbot");
       const payload = await queryChatbotRaw(q, topK);
       const botMsg: BotMsg = { id: uid(), role: "bot", payload };
       setMessages((m) => [...m, botMsg]);
@@ -245,7 +360,7 @@ export default function ChatbotWidget() {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -291,11 +406,24 @@ export default function ChatbotWidget() {
           <div className="cbt-body">
             {messages.map((m) => (
               <div key={m.id} className={`cbt-msg ${m.role}`}>
-                {m.role === "user" ? (
-                  <div className="cbt-bubble">{m.text}</div>
+                {isUser(m) ? (
+                  <div className="cbt-bubble-wrap">
+                    <div className="cbt-bubble">{m.text}</div>
+                    <div className="cbt-tools">
+                      <button
+                        className="cbt-tool-btn"
+                        onClick={async () => {
+                          const ok = await copyToClipboard(m.text);
+                          setToast(ok ? "Đã copy" : "Copy thất bại");
+                        }}
+                      >
+                        Copy
+                      </button>
+                    </div>
+                  </div>
                 ) : (
-                  renderBotPayload(
-                    m.payload as ChatbotPayload | { text: string }
+                  renderBotPayload((m as BotMsg).payload, (ok) =>
+                    setToast(ok ? "Đã copy" : "Copy thất bại")
                   )
                 )}
               </div>
@@ -320,6 +448,9 @@ export default function ChatbotWidget() {
               Gửi
             </button>
           </div>
+
+          {/* Mini toast */}
+          {toast && <div className="cbt-toast">{toast}</div>}
         </div>
       )}
     </>

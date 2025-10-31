@@ -27,11 +27,19 @@
 }
 
 .khoa-config-toggle-btn--edit {
-  background-color: #6c757d;
+  transition: 0.3s;
+  background-color: #4caf50;
+  border-radius: 20px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
 }
 
 .khoa-config-toggle-btn--edit:hover {
-  background-color: #5a6268;
+  transition: 0.3s;
+  box-shadow: 0 0 5px 1px rgb(22, 118, 43);
 }
 
 .khoa-config-toggle-btn--view {
@@ -147,14 +155,16 @@
   background-color: #dc3545;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 20px;
   cursor: pointer;
   font-size: 13px;
-  transition: background-color 0.2s;
+  transition: 0.3s;
 }
 
 .khoa-config-item__remove-btn:hover {
   background-color: #c82333;
+  transition: 0.3s;
+  box-shadow: 0 0 5px 1px rgb(213, 94, 94);
 }
 
 .khoa-config-item__fields {
@@ -195,18 +205,19 @@
 
 .khoa-config-add-btn {
   padding: 10px 18px;
-  background-color: #28a745;
+  transition: 0.3s;
+  background-color: #4caf50;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 20px;
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  transition: background-color 0.2s;
 }
 
 .khoa-config-add-btn:hover {
-  background-color: #218838;
+  transition: 0.3s;
+  box-shadow: 0 0 5px 1px rgb(22, 118, 43);
 }
 
 /* Validation Errors */
@@ -231,4 +242,16 @@
 
 .khoa-config-errors__list li {
   margin-bottom: 3px;
+}
+
+td {
+  vertical-align: middle;
+}
+
+.m__0 {
+  margin: 0 !important;
+}
+
+svg {
+  width: 16px;
 }

@@ -42,7 +42,14 @@ interface PhaseConfigBaseProps {
 
 export const PhaseConfigBase = forwardRef<PhaseConfigRef, PhaseConfigBaseProps>(
   (
-    { title, danhSachKhoa, phaseStartTime, phaseEndTime, existingData = [], onSubmit },
+    {
+      title,
+      danhSachKhoa,
+      phaseStartTime,
+      phaseEndTime,
+      existingData = [],
+      onSubmit,
+    },
     ref
   ) => {
     const [isToanTruong, setIsToanTruong] = useState(true);
@@ -283,7 +290,28 @@ export const PhaseConfigBase = forwardRef<PhaseConfigRef, PhaseConfigBaseProps>(
             }`}
             disabled={submitting}
           >
-            {submitting ? "Đang lưu..." : isEditMode ? "💾 Lưu và xem" : "✏️ Chỉnh sửa"}
+            {submitting ? (
+              "Đang lưu..." // Bạn cũng có thể thêm icon loading ở đây
+            ) : isEditMode ? (
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                  <path
+                    fill="#ffffff"
+                    d="M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-242.7c0-17-6.7-33.3-18.7-45.3L352 50.7C340 38.7 323.7 32 306.7 32L64 32zm32 96c0-17.7 14.3-32 32-32l160 0c17.7 0 32 14.3 32 32l0 64c0 17.7-14.3 32-32 32l-160 0c-17.7 0-32-14.3-32-32l0-64zM224 288a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"
+                  />
+                </svg>
+                Lưu và xem
+              </>
+            ) : (
+              <>
+                {/* Icon Bút chì (Edit) */}
+                <svg /* ...thêm các thuộc tính SVG ở trên vào đây... */>
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+                Chỉnh sửa
+              </>
+            )}
           </button>
         </div>
 
@@ -316,7 +344,7 @@ export const PhaseConfigBase = forwardRef<PhaseConfigRef, PhaseConfigBaseProps>(
                           onClick={() => handleRemoveKhoaConfig(index)}
                           className="khoa-config-item__remove-btn"
                         >
-                          ✕ Xóa
+                          Xóa
                         </button>
                       </div>
 

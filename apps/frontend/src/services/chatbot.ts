@@ -1,14 +1,18 @@
-// apps/frontend/src/services/chatbot.ts
+// Type cho từng item từ vector DB
 export type VectorItem = { chunk: string; source?: string; distance?: number };
+
+// Payload tổng quát sau CHUẨN HÓA
 export type ChatbotPayload =
-  | { type: "table"; data: string } // HTML string
+  | { type: "table"; data: string }
   | {
       type: "course";
       data: { ten_mon: string; description: string; match_score: number };
     }
   | { type: "vector_search"; results: VectorItem[]; message?: string }
+  | { type: "natural_answer"; answer: string; results?: VectorItem[] }
+  | { type: "answer"; text: string; results?: VectorItem[] }
   | { type: "error"; message: string }
-  | Record<string, any>;
+  | Record<string, unknown>;
 
 const API_BASE =
   import.meta.env.VITE_CHATBOT_API_BASE || "http://localhost:8000";
@@ -32,5 +36,22 @@ export async function queryChatbotRaw(
     } catch {}
     throw new Error(detail);
   }
-  return (await res.json()) as ChatbotPayload;
+
+  // ---- CHUẨN HÓA: ưu tiên natural_answer nếu có ----
+  const raw = await res.json();
+
+  // Trường hợp backend trả type="vector_search" + natural_answer
+  if (typeof raw?.natural_answer === "string") {
+    const results: VectorItem[] = Array.isArray(raw?.results)
+      ? raw.results
+      : [];
+    return {
+      type: "natural_answer",
+      answer: raw.natural_answer,
+      results,
+    };
+  }
+
+  // Giữ nguyên các dạng khác
+  return raw as ChatbotPayload;
 }
