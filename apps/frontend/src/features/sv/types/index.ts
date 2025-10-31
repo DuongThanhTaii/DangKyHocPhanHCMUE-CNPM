@@ -126,3 +126,106 @@ export interface MonHocTraCuuDTO {
     loaiMon: "chuyen_nganh" | "dai_cuong" | "tu_chon";
     danhSachLop: LopHocPhanTraCuuDTO[];
 }
+
+export interface MonHocGhiDanhForSinhVien {
+    id: string;
+    maMonHoc: string;
+    tenMonHoc: string;
+    soTinChi: number;
+    tenKhoa: string;
+    tenGiangVien: string;
+}
+
+export interface RequestGhiDanhMonHoc {
+    monHocId: string;
+}
+
+export interface RequestHuyGhiDanhMonHoc {
+    ghiDanhIds: string[];
+}
+
+export interface MonHocDaGhiDanh {
+    ghiDanhId: string;      // ID của record ghi_danh_hoc_phan
+    monHocId: string;       // ID môn học
+    maMonHoc: string;
+    tenMonHoc: string;
+    soTinChi: number;
+    tenKhoa: string;
+    tenGiangVien?: string;
+}
+
+export interface DangKyHocPhanRequest {
+    lop_hoc_phan_id: string;
+    hoc_ky_id: string;
+}
+
+
+export interface MonHocInfoDTO {
+    maMon: string;
+    tenMon: string;
+    soTinChi: number;
+    danhSachLop: LopHocPhanItemDTO[]; // ✅ Danh sách lớp học phần của môn này
+}
+
+export type DanhSachLopDaDangKyDTO = MonHocInfoDTO[];
+
+// ========== HỌC PHÍ ==========
+
+export interface ChiTietMonHocDTO {
+    maMon: string;
+    tenMon: string;
+    maLop: string;
+    soTinChi: number;
+    donGia: number;
+    thanhTien: number;
+}
+
+export interface ChinhSachHocPhiDTO {
+    tenChinhSach: string;
+    ngayHieuLuc: string;
+    ngayHetHieuLuc: string;
+}
+
+export interface ChiTietHocPhiDTO {
+    tongHocPhi: number;
+    soTinChiDangKy: number;
+    donGiaTinChi: number;
+    chinhSach: ChinhSachHocPhiDTO;
+    chiTiet: ChiTietMonHocDTO[];
+    trangThaiThanhToan: "chua_thanh_toan" | "da_thanh_toan" | "thanh_toan_mot_phan";
+}
+
+export interface ThanhToanHocPhiRequest {
+    hocKyId: string;
+    soTien: number;
+    phuongThuc: "chuyen_khoan" | "tien_mat" | "momo" | "vnpay";
+}
+
+// ========== PAYMENT ==========
+
+export interface CreatePaymentRequest {
+    hocKyId: string;
+    amount: number;
+}
+
+export interface CreatePaymentResponse {
+    payUrl: string;
+    orderId: string;
+    amount: number;
+}
+
+export interface PaymentStatusResponse {
+    orderId: string;
+    status: "pending" | "success" | "failed" | "cancelled";
+    amount: number;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export type PaymentErrorCode =
+    | "ALREADY_PAID"
+    | "AMOUNT_MISMATCH"
+    | "PAYMENT_REJECTED"
+    | "PAYMENT_TIMEOUT"
+    | "INVALID_SIGNATURE"
+    | "PAYMENT_PENDING";
