@@ -17,13 +17,19 @@ import type {
     PhasesByHocKyDTO,
     GetPhasesByHocKyRequest,
     KhoaDTO,
-    UpdateDotGhiDanhRequest, // ✅ Import
-    DotGhiDanhResponseDTO, // ✅ Import
+    UpdateDotGhiDanhRequest,
+    DotGhiDanhResponseDTO,
     PhongHocDTO,
     AssignPhongRequest,
     UnassignPhongRequest,
-    UpdateDotDangKyRequest, // ✅ Import
-    DotDangKyResponseDTO, // ✅ Import
+    UpdateDotDangKyRequest,
+    DotDangKyResponseDTO,
+    ChinhSachTinChiDTO,
+    CreateChinhSachTinChiRequest,
+    NganhDTO,
+    UpdateChinhSachTinChiRequest,
+    TinhHocPhiHangLoatRequest,
+    TinhHocPhiHangLoatResponse,
 } from "../types/pdtTypes";
 
 /**
@@ -243,6 +249,60 @@ export const pdtApi = {
     updateDotDangKy: async (data: UpdateDotDangKyRequest): Promise<ServiceResult<null>> => {
         return await fetchJSON("pdt/dot-dang-ky", {
             method: "PUT",
+            body: data,
+        });
+    },
+
+    /**
+     * ✅ Lấy danh sách chính sách tín chỉ
+     */
+    getChinhSachTinChi: async (): Promise<ServiceResult<ChinhSachTinChiDTO[]>> => {
+        return await fetchJSON("pdt/chinh-sach-tin-chi");
+    },
+
+    /**
+     * ✅ Tạo chính sách tín chỉ
+     */
+    createChinhSachTinChi: async (
+        data: CreateChinhSachTinChiRequest
+    ): Promise<ServiceResult<ChinhSachTinChiDTO>> => {
+        return await fetchJSON("pdt/chinh-sach-tin-chi", {
+            method: "POST",
+            body: data,
+        });
+    },
+
+    /**
+     * ✅ Cập nhật phí tín chỉ
+     */
+    updateChinhSachTinChi: async (
+        id: string,
+        data: UpdateChinhSachTinChiRequest
+    ): Promise<ServiceResult<ChinhSachTinChiDTO>> => {
+        return await fetchJSON(`pdt/chinh-sach-tin-chi/${id}`, {
+            method: "PUT",
+            body: data,
+        });
+    },
+
+    /**
+     * ✅ Lấy danh sách ngành chưa có chính sách tín chỉ (REQUIRED hocKyId & khoaId)
+     */
+    getDanhSachNganh: async (
+        hocKyId: string,
+        khoaId: string
+    ): Promise<ServiceResult<NganhDTO[]>> => {
+        return await fetchJSON(`dm/nganh/chua-co-chinh-sach?hoc_ky_id=${hocKyId}&khoa_id=${khoaId}`);
+    },
+
+    /**
+     * ✅ Tính học phí hàng loạt cho học kỳ
+     */
+    tinhHocPhiHangLoat: async (
+        data: TinhHocPhiHangLoatRequest
+    ): Promise<ServiceResult<TinhHocPhiHangLoatResponse>> => {
+        return await fetchJSON("tuition/calculate-semester", {
+            method: "POST",
             body: data,
         });
     },

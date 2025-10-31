@@ -264,3 +264,59 @@ export interface UpdateDotDangKyRequest {
     // Nếu isToanTruong = false
     dotTheoKhoa?: DotDangKyTheoKhoaDTO[];
 }
+
+// ========== CHÍNH SÁCH TÍN CHỈ ==========
+
+export interface ChinhSachTinChiDTO {
+    id: string;
+    hocKy?: {
+        tenHocKy?: string | null;
+        maHocKy?: string | null;
+    } | null;
+    khoa?: {
+        tenKhoa?: string | null;
+    } | null;
+    nganhHoc?: {
+        tenNganh?: string | null;
+    } | null;
+    phiMoiTinChi: number;
+    ngayHieuLuc?: string | null;
+    ngayHetHieuLuc?: string | null;
+}
+
+export interface CreateChinhSachTinChiRequest {
+    hocKyId: string;
+    khoaId?: string | null;
+    nganhId?: string | null;
+    phiMoiTinChi: number;
+}
+
+export interface UpdateChinhSachTinChiRequest {
+    phiMoiTinChi: number;
+}
+
+export interface NganhDTO {
+    id: string;
+    maNganh: string; // ✅ Add maNganh
+    tenNganh: string;
+    khoaId: string;
+}
+
+// ========== HỌC PHÍ ==========
+
+export interface TinhHocPhiHangLoatRequest {
+    hoc_ky_id: string;
+}
+
+export interface TinhHocPhiErrorItem {
+    sinhVienId: string;
+    mssv: string;
+    error: string;
+}
+
+export interface TinhHocPhiHangLoatResponse {
+    totalProcessed: number;
+    successCount: number;
+    failedCount: number;
+    errors: TinhHocPhiErrorItem[];
+}

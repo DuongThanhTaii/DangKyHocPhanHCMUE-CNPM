@@ -9,3 +9,6 @@ export * from "./useUpdateDotGhiDanh";
 export * from "./useGetDotGhiDanhByHocKy";
 export * from "./useUpdateDotDangKy";
 export * from "./useGetDotDangKyByHocKy";
+export * from "./useChinhSachTinChi";
+export * from "./useDanhSachNganh";
+export * from "./useTinhHocPhiHangLoat";

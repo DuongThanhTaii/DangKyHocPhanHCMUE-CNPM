@@ -2,41 +2,15 @@ import React, { useEffect, useMemo, useState } from "react";
 import "../../../../styles/reset.css";
 import "../../../../styles/menu.css";
 import { useModalContext } from "../../../../hook/ModalContext";
-
-type ChinhSachTinChi = {
-  id: string;
-  hoc_ky?: { ten_hoc_ky?: string | null; ma_hoc_ky?: string | null } | null;
-  khoa?: { ten_khoa?: string | null } | null;
-  nganh_hoc?: { ten_nganh?: string | null } | null;
-  phi_moi_tin_chi: number;
-  ngay_hieu_luc?: string | null;
-  ngay_het_hieu_luc?: string | null;
-};
-
-type Khoa = { id: string; ten_khoa: string };
-type Nganh = { id: string; ten_nganh: string; khoa_id: string };
-
-// Chuẩn hoá kiểu dữ liệu Niên khóa – Học kỳ dùng cho FE
-type HocKy = { id: string; ten_hoc_ky: string; ma_hoc_ky?: string };
-type NienKhoa = { id: string; ten_nien_khoa: string; hoc_kys: HocKy[] };
-
-const API = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
-
-// Guard parse JSON để không vấp lỗi "<!DOCTYPE..."
-const safeJson = async (res: Response) => {
-  const ct = res.headers.get("content-type") || "";
-  if (!res.ok) {
-    const txt = await res.text().catch(() => "");
-    throw new Error(
-      `${res.status} ${res.statusText} ${txt?.slice(0, 100) ?? ""}`
-    );
-  }
-  if (!ct.includes("application/json")) {
-    const txt = await res.text().catch(() => "");
-    throw new Error(`Invalid JSON: ${txt?.slice(0, 100) ?? ""}`);
-  }
-  return res.json();
-};
+import {
+  useChinhSachTinChi,
+  useDanhSachKhoa,
+  useDanhSachNganh,
+  useHocKyNienKhoa,
+  useGetHocKyHienHanh,
+  useTinhHocPhiHangLoat, // ✅ Add
+} from "../../../../features/pdt/hooks";
+import type { HocKyDTO } from "../../../../features/pdt/types/pdtTypes";
 
 const formatCurrency = (v: number) =>
   (isFinite(v) ? v : 0).toLocaleString("vi-VN", {
@@ -44,153 +18,128 @@ const formatCurrency = (v: number) =>
     currency: "VND",
   });
 
-/** Chuẩn hoá nhiều dạng payload của /api/pdt/hoc-ky-nien-khoa về dạng NienKhoa[] */
-function normalizeNienKhoa(raw: any): NienKhoa[] {
-  const data = raw?.data ?? raw ?? [];
-
-  // CASE A: Đã là dạng {id, ten_nien_khoa, hoc_kys:[{id,ten_hoc_ky,ma_hoc_ky}]}
-  if (Array.isArray(data) && data.length && Array.isArray(data[0]?.hoc_kys)) {
-    return data.map((nk: any) => ({
-      id: nk.id,
-      ten_nien_khoa: nk.ten_nien_khoa ?? nk.ten ?? "",
-      hoc_kys: (nk.hoc_kys || []).map((hk: any) => ({
-        id: hk.id,
-        ten_hoc_ky: hk.ten_hoc_ky ?? `${hk.ma_hoc_ky ?? ""}`.trim(),
-        ma_hoc_ky: hk.ma_hoc_ky,
-      })),
-    }));
-  }
-
-  // CASE B: Trả flat list học kỳ, có trường id_nien_khoa + ten_nien_khoa
-  if (
-    Array.isArray(data) &&
-    data.length &&
-    (data[0]?.id_nien_khoa || data[0]?.nien_khoa_id)
-  ) {
-    const m = new Map<string, NienKhoa>();
-    for (const hk of data) {
-      const nkId = hk.id_nien_khoa ?? hk.nien_khoa_id;
-      const nkName = hk.ten_nien_khoa ?? hk.nien_khoa?.ten_nien_khoa ?? "";
-      if (!m.has(nkId))
-        m.set(nkId, { id: nkId, ten_nien_khoa: nkName, hoc_kys: [] });
-      m.get(nkId)!.hoc_kys.push({
-        id: hk.id,
-        ten_hoc_ky: hk.ten_hoc_ky ?? `${hk.ma_hoc_ky ?? ""}`.trim(),
-        ma_hoc_ky: hk.ma_hoc_ky,
-      });
-    }
-    return Array.from(m.values());
-  }
-
-  // CASE C: Trả flat, không có nien_khoa => gom tất cả dưới 1 nhãn tổng
-  if (Array.isArray(data)) {
-    return [
-      {
-        id: "all",
-        ten_nien_khoa: "Tất cả niên khóa",
-        hoc_kys: data.map((hk: any) => ({
-          id: hk.id,
-          ten_hoc_ky: hk.ten_hoc_ky ?? `${hk.ma_hoc_ky ?? ""}`.trim(),
-          ma_hoc_ky: hk.ma_hoc_ky,
-        })),
-      },
-    ];
-  }
-
-  return [];
-}
-
 export default function QuanLyTinChi() {
   const { openNotify, openConfirm } = useModalContext();
 
-  const [loading, setLoading] = useState(false);
-  const [list, setList] = useState<ChinhSachTinChi[]>([]);
-  const [khoas, setKhoas] = useState<Khoa[]>([]);
-  const [nganhs, setNganhs] = useState<Nganh[]>([]);
-  const [nienKhoas, setNienKhoas] = useState<NienKhoa[]>([]);
+  // ========= Custom Hooks =========
+  const {
+    data: chinhSachs,
+    loading: loadingCS,
+    createChinhSach,
+    updateChinhSach,
+  } = useChinhSachTinChi();
+  const { data: khoas, loading: loadingKhoa } = useDanhSachKhoa();
+  const { data: hocKyNienKhoas, loading: loadingHocKy } = useHocKyNienKhoa();
+  const { data: hocKyHienHanh, loading: loadingHocKyHienHanh } =
+    useGetHocKyHienHanh();
+  const { tinhHocPhi, loading: calculatingFee } = useTinhHocPhiHangLoat(); // ✅ Add
+
+  // ========= State =========
   const [selectedNienKhoa, setSelectedNienKhoa] = useState<string>("");
-  const [selectedKhoa, setSelectedKhoa] = useState("");
-
-  const hocKysBySelectedNK: HocKy[] = useMemo(() => {
-    const nk = nienKhoas.find((x) => x.id === selectedNienKhoa);
-    return nk?.hoc_kys ?? [];
-  }, [nienKhoas, selectedNienKhoa]);
-
-  const filteredNganh = useMemo(
-    () =>
-      selectedKhoa ? nganhs.filter((n) => n.khoa_id === selectedKhoa) : nganhs,
-    [selectedKhoa, nganhs]
-  );
-
+  const [selectedKhoaId, setSelectedKhoaId] = useState("");
   const [form, setForm] = useState({
-    hoc_ky_id: "",
-    khoa_id: "",
-    nganh_id: "",
-    phi_moi_tin_chi: "",
+    hocKyId: "",
+    khoaId: "",
+    nganhId: "",
+    phiMoiTinChi: "",
   });
 
-  const fetchAll = async () => {
-    setLoading(true);
-    try {
-      const [csRes, khoaRes, nganhRes, hkRes] = await Promise.all([
-        fetch(`${API}/chinh-sach-tin-chi`),
-        fetch(`${API}/dm/khoa`),
-        fetch(`${API}/dm/nganh`),
-        fetch(`${API}/pdt/hoc-ky-nien-khoa`),
-      ]);
+  // ✅ State for editing
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingValue, setEditingValue] = useState<string>("");
 
-      const [cs, khoasJSON, nganhsJSON, hkJSON] = await Promise.all([
-        safeJson(csRes),
-        safeJson(khoaRes),
-        safeJson(nganhRes),
-        safeJson(hkRes),
-      ]);
+  // ========= Computed - Flatten học kỳ =========
+  const nienKhoas = useMemo(
+    () => Array.from(new Set(hocKyNienKhoas.map((nk) => nk.tenNienKhoa))),
+    [hocKyNienKhoas]
+  );
 
-      if (cs?.isSuccess) setList(cs.data || []);
-      if (khoasJSON?.isSuccess) setKhoas(khoasJSON.data || []);
-      if (nganhsJSON?.isSuccess) setNganhs(nganhsJSON.data || []);
+  const flatHocKys = useMemo(() => {
+    const result: (HocKyDTO & { tenNienKhoa: string })[] = [];
 
-      setNienKhoas(normalizeNienKhoa(hkJSON));
-    } catch (e: any) {
-      console.error(e);
-      openNotify(`Lỗi tải dữ liệu: ${e.message}`, "error");
-    } finally {
-      setLoading(false);
+    hocKyNienKhoas.forEach((nienKhoa) => {
+      nienKhoa.hocKy.forEach((hk) => {
+        result.push({
+          ...hk,
+          tenNienKhoa: nienKhoa.tenNienKhoa,
+        });
+      });
+    });
+
+    return result;
+  }, [hocKyNienKhoas]);
+
+  const hocKysBySelectedNK = useMemo(
+    () => flatHocKys.filter((hk) => hk.tenNienKhoa === selectedNienKhoa),
+    [flatHocKys, selectedNienKhoa]
+  );
+
+  // ========= ✅ Fetch Ngành theo Khoa VÀ HocKyId =========
+  const { data: nganhs } = useDanhSachNganh(form.hocKyId, selectedKhoaId);
+
+  // ========= Auto-select học kỳ hiện hành =========
+  useEffect(() => {
+    // ✅ Đợi cả 2 APIs load xong
+    if (loadingHocKy || loadingHocKyHienHanh) return;
+
+    // ✅ Chỉ auto-select 1 lần (khi form.hocKyId còn trống)
+    if (form.hocKyId) return;
+
+    // ✅ Cần cả 2 data
+    if (!hocKyHienHanh || flatHocKys.length === 0) return;
+
+    console.log(
+      "✅ [QuanLyTinChi] Auto-selecting học kỳ hiện hành:",
+      hocKyHienHanh
+    );
+    console.log("✅ [QuanLyTinChi] Flat học kỳ:", flatHocKys);
+
+    // ✅ Tìm học kỳ trong flatHocKys
+    const foundHocKy = flatHocKys.find((hk) => hk.id === hocKyHienHanh.id);
+
+    if (foundHocKy) {
+      console.log("✅ [QuanLyTinChi] Found học kỳ:", foundHocKy);
+
+      setSelectedNienKhoa(foundHocKy.tenNienKhoa);
+      setForm((f) => ({ ...f, hocKyId: foundHocKy.id }));
+
+      console.log("✅ [QuanLyTinChi] Auto-selected:", {
+        nienKhoa: foundHocKy.tenNienKhoa,
+        hocKyId: foundHocKy.id,
+      });
+    } else {
+      console.warn("⚠️ [QuanLyTinChi] Không tìm thấy học kỳ trong flatHocKys");
     }
-  };
+  }, [
+    hocKyHienHanh,
+    flatHocKys,
+    loadingHocKy,
+    loadingHocKyHienHanh,
+    form.hocKyId,
+  ]);
 
+  // ========= Reset ngành khi đổi khoa hoặc học kỳ =========
   useEffect(() => {
-    fetchAll();
-  }, []);
+    setForm((f) => ({ ...f, nganhId: "" }));
+  }, [selectedKhoaId, form.hocKyId]);
 
-  // Khi đổi khoa → tải lại ngành theo khoa (nếu backend có filter)
-  useEffect(() => {
-    const fetchNganhByKhoa = async () => {
-      try {
-        const res = await fetch(
-          `${API}/dm/nganh${selectedKhoa ? `?khoa_id=${selectedKhoa}` : ""}`
-        );
-        const json = await safeJson(res);
-        if (json?.isSuccess) {
-          setNganhs(json.data || []);
-        }
-      } catch (e: any) {
-        console.error(e);
-        openNotify(`Lỗi tải ngành theo khoa: ${e.message}`, "error");
-      }
-    };
-    fetchNganhByKhoa();
-  }, [selectedKhoa]);
-
+  // ========= Submit Form =========
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!form.hoc_ky_id) {
-      openNotify("Vui lòng chọn 'Niên khóa' và 'Học kỳ áp dụng'", "warning");
+    if (!form.hocKyId) {
+      openNotify({
+        message: "Vui lòng chọn 'Niên khóa' và 'Học kỳ áp dụng'",
+        type: "warning",
+      });
       return;
     }
-    if (!form.phi_moi_tin_chi) {
-      openNotify("Vui lòng nhập 'Phí mỗi tín chỉ'", "warning");
+
+    if (!form.phiMoiTinChi) {
+      openNotify({
+        message: "Vui lòng nhập 'Phí mỗi tín chỉ'",
+        type: "warning",
+      });
       return;
     }
 
@@ -199,182 +148,340 @@ export default function QuanLyTinChi() {
       confirmText: "Lưu",
       cancelText: "Hủy",
     });
+
     if (!confirmed) return;
 
-    try {
-      const res = await fetch(`${API}/chinh-sach-tin-chi`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          hoc_ky_id: form.hoc_ky_id,
-          khoa_id: form.khoa_id || null,
-          nganh_id: form.nganh_id || null,
-          phi_moi_tin_chi: Number(form.phi_moi_tin_chi),
-        }),
+    const success = await createChinhSach({
+      hocKyId: form.hocKyId,
+      khoaId: form.khoaId || null,
+      nganhId: form.nganhId || null,
+      phiMoiTinChi: Number(form.phiMoiTinChi),
+    });
+
+    if (success) {
+      setForm({
+        hocKyId: "",
+        khoaId: "",
+        nganhId: "",
+        phiMoiTinChi: "",
       });
-      const json = await safeJson(res);
-      if (json?.isSuccess) {
-        openNotify("Lưu chính sách thành công!", "success");
-        setForm({
-          hoc_ky_id: "",
-          khoa_id: "",
-          nganh_id: "",
-          phi_moi_tin_chi: "",
-        });
-        setSelectedNienKhoa("");
-        setSelectedKhoa("");
-        fetchAll();
-      } else {
-        openNotify(json?.message || "Không thể lưu chính sách", "error");
-      }
-    } catch (e: any) {
-      console.error(e);
-      openNotify(`Lỗi khi lưu: ${e.message}`, "error");
+      setSelectedNienKhoa("");
+      setSelectedKhoaId("");
     }
   };
+
+  // ✅ Handle edit
+  const handleStartEdit = (id: string, currentValue: number) => {
+    setEditingId(id);
+    setEditingValue(currentValue.toString());
+  };
+
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setEditingValue("");
+  };
+
+  const handleSaveEdit = async (id: string) => {
+    const phiMoiTinChi = Number(editingValue);
+
+    if (isNaN(phiMoiTinChi) || phiMoiTinChi < 0) {
+      openNotify({ message: "Vui lòng nhập số tiền hợp lệ", type: "warning" });
+      return;
+    }
+
+    const confirmed = await openConfirm({
+      message: `Bạn chắc chắn muốn cập nhật phí thành ${formatCurrency(
+        phiMoiTinChi
+      )}?`,
+      confirmText: "Cập nhật",
+      cancelText: "Hủy",
+    });
+
+    if (!confirmed) return;
+
+    const success = await updateChinhSach(id, phiMoiTinChi);
+
+    if (success) {
+      setEditingId(null);
+      setEditingValue("");
+    }
+  };
+
+  // ✅ Handle tính học phí hàng loạt
+  const handleTinhHocPhi = async () => {
+    if (!form.hocKyId) {
+      openNotify({
+        message: "Vui lòng chọn học kỳ trước khi tính học phí",
+        type: "warning",
+      });
+      return;
+    }
+
+    const confirmed = await openConfirm({
+      message: `Bạn chắc chắn muốn tính học phí hàng loạt cho học kỳ này?\n\nHệ thống sẽ tính toán học phí cho tất cả sinh viên đã đăng ký trong học kỳ.`,
+      confirmText: "Tính học phí",
+      cancelText: "Hủy",
+    });
+
+    if (!confirmed) return;
+
+    await tinhHocPhi(form.hocKyId);
+  };
+
+  const loading =
+    loadingCS || loadingKhoa || loadingHocKy || loadingHocKyHienHanh;
 
   return (
     <div style={{ padding: 16 }}>
       <h2 style={{ marginBottom: 12 }}>Quản lý chính sách tín chỉ</h2>
 
-      {/* FORM */}
-      <form
-        onSubmit={handleSubmit}
-        className="df"
-        style={{
-          gap: 8,
-          alignItems: "center",
-          flexWrap: "wrap",
-          marginBottom: 16,
-        }}
-      >
-        {/* Niên khóa */}
-        <select
-          value={selectedNienKhoa}
-          onChange={(e) => {
-            const nkId = e.target.value;
-            setSelectedNienKhoa(nkId);
-            // reset học kỳ khi đổi NK
-            setForm((f) => ({ ...f, hoc_ky_id: "" }));
-          }}
-        >
-          <option value="">-- Chọn niên khóa --</option>
-          {nienKhoas.map((nk) => (
-            <option key={nk.id} value={nk.id}>
-              {nk.ten_nien_khoa}
-            </option>
-          ))}
-        </select>
+      {/* ✅ Show loading state */}
+      {loading && (
+        <p style={{ textAlign: "center", padding: 20 }}>Đang tải dữ liệu...</p>
+      )}
 
-        {/* Học kỳ theo niên khóa */}
-        <select
-          value={form.hoc_ky_id}
-          onChange={(e) =>
-            setForm((f) => ({ ...f, hoc_ky_id: e.target.value }))
-          }
-          disabled={!selectedNienKhoa}
-        >
-          <option value="">-- Học kỳ áp dụng --</option>
-          {hocKysBySelectedNK.map((hk) => (
-            <option key={hk.id} value={hk.id}>
-              {hk.ten_hoc_ky}
-            </option>
-          ))}
-        </select>
+      {!loading && (
+        <>
+          {/* FORM */}
+          <form
+            onSubmit={handleSubmit}
+            className="df"
+            style={{
+              gap: 8,
+              alignItems: "center",
+              flexWrap: "wrap",
+              marginBottom: 16,
+            }}
+          >
+            {/* Niên khóa */}
+            <select
+              value={selectedNienKhoa}
+              onChange={(e) => {
+                setSelectedNienKhoa(e.target.value);
+                setForm((f) => ({ ...f, hocKyId: "" }));
+              }}
+            >
+              <option value="">-- Chọn niên khóa --</option>
+              {nienKhoas.map((nk) => (
+                <option key={nk} value={nk}>
+                  {nk}
+                </option>
+              ))}
+            </select>
 
-        {/* Khoa */}
-        <select
-          value={form.khoa_id}
-          onChange={(e) => {
-            const val = e.target.value;
-            setSelectedKhoa(val);
-            setForm((f) => ({ ...f, khoa_id: val, nganh_id: "" }));
-          }}
-        >
-          <option value="">-- Áp dụng cho khoa (tùy chọn) --</option>
-          {khoas.map((k) => (
-            <option key={k.id} value={k.id}>
-              {k.ten_khoa}
-            </option>
-          ))}
-        </select>
+            {/* Học kỳ */}
+            <select
+              value={form.hocKyId}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, hocKyId: e.target.value }))
+              }
+              disabled={!selectedNienKhoa}
+            >
+              <option value="">-- Học kỳ áp dụng --</option>
+              {hocKysBySelectedNK.map((hk) => (
+                <option key={hk.id} value={hk.id}>
+                  {hk.tenHocKy}
+                </option>
+              ))}
+            </select>
 
-        {/* Ngành */}
-        <select
-          value={form.nganh_id}
-          onChange={(e) => setForm((f) => ({ ...f, nganh_id: e.target.value }))}
-          disabled={!form.khoa_id}
-        >
-          <option value="">-- Áp dụng cho ngành (tùy chọn) --</option>
-          {filteredNganh.map((n) => (
-            <option key={n.id} value={n.id}>
-              {n.ten_nganh}
-            </option>
-          ))}
-        </select>
+            {/* Khoa */}
+            <select
+              value={form.khoaId}
+              onChange={(e) => {
+                const val = e.target.value;
+                setSelectedKhoaId(val);
+                setForm((f) => ({ ...f, khoaId: val, nganhId: "" }));
+              }}
+              disabled={!form.hocKyId} // ✅ Disable if no hocKyId
+            >
+              <option value="">-- Áp dụng cho khoa (tùy chọn) --</option>
+              {khoas.map((k) => (
+                <option key={k.id} value={k.id}>
+                  {k.tenKhoa}
+                </option>
+              ))}
+            </select>
 
-        {/* Đơn giá */}
-        <input
-          type="number"
-          min={0}
-          step={1000}
-          name="phi_moi_tin_chi"
-          placeholder="Phí mỗi tín chỉ (VND)"
-          value={form.phi_moi_tin_chi}
-          onChange={(e) =>
-            setForm((f) => ({ ...f, phi_moi_tin_chi: e.target.value }))
-          }
-        />
+            {/* Ngành */}
+            <select
+              value={form.nganhId}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, nganhId: e.target.value }))
+              }
+              disabled={!form.khoaId || !form.hocKyId} // ✅ Disable if no hocKyId or khoaId
+            >
+              <option value="">-- Áp dụng cho ngành (tùy chọn) --</option>
+              {nganhs.map((n) => (
+                <option key={n.id} value={n.id}>
+                  {n.tenNganh}
+                </option>
+              ))}
+            </select>
 
-        <button type="submit" className="btn__primary">
-          Lưu chính sách
-        </button>
-      </form>
+            {/* Đơn giá */}
+            <input
+              type="number"
+              min={0}
+              step={1000}
+              placeholder="Phí mỗi tín chỉ (VND)"
+              value={form.phiMoiTinChi}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, phiMoiTinChi: e.target.value }))
+              }
+            />
 
-      {/* BẢNG DANH SÁCH */}
-      {loading ? (
-        <p>Đang tải dữ liệu...</p>
-      ) : (
-        <table className="table__ql">
-          <thead>
-            <tr>
-              <th>STT</th>
-              <th>Học kỳ</th>
-              <th>Khoa</th>
-              <th>Ngành</th>
-              <th>Phí / tín chỉ</th>
-              <th>Hiệu lực</th>
-            </tr>
-          </thead>
-          <tbody>
-            {list.length === 0 ? (
+            <button type="submit" className="btn__chung" disabled={loading}>
+              {loading ? "Đang lưu..." : "Lưu chính sách"}
+            </button>
+          </form>
+
+          {/* ✅ HEADER - Nút tính học phí (Option B) */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 16,
+              paddingBottom: 12,
+              borderBottom: "2px solid #e5e7eb",
+            }}
+          >
+            <h3 style={{ margin: 0, fontSize: "16px", fontWeight: 600 }}>
+              Danh sách chính sách tín chỉ
+            </h3>
+
+            <button
+              type="button"
+              onClick={handleTinhHocPhi}
+              disabled={calculatingFee || !form.hocKyId}
+              className="btn__chung"
+              style={{
+                padding: "8px 16px",
+                fontSize: "14px",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+              </svg>
+              {calculatingFee ? "Đang tính..." : "⚡ Tính học phí hàng loạt"}
+            </button>
+          </div>
+
+          {/* BẢNG DANH SÁCH */}
+          <table className="table">
+            <thead>
               <tr>
-                <td colSpan={6}>Chưa có chính sách</td>
+                <th>STT</th>
+                <th>Học kỳ</th>
+                <th>Khoa</th>
+                <th>Ngành</th>
+                <th>Phí / tín chỉ</th>
+                <th>Hiệu lực</th>
+                <th>Thao tác</th>
               </tr>
-            ) : (
-              list.map((d, i) => (
-                <tr key={d.id}>
-                  <td>{i + 1}</td>
-                  <td>{d.hoc_ky?.ten_hoc_ky || "-"}</td>
-                  <td>{d.khoa?.ten_khoa || "-"}</td>
-                  <td>{d.nganh_hoc?.ten_nganh || "-"}</td>
-                  <td>{formatCurrency(d.phi_moi_tin_chi)}</td>
-                  <td>
-                    {d.ngay_hieu_luc
-                      ? new Date(d.ngay_hieu_luc).toLocaleDateString("vi-VN")
-                      : "-"}
-                    {" → "}
-                    {d.ngay_het_hieu_luc
-                      ? new Date(d.ngay_het_hieu_luc).toLocaleDateString(
-                          "vi-VN"
-                        )
-                      : "-"}
+            </thead>
+            <tbody>
+              {chinhSachs.length === 0 ? (
+                <tr>
+                  <td colSpan={7} style={{ textAlign: "center", padding: 20 }}>
+                    Chưa có chính sách
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                chinhSachs.map((d, i) => (
+                  <tr key={d.id}>
+                    <td>{i + 1}</td>
+                    <td>{d.hocKy?.tenHocKy || "-"}</td>
+                    <td>{d.khoa?.tenKhoa || "-"}</td>
+                    <td>{d.nganhHoc?.tenNganh || "-"}</td>
+
+                    {/* ✅ Editable cell */}
+                    <td>
+                      {editingId === d.id ? (
+                        <input
+                          type="number"
+                          min={0}
+                          step={1000}
+                          value={editingValue}
+                          onChange={(e) => setEditingValue(e.target.value)}
+                          style={{
+                            width: "120px",
+                            padding: "4px 8px",
+                            border: "1px solid #0c4874",
+                            borderRadius: "4px",
+                          }}
+                          autoFocus
+                        />
+                      ) : (
+                        formatCurrency(d.phiMoiTinChi)
+                      )}
+                    </td>
+
+                    <td>
+                      {d.ngayHieuLuc
+                        ? new Date(d.ngayHieuLuc).toLocaleDateString("vi-VN")
+                        : "-"}
+                      {" → "}
+                      {d.ngayHetHieuLuc
+                        ? new Date(d.ngayHetHieuLuc).toLocaleDateString("vi-VN")
+                        : "-"}
+                    </td>
+
+                    {/* ✅ Action buttons */}
+                    <td>
+                      {editingId === d.id ? (
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "8px",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <button
+                            className="btn__chung"
+                            onClick={() => handleSaveEdit(d.id)}
+                            style={{ padding: "4px 12px", fontSize: "13px" }}
+                          >
+                            💾 Lưu
+                          </button>
+                          <button
+                            className="btn__cancel"
+                            onClick={handleCancelEdit}
+                            style={{ padding: "4px 12px", fontSize: "13px" }}
+                          >
+                            ✕ Hủy
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          className="btn__chung"
+                          onClick={() => handleStartEdit(d.id, d.phiMoiTinChi)}
+                          style={{ padding: "4px 12px", fontSize: "13px" }}
+                        >
+                          ✏️ Chỉnh sửa
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </>
       )}
     </div>
   );
