@@ -9,7 +9,9 @@
     "resolveJsonModule": true,
     "strict": true,
     "skipLibCheck": true,
-    "types": ["node"] // <<< để TS biết 'process', Buffer, v.v.
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "types": ["reflect-metadata"]
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"]
