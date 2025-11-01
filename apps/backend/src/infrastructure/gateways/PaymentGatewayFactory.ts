@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { IPaymentGateway } from "../../application/ports/IPaymentGateway";
+import { IPaymentGateway } from "../../application/ports/payment/IPaymentGateway";
 import { IPaymentGatewayFactory, PaymentProvider } from "../../application/ports/payment/IPaymentGatewayFactory";
 import { MoMoGateway } from "./MoMoGateway";
 import { VNPayGateway } from "./VNPayGateway";

@@ -7,7 +7,6 @@ import tlkRouter from "./modules/tlk/tlk.router";
 import gvRouter from "./modules/gv/gv.router";
 import dmRouter from "./modules/dm/dm.router";
 import configRouter from "./modules/common/config_service";
-import importRouter from "./modules/import/import.router";
 import chinhSachTinChiRoutes from "./modules/hocphi/chinhSachTinChi.routes";
 import mienGiamRoutes from "./modules/hocphi/mienGiam.routes";
 import baoCaoRoutes from "./modules/baocao/baoCao.routes";
@@ -23,7 +22,6 @@ router.use("/gv", gvRouter);
 router.use("/config", configRouter);
 router.use("/dm", dmRouter);
 
-router.use("/import", importRouter);
 
 router.use("/chinh-sach-tin-chi", chinhSachTinChiRoutes);
 router.use("/mien-giam", mienGiamRoutes);

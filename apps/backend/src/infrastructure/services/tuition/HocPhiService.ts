@@ -18,6 +18,10 @@ export class HocPhiService implements IHocPhiService {
         const chiTietHocPhi = await this.tuitionRepo.getChiTietHocPhi(sinhVienId, hocKyId);
 
         // 2. Tính tổng học phí từ chiTiet (array)
+        if (!chiTietHocPhi) {
+            throw new Error("Không tìm thấy chi tiết học phí");
+        }
+
         const tongHocPhi = chiTietHocPhi.chiTiet.reduce((sum: number, item: any) => sum + item.thanhTien, 0);
 
         // 3. Kiểm tra xem đã có record chưa

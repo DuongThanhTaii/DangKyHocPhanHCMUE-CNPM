@@ -20,8 +20,8 @@ type SinhVien = {
   nganh_hoc: { id: string; ten_nganh: string } | null;
 };
 
-type Khoa = { id: string; ten_khoa: string };
-type Nganh = { id: string; ten_nganh: string; khoa_id: string };
+type Khoa = { id: string; tenKhoa: string }; // ✅ Change from ten_khoa
+type Nganh = { id: string; tenNganh: string; khoaId: string }; // ✅ Change from ten_nganh & khoa_id
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 const withToken = (init: RequestInit = {}) => {
@@ -65,15 +65,30 @@ const QuanLySinhVien: React.FC = () => {
 
   const loadDanhMuc = async () => {
     try {
+      console.log("🔍 [QuanLy] Loading Khoa & Nganh...");
+
       const [khoaRes, nganhRes] = await Promise.all([
-        fetch(`${API}/dm/khoa`, withToken()),
+        fetch(`${API}/pdt/khoa`, withToken()), // ✅ Use PDT endpoint
         fetch(`${API}/dm/nganh`, withToken()),
       ]);
+
       const [kjson, njson] = [await khoaRes.json(), await nganhRes.json()];
-      setKhoaList(kjson?.data || []);
-      setNganhList(njson?.data || []);
-    } catch {
-      // ignore
+
+      console.log("📦 [QuanLy] Khoa response:", kjson);
+      console.log("📦 [QuanLy] Nganh response:", njson);
+
+      // ✅ Handle both formats
+      const khoaData = kjson?.data || kjson || [];
+      const nganhData = njson?.data || njson || [];
+
+      console.log("✅ [QuanLy] Parsed Khoa:", khoaData);
+      console.log("✅ [QuanLy] Parsed Nganh:", nganhData);
+
+      setKhoaList(Array.isArray(khoaData) ? khoaData : []);
+      setNganhList(Array.isArray(nganhData) ? nganhData : []);
+    } catch (error) {
+      console.error("❌ [QuanLy] Error loading data:", error);
+      openNotify?.("Không thể tải danh sách Khoa/Ngành", "error");
     }
   };
 
@@ -85,13 +100,25 @@ const QuanLySinhVien: React.FC = () => {
   /** ========== FILTER CLIENT-SIDE ========== */
   const filteredData = useMemo(() => {
     let list = allSinhVien;
-    if (filterKhoa) list = list.filter((sv) => sv.khoa?.id === filterKhoa);
-    if (filterNganh)
+
+    // ✅ Filter theo khoa
+    if (filterKhoa) {
+      list = list.filter((sv) => sv.khoa?.id === filterKhoa);
+    }
+
+    // ✅ Filter theo ngành
+    if (filterNganh) {
       list = list.filter((sv) => sv.nganh_hoc?.id === filterNganh);
-    if (filterLop.trim())
+    }
+
+    // ✅ Filter theo lớp
+    if (filterLop.trim()) {
       list = list.filter((sv) =>
         sv.lop?.toLowerCase().includes(filterLop.toLowerCase())
       );
+    }
+
+    // ✅ Search toàn bộ
     if (search.trim()) {
       const q = search.toLowerCase();
       list = list.filter((sv) =>
@@ -106,6 +133,7 @@ const QuanLySinhVien: React.FC = () => {
           .some((v) => v!.toLowerCase().includes(q))
       );
     }
+
     return list;
   }, [allSinhVien, filterKhoa, filterNganh, filterLop, search]);
 
@@ -159,37 +187,41 @@ const QuanLySinhVien: React.FC = () => {
           {/* Bộ lọc */}
           {showFilters && (
             <div className="filter-group selecy__duyethp__container mt_20">
+              {/* ✅ Filter Khoa */}
               <select
                 className="form__input form__select mr_20"
                 value={filterKhoa}
                 onChange={(e) => {
                   setFilterKhoa(e.target.value);
-                  setFilterNganh("");
+                  setFilterNganh(""); // ✅ Reset ngành khi đổi khoa
                 }}
               >
-                <option value="">-- Khoa --</option>
+                <option value="">-- Tất cả khoa --</option>
                 {khoaList.map((k) => (
                   <option key={k.id} value={k.id}>
-                    {k.ten_khoa}
+                    {k.tenKhoa}
                   </option>
                 ))}
               </select>
 
+              {/* ✅ Filter Ngành (theo khoa đã chọn) */}
               <select
                 className="form__input form__select mr_20"
                 value={filterNganh}
                 onChange={(e) => setFilterNganh(e.target.value)}
+                disabled={!filterKhoa} // ✅ Disable nếu chưa chọn khoa
               >
-                <option value="">-- Ngành --</option>
+                <option value="">-- Tất cả ngành --</option>
                 {nganhList
-                  .filter((n) => !filterKhoa || n.khoa_id === filterKhoa)
+                  .filter((n) => !filterKhoa || n.khoaId === filterKhoa) // ✅ Chỉ hiện ngành thuộc khoa
                   .map((n) => (
                     <option key={n.id} value={n.id}>
-                      {n.ten_nganh}
+                      {n.tenNganh}
                     </option>
                   ))}
               </select>
 
+              {/* ✅ Filter Lớp */}
               <input
                 className="form__input form__select mr_20"
                 placeholder="Lọc theo lớp..."
@@ -197,6 +229,7 @@ const QuanLySinhVien: React.FC = () => {
                 onChange={(e) => setFilterLop(e.target.value)}
               />
 
+              {/* ✅ Nút clear filter */}
               <button
                 className="btn__chung h__40 w__100"
                 onClick={() => {

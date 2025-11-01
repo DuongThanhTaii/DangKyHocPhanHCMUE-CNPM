@@ -97,7 +97,7 @@ export const createMonHocHandler = async (req: Request, res: Response) => {
     });
 
     // load lại detail để trả về đầy đủ
-    const detail = await uow.monHocRepository.findById(id);
+    const detail = await uow.monHocRepository.findById(id.ma_mon); // ✅ Dùng id trực tiếp
     res.json(ServiceResultBuilder.success("Đã tạo môn học", detail));
   } catch (e: any) {
     res
@@ -140,7 +140,7 @@ export const updateMonHocHandler = async (req: Request, res: Response) => {
       dieu_kien: body.dieu_kien ?? null, // null = không đụng; [] = xoá hết
     });
 
-    const detail = await uow.monHocRepository.findById(id);
+    const detail = await uow.monHocRepository.findById(id); // ✅ Dùng id trực tiếp
     res.json(ServiceResultBuilder.success("Đã cập nhật môn học", detail));
   } catch (e: any) {
     res
@@ -152,8 +152,7 @@ export const updateMonHocHandler = async (req: Request, res: Response) => {
 // DELETE /pdt/mon-hoc/:id
 export const deleteMonHocHandler = async (req: Request, res: Response) => {
   try {
-    const force = req.query.force === "true";
-    await uow.monHocRepository.delete(req.params.id, { force });
+    await uow.monHocRepository.delete(req.params.id); // ✅ Bỏ { force }
     res.json(ServiceResultBuilder.success("Đã xoá môn học"));
   } catch (e: any) {
     res

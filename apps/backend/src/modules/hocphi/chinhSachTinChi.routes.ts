@@ -25,15 +25,17 @@ router.post(
     try {
       const body = upsertSchema.parse(req.body);
 
-      const saved = await ChinhSachTinChiRepository.upsertSimple({
-        ...body,
-        phi_moi_tin_chi: new Prisma.Decimal(body.phi_moi_tin_chi),
-        ngay_hieu_luc: body.ngay_hieu_luc
-          ? new Date(body.ngay_hieu_luc)
-          : undefined,
-        ngay_het_hieu_luc: body.ngay_het_hieu_luc
-          ? new Date(body.ngay_het_hieu_luc)
-          : null,
+      const saved = await prisma.chinh_sach_tin_chi.create({ // ✅ Dùng Prisma trực tiếp
+        data: {
+          ...body,
+          phi_moi_tin_chi: new Prisma.Decimal(body.phi_moi_tin_chi),
+          ngay_hieu_luc: body.ngay_hieu_luc
+            ? new Date(body.ngay_hieu_luc)
+            : new Date(),
+          ngay_het_hieu_luc: body.ngay_het_hieu_luc
+            ? new Date(body.ngay_het_hieu_luc)
+            : null,
+        }
       });
 
       res.json(ok(saved));

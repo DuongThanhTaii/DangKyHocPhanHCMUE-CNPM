@@ -9,8 +9,8 @@ type Props = {
   onCreated?: () => void;
 };
 
-type Khoa = { id: string; ten_khoa: string };
-type Nganh = { id: string; ten_nganh: string; khoa_id: string };
+type Khoa = { id: string; tenKhoa: string }; // ✅ Change from ten_khoa to tenKhoa
+type Nganh = { id: string; tenNganh: string; khoaId: string }; // ✅ Change from ten_nganh & khoa_id
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 const withToken = (init: RequestInit = {}) => {
@@ -21,7 +21,11 @@ const withToken = (init: RequestInit = {}) => {
   return { ...init, headers };
 };
 
-const ModalThemSinhVien: React.FC<Props> = ({ isOpen, onClose, onCreated }) => {
+export const ModalThemSinhVien: React.FC<Props> = ({
+  isOpen,
+  onClose,
+  onCreated,
+}) => {
   const { openNotify } = useModalContext();
 
   const [danhSachKhoa, setDanhSachKhoa] = useState<Khoa[]>([]);
@@ -46,19 +50,52 @@ const ModalThemSinhVien: React.FC<Props> = ({ isOpen, onClose, onCreated }) => {
     if (!isOpen) return;
     (async () => {
       try {
+        console.log("🔍 [Modal] Loading Khoa & Nganh...");
+
         const [khoaRes, nganhRes] = await Promise.all([
-          fetch(`${API}/dm/khoa`, withToken()),
+          fetch(`${API}/pdt/khoa`, withToken()),
           fetch(`${API}/dm/nganh`, withToken()),
         ]);
+
         const kjson = await khoaRes.json();
         const njson = await nganhRes.json();
-        setDanhSachKhoa(kjson?.data || kjson || []);
-        setDanhSachNganh(njson?.data || njson || []);
-      } catch {
-        // ignore
+
+        console.log("📦 [Modal] Khoa response:", kjson);
+        console.log("📦 [Modal] Nganh response:", njson);
+
+        // ✅ Handle multiple nested formats
+        const khoaData =
+          kjson?.data?.items || // { data: { items: [...] } }
+          kjson?.data || // { data: [...] }
+          kjson?.items || // { items: [...] }
+          kjson || // Direct array
+          [];
+
+        const nganhData =
+          njson?.data?.items || njson?.data || njson?.items || njson || [];
+
+        console.log("✅ [Modal] Parsed Khoa:", khoaData);
+        console.log("✅ [Modal] Parsed Nganh:", nganhData);
+
+        // ✅ Validate array before setState
+        setDanhSachKhoa(Array.isArray(khoaData) ? khoaData : []);
+        setDanhSachNganh(Array.isArray(nganhData) ? nganhData : []);
+
+        // ✅ Debug final state
+        console.log(
+          "✅ [Modal] Khoa count:",
+          Array.isArray(khoaData) ? khoaData.length : 0
+        );
+        console.log(
+          "✅ [Modal] Nganh count:",
+          Array.isArray(nganhData) ? nganhData.length : 0
+        );
+      } catch (error) {
+        console.error("❌ [Modal] Error loading data:", error);
+        openNotify?.("Không thể tải danh sách Khoa/Ngành", "error");
       }
     })();
-  }, [isOpen]);
+  }, [isOpen, openNotify]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -243,6 +280,7 @@ const ModalThemSinhVien: React.FC<Props> = ({ isOpen, onClose, onCreated }) => {
                 <label className="pos__unset">Lớp</label>
                 <input name="lop" type="text" onChange={handleChange} />
               </div>
+              {/* Khoa dropdown */}
               <div className="form__group">
                 <label className="pos__unset">Khoa</label>
                 <select
@@ -252,12 +290,11 @@ const ModalThemSinhVien: React.FC<Props> = ({ isOpen, onClose, onCreated }) => {
                   onChange={handleChange}
                 >
                   <option value="">-- Chọn khoa --</option>
-                  {Array.isArray(danhSachKhoa) &&
-                    danhSachKhoa.map((khoa) => (
-                      <option key={khoa.id} value={khoa.id}>
-                        {khoa.ten_khoa}
-                      </option>
-                    ))}
+                  {danhSachKhoa.map((khoa) => (
+                    <option key={khoa.id} value={khoa.id}>
+                      {khoa.tenKhoa} {/* ✅ Change from ten_khoa */}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -275,11 +312,11 @@ const ModalThemSinhVien: React.FC<Props> = ({ isOpen, onClose, onCreated }) => {
                   <option value="">-- Chọn ngành --</option>
                   {danhSachNganh
                     .filter(
-                      (n) => !formData.khoa_id || n.khoa_id === formData.khoa_id
+                      (n) => !formData.khoa_id || n.khoaId === formData.khoa_id // ✅ Change from khoa_id
                     )
                     .map((nganh) => (
                       <option key={nganh.id} value={nganh.id}>
-                        {nganh.ten_nganh}
+                        {nganh.tenNganh} {/* ✅ Change from ten_nganh */}
                       </option>
                     ))}
                 </select>
