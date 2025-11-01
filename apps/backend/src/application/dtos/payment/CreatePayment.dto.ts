@@ -3,7 +3,6 @@ export interface CreatePaymentRequestDTO {
     amount: number;
     orderInfo: string;
     redirectUrl: string;
-    ipnUrl: string;
 }
 
 export interface CreatePaymentResponseDTO {

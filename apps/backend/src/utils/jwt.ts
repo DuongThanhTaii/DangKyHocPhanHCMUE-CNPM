@@ -4,11 +4,16 @@ export type JwtPayload = {
   sub: string;
   tai_khoan_id: string;
   role:
-    | "phong_dao_tao"
-    | "truong_khoa"
-    | "tro_ly_khoa"
-    | "giang_vien"
-    | "sinh_vien";
+  | "phong_dao_tao"
+  | "truong_khoa"
+  | "tro_ly_khoa"
+  | "giang_vien"
+  | "sinh_vien";
+  // ✅ Thêm các trường mới cho sinh viên
+  mssv?: string;
+  hoTen?: string;
+  lop?: string;
+  nganh?: string;
 };
 
 const secret: Secret = process.env.JWT_SECRET ?? "dev_secret_change_me";
