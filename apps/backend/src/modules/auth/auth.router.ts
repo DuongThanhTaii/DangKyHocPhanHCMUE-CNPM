@@ -16,17 +16,6 @@ const loginSchema = z.object({
 // POST /api/auth/login
 router.post("/login", async (req: Request, res: Response) => {
   try {
-    console.log("LOGIN body:", req.body);
-    console.log("Has prisma.tai_khoan?", typeof (prisma as any).tai_khoan);
-    console.log("Has prisma.users?", typeof (prisma as any).users);
-    // liệt kê vài key liên quan
-    console.log(
-      "Prisma delegates:",
-      Object.keys(prisma).filter(
-        (k) => !k.startsWith("_") && (k.includes("user") || k.includes("tai"))
-      )
-    );
-
     const parsed = loginSchema.safeParse(req.body);
     if (!parsed.success) {
       return res.status(400).json({ error: parsed.error.issues[0].message });
@@ -43,7 +32,6 @@ router.post("/login", async (req: Request, res: Response) => {
         trang_thai_hoat_dong: true,
       },
     });
-    console.log("tai_khoan record:", tk);
 
     const invalidMsg = { error: "Sai tên đăng nhập hoặc mật khẩu" };
     if (!tk) return res.status(401).json(invalidMsg);
@@ -51,43 +39,66 @@ router.post("/login", async (req: Request, res: Response) => {
       return res.status(403).json({ error: "Tài khoản đã bị khóa" });
 
     const ok = await verifyPassword(matKhau, tk.mat_khau);
-    console.log("Password match:", ok);
     if (!ok) return res.status(401).json(invalidMsg);
 
-    // Nếu prisma.users undefined => log và trả lỗi tạm
-    if (!(prisma as any).users) {
-      console.error(
-        "Model 'users' không tồn tại. Kiểm tra schema.prisma tên model thực tế."
-      );
-      return res.status(500).json({ error: "Model users không tồn tại" });
-    }
-
-    const user = await (prisma as any).users.findFirst({
+    const user = await prisma.users.findFirst({
       where: { tai_khoan_id: tk.id },
       select: { id: true, ho_ten: true, ma_nhan_vien: true },
     });
-    console.log("users record:", user);
 
     if (!user)
       return res.status(500).json({ error: "Tài khoản chưa gắn user" });
 
+    // ✅ Nếu là sinh viên, lấy thêm thông tin sinh viên
+    let mssv: string | undefined;
+    let lop: string | undefined;
+    let nganh: string | undefined;
+
+    if (tk.loai_tai_khoan === "sinh_vien") {
+      const sinhVien = await prisma.sinh_vien.findUnique({
+        where: { id: user.id },
+        select: {
+          ma_so_sinh_vien: true,
+          lop: true,
+          nganh_hoc: {
+            select: { ten_nganh: true },
+          },
+        },
+      });
+
+      if (sinhVien) {
+        mssv = sinhVien.ma_so_sinh_vien;
+        lop = sinhVien.lop || undefined;
+        nganh = sinhVien.nganh_hoc?.ten_nganh || undefined;
+      }
+    }
+
+    // ✅ Sign JWT với đầy đủ thông tin
     const token = signJwt({
       sub: user.id,
       tai_khoan_id: tk.id,
       role: tk.loai_tai_khoan as any,
+      mssv,
+      hoTen: user.ho_ten,
+      lop,
+      nganh,
     });
 
+    // ✅ Trả về response đầy đủ
     return res.json({
       token,
       user: {
         id: user.id,
-        ho_ten: user.ho_ten,
-        ma_nhan_vien: user.ma_nhan_vien,
-        loai_tai_khoan: tk.loai_tai_khoan,
+        hoTen: user.ho_ten,
+        maNhanVien: user.ma_nhan_vien,
+        loaiTaiKhoan: tk.loai_tai_khoan,
+        mssv,
+        lop,
+        nganh,
       },
     });
   } catch (err) {
-    console.error("Auth /login error (raw):", err);
+    console.error("Auth /login error:", err);
     res.status(500).json({ error: "Internal server error" });
   }
 });

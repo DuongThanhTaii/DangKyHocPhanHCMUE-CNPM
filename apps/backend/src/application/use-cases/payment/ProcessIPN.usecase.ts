@@ -1,6 +1,6 @@
 import { injectable, inject } from "inversify";
 import { IPaymentRepository } from "../../ports/payment/IPaymentRepository";
-import { IPaymentGateway } from "../../ports/payment/IPaymentGateway";
+import { IPaymentGatewayFactory } from "../../ports/payment/IPaymentGatewayFactory";
 import { IHocPhiService } from "../../ports/tuition/IHocPhiService";
 import { ServiceResult, ServiceResultBuilder } from "../../../types/serviceResult";
 
@@ -8,18 +8,21 @@ import { ServiceResult, ServiceResultBuilder } from "../../../types/serviceResul
 export class ProcessIPNUseCase {
     constructor(
         @inject(IPaymentRepository) private paymentRepo: IPaymentRepository,
-        @inject(IPaymentGateway) private paymentGateway: IPaymentGateway,
+        @inject(IPaymentGatewayFactory) private gatewayFactory: IPaymentGatewayFactory,
         @inject(IHocPhiService) private hocPhiService: IHocPhiService
     ) { }
 
-    async execute(ipnData: Record<string, any>): Promise<ServiceResult<null>> {
+    async execute(ipnData: Record<string, any>, provider: "momo" | "vnpay"): Promise<ServiceResult<null>> {
         try {
-            console.log("[IPN_USE_CASE] ========== START PROCESSING ==========");
+            console.log(`[IPN_USE_CASE] ========== START PROCESSING ${provider.toUpperCase()} ==========`);
             console.log("[IPN_USE_CASE] Data:", JSON.stringify(ipnData, null, 2));
+
+            // ✅ Get gateway by provider
+            const gateway = this.gatewayFactory.create(provider);
 
             // 1. Verify IPN signature
             console.log("[IPN_USE_CASE] Step 1: Verifying signature...");
-            const verifyResult = await this.paymentGateway.verifyIPN({ data: ipnData });
+            const verifyResult = await gateway.verifyIPN({ data: ipnData });
             console.log("[IPN_USE_CASE] Signature valid:", verifyResult.isValid);
 
             if (!verifyResult.isValid) {
@@ -51,8 +54,7 @@ export class ProcessIPNUseCase {
 
             // 4. Update payment status
             console.log("[IPN_USE_CASE] Step 3: Updating payment status...");
-            // Always compare as string to avoid TS warning
-            if (String(resultCode) === "0") {
+            if (String(resultCode) === "0" || String(resultCode) === "00") {
                 payment.markAsSuccess(transactionId || "", resultCode?.toString() || "0");
                 await this.paymentRepo.update(payment);
                 console.log("[IPN_USE_CASE] ✅ Payment updated to SUCCESS");
@@ -69,7 +71,6 @@ export class ProcessIPNUseCase {
                     console.log("[IPN_USE_CASE] ✅ Hoc phi updated to da_thanh_toan");
                 } catch (hocPhiError) {
                     console.error("[IPN_USE_CASE] ❌ Failed to update hoc_phi:", hocPhiError);
-                    // Không throw error để vẫn trả về success cho MoMo
                 }
             } else {
                 payment.markAsFailed(resultCode?.toString() || "", message || "Payment failed");
@@ -82,7 +83,6 @@ export class ProcessIPNUseCase {
         } catch (error) {
             console.error("[IPN_USE_CASE] ========== PROCESSING ERROR ==========");
             console.error("[IPN_USE_CASE] Error:", error);
-            console.error("[IPN_USE_CASE] Stack:", (error as Error).stack);
             return ServiceResultBuilder.failure("Error processing IPN", "INTERNAL_ERROR");
         }
     }

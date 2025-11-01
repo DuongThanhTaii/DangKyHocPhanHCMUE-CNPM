@@ -1,4 +1,4 @@
-export interface StudentBasicData {
+ export interface StudentBasicData {
     id: string;
     ma_so_sinh_vien: string;
     email: string;

@@ -86,6 +86,10 @@ export class Payment {
         this.props.updatedAt = new Date();
     }
 
+    updateOrderId(newOrderId: string): void {
+        this.props.orderId = newOrderId;
+    }
+
     // Validation
     isSuccessful(): boolean {
         return this.props.status === PaymentStatus.SUCCESS;
