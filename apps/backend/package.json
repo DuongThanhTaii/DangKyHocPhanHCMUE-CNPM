@@ -4,8 +4,7 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "start": "node dist/server.js",
-    "prebuild": "pnpm prisma:generate",
-    "build": "tsc",
+    "build": "pnpm install && pnpm prisma:generate && tsc",
     "deploy": "pnpm install --prod && pnpm prisma:generate && pnpm build",
     "prisma:generate": "prisma generate && prisma generate --schema=prisma-mongo/schema.prisma",
     "prisma:pull": "prisma db pull && prisma generate && prisma db pull --schema=prisma-mongo/schema.prisma && prisma generate --schema=prisma-mongo/schema.prisma",
