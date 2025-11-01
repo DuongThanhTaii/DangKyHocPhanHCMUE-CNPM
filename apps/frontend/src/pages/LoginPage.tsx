@@ -83,17 +83,13 @@ function LoginPage() {
   return (
     <div className="container">
       <div className="school">
-        <img
-          src="public/assets/img/school.jpg"
-          alt=""
-          className="school__img"
-        />
+        <img src="/assets/img/school.jpg" alt="" className="school__img" />
       </div>
       <div className="main">
         <div className="header">
           <div className="header__logo">
             <img
-              src="public/assets/img/logo2.png"
+              src="/assets/img/logo2.png"
               alt=""
               className="header__logo-img"
             />
@@ -228,7 +224,7 @@ function LoginPage() {
               target="_blank"
               rel="noreferrer"
             >
-              <img src="public/assets/icon/Logo_PSC_white.png" alt="" />
+              <img src="/assets/icon/Logo_PSC_white.png" alt="" />
             </a>
           </p>
         </div>
