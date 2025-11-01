@@ -20,6 +20,9 @@ importers:
       '@types/node-cron':
         specifier: ^3.0.11
         version: 3.0.11
+      '@zalopay-oss/zalopay-nodejs':
+        specifier: ^0.4.0
+        version: 0.4.0
       axios:
         specifier: ^1.13.1
         version: 1.13.1
@@ -29,6 +32,9 @@ importers:
       cors:
         specifier: ^2.8.5
         version: 2.8.5
+      crypto-js:
+        specifier: ^4.2.0
+        version: 4.2.0
       dotenv:
         specifier: ^17.2.2
         version: 17.2.2
@@ -74,6 +80,9 @@ importers:
       uuid:
         specifier: ^13.0.0
         version: 13.0.0
+      vnpay:
+        specifier: ^2.4.4
+        version: 2.4.4
       xlsx:
         specifier: ^0.18.5
         version: 0.18.5
@@ -869,6 +878,10 @@ packages:
   '@types/yauzl@2.10.3':
     resolution: {integrity: sha512-oJoftv0LSuaDZE3Le4DbKX+KS9G36NzOeSap90UIK0yMA/NhKJhqlSGtNDORNRaIbQfzjXDrQa0ytJ6mNRGz/Q==}
 
+  '@zalopay-oss/zalopay-nodejs@0.4.0':
+    resolution: {integrity: sha512-JZBpBKLErUAgKyDPDuU62s7WtJN6bKFNRET/E9novJNtwsPtFqpm0Ah1V2jlldr1MaXPER4+LXgGs1O12IDP1A==}
+    engines: {node: '>=16'}
+
   accepts@2.0.0:
     resolution: {integrity: sha512-5cvg6CtKwfgdmVqY1WIiXKc3Q1bkRqGLi+2W/6ao+6Y7gu/RCwRuAhGEzh5B4KlszSuTLgZYuqFqo5bImjNKng==}
     engines: {node: '>= 0.6'}
@@ -922,6 +935,9 @@ packages:
 
   argparse@2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
+
+  asn1@0.2.6:
+    resolution: {integrity: sha512-ix/FxPn0MDjeyJ7i/yoHGFt/EX6LyNbxSEhPPXODPL+KB0VPk86UYfL0lMdy+KCnv+fmvIzySwaK5COwqVbWTQ==}
 
   ast-types@0.13.4:
     resolution: {integrity: sha512-x1FCFnFifvYDDzTaLII71vG5uvDwgtmDTEVWAxrgeiR8VjMONcCXJx7E+USjDtHlwFmt9MysbqgF9b9Vjr6w+w==}
@@ -1189,6 +1205,9 @@ packages:
 
   create-require@1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
+
+  crypto-js@4.2.0:
+    resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==}
 
   d3-array@3.2.4:
     resolution: {integrity: sha512-tdQAmyA18i4J7wprpYq8ClcxZy3SC31QMeByyCFyRt7BVHdREQZ5lpzoe5mFEYZUWe+oq8HBvk9JjpibyEV4Jg==}
@@ -1812,6 +1831,9 @@ packages:
     resolution: {integrity: sha512-LA4ZjwlnUblHVgq0oBF3Jl/6h/Nvs5fzBLwdEF4nuxnFdsfajde4WfxtJr3CaiH+F6ewcIB/q4jQ4UzPyid+CQ==}
     hasBin: true
 
+  node-rsa@1.1.1:
+    resolution: {integrity: sha512-Jd4cvbJMryN21r5HgxQOpMEqv+ooke/korixNNK3mGqfGJmy0M77WDDzo/05969+OkMy3XW1UuZsSmW9KQm7Fw==}
+
   nodemailer@7.0.9:
     resolution: {integrity: sha512-9/Qm0qXIByEP8lEV2qOqcAW7bRpL8CR9jcTwk3NBnHJNmP9fIJ86g2fgmIXqHY+nj55ZEMwWqYAT2QTDpRUYiQ==}
     engines: {node: '>=6.0.0'}
@@ -2323,6 +2345,9 @@ packages:
 
   victory-vendor@37.3.6:
     resolution: {integrity: sha512-SbPDPdDBYp+5MJHhBCAyI7wKM3d5ivekigc2Dk2s7pgbZ9wIgIBYGVw4zGHBml/qTFbexrofXW6Gu4noGxrOwQ==}
+
+  vnpay@2.4.4:
+    resolution: {integrity: sha512-NvftKF1K+JRAyZ7I11Nz/nxmSOaya6Txy/fcW2xFGpBzUsKjfyr2YEg210YitgVHvgtZ94j2/8DFRm8PwjUHjA==}
 
   webdriver-bidi-protocol@0.3.8:
     resolution: {integrity: sha512-21Yi2GhGntMc671vNBCjiAeEVknXjVRoyu+k+9xOMShu+ZQfpGQwnBqbNz/Sv4GXZ6JmutlPAi2nIJcrymAWuQ==}
@@ -3920,6 +3945,15 @@ snapshots:
       '@types/node': 24.3.3
     optional: true
 
+  '@zalopay-oss/zalopay-nodejs@0.4.0':
+    dependencies:
+      axios: 1.13.1
+      crypto-js: 4.2.0
+      node-rsa: 1.1.1
+      qs: 6.14.0
+    transitivePeerDependencies:
+      - debug
+
   accepts@2.0.0:
     dependencies:
       mime-types: 3.0.1
@@ -3987,6 +4021,10 @@ snapshots:
   arg@4.1.3: {}
 
   argparse@2.0.1: {}
+
+  asn1@0.2.6:
+    dependencies:
+      safer-buffer: 2.1.2
 
   ast-types@0.13.4:
     dependencies:
@@ -4259,6 +4297,8 @@ snapshots:
       readable-stream: 3.6.2
 
   create-require@1.1.1: {}
+
+  crypto-js@4.2.0: {}
 
   d3-array@3.2.4:
     dependencies:
@@ -4856,6 +4896,10 @@ snapshots:
   node-fetch-native@1.6.7: {}
 
   node-gyp-build@4.8.4: {}
+
+  node-rsa@1.1.1:
+    dependencies:
+      asn1: 0.2.6
 
   nodemailer@7.0.9: {}
 
@@ -5467,6 +5511,10 @@ snapshots:
       d3-shape: 3.2.0
       d3-time: 3.1.0
       d3-timer: 3.0.1
+
+  vnpay@2.4.4:
+    dependencies:
+      dayjs: 1.11.18
 
   webdriver-bidi-protocol@0.3.8: {}
 
