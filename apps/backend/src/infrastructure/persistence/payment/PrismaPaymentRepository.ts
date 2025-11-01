@@ -1,7 +1,7 @@
 import { injectable, inject } from "inversify";
 import { PrismaClient } from "@prisma/client";
 import { Payment } from "../../../domain/entities/Payment";
-import { IPaymentRepository } from "../../../application/ports/IPaymentRepository";
+import { IPaymentRepository } from "../../../application/ports/payment/IPaymentRepository";
 
 @injectable()
 export class PrismaPaymentRepository implements IPaymentRepository {

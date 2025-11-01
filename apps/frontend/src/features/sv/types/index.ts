@@ -204,8 +204,8 @@ export interface ThanhToanHocPhiRequest {
 // ========== PAYMENT ==========
 
 export interface CreatePaymentRequest {
-    hocKyId: string;
-    amount: number;
+    hocKyId: string; // ✅ ONLY hocKyId - BE tự lấy amount từ DB
+    provider?: "momo" | "vnpay" | "zalopay"; // ✅ Add provider
 }
 
 export interface CreatePaymentResponse {

@@ -40,10 +40,8 @@ export const router = createBrowserRouter([
   { path: "/", element: <LoginPage /> },
   { path: "/reset-password", element: <ResetPassword /> },
 
-  // ✅ CRITICAL: Payment result MUST be outside authenticated routes
   { path: "/payment/result", element: <PaymentResult /> },
 
-  // PDT - chỉ cho phong_dao_tao
   {
     path: "/pdt",
     element: (
