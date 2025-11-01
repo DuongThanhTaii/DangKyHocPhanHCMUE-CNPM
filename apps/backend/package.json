@@ -4,7 +4,10 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "start": "node dist/server.js",
+    "prebuild": "prisma generate",
     "build": "tsc",
+    "deploy": "pnpm install --prod && pnpm prisma:generate && pnpm build",
+    "prisma:generate": "prisma generate",
     "prisma:pull": "prisma db pull && prisma generate",
     "seed": "ts-node-dev prisma/seed.ts"
   },
