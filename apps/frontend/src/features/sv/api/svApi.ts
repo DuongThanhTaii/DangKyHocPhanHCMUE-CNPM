@@ -155,19 +155,49 @@ export const svApi = {
     },
 
     /**
-     * ✅ Tạo payment MoMo
+     * ✅ Tạo payment MoMo (ONLY hocKyId)
      */
     createPayment: async (data: CreatePaymentRequest): Promise<ServiceResult<CreatePaymentResponse>> => {
         return await fetchJSON("payment/create", {
             method: "POST",
-            body: data,
+            body: data, // ✅ { hocKyId } only - NO amount
         });
     },
 
     /**
-     * ✅ Check trạng thái payment
+     * ✅ Get payment status with query parameter
      */
     getPaymentStatus: async (orderId: string): Promise<ServiceResult<PaymentStatusResponse>> => {
-        return await fetchJSON(`payment/status?orderId=${orderId}`);
+        if (!orderId || !orderId.trim()) {
+            return {
+                isSuccess: false,
+                message: "orderId không hợp lệ",
+                errorCode: "INVALID_ORDER_ID",
+            };
+        }
+
+        // ✅ Trim & sanitize orderId
+        const cleanOrderId = orderId.trim();
+
+        console.log(`📤 Fetching status for orderId: "${cleanOrderId}"`);
+
+        try {
+            // ✅ CHANGE: Use query parameter instead of path parameter
+            const result = await fetchJSON(`payment/status?orderId=${encodeURIComponent(cleanOrderId)}`, {
+                method: "GET",
+            });
+
+            console.log(`📥 Status API response:`, result);
+
+            return result;
+        } catch (error: any) {
+            console.error("❌ getPaymentStatus error:", error);
+
+            return {
+                isSuccess: false,
+                message: error.message || "Không thể lấy trạng thái thanh toán",
+                errorCode: error.code || "FETCH_ERROR",
+            };
+        }
     },
 };

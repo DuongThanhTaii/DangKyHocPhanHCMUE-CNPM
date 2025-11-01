@@ -172,9 +172,9 @@ export default function BaseLayout({ config, children }: BaseLayoutProps) {
               </svg>
             </div>
             <div className="user__body">
-              <p className="user__name">{user?.ho_ten}</p>
-              <p className="user__score">{user?.ma_nhan_vien}</p>
-              <p className="user__role">{formatRole(user?.loai_tai_khoan)}</p>
+              <p className="user__name">{user?.hoTen}</p>
+              <p className="user__score">{user?.maNhanVien}</p>
+              <p className="user__role">{formatRole(user?.loaiTaiKhoan)}</p>
             </div>
           </div>
         </div>
@@ -236,7 +236,7 @@ export default function BaseLayout({ config, children }: BaseLayoutProps) {
             <div className="modal" id="modal">
               <div className="name__student border_bottom">
                 <h6>
-                  {user?.ho_ten} - {user?.ma_nhan_vien}
+                  {user?.hoTen} - {user?.maNhanVien}
                 </h6>
               </div>
 

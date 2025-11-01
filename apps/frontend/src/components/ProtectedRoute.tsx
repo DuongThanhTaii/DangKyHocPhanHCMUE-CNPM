@@ -18,7 +18,7 @@ export default function ProtectedRoute({
 
   if (!token || !user) return <Navigate to={redirectIfNoAuth} replace />;
 
-  const role = user.loai_tai_khoan as Role | undefined;
+  const role = user.loaiTaiKhoan as Role | undefined;
   if (allow && (!role || !allow.includes(role))) {
     const redirectPath =
       role && ROLE_HOME[role] ? ROLE_HOME[role] : redirectIfNoAuth;

@@ -2,9 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 type User = {
   id?: string;
-  ho_ten?: string;
-  loai_tai_khoan?: string;
-  ma_nhan_vien?: string;
+  hoTen?: string;
+  loaiTaiKhoan?: string;
+  maNhanVien?: string;
 };
 
 type AuthState = { token: string | null; user: User | null };

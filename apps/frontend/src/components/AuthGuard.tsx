@@ -17,9 +17,9 @@ export function AuthGuard({ children, requiredRole }: AuthGuardProps) {
     tokenLength: token?.length,
     userExists: !!user,
     userId: user?.id,
-    userRole: user?.loai_tai_khoan,
+    userRole: user?.loaiTaiKhoan,
     requiredRole,
-    roleMatch: user?.loai_tai_khoan === requiredRole,
+    roleMatch: user?.loaiTaiKhoan === requiredRole,
   });
 
   // ✅ Check từng điều kiện riêng
@@ -33,9 +33,9 @@ export function AuthGuard({ children, requiredRole }: AuthGuardProps) {
     return <Navigate to="/" replace />;
   }
 
-  if (user.loai_tai_khoan !== requiredRole) {
+  if (user.loaiTaiKhoan !== requiredRole) {
     console.log(
-      `❌ Role mismatch: got "${user.loai_tai_khoan}", need "${requiredRole}"`
+      `❌ Role mismatch: got "${user.loaiTaiKhoan}", need "${requiredRole}"`
     );
     return <Navigate to="/" replace />;
   }

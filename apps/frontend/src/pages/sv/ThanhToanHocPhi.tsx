@@ -6,6 +6,8 @@ import { useGetHocKyHienHanh } from "../../features/pdt/hooks/useGetHocKyHienHan
 import { useHocKyNienKhoa } from "../../features/pdt/hooks/useHocKyNienKhoa";
 import type { HocKyDTO } from "../../features/pdt/types/pdtTypes";
 import { useModalContext } from "../../hook/ModalContext";
+import PaymentModal from "./components/payment/PaymentModal";
+import { getStudentInfoFromJWT } from "../../utils/jwtUtils";
 
 const formatCurrency = (amount: number) =>
   new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(
@@ -19,12 +21,80 @@ export default function ThanhToanHocPhi() {
   const { data: hocKyHienHanh, loading: loadingHocKyHienHanh } =
     useGetHocKyHienHanh();
   const { data: hocKyNienKhoas, loading: loadingHocKy } = useHocKyNienKhoa();
-  const { createPayment, loading: creatingPayment } = useCreatePayment(); // ✅ Add
+  const { createPayment, loading: creatingPayment } = useCreatePayment(); 
 
   // ========= State =========
   const [selectedNienKhoa, setSelectedNienKhoa] = useState<string>("");
   const [selectedHocKyId, setSelectedHocKyId] = useState<string>("");
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+
+  // ✅ Helper function to fix broken UTF-8 encoding
+  const fixUTF8 = (str: string): string => {
+    try {
+      // Decode double-encoded UTF-8
+      return decodeURIComponent(escape(str));
+    } catch {
+      return str; 
+    }
+  };
+
+  // ✅ Use utility 
+  const studentInfo = getStudentInfoFromJWT();
+
+  // ✅ Handle payment submission with provider
+  const handlePaymentSubmit = async (method: string, hocKyId: string) => {
+    console.log("💳 Payment method:", method);
+
+    // ✅ Map FE method ID to BE provider
+    const providerMap: Record<string, "momo" | "vnpay" | "zalopay"> = {
+      momo: "momo",
+      vnpay: "vnpay",
+      zalopay: "zalopay",
+    };
+
+    const provider = providerMap[method];
+
+    if (!provider) {
+      openNotify({
+        message: "Phương thức thanh toán không hợp lệ",
+        type: "error",
+      });
+      return;
+    }
+
+    // ✅ REMOVE restriction - allow all payment methods
+    // All providers are now enabled - Backend will handle routing
+    console.log(
+      `🚀 Processing payment with provider: ${provider.toUpperCase()}`
+    );
+
+    // ✅ Call API with provider
+    const result = await createPayment({
+      hocKyId,
+      provider, // ✅ Send provider to BE
+    });
+
+    if (result.success && result.data) {
+      setShowPaymentModal(false);
+
+      // ✅ Log redirect URL for debugging
+      console.log(
+        `🔗 Redirecting to ${provider.toUpperCase()}:`,
+        result.data.payUrl
+      );
+
+      window.location.href = result.data.payUrl;
+    }
+  };
+
+  // Fallback if no student info
+  const defaultStudentInfo = {
+    mssv: "N/A",
+    hoTen: "N/A",
+    lop: "N/A",
+    nganh: "N/A",
+  };
 
   // ========= Computed Values =========
   const nienKhoas = useMemo(
@@ -86,16 +156,14 @@ export default function ThanhToanHocPhi() {
 
     if (!confirmed) return;
 
-    // ✅ Create payment & redirect to MoMo
+    // ✅ ONLY send hocKyId - BE tự tính amount từ DB
     const result = await createPayment({
       hocKyId: selectedHocKyId,
-      amount: data.tongHocPhi,
+      // ❌ REMOVE: amount: data.tongHocPhi
     });
 
     if (result.success && result.data) {
       console.log("🔗 Redirecting to MoMo:", result.data.payUrl);
-
-      // ✅ Redirect to MoMo payment page
       window.location.href = result.data.payUrl;
     }
   };
@@ -183,7 +251,7 @@ export default function ThanhToanHocPhi() {
             {/* ========= Table Chưa thanh toán ========= */}
             {data.trangThaiThanhToan === "chua_thanh_toan" && (
               <fieldset className="fieldeset__dkhp mt_20">
-                <legend>Học phí chưa thanh toán</legend>
+                <legend>💰 Học phí chưa thanh toán</legend>
 
                 <table className="table">
                   <thead>
@@ -205,18 +273,12 @@ export default function ThanhToanHocPhi() {
                       </td>
                       <td>
                         <button
-                          className="btn__momo"
-                          onClick={handleThanhToan}
-                          disabled={creatingPayment} // ✅ Update
-                          style={{
-                            padding: "6px 16px",
-                            fontSize: "14px",
-                            fontWeight: 600,
-                          }}
+                          className="btn__chung"
+                          onClick={() => setShowPaymentModal(true)} // ✅ Open modal
+                          disabled={creatingPayment}
+                          style={{ padding: "6px 16px", fontSize: "14px" }}
                         >
-                          {creatingPayment
-                            ? "Đang xử lý..."
-                            : "Thanh toán qua MoMo"}
+                          💳 Thanh toán học phí
                         </button>
                       </td>
                     </tr>
@@ -352,6 +414,27 @@ export default function ThanhToanHocPhi() {
           </>
         )}
       </div>
+        
+      {/* ✅ Payment Modal with fallback */}
+      {showPaymentModal && data && studentInfo && (
+        <PaymentModal
+          isOpen={showPaymentModal}
+          onClose={() => setShowPaymentModal(false)}
+          studentInfo={{
+            mssv: studentInfo.mssv,
+            hoTen: studentInfo.hoTen,
+            lop: studentInfo.lop,
+            nganh: studentInfo.nganh,
+          }}
+          paymentInfo={{
+            tongHocPhi: data.tongHocPhi,
+            soTinChi: data.soTinChiDangKy,
+            donGia: data.donGiaTinChi,
+          }}
+          hocKyId={selectedHocKyId}
+          onSubmit={handlePaymentSubmit}
+        />
+      )}
     </section>
   );
 }
