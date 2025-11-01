@@ -2,11 +2,15 @@ import { CreatePaymentRequestDTO, CreatePaymentResponseDTO } from "../../dtos/pa
 import { VerifyIPNRequestDTO, VerifyIPNResponseDTO } from "../../dtos/payment/VerifyIPN.dto";
 
 export interface CreatePaymentRequest {
-    orderId: string;
     amount: number;
     orderInfo: string;
     redirectUrl: string;
-    ipnUrl: string;
+    ipnUrl?: string;
+    ipAddr?: string;
+    metadata?: {
+        sinhVienId: string;
+        hocKyId: string;
+    };
 }
 
 export interface CreatePaymentResponse {
@@ -28,7 +32,7 @@ export interface VerifyIPNResponse {
 }
 
 export interface IPaymentGateway {
-    createPayment(request: CreatePaymentRequestDTO): Promise<CreatePaymentResponseDTO>;
+    createPayment(request: CreatePaymentRequest): Promise<CreatePaymentResponseDTO>;
     verifyIPN(request: VerifyIPNRequestDTO): Promise<VerifyIPNResponseDTO>;
 }
 
