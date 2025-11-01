@@ -1,97 +1,89 @@
 import { injectable, inject } from "inversify";
 import { Payment, PaymentStatus } from "../../../domain/entities/Payment";
-import { InvalidPaymentAmountError } from "../../../domain/errors/PaymentErrors";
 import { IPaymentRepository } from "../../ports/payment/IPaymentRepository";
-import { IPaymentGateway } from "../../ports/payment/IPaymentGateway";
+import { IPaymentGatewayFactory } from "../../ports/payment/IPaymentGatewayFactory";
 import { IPaymentValidationService } from "../../ports/payment/IPaymentValidationService";
 import { ServiceResult, ServiceResultBuilder } from "../../../types/serviceResult";
+import { CreatePaymentInputDTO } from "../../dtos/payment/CreatePaymentInput.dto";
+import { CreatePaymentOutputDTO } from "../../dtos/payment/CreatePaymentOutput.dto";
 
-export interface CreatePaymentInputDTO {
-    sinhVienId: string;
-    hocKyId: string;
-    amount: number;
-}
-
-export interface CreatePaymentOutputDTO {
-    payUrl: string;
-    orderId: string;
-    amount: number;
-}
 
 @injectable()
 export class CreatePaymentUseCase {
     constructor(
         @inject(IPaymentRepository) private paymentRepo: IPaymentRepository,
-        @inject(IPaymentGateway) private paymentGateway: IPaymentGateway,
+        @inject(IPaymentGatewayFactory) private gatewayFactory: IPaymentGatewayFactory,
         @inject(IPaymentValidationService) private validationService: IPaymentValidationService
     ) { }
 
     async execute(input: CreatePaymentInputDTO): Promise<ServiceResult<CreatePaymentOutputDTO>> {
         try {
-            // Validation: Amount
-            if (input.amount <= 0) {
-                throw new InvalidPaymentAmountError(input.amount);
-            }
-
-            // ✅ Validation: Already paid?
-            const alreadyPaid = await this.validationService.checkAlreadyPaid(
+            const hocPhi = await this.validationService.getTuitionAmount(
                 input.sinhVienId,
                 input.hocKyId
             );
 
-            if (alreadyPaid) {
+            if (!hocPhi) {
+                return ServiceResultBuilder.failure(
+                    "Không tìm thấy thông tin học phí. Vui lòng tính học phí trước khi thanh toán.",
+                    "TUITION_NOT_FOUND"
+                );
+            }
+
+            const amount = hocPhi.tong_hoc_phi;
+
+            // Validation: Amount
+            if (amount <= 0) {
+                return ServiceResultBuilder.failure(
+                    "Số tiền học phí không hợp lệ",
+                    "INVALID_AMOUNT"
+                );
+            }
+
+            if (hocPhi.trang_thai_thanh_toan === "da_thanh_toan") {
                 return ServiceResultBuilder.failure(
                     "Học phí đã được thanh toán rồi",
                     "ALREADY_PAID"
                 );
             }
 
-            // ✅ Validation: Amount matches tuition?
-            const amountValid = await this.validationService.validateAmount(
-                input.sinhVienId,
-                input.hocKyId,
-                input.amount
-            );
+            const provider = input.provider || "momo";
+            const gateway = this.gatewayFactory.create(provider);
 
-            if (!amountValid) {
-                return ServiceResultBuilder.failure(
-                    "Số tiền không khớp với học phí",
-                    "AMOUNT_MISMATCH"
-                );
-            }
+            // ✅ Gateway tự tạo orderId
+            const response = await gateway.createPayment({
+                amount,
+                orderInfo: `Thanh toan hoc phi HK ${input.hocKyId}`,
+                redirectUrl: `${process.env.FRONTEND_URL}/payment/result`,
+                ipnUrl: process.env.UNIFIED_IPN_URL,
+                ipAddr: input.ipAddr,
+                metadata: {
+                    sinhVienId: input.sinhVienId,
+                    hocKyId: input.hocKyId,
+                },
+            });
 
-            // Create Payment Entity
-            const orderId = `ORDER_${Date.now()}_${input.sinhVienId}`;
+            // ✅ Dùng orderId do Gateway trả về
+            const orderId = response.orderId;
+
             const payment = Payment.create({
                 orderId,
                 sinhVienId: input.sinhVienId,
                 hocKyId: input.hocKyId,
-                amount: input.amount,
-                currency: "VND",
+                amount,
+                currency: "VND", // ✅ Thêm field bị thiếu
                 status: PaymentStatus.CREATED,
-                provider: "momo",
+                provider,
             });
 
-            // Save to DB
             await this.paymentRepo.save(payment);
-
-            // Create payment URL via Gateway
-            const response = await this.paymentGateway.createPayment({
-                orderId,
-                amount: input.amount,
-                orderInfo: `Thanh toan hoc phi HK ${input.hocKyId}`,
-                redirectUrl: `${process.env.FRONTEND_URL}${process.env.MOMO_REDIRECT_PATH || '/payment/result'}`,
-                ipnUrl: `${process.env.NGROK_URL}/api/payment/ipn`,
-            });
-
-            // Update payment with pay URL
             payment.markAsPending(response.payUrl);
             await this.paymentRepo.update(payment);
 
             return ServiceResultBuilder.success("Tạo payment thành công", {
                 payUrl: response.payUrl,
-                orderId,
-                amount: input.amount,
+                orderId, // ✅ Trả về orderId từ Gateway
+                amount,
             });
         } catch (error: any) {
             console.error("[CREATE_PAYMENT] Error:", error);

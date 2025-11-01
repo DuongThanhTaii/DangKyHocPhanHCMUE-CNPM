@@ -6,7 +6,6 @@ import { TuitionController } from "../controllers/tuition/TuitionController";
 const router = Router();
 const tuitionController = container.get(TuitionController);
 
-// ✅ Lấy chi tiết học phí
 router.get(
     "/chi-tiet",
     requireAuth,
@@ -14,7 +13,6 @@ router.get(
     (req, res) => tuitionController.getTuitionDetails(req, res)
 );
 
-// ✅ Tính lại học phí
 router.post(
     "/compute",
     requireAuth,

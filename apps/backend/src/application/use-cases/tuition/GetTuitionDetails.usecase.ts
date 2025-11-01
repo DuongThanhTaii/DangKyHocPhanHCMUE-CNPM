@@ -10,10 +10,12 @@ export class GetTuitionDetailsUseCase {
 
     async execute(sinhVienId: string, hocKyId: string): Promise<ServiceResult<TuitionDetailDTO>> {
         try {
+            // ✅ Gọi repo, repo sẽ check học phí tồn tại trước
             const chiTietHocPhi = await this.tuitionRepo.getChiTietHocPhi(sinhVienId, hocKyId);
 
+            // ❌ Nếu null → học phí chưa được tính
             if (!chiTietHocPhi) {
-                return ServiceResultBuilder.failure("Không tìm thấy thông tin học phí", "NOT_FOUND");
+                return ServiceResultBuilder.failure("Học phí chưa được tính. Vui lòng quay lại sau.", "NOT_FOUND");
             }
 
             return ServiceResultBuilder.success("Lấy thông tin học phí thành công", chiTietHocPhi);

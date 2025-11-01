@@ -165,14 +165,5 @@ r.get(
   traCuuHocPhanHandler
 );
 
-// ============ HỌC PHÍ ============
-
-// ✅ Lấy thông tin học phí (legacy - keep for backward compatibility)
-r.get(
-  "/hoc-phi",
-  requireAuth,
-  requireRole(["sinh_vien"]),
-  getHocPhiHandler
-);
 
 export default r;

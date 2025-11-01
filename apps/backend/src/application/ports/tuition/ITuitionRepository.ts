@@ -26,7 +26,7 @@ export interface TuitionDetailItemData {
 
 export interface ITuitionRepository {
     findBySinhVienAndHocKy(sinh_vien_id: string, hoc_ky_id: string): Promise<TuitionData | null>;
-    getChiTietHocPhi(sinh_vien_id: string, hoc_ky_id: string): Promise<TuitionDetailDTO>;
+    getChiTietHocPhi(sinh_vien_id: string, hoc_ky_id: string): Promise<TuitionDetailDTO | null>;
     updatePaymentStatus(sinh_vien_id: string, hoc_ky_id: string): Promise<void>;
     updateTongHocPhi(sinh_vien_id: string, hoc_ky_id: string, tong_hoc_phi: number): Promise<void>;
     saveTuition(data: {
