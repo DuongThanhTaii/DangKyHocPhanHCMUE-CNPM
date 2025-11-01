@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 import crypto from "crypto";
 import axios from "axios";
-import type { IPaymentGateway, CreatePaymentRequest, CreatePaymentResponse, VerifyIPNRequest, VerifyIPNResponse } from "../../application/ports/IPaymentGateway";
+import type { IPaymentGateway, CreatePaymentRequest, CreatePaymentResponse, VerifyIPNRequest, VerifyIPNResponse } from "../../application/ports/payment/IPaymentGateway";
 
 @injectable()
 export class ZaloPayGateway implements IPaymentGateway {

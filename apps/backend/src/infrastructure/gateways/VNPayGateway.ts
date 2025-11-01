@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import type { IPaymentGateway, CreatePaymentRequest, CreatePaymentResponse, VerifyIPNRequest, VerifyIPNResponse } from "../../application/ports/IPaymentGateway";
+import type { IPaymentGateway, CreatePaymentRequest, CreatePaymentResponse, VerifyIPNRequest, VerifyIPNResponse } from "../../application/ports/payment/IPaymentGateway";
 
 @injectable()
 export class VNPayGateway implements IPaymentGateway {
@@ -72,7 +72,7 @@ export class VNPayGateway implements IPaymentGateway {
 
             return {
                 isValid: verify.isVerified && verify.isSuccess,
-                orderId: request.data.vnp_TxnRef as string, 
+                orderId: request.data.vnp_TxnRef as string,
                 transactionId: request.data.vnp_TransactionNo as string,
                 resultCode: request.data.vnp_ResponseCode as string,
                 message: verify.message,
