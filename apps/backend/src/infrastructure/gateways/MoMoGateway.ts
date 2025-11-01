@@ -1,9 +1,7 @@
 import { injectable } from "inversify";
 import crypto from "crypto";
 import axios from "axios";
-import { IPaymentGateway } from "../../application/ports/payment/IPaymentGateway";
-import { CreatePaymentRequestDTO, CreatePaymentResponseDTO } from "../../application/dtos/payment/CreatePayment.dto";
-import { VerifyIPNRequestDTO, VerifyIPNResponseDTO } from "../../application/dtos/payment/VerifyIPN.dto";
+import { IPaymentGateway, CreatePaymentRequest, CreatePaymentResponse, VerifyIPNRequest, VerifyIPNResponse } from "../../application/ports/payment/IPaymentGateway";
 
 @injectable()
 export class MoMoGateway implements IPaymentGateway {
@@ -12,21 +10,25 @@ export class MoMoGateway implements IPaymentGateway {
     private readonly partnerCode = process.env.MOMO_PARTNER_CODE!;
     private readonly endpoint = process.env.MOMO_ENDPOINT!;
 
-    async createPayment(request: CreatePaymentRequestDTO): Promise<CreatePaymentResponseDTO> {
-        const requestId = `REQ_${Date.now()}`;
+    async createPayment(request: CreatePaymentRequest): Promise<CreatePaymentResponse> { // ✅ Đổi từ DTO sang Interface
+        // ✅ Tạo orderId từ metadata
+        const orderId = `ORDER_${Date.now()}_${request.metadata?.sinhVienId || 'UNKNOWN'}`;
         const extraData = "";
         const requestType = "payWithMethod";
+
+        // ✅ Chỉ lấy từ env, không hardcode
+        const ipnUrl = process.env.UNIFIED_IPN_URL!;
 
         const signature = this.signCreateRequest({
             accessKey: this.accessKey,
             secretKey: this.secretKey,
             amount: request.amount,
-            orderId: request.orderId,
+            orderId,
             orderInfo: request.orderInfo,
             redirectUrl: request.redirectUrl,
-            ipnUrl: request.ipnUrl,
+            ipnUrl,
             partnerCode: this.partnerCode,
-            requestId,
+            requestId: orderId, // Sử dụng orderId làm requestId
             requestType,
             extraData,
         });
@@ -34,12 +36,12 @@ export class MoMoGateway implements IPaymentGateway {
         const response = await axios.post(`${this.endpoint}/v2/gateway/api/create`, {
             partnerCode: this.partnerCode,
             accessKey: this.accessKey,
-            requestId,
+            requestId: orderId, // Sử dụng orderId làm requestId
             amount: request.amount,
-            orderId: request.orderId,
+            orderId,
             orderInfo: request.orderInfo,
             redirectUrl: request.redirectUrl,
-            ipnUrl: request.ipnUrl,
+            ipnUrl,
             requestType,
             extraData,
             signature,
@@ -48,12 +50,12 @@ export class MoMoGateway implements IPaymentGateway {
 
         return {
             payUrl: response.data.payUrl,
-            orderId: request.orderId,
-            requestId,
+            orderId, // ✅ Trả về orderId đã tạo
+            requestId: response.data.requestId,
         };
     }
 
-    async verifyIPN(request: VerifyIPNRequestDTO): Promise<VerifyIPNResponseDTO> {
+    async verifyIPN(request: VerifyIPNRequest): Promise<VerifyIPNResponse> {
         const isValid = this.verifyIPNSignature({
             secretKey: this.secretKey,
             data: request.data,

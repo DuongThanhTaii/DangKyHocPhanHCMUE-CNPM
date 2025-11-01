@@ -1,7 +1,9 @@
 import { injectable } from "inversify";
 import { IPaymentGateway } from "../../application/ports/IPaymentGateway";
-import { IPaymentGatewayFactory, PaymentProvider } from "../../application/ports/IPaymentGatewayFactory";
+import { IPaymentGatewayFactory, PaymentProvider } from "../../application/ports/payment/IPaymentGatewayFactory";
 import { MoMoGateway } from "./MoMoGateway";
+import { VNPayGateway } from "./VNPayGateway";
+import { ZaloPayGateway } from "./ZaloPayGateway";
 
 @injectable()
 export class PaymentGatewayFactory implements IPaymentGatewayFactory {
@@ -10,8 +12,8 @@ export class PaymentGatewayFactory implements IPaymentGatewayFactory {
     constructor() {
         // Pre-initialize gateways
         this.gateways.set("momo", new MoMoGateway());
-        // TODO: Add VNPay, Bank Transfer...
-        // this.gateways.set("vnpay", new VNPayGateway());
+        this.gateways.set("vnpay", new VNPayGateway());
+        this.gateways.set("zalopay", new ZaloPayGateway()); // ✅ Thêm zalopay
     }
 
     create(provider: PaymentProvider): IPaymentGateway {

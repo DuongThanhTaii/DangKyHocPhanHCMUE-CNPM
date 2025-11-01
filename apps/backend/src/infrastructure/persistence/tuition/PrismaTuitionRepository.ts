@@ -118,8 +118,8 @@ export class PrismaTuitionRepository implements ITuitionRepository {
         });
     }
 
-    async getChiTietHocPhi(sinh_vien_id: string, hoc_ky_id: string): Promise<TuitionDetailDTO> {
-        // Lấy thông tin học phí tổng quát
+    async getChiTietHocPhi(sinh_vien_id: string, hoc_ky_id: string): Promise<TuitionDetailDTO | null> {
+        // ✅ Step 1: Kiểm tra học phí đã tồn tại chưa
         const hocPhi = await this.prisma.hoc_phi.findUnique({
             where: {
                 sinh_vien_id_hoc_ky_id: { sinh_vien_id, hoc_ky_id },
@@ -129,7 +129,12 @@ export class PrismaTuitionRepository implements ITuitionRepository {
             },
         });
 
-        // Lấy danh sách lớp học phần đã đăng ký
+        // ❌ Nếu chưa có học phí → return null
+        if (!hocPhi) {
+            return null;
+        }
+
+        // ✅ Step 2: Lấy danh sách lớp học phần đã đăng ký
         const danhSachLopHocPhan = await this.prisma.lop_hoc_phan.findMany({
             where: {
                 hoc_phan: {
@@ -151,8 +156,8 @@ export class PrismaTuitionRepository implements ITuitionRepository {
             },
         });
 
-        // Lấy chính sách học phí
-        let chinhSach = hocPhi?.chinh_sach_tin_chi;
+        // ✅ Step 3: Lấy chính sách học phí
+        let chinhSach = hocPhi.chinh_sach_tin_chi;
         if (!chinhSach) {
             chinhSach = await this.prisma.chinh_sach_tin_chi.findFirst({
                 where: { hoc_ky_id },
@@ -166,7 +171,7 @@ export class PrismaTuitionRepository implements ITuitionRepository {
         }
         const donGiaTinChi = chinhSach ? Number(chinhSach.phi_moi_tin_chi) : 0;
 
-        // Chi tiết từng môn
+        // ✅ Step 4: Chi tiết từng môn
         const chiTiet = danhSachLopHocPhan.map((lhp) => {
             const monHoc = lhp.hoc_phan.mon_hoc;
             const soTinChi = monHoc.so_tin_chi;
@@ -184,7 +189,6 @@ export class PrismaTuitionRepository implements ITuitionRepository {
         const tongHocPhi = chiTiet.reduce((sum, item) => sum + item.thanhTien, 0);
 
         return {
-            // Bổ sung đủ các trường FE cần
             sinhVienId: sinh_vien_id,
             hocKyId: hoc_ky_id,
             tongHocPhi,
@@ -202,7 +206,7 @@ export class PrismaTuitionRepository implements ITuitionRepository {
                     ngayHetHieuLuc: "",
                 },
             chiTiet,
-            trangThaiThanhToan: hocPhi?.trang_thai_thanh_toan || "chua_thanh_toan",
+            trangThaiThanhToan: hocPhi.trang_thai_thanh_toan || "chua_thanh_toan",
         };
     }
 
