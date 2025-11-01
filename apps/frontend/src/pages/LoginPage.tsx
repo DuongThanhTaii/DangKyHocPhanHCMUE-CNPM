@@ -68,7 +68,7 @@ function LoginPage() {
 
       // notify & điều hướng theo role
       openNotify?.("Đăng nhập thành công", "success");
-      const home = ROLE_HOME[data.user.loai_tai_khoan] ?? "/login";
+      const home = ROLE_HOME[data.user.loaiTaiKhoan] ?? "/login";
       navigate(home, { replace: true });
     } catch (err: any) {
       const msg =
@@ -222,7 +222,7 @@ function LoginPage() {
 
         <div className="copyright">
           <p className="copyright__text">
-            © 2025 OOAD | Developed by Anh Trai Say Ges{" "}
+            © 2025 CNPM | Developed by Anh Trai Say Ges{" "}
             <a
               href="https://psctelecom.com.vn/"
               target="_blank"
