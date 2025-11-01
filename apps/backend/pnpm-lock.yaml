@@ -68,6 +68,9 @@ importers:
       pino:
         specifier: ^9.9.5
         version: 9.9.5
+      prisma:
+        specifier: ^6.18.0
+        version: 6.18.0(typescript@5.9.2)
       puppeteer:
         specifier: ^24.27.0
         version: 24.27.0(typescript@5.9.2)
@@ -123,9 +126,6 @@ importers:
       '@types/xlsx':
         specifier: ^0.0.36
         version: 0.0.36
-      prisma:
-        specifier: ^6.18.0
-        version: 6.18.0(typescript@5.9.2)
       ts-node-dev:
         specifier: ^2.0.0
         version: 2.0.0(@types/node@24.3.3)(typescript@5.9.2)
