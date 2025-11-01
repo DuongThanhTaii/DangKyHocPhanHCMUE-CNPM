@@ -6,8 +6,8 @@
     "start": "node dist/server.js",
     "build": "pnpm install --no-frozen-lockfile && pnpm prisma:generate && tsc",
     "deploy": "pnpm install --prod --no-frozen-lockfile && pnpm prisma:generate && pnpm build",
-    "prisma:generate": "prisma generate && prisma generate --schema=prisma-mongo/schema.prisma",
-    "prisma:pull": "prisma db pull && prisma generate && prisma db pull --schema=prisma-mongo/schema.prisma && prisma generate --schema=prisma-mongo/schema.prisma",
+    "prisma:generate": "prisma generate && prisma generate --schema=prisma-mongo/schema-mongo.prisma",
+    "prisma:pull": "prisma db pull && prisma generate && prisma db pull --schema=prisma-mongo/schema-mongo.prisma && prisma generate --schema=prisma-mongo/schema-mongo.prisma",
     "seed": "ts-node-dev prisma/seed.ts"
   },
   "dependencies": {
