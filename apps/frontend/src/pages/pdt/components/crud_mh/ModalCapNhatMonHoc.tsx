@@ -204,7 +204,12 @@ const ModalCapNhatMonHoc: React.FC<PropsEdit> = ({ id, isOpen, onClose }) => {
 
   return (
     <>
-      <div className="modal-overlay" onClick={onClose}>
+      <div
+        className="modal-overlay"
+        onClick={(e) => {
+          if (e.target === e.currentTarget) onClose();
+        }}
+      >
         <div className="modal-popup">
           <div className="modal-header">
             <h1>Chỉnh sửa môn học</h1>
