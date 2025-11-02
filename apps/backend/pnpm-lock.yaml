@@ -65,6 +65,9 @@ importers:
       nodemailer:
         specifier: ^7.0.9
         version: 7.0.9
+      p-limit:
+        specifier: ^7.2.0
+        version: 7.2.0
       pino:
         specifier: ^9.9.5
         version: 9.9.5
@@ -1869,6 +1872,10 @@ packages:
   once@1.4.0:
     resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
 
+  p-limit@7.2.0:
+    resolution: {integrity: sha512-ATHLtwoTNDloHRFFxFJdHnG6n2WUeFjaR8XQMFdKIv0xkXjrER8/iG9iu265jOM95zXHAfv9oTkqhrfbIzosrQ==}
+    engines: {node: '>=20'}
+
   pac-proxy-agent@7.2.0:
     resolution: {integrity: sha512-TEB8ESquiLMc0lV8vcd5Ql/JAKAoyzHFXaStwjkzpOpC5Yv+pIzLfHvjTSdf3vpa2bMiUQrg9i6276yn8666aA==}
     engines: {node: '>= 14'}
@@ -2409,6 +2416,10 @@ packages:
   yn@3.1.1:
     resolution: {integrity: sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==}
     engines: {node: '>=6'}
+
+  yocto-queue@1.2.1:
+    resolution: {integrity: sha512-AyeEbWOu/TAXdxlV9wmGcR0+yh2j3vYPGOECcIj2S7MkrLyC7ne+oye2BKTItt0ii2PHk4cDy+95+LshzbXnGg==}
+    engines: {node: '>=12.20'}
 
   zip-stream@4.1.1:
     resolution: {integrity: sha512-9qv4rlDiopXg4E69k+vMHjNN63YFMe9sZMrdlvKnCjlCRWeCBswPPMPUfx+ipsAWq1LXHe70RcbaHdJJpS6hyQ==}
@@ -4929,6 +4940,10 @@ snapshots:
     dependencies:
       wrappy: 1.0.2
 
+  p-limit@7.2.0:
+    dependencies:
+      yocto-queue: 1.2.1
+
   pac-proxy-agent@7.2.0:
     dependencies:
       '@tootallnate/quickjs-emscripten': 0.23.0
@@ -5566,6 +5581,8 @@ snapshots:
       fd-slicer: 1.1.0
 
   yn@3.1.1: {}
+
+  yocto-queue@1.2.1: {}
 
   zip-stream@4.1.1:
     dependencies:

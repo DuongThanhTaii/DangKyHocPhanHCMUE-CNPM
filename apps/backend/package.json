@@ -30,6 +30,7 @@
     "multer": "^2.0.2",
     "node-cron": "^4.2.1",
     "nodemailer": "^7.0.9",
+    "p-limit": "^7.2.0",
     "pino": "^9.9.5",
     "prisma": "^6.18.0",
     "puppeteer": "^24.27.0",
