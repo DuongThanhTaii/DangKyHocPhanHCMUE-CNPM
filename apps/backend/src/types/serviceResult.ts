@@ -9,7 +9,7 @@ export interface ServiceResult<T = void> {
 /** Builder giữ tương thích với code cũ */
 export class ServiceResultBuilder {
   static success<T>(message: string, data?: T): ServiceResult<T> {
-    return { isSuccess: true, message, data };
+    return { isSuccess: true, message, data } as any;
   }
 
   static failure<T = void>(

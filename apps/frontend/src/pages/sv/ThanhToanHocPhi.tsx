@@ -1,13 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import "../../styles/reset.css";
 import "../../styles/menu.css";
 import { useHocPhi, useCreatePayment } from "../../features/sv/hooks";
-import { useGetHocKyHienHanh } from "../../features/pdt/hooks/useGetHocKyHienHanh";
-import { useHocKyNienKhoa } from "../../features/pdt/hooks/useHocKyNienKhoa";
-import type { HocKyDTO } from "../../features/pdt/types/pdtTypes";
 import { useModalContext } from "../../hook/ModalContext";
 import PaymentModal from "./components/payment/PaymentModal";
 import { getStudentInfoFromJWT } from "../../utils/jwtUtils";
+import HocKySelector from "../../components/HocKySelector";
 
 const formatCurrency = (amount: number) =>
   new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(
@@ -16,31 +14,15 @@ const formatCurrency = (amount: number) =>
 
 export default function ThanhToanHocPhi() {
   const { openNotify, openConfirm } = useModalContext();
+  const { createPayment, loading: creatingPayment } = useCreatePayment();
 
-  // ========= Custom Hooks =========
-  const { data: hocKyHienHanh, loading: loadingHocKyHienHanh } =
-    useGetHocKyHienHanh();
-  const { data: hocKyNienKhoas, loading: loadingHocKy } = useHocKyNienKhoa();
-  const { createPayment, loading: creatingPayment } = useCreatePayment(); 
-
-  // ========= State =========
-  const [selectedNienKhoa, setSelectedNienKhoa] = useState<string>("");
   const [selectedHocKyId, setSelectedHocKyId] = useState<string>("");
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
-  // ✅ Helper function to fix broken UTF-8 encoding
-  const fixUTF8 = (str: string): string => {
-    try {
-      // Decode double-encoded UTF-8
-      return decodeURIComponent(escape(str));
-    } catch {
-      return str; 
-    }
-  };
-
-  // ✅ Use utility 
   const studentInfo = getStudentInfoFromJWT();
+
+  const { data, loading: loadingData } = useHocPhi(selectedHocKyId);
 
   // ✅ Handle payment submission with provider
   const handlePaymentSubmit = async (method: string, hocKyId: string) => {
@@ -96,80 +78,8 @@ export default function ThanhToanHocPhi() {
     nganh: "N/A",
   };
 
-  // ========= Computed Values =========
-  const nienKhoas = useMemo(
-    () => Array.from(new Set(hocKyNienKhoas.map((nk) => nk.tenNienKhoa))),
-    [hocKyNienKhoas]
-  );
-
-  const flatHocKys = useMemo(() => {
-    const result: (HocKyDTO & { tenNienKhoa: string })[] = [];
-
-    hocKyNienKhoas.forEach((nienKhoa) => {
-      nienKhoa.hocKy.forEach((hk) => {
-        result.push({
-          ...hk,
-          tenNienKhoa: nienKhoa.tenNienKhoa,
-        });
-      });
-    });
-
-    return result;
-  }, [hocKyNienKhoas]);
-
-  // ========= Fetch Học phí =========
-  const {
-    data,
-    loading: loadingData,
-    submitting,
-    thanhToan,
-  } = useHocPhi(selectedHocKyId);
-
-  // ========= Auto-select học kỳ hiện hành =========
-  useEffect(() => {
-    if (hocKyHienHanh && flatHocKys.length > 0 && !selectedHocKyId) {
-      const hkHienHanh = flatHocKys.find((hk) => hk.id === hocKyHienHanh.id);
-
-      if (hkHienHanh) {
-        setSelectedNienKhoa(hkHienHanh.tenNienKhoa);
-        setSelectedHocKyId(hkHienHanh.id);
-      }
-    }
-  }, [hocKyHienHanh, flatHocKys, selectedHocKyId]);
-
-  // ========= Reset học kỳ khi đổi niên khóa =========
-  useEffect(() => {
-    setSelectedHocKyId("");
-  }, [selectedNienKhoa]);
-
-  // ========= Handle thanh toán =========
-  const handleThanhToan = async () => {
-    if (!selectedHocKyId || !data) return;
-
-    const confirmed = await openConfirm({
-      message: `Bạn chắc chắn muốn thanh toán học phí qua MoMo?\n\nTổng tiền: ${formatCurrency(
-        data.tongHocPhi
-      )}`,
-      confirmText: "Thanh toán",
-      cancelText: "Hủy",
-    });
-
-    if (!confirmed) return;
-
-    // ✅ ONLY send hocKyId - BE tự tính amount từ DB
-    const result = await createPayment({
-      hocKyId: selectedHocKyId,
-      // ❌ REMOVE: amount: data.tongHocPhi
-    });
-
-    if (result.success && result.data) {
-      console.log("🔗 Redirecting to MoMo:", result.data.payUrl);
-      window.location.href = result.data.payUrl;
-    }
-  };
-
   // ========= Render Loading =========
-  if (loadingHocKy || loadingHocKyHienHanh) {
+  if (loadingData) {
     return (
       <section className="main__body">
         <div className="body__title">
@@ -195,40 +105,7 @@ export default function ThanhToanHocPhi() {
       <div className="body__inner">
         {/* ✅ Filters */}
         <div className="selecy__duyethp__container">
-          {/* Niên khóa */}
-          <div className="mr_20">
-            <select
-              className="form__select w__200"
-              value={selectedNienKhoa}
-              onChange={(e) => setSelectedNienKhoa(e.target.value)}
-            >
-              <option value="">-- Chọn Niên khóa --</option>
-              {nienKhoas.map((nk) => (
-                <option key={nk} value={nk}>
-                  {nk}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Học kỳ */}
-          <div className="mr_20">
-            <select
-              className="form__select w__200"
-              value={selectedHocKyId}
-              onChange={(e) => setSelectedHocKyId(e.target.value)}
-              disabled={!selectedNienKhoa}
-            >
-              <option value="">-- Chọn Học kỳ --</option>
-              {flatHocKys
-                .filter((hk) => hk.tenNienKhoa === selectedNienKhoa)
-                .map((hk) => (
-                  <option key={hk.id} value={hk.id}>
-                    {hk.tenHocKy}
-                  </option>
-                ))}
-            </select>
-          </div>
+          <HocKySelector onHocKyChange={setSelectedHocKyId} />
         </div>
 
         {/* ✅ Loading state */}
@@ -414,7 +291,7 @@ export default function ThanhToanHocPhi() {
           </>
         )}
       </div>
-        
+
       {/* ✅ Payment Modal with fallback */}
       {showPaymentModal && data && studentInfo && (
         <PaymentModal

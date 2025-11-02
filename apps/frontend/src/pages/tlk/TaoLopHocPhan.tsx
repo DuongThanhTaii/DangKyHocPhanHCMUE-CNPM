@@ -4,15 +4,14 @@ import "../../styles/reset.css";
 import "../../styles/menu.css";
 import { fetchJSON } from "../../utils/fetchJSON";
 import { useModalContext } from "../../hook/ModalContext";
-import { useHocKyNienKhoa } from "../../features/pdt/hooks";
-import {
-  useHocPhansForCreateLop,
-  useHocKyHienHanhTLK,
-} from "../../features/tlk/hooks"; // ✅ Import hook mới
+import { useHocPhansForCreateLop } from "../../features/tlk/hooks"; // ✅ Import hook mới
 import { HocKyNienKhoaShowSetup } from "../pdt/components/HocKyNienKhoaShowSetup";
 import DanhSachHocPhanTaoLop from "./tao-lop-hoc-phan/DanhSachHocPhanTaoLop";
 import TaoThoiKhoaBieuModal from "./tao-lop-hoc-phan/TaoThoiKhoaBieuModal";
-
+import {
+  useHocKyHienHanh,
+  useHocKyNienKhoa,
+} from "../../features/common/hooks";
 type SelectedConfig = {
   soLuongLop: string;
   tietBatDau: string;
@@ -42,10 +41,10 @@ export default function TaoLopHocPhan() {
   } = useHocPhansForCreateLop();
 
   const {
-    hocKyHienHanh,
+    data: hocKyHienHanh,
     loading: loadingHocKy,
     error: errorHocKy,
-  } = useHocKyHienHanhTLK();
+  } = useHocKyHienHanh();
 
   // ========= States =========
   const [selectedNienKhoa, setSelectedNienKhoa] = useState<string>("");
@@ -60,14 +59,14 @@ export default function TaoLopHocPhan() {
   // ✅ Merge tất cả auto-select logic vào 1 useEffect duy nhất
   useEffect(() => {
     // ✅ 1. Auto-select học kỳ hiện hành (ưu tiên cao nhất)
-    if (hocKyHienHanh?.hoc_ky_id && hocKyNienKhoas.length > 0) {
+    if (hocKyHienHanh?.maHocKy && hocKyNienKhoas.length > 0) {
       // Tìm niên khóa chứa học kỳ hiện hành
       for (const nk of hocKyNienKhoas) {
         const foundHK = nk.hocKy.find(
-          (hk) => hk.id === hocKyHienHanh.hoc_ky_id
+          (hk) => hk.id === hocKyHienHanh.maHocKy
         );
         if (foundHK) {
-          setSelectedNienKhoa(nk.id);
+          setSelectedNienKhoa(nk.nienKhoaId);
           setSelectedHocKyId(foundHK.id);
           return; // ✅ Exit early
         }
@@ -77,7 +76,7 @@ export default function TaoLopHocPhan() {
     // ✅ 2. Fallback: Auto-select first niên khóa nếu chưa có selection
     if (hocKyNienKhoas.length > 0 && !selectedNienKhoa) {
       const firstNK = hocKyNienKhoas[0];
-      setSelectedNienKhoa(firstNK.id);
+      setSelectedNienKhoa(firstNK.nienKhoaId);
       if (firstNK.hocKy.length > 0) {
         setSelectedHocKyId(firstNK.hocKy[0].id);
       }
@@ -127,7 +126,7 @@ export default function TaoLopHocPhan() {
   console.log("🔍 [TaoLopHocPhan] currentData:", currentData);
   console.log("🔍 [TaoLopHocPhan] giangVienId:", giangVienId);
 
-  const currentNK = hocKyNienKhoas.find((nk) => nk.id === selectedNienKhoa);
+  const currentNK = hocKyNienKhoas.find((nk) => nk.nienKhoaId === selectedNienKhoa);
   const currentHK = currentNK?.hocKy.find((hk) => hk.id === selectedHocKyId);
 
   const currentSemester = {
@@ -144,7 +143,7 @@ export default function TaoLopHocPhan() {
   // ========= Handlers =========
   const handleChangeNienKhoa = (nienKhoaId: string) => {
     setSelectedNienKhoa(nienKhoaId);
-    const nk = hocKyNienKhoas.find((x) => x.id === nienKhoaId);
+    const nk = hocKyNienKhoas.find((x) => x.nienKhoaId === nienKhoaId);
     if (nk?.hocKy.length) {
       setSelectedHocKyId(nk.hocKy[0].id);
     } else {

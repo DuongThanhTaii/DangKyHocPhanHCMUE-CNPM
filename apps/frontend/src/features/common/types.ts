@@ -1,6 +1,32 @@
-/**
- * ✅ Request chung cho từ chối đề xuất (dùng chung TK + PDT)
- */
 export interface TuChoiDeXuatHocPhanRequest {
     id: string;
 }
+
+export interface HocKyHienHanhDTO {
+    id: string;
+    tenHocKy: string;
+    maHocKy: string;
+    nienKhoa: {
+        id: string;
+        tenNienKhoa: string;
+    };
+    ngayBatDau?: Date;
+    ngayKetThuc?: Date;
+}
+
+export interface HocKyItemDTO {
+    id: string;
+    tenHocKy: string;
+    maHocKy: string;
+    ngayBatDau?: Date;
+    ngayKetThuc?: Date;
+}
+
+export interface HocKyNienKhoaDTO {
+    nienKhoaId: string;
+    tenNienKhoa: string;
+    hocKy: HocKyItemDTO[];
+}
+
+// ✅ Alias for backward compatibility - use HocKyItemDTO structure
+export type HocKyDTO = HocKyItemDTO;

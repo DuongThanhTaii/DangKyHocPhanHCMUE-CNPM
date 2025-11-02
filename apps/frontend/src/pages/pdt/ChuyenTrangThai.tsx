@@ -2,10 +2,8 @@ import { useEffect, useState, type FormEvent } from "react";
 import "../../styles/reset.css";
 import "../../styles/menu.css";
 import {
-  useHocKyNienKhoa,
   useSetHocKyHienTai,
   useCreateBulkKyPhase,
-  useGetHocKyHienHanh,
   usePhasesByHocKy,
   useUpdateDotGhiDanh,
 } from "../../features/pdt/hooks";
@@ -13,8 +11,10 @@ import { HocKyNienKhoaShowSetup } from "./components/HocKyNienKhoaShowSetup";
 import { PhaseHocKyNienKhoaSetup } from "./components/PhaseHocKyNienKhoaSetup";
 import type { SetHocKyHienTaiRequest, PhaseItemDTO } from "../../features/pdt";
 import { toDatetimeLocal } from "../../utils/dateHelpers";
-import KhoaFilterForPhase from "./components/KhoaFilterForPhase";
-import PhaseTimeEditor from "./components/PhaseTimeEditor";
+import {
+  useHocKyHienHanh,
+  useHocKyNienKhoa,
+} from "../../features/common/hooks";
 import { useModalContext } from "../../hook/ModalContext";
 
 type PhaseTime = { start: string; end: string };
@@ -61,8 +61,7 @@ export default function ChuyenTrangThai() {
   const { updateDotGhiDanh, loading: ghiDanhLoading } = useUpdateDotGhiDanh();
 
   // ✅ THÊM: Lấy học kỳ hiện hành để auto-select
-  const { data: hocKyHienHanh, loading: loadingHienHanh } =
-    useGetHocKyHienHanh();
+  const { data: hocKyHienHanh, loading: loadingHienHanh } = useHocKyHienHanh();
 
   const [selectedHocKyId, setSelectedHocKyId] = useState<string>("");
   const { data: phasesData, loading: loadingPhases } =
@@ -119,7 +118,7 @@ export default function ChuyenTrangThai() {
     console.log("✅ [ChuyenTrangThai] Found học kỳ:", foundHocKy);
 
     // ✅ Set niên khóa
-    setSelectedNienKhoa(foundNienKhoa.id);
+    setSelectedNienKhoa(foundNienKhoa.nienKhoaId);
 
     // ✅ Set học kỳ
     setSelectedHocKyId(foundHocKy.id);
@@ -157,7 +156,12 @@ export default function ChuyenTrangThai() {
       return;
     }
 
-    if (!phasesData) return;
+    // ✅ FIX: Check if phasesData and phasesData.phases exist
+    if (!phasesData || !phasesData.phases) {
+      setPhaseTimes(getEmptyPhaseTimes());
+      setCurrentPhase("");
+      return;
+    }
 
     const newPhaseTimes: Record<string, PhaseTime> = getEmptyPhaseTimes();
 
@@ -195,7 +199,7 @@ export default function ChuyenTrangThai() {
   // ✅ Khi đổi niên khóa
   const handleChangeNienKhoa = (value: string) => {
     setSelectedNienKhoa(value);
-    const nienKhoa = hocKyNienKhoas.find((nk) => nk.id === value);
+    const nienKhoa = hocKyNienKhoas.find((nk) => nk.nienKhoaId === value);
     if (nienKhoa?.hocKy.length) {
       setSelectedHocKyId(nienKhoa.hocKy[0].id);
     } else {
@@ -232,7 +236,9 @@ export default function ChuyenTrangThai() {
     if (result.isSuccess) {
       setSemesterMessage("✅ Thiết lập học kỳ hiện tại thành công");
 
-      const nienKhoa = hocKyNienKhoas.find((nk) => nk.id === selectedNienKhoa);
+      const nienKhoa = hocKyNienKhoas.find(
+        (nk) => nk.nienKhoaId === selectedNienKhoa
+      );
       const hocKy = nienKhoa?.hocKy.find((hk) => hk.id === selectedHocKyId);
 
       setCurrentSemester({
@@ -269,7 +275,9 @@ export default function ChuyenTrangThai() {
     }
 
     // ✅ Get học kỳ info
-    const nienKhoa = hocKyNienKhoas.find((nk) => nk.id === selectedNienKhoa);
+    const nienKhoa = hocKyNienKhoas.find(
+      (nk) => nk.nienKhoaId === selectedNienKhoa
+    );
     const hocKy = nienKhoa?.hocKy.find((hk) => hk.id === selectedHocKyId);
 
     if (!hocKy?.ngayBatDau || !hocKy?.ngayKetThuc) {
@@ -338,7 +346,9 @@ export default function ChuyenTrangThai() {
   useEffect(() => {
     if (!selectedHocKyId) return;
 
-    const nienKhoa = hocKyNienKhoas.find((nk) => nk.id === selectedNienKhoa);
+    const nienKhoa = hocKyNienKhoas.find(
+      (nk) => nk.nienKhoaId === selectedNienKhoa
+    );
     const hocKy = nienKhoa?.hocKy.find((hk) => hk.id === selectedHocKyId);
 
     console.log("🔍 Found học kỳ:", hocKy);

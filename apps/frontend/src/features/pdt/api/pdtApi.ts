@@ -6,7 +6,6 @@ import type {
     NienKhoa,
     HocKy,
     CreateBulkKyPhaseRequest,
-    HocKyNienKhoaDTO,
     SetHocKyHienTaiRequest,
     SetHocKyHienThanhRequest,
     KyPhaseResponseDTO,
@@ -30,86 +29,52 @@ import type {
     UpdateChinhSachTinChiRequest,
     TinhHocPhiHangLoatRequest,
     TinhHocPhiHangLoatResponse,
+    BaoCaoTheoNganhResponse,
+    BaoCaoTheoKhoaResponse,
+    OverviewPayload,
+    BaoCaoTaiGVResponse,
 } from "../types/pdtTypes";
 
 /**
  * PDT API Service
  */
 export const pdtApi = {
-    /**
-     * Lấy thông tin học kỳ hiện hành
-     */
-    getHienHanh: async (): Promise<HienHanh | null> => {
-        const response = await fetchJSON("/api/hien-hanh");
-        return response?.data ?? null;
-    },
+    // ========== ❌ REMOVED - Moved to commonApi ==========
+    // getHocKyHienHanh() → commonApi.getHocKyHienHanh()
+    // getHocKyNienKhoa() → commonApi.getHocKyNienKhoa()
+
+    // ========== ✅ PDT EXCLUSIVE - Quản lý học kỳ & phase ==========
 
     /**
-     * Lấy danh sách niên khóa
-     */
-    getNienKhoa: async (): Promise<NienKhoa[]> => {
-        const response = await fetchJSON("/api/pdt/nien-khoa");
-        return response?.data ?? [];
-    },
-
-    /**
-     * Lấy danh sách học kỳ theo niên khóa
-     */
-    getHocKy: async (nienKhoaId: string): Promise<HocKy[]> => {
-        const response = await fetchJSON(`/api/pdt/hoc-ky?nien_khoa_id=${nienKhoaId}`);
-        return response?.data ?? [];
-    },
-
-    /**
-     * Lấy danh sách học kỳ kèm niên khóa
-     */
-    getHocKyNienKhoa: async (): Promise<HocKyNienKhoaDTO[]> => {
-        const response = await fetchJSON("/pdt/hoc-ky-nien-khoa");
-        return response?.data ?? [];
-    },
-
-    /**
-     * ✅ Lấy thông tin học kỳ hiện hành
-     */
-    getHocKyHienHanh: async (): Promise<ServiceResult<HocKyHienHanhDTO>> => {
-        return await fetchJSON("pdt/hoc-ky-hien-hanh", {
-            method: "GET",
-        });
-    },
-
-    /**
-     * ✅ Thiết lập học kỳ hiện tại (cần ngày)
-     */
-    setHocKyHienTai: async (
-        data: SetHocKyHienTaiRequest
-    ): Promise<ServiceResult<KyPhaseResponseDTO>> => {
-        return await fetchJSON("/pdt/ky-phase/create", {
-            method: "POST",
-            body: data,
-        });
-    },
-
-    /**
-     * ✅ Chuyển trạng thái học kỳ hiện hành (chỉ cần hocKyId)
+     * ✅ Thiết lập học kỳ hiện hành (PDT only)
      */
     setHocKyHienHanh: async (
         data: SetHocKyHienThanhRequest
     ): Promise<ServiceResult<HocKyDTO>> => {
-        return await fetchJSON("/pdt/hoc-ky-hien-hanh", {
+        return await fetchJSON("pdt/quan-ly-hoc-ky/hoc-ky-hien-hanh", {
             method: "POST",
             body: data,
         });
     },
 
     /**
-     * ✅ Bulk upsert phases
+     * ✅ Bulk upsert phases (PDT only)
      */
     createBulkKyPhase: async (
         data: CreateBulkKyPhaseRequest
     ): Promise<ServiceResult<KyPhaseResponseDTO[]>> => {
-        return await fetchJSON("/pdt/ky-phase/bulk", {
+        return await fetchJSON("pdt/quan-ly-hoc-ky/ky-phase/bulk", {
             method: "POST",
             body: data,
+        });
+    },
+
+    /**
+     * ✅ Lấy tất cả phases theo học kỳ ID (PDT only)
+     */
+    getPhasesByHocKy: async (hocKyId: string): Promise<ServiceResult<PhasesByHocKyDTO>> => {
+        return await fetchJSON(`pdt/quan-ly-hoc-ky/ky-phase/${hocKyId}`, {
+            method: "GET",
         });
     },
 
@@ -143,15 +108,6 @@ export const pdtApi = {
         return await fetchJSON("pdt/de-xuat-hoc-phan/tu-choi", {
             method: "PATCH",
             body: data,
-        });
-    },
-
-    /**
-     * ✅ Lấy tất cả phases theo học kỳ ID
-     */
-    getPhasesByHocKy: async (hocKyId: string): Promise<ServiceResult<PhasesByHocKyDTO>> => {
-        return await fetchJSON(`pdt/ky-phase/${hocKyId}`, {
-            method: "GET",
         });
     },
 
@@ -305,6 +261,120 @@ export const pdtApi = {
             method: "POST",
             body: data,
         });
+    },
+
+    /**
+     * ✅ Lấy thống kê tổng quan
+     */
+    getBaoCaoOverview: async (params: {
+        hoc_ky_id: string;
+        khoa_id?: string;
+        nganh_id?: string;
+    }): Promise<ServiceResult<OverviewPayload>> => {
+        const qs = new URLSearchParams();
+        qs.set("hoc_ky_id", params.hoc_ky_id);
+        if (params.khoa_id) qs.set("khoa_id", params.khoa_id);
+        if (params.nganh_id) qs.set("nganh_id", params.nganh_id); // ✅ Chỉ set nếu có giá trị
+
+        return await fetchJSON(`bao-cao/overview?${qs.toString()}`);
+    },
+
+    /**
+     * ✅ Lấy thống kê đăng ký theo khoa
+     */
+    getBaoCaoDangKyTheoKhoa: async (
+        hocKyId: string
+    ): Promise<ServiceResult<BaoCaoTheoKhoaResponse>> => {
+        return await fetchJSON(`bao-cao/dk-theo-khoa?hoc_ky_id=${hocKyId}`);
+    },
+
+    /**
+     * ✅ Lấy thống kê đăng ký theo ngành
+     */
+    getBaoCaoDangKyTheoNganh: async (params: {
+        hocKyId: string;
+        khoaId?: string;
+    }): Promise<ServiceResult<BaoCaoTheoNganhResponse>> => {
+        const url = params.khoaId
+            ? `bao-cao/dk-theo-nganh?hoc_ky_id=${params.hocKyId}&khoa_id=${params.khoaId}`
+            : `bao-cao/dk-theo-nganh?hoc_ky_id=${params.hocKyId}`;
+
+        return await fetchJSON(url);
+    },
+
+    /**
+     * ✅ Lấy thống kê tải giảng viên
+     */
+    getBaoCaoTaiGiangVien: async (params: {
+        hocKyId: string;
+        khoaId?: string;
+    }): Promise<ServiceResult<BaoCaoTaiGVResponse>> => {
+        const url = params.khoaId
+            ? `bao-cao/tai-giang-vien?hoc_ky_id=${params.hocKyId}&khoa_id=${params.khoaId}`
+            : `bao-cao/tai-giang-vien?hoc_ky_id=${params.hocKyId}`;
+
+        return await fetchJSON(url);
+    },
+
+    /**
+     * ✅ Export Excel báo cáo
+     */
+    exportBaoCaoExcel: async (params: {
+        hoc_ky_id: string;
+        khoa_id?: string;
+        nganh_id?: string;
+    }): Promise<Blob> => {
+        const qs = new URLSearchParams();
+        qs.set("hoc_ky_id", params.hoc_ky_id);
+        if (params.khoa_id) qs.set("khoa_id", params.khoa_id);
+        if (params.nganh_id) qs.set("nganh_id", params.nganh_id);
+
+        const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+
+        // ✅ Get token from localStorage
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(`${API_BASE}/bao-cao/export/excel?${qs.toString()}`, {
+            headers: {
+                ...(token && { Authorization: `Bearer ${token}` }), // ✅ Add token
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`${response.status} ${response.statusText}`);
+        }
+
+        return await response.blob();
+    },
+
+    /**
+     * ✅ Export PDF báo cáo
+     */
+    exportBaoCaoPDF: async (data: {
+        hoc_ky_id: string;
+        khoa_id?: string; // ✅ Changed from string | null
+        nganh_id?: string; // ✅ Changed from string | null
+        charts: { name: string; dataUrl: string }[];
+    }): Promise<Blob> => {
+        const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+
+        // ✅ Get token from localStorage
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(`${API_BASE}/bao-cao/export/pdf`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                ...(token && { Authorization: `Bearer ${token}` }),
+            },
+            body: JSON.stringify(data), // ✅ data sẽ không chứa null values
+        });
+
+        if (!response.ok) {
+            throw new Error(`${response.status} ${response.statusText}`);
+        }
+
+        return await response.blob();
     },
 };
 

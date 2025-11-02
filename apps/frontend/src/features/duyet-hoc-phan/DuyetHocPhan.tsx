@@ -4,9 +4,9 @@ import "../../styles/reset.css";
 import "../../styles/menu.css";
 import Fuse from "fuse.js";
 import { useModalContext } from "../../hook/ModalContext";
-import { useHocKyNienKhoa, useGetHocKyHienHanh } from "../pdt/hooks";
 import type { DeXuatHocPhanForTruongKhoaDTO } from "../tk/types";
 import type { DuyetHocPhanProps } from "./types";
+import { useHocKyHienHanh, useHocKyNienKhoa } from "../common/hooks";
 
 /* ================= Types ================= */
 type Role = "pdt" | "truong_khoa" | "tro_ly_khoa" | "phong_dao_tao" | ""; // ✅ Thêm "phong_dao_tao"
@@ -34,7 +34,7 @@ export default function DuyetHocPhan({
     data: hocKyHienHanh,
     loading: loadingHocKyHienHanh,
     error: errorHocKyHienHanh,
-  } = useGetHocKyHienHanh();
+  } = useHocKyHienHanh();
 
   const [userRole, setUserRole] = useState<Role>("");
   const [filteredDsDeXuat, setFilteredDsDeXuat] = useState<
@@ -107,7 +107,7 @@ export default function DuyetHocPhan({
       if (foundNienKhoa) {
         setSelectedHocKyId(hocKyHienHanh.id);
         setTempSelectedHocKyId(hocKyHienHanh.id);
-        setTempSelectedNienKhoa(foundNienKhoa.id);
+        setTempSelectedNienKhoa(foundNienKhoa.nienKhoaId);
         openNotify(
           `Đã tự chọn học kỳ hiện tại: ${hocKyHienHanh.tenHocKy} (${foundNienKhoa.tenNienKhoa})`,
           "info"
@@ -128,14 +128,14 @@ export default function DuyetHocPhan({
   /* -------- Derived -------- */
   const dsNienKhoa = useMemo(() => {
     return hocKyNienKhoas.map((nk) => ({
-      id: nk.id,
+      id: nk.nienKhoaId,
       tenNienKhoa: nk.tenNienKhoa,
     }));
   }, [hocKyNienKhoas]);
 
   const filteredHocKy = useMemo(() => {
     const nienKhoa = hocKyNienKhoas.find(
-      (nk) => nk.id === tempSelectedNienKhoa
+      (nk) => nk.nienKhoaId === tempSelectedNienKhoa
     );
     return nienKhoa?.hocKy ?? [];
   }, [hocKyNienKhoas, tempSelectedNienKhoa]);
@@ -166,7 +166,7 @@ export default function DuyetHocPhan({
     setSelectedHocKyId(tempSelectedHocKyId);
 
     const nienKhoa = hocKyNienKhoas.find(
-      (nk) => nk.id === tempSelectedNienKhoa
+      (nk) => nk.nienKhoaId === tempSelectedNienKhoa
     );
     const hocKy = nienKhoa?.hocKy.find((hk) => hk.id === tempSelectedHocKyId);
 

@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import "../../styles/reset.css";
 import "../../styles/menu.css";
 import { useModalContext } from "../../hook/ModalContext";
-import { useGetHocKyHienHanh } from "../../features/pdt/hooks/useGetHocKyHienHanh";
+import { useHocKyHienHanh } from "../../features/common/hooks";
 import {
   useCheckPhaseDangKy,
   useDanhSachLopHocPhan,
@@ -18,7 +18,7 @@ import ChuyenLopModal from "./components/ChuyenLopModal";
 export default function DangKyHocPhan() {
   const { openNotify, openConfirm } = useModalContext();
 
-  const { data: hocKyHienHanh, loading: loadingHocKy } = useGetHocKyHienHanh();
+  const { data: hocKyHienHanh, loading: loadingHocKy } = useHocKyHienHanh();
   const hocKyId = hocKyHienHanh?.id || "";
 
   const { canRegister, loading: checkingPhase } = useCheckPhaseDangKy(hocKyId);
