@@ -1086,6 +1086,11 @@ input.form__floating-label__quanly {
   height: 30px !important;
 }
 
+.h__40__w__100 {
+  height: 40px !important;
+  width: 100px !important;
+}
+
 .P__10__20 {
   padding: 10px 20px;
 }
@@ -2021,4 +2026,83 @@ th {
 
 .forget_password_text:hover {
   text-decoration: underline;
+}
+
+/* src/pages/pdt/control-panel.css */
+
+.cp-card {
+  --cp-border: #eaedf3;
+  --cp-bg: #fff;
+  --cp-head-bg: #a8b9ca;
+  --cp-shadow: 0 8px 20px rgba(2, 14, 34, 0.06);
+  --cp-radius: 16px;
+
+  background: var(--cp-bg);
+  border: 1px solid var(--cp-border);
+  border-radius: var(--cp-radius);
+  box-shadow: var(--cp-shadow);
+  overflow: hidden;
+}
+
+/* Table-like rows */
+.cp-row {
+  display: grid;
+  grid-template-columns: 1fr 160px;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 18px;
+  border-top: 1px dashed var(--cp-border);
+  transition: background 160ms ease;
+}
+
+.cp-row:first-of-type {
+  border-top: 0;
+}
+
+.cp-row:hover {
+  background: #fbfdff;
+}
+
+.cp-row--head {
+  background: var(--cp-head-bg);
+  border-bottom: 1px solid var(--cp-border);
+  border-top: 0;
+  font-weight: 600;
+  color: #0f1b2d;
+}
+
+.cp-cell {
+  min-height: 28px;
+}
+
+.cp-cell--right {
+  display: flex;
+  justify-content: center;
+}
+
+/* Label + leading dot */
+.cp-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  color: #20304a;
+}
+
+.cp-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+}
+
+/* Footer */
+.cp-footer {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 18px 18px;
+  background: linear-gradient(180deg, rgba(2, 6, 23, 0) 0%, #fafcff 100%);
+  border-top: 1px solid var(--cp-border);
 }

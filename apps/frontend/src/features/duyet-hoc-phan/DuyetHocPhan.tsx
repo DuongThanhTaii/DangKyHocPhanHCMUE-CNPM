@@ -12,7 +12,7 @@ import type { DuyetHocPhanProps } from "./types";
 type Role = "pdt" | "truong_khoa" | "tro_ly_khoa" | "phong_dao_tao" | ""; // ✅ Thêm "phong_dao_tao"
 
 interface StoredUser {
-  loai_tai_khoan?: Role;
+  loaiTaiKhoan?: Role;
 }
 
 /* ================= Component ================= */
@@ -90,7 +90,8 @@ export default function DuyetHocPhan({
     if (storedUser) {
       try {
         const user: StoredUser = JSON.parse(storedUser);
-        setUserRole(user.loai_tai_khoan ?? "");
+        console.log("user in local", user);
+        setUserRole(user.loaiTaiKhoan ?? "");
       } catch {
         setUserRole("");
       }
@@ -320,7 +321,7 @@ export default function DuyetHocPhan({
                         {/* Nút Từ chối - gọi action từ props */}
                         {actions.tuChoiDeXuat ? (
                           <button
-                            className="btn__cancel w50__h20"
+                            className="btn-cancel w50__h20"
                             onClick={() => actions.tuChoiDeXuat!(dx.id)}
                             disabled={!canAct}
                           >
@@ -328,7 +329,7 @@ export default function DuyetHocPhan({
                           </button>
                         ) : (
                           <button
-                            className="btn__cancel w50__h20"
+                            className="btn-cancel w50__h20"
                             onClick={() =>
                               openNotify(
                                 "Chức năng từ chối đang được phát triển",
