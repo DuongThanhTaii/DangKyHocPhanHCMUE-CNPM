@@ -13,7 +13,12 @@ const withToken3 = (init: RequestInit = {}) => {
   return { ...init, headers };
 };
 
-type PropsEdit = { id: string; isOpen: boolean; onClose: () => void };
+type PropsEdit = {
+  id: string;
+  isOpen: boolean;
+  onClose: () => void;
+  onUpdated?: () => void;
+};
 
 type Detail = {
   id: string;
@@ -31,6 +36,7 @@ const ModalCapNhatGiangVien: React.FC<PropsEdit> = ({
   id,
   isOpen,
   onClose,
+  onUpdated,
 }) => {
   const { openNotify } = useModalContext();
 
@@ -106,6 +112,7 @@ const ModalCapNhatGiangVien: React.FC<PropsEdit> = ({
       const json = await res.json();
       if (json.isSuccess) {
         openNotify?.("Cập nhật giảng viên thành công", "success");
+        onUpdated?.();
         onClose();
       } else {
         openNotify?.(json.message || "Cập nhật thất bại", "error");

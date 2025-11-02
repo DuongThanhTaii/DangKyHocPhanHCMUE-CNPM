@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { useHocKyHienHanh, useHocKyNienKhoa } from "../features/common/hooks";
 import type { HocKyItemDTO } from "../features/common/types";
 
@@ -13,41 +13,33 @@ export default function HocKySelector({
   disabled = false,
   autoSelectCurrent = true,
 }: HocKySelectorProps) {
-  const { data: hocKyHienHanh, loading: loadingHocKyHienHanh } =
-    useHocKyHienHanh();
+  const { data: hocKyHienHanh, loading: loadingHienHanh } = useHocKyHienHanh();
   const { data: hocKyNienKhoas, loading: loadingHocKy } = useHocKyNienKhoa();
 
   const [selectedNienKhoa, setSelectedNienKhoa] = useState<string>("");
   const [selectedHocKyId, setSelectedHocKyId] = useState<string>("");
 
-  // ✅ Flatten data
-  const nienKhoas = useMemo(
-    () => Array.from(new Set(hocKyNienKhoas.map((nk) => nk.tenNienKhoa))),
-    [hocKyNienKhoas]
-  );
+  // ✅ FIX: Track if we've already auto-selected to prevent infinite loop
+  const hasAutoSelected = useRef(false);
 
   const flatHocKys = useMemo(() => {
     const result: (HocKyItemDTO & { tenNienKhoa: string })[] = [];
-
     hocKyNienKhoas.forEach((nienKhoa) => {
       nienKhoa.hocKy.forEach((hk) => {
-        result.push({
-          ...hk,
-          tenNienKhoa: nienKhoa.tenNienKhoa,
-        });
+        result.push({ ...hk, tenNienKhoa: nienKhoa.tenNienKhoa });
       });
     });
-
     return result;
   }, [hocKyNienKhoas]);
 
-  // ✅ Auto-select học kỳ hiện hành ONLY on mount (once)
+  // ✅ Auto-select học kỳ hiện hành ONLY ONCE
   useEffect(() => {
-    if (!autoSelectCurrent) return;
+    // ✅ Guard: Skip if already auto-selected
+    if (hasAutoSelected.current) return;
 
-    // Only run if both data loaded AND no selection made yet
+    // ✅ Guard: Skip if not ready
     if (
-      loadingHocKyHienHanh ||
+      loadingHienHanh ||
       loadingHocKy ||
       !hocKyHienHanh ||
       flatHocKys.length === 0
@@ -55,34 +47,43 @@ export default function HocKySelector({
       return;
     }
 
-    // ✅ Only auto-select if BOTH fields are empty (first load)
-    if (selectedHocKyId || selectedNienKhoa) {
+    // ✅ Guard: Skip if autoSelectCurrent is false
+    if (!autoSelectCurrent) {
+      hasAutoSelected.current = true; // Mark as checked
       return;
     }
 
     const hkHienHanh = flatHocKys.find((hk) => hk.id === hocKyHienHanh.id);
 
     if (hkHienHanh) {
+      console.log("✅ [HocKySelector] Auto-selecting:", hkHienHanh.tenHocKy);
       setSelectedNienKhoa(hkHienHanh.tenNienKhoa);
       setSelectedHocKyId(hkHienHanh.id);
       onHocKyChange(hkHienHanh.id);
+      hasAutoSelected.current = true; // ✅ Mark as done
     }
   }, [
     hocKyHienHanh,
     flatHocKys,
-    loadingHocKyHienHanh,
+    loadingHienHanh,
     loadingHocKy,
-    selectedNienKhoa,
     autoSelectCurrent,
-  ]);
+  ]); // ✅ Remove onHocKyChange
 
   // ✅ Reset học kỳ khi đổi niên khóa
   useEffect(() => {
     setSelectedHocKyId("");
-    onHocKyChange("");
   }, [selectedNienKhoa]);
 
-  // ✅ Handle học kỳ change
+  const filteredHocKys = useMemo(
+    () =>
+      selectedNienKhoa
+        ? flatHocKys.filter((hk) => hk.tenNienKhoa === selectedNienKhoa)
+        : [],
+    [flatHocKys, selectedNienKhoa]
+  );
+
+  // ✅ Manual selection handler
   const handleHocKyChange = (hocKyId: string) => {
     setSelectedHocKyId(hocKyId);
     onHocKyChange(hocKyId);
@@ -99,11 +100,13 @@ export default function HocKySelector({
           disabled={disabled || loadingHocKy}
         >
           <option value="">-- Chọn Niên khóa --</option>
-          {nienKhoas.map((nk) => (
-            <option key={nk} value={nk}>
-              {nk}
-            </option>
-          ))}
+          {Array.from(new Set(hocKyNienKhoas.map((nk) => nk.tenNienKhoa))).map(
+            (tenNK) => (
+              <option key={tenNK} value={tenNK}>
+                {tenNK}
+              </option>
+            )
+          )}
         </select>
       </div>
 
@@ -116,13 +119,11 @@ export default function HocKySelector({
           disabled={disabled || !selectedNienKhoa || loadingHocKy}
         >
           <option value="">-- Chọn Học kỳ --</option>
-          {flatHocKys
-            .filter((hk) => hk.tenNienKhoa === selectedNienKhoa)
-            .map((hk) => (
-              <option key={hk.id} value={hk.id}>
-                {hk.tenHocKy}
-              </option>
-            ))}
+          {filteredHocKys.map((hk) => (
+            <option key={hk.id} value={hk.id}>
+              {hk.tenHocKy}
+            </option>
+          ))}
         </select>
       </div>
     </>

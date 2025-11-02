@@ -10,6 +10,7 @@ export const useHocPhi = (hocKyId: string) => {
     const [submitting, setSubmitting] = useState(false);
 
     const fetchData = useCallback(async () => {
+        // ✅ FIX: Không gọi API nếu hocKyId rỗng
         if (!hocKyId) {
             setData(null);
             return;

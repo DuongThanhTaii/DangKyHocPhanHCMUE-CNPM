@@ -7,7 +7,11 @@ export class SinhVien {
         public nganhId: string | null,
         public lop: string | null,
         public khoaHoc: string | null,
-        public ngayNhapHoc: Date | null
+        public ngayNhapHoc: Date | null,
+        // ✅ Add new readonly fields for display
+        public readonly tenKhoa?: string,
+        public readonly tenNganh?: string,
+        public readonly trangThaiHoatDong?: boolean
     ) { }
 
     static create(props: {
@@ -32,7 +36,7 @@ export class SinhVien {
         );
     }
 
-    static fromPersistence(props: {
+    static fromPersistence(data: {
         id: string;
         maSoSinhVien: string;
         hoTen: string;
@@ -41,16 +45,22 @@ export class SinhVien {
         lop: string | null;
         khoaHoc: string | null;
         ngayNhapHoc: Date | null;
+        tenKhoa?: string;
+        tenNganh?: string;
+        trangThaiHoatDong?: boolean;
     }): SinhVien {
         return new SinhVien(
-            props.id,
-            props.maSoSinhVien,
-            props.hoTen,
-            props.khoaId,
-            props.nganhId,
-            props.lop,
-            props.khoaHoc,
-            props.ngayNhapHoc
+            data.id,
+            data.maSoSinhVien,
+            data.hoTen,
+            data.khoaId,
+            data.nganhId,
+            data.lop,
+            data.khoaHoc,
+            data.ngayNhapHoc,
+            data.tenKhoa,
+            data.tenNganh,
+            data.trangThaiHoatDong
         );
     }
 

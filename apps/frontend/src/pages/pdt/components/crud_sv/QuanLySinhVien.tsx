@@ -7,17 +7,13 @@ import "../../../../styles/menu.css";
 
 type SinhVien = {
   id: string;
-  ma_so_sinh_vien: string;
+  maSoSinhVien: string; // ✅ Changed from ma_so_sinh_vien
+  hoTen: string; // ✅ Add missing field
   lop: string;
-  khoa_hoc: string;
-  ngay_nhap_hoc: string;
-  users: {
-    id: string;
-    ho_ten: string;
-    tai_khoan: { ten_dang_nhap: string } | null;
-  };
-  khoa: { id: string; ten_khoa: string } | null;
-  nganh_hoc: { id: string; ten_nganh: string } | null;
+  khoaHoc: string; // ✅ Changed from khoa_hoc
+  tenKhoa: string; // ✅ Changed from khoa.ten_khoa
+  tenNganh: string; // ✅ Changed from nganh_hoc.ten_nganh
+  trangThaiHoatDong: boolean; // ✅ Add missing field
 };
 
 type Khoa = { id: string; tenKhoa: string }; // ✅ Change from ten_khoa
@@ -101,14 +97,20 @@ const QuanLySinhVien: React.FC = () => {
   const filteredData = useMemo(() => {
     let list = allSinhVien;
 
-    // ✅ Filter theo khoa
+    // ✅ Filter theo khoa (by tenKhoa string match)
     if (filterKhoa) {
-      list = list.filter((sv) => sv.khoa?.id === filterKhoa);
+      const selectedKhoa = khoaList.find((k) => k.id === filterKhoa);
+      if (selectedKhoa) {
+        list = list.filter((sv) => sv.tenKhoa === selectedKhoa.tenKhoa);
+      }
     }
 
-    // ✅ Filter theo ngành
+    // ✅ Filter theo ngành (by tenNganh string match)
     if (filterNganh) {
-      list = list.filter((sv) => sv.nganh_hoc?.id === filterNganh);
+      const selectedNganh = nganhList.find((n) => n.id === filterNganh);
+      if (selectedNganh) {
+        list = list.filter((sv) => sv.tenNganh === selectedNganh.tenNganh);
+      }
     }
 
     // ✅ Filter theo lớp
@@ -122,20 +124,22 @@ const QuanLySinhVien: React.FC = () => {
     if (search.trim()) {
       const q = search.toLowerCase();
       list = list.filter((sv) =>
-        [
-          sv.users?.ho_ten,
-          sv.ma_so_sinh_vien,
-          sv.khoa?.ten_khoa,
-          sv.nganh_hoc?.ten_nganh,
-          sv.lop,
-        ]
+        [sv.hoTen, sv.maSoSinhVien, sv.tenKhoa, sv.tenNganh, sv.lop]
           .filter(Boolean)
           .some((v) => v!.toLowerCase().includes(q))
       );
     }
 
     return list;
-  }, [allSinhVien, filterKhoa, filterNganh, filterLop, search]);
+  }, [
+    allSinhVien,
+    filterKhoa,
+    filterNganh,
+    filterLop,
+    search,
+    khoaList,
+    nganhList,
+  ]);
 
   /** ========== DELETE ========== */
   const handleDeleteSinhVien = async (id: string) => {
@@ -270,12 +274,12 @@ const QuanLySinhVien: React.FC = () => {
             <tbody>
               {filteredData.map((sv) => (
                 <tr key={sv.id}>
-                  <td>{sv.users?.ho_ten}</td>
-                  <td>{sv.ma_so_sinh_vien}</td>
+                  <td>{sv.hoTen}</td>
+                  <td>{sv.maSoSinhVien}</td>
                   <td>{sv.lop}</td>
-                  <td>{sv.khoa?.ten_khoa}</td>
-                  <td>{sv.nganh_hoc?.ten_nganh}</td>
-                  <td>{sv.khoa_hoc}</td>
+                  <td>{sv.tenKhoa}</td>
+                  <td>{sv.tenNganh}</td>
+                  <td>{sv.khoaHoc}</td>
                   <td className="w40">
                     <div className="btn__quanly__container">
                       <button

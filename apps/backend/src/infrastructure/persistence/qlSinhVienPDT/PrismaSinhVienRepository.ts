@@ -36,6 +36,7 @@ export class PrismaSinhVienRepository implements ISinhVienRepository {
             ? {
                 OR: [
                     { ma_so_sinh_vien: { contains: search, mode: "insensitive" } },
+                    { lop: { contains: search, mode: "insensitive" } },
                     { users: { ho_ten: { contains: search, mode: "insensitive" } } },
                 ],
             }
@@ -47,11 +48,15 @@ export class PrismaSinhVienRepository implements ISinhVienRepository {
                 skip,
                 take: pageSize,
                 include: {
-                    users: true,
+                    users: {
+                        include: {
+                            tai_khoan: true,
+                        },
+                    },
                     khoa: true,
                     nganh_hoc: true,
                 },
-                orderBy: { ma_so_sinh_vien: "desc" },
+                orderBy: { users: { created_at: "desc" } },
             }),
             this.db.sinh_vien.count({ where }),
         ]);
@@ -96,16 +101,78 @@ export class PrismaSinhVienRepository implements ISinhVienRepository {
         await this.db.sinh_vien.delete({ where: { id } });
     }
 
+    async getAllSinhVien(
+        page: number = 1,
+        limit: number = 20,
+        searchTerm?: string,
+        khoa_id?: string,
+        nganh_id?: string
+    ): Promise<{ items: SinhVien[]; total: number }> {
+        const skip = (page - 1) * limit;
+
+        const whereClause: any = {
+            users: {
+                tai_khoan: {
+                    trang_thai_hoat_dong: true,
+                },
+            },
+        };
+
+        if (searchTerm) {
+            whereClause.OR = [
+                { ma_so_sinh_vien: { contains: searchTerm, mode: "insensitive" } },
+                { users: { ho_ten: { contains: searchTerm, mode: "insensitive" } } },
+            ];
+        }
+
+        if (khoa_id) {
+            whereClause.khoa_id = khoa_id;
+        }
+
+        if (nganh_id) {
+            whereClause.nganh_id = nganh_id;
+        }
+
+        const [items, total] = await Promise.all([
+            this.db.sinh_vien.findMany({
+                where: whereClause,
+                skip,
+                take: limit,
+                include: {
+                    users: {
+                        include: {
+                            tai_khoan: true,
+                        },
+                    },
+                    khoa: true,
+                    nganh_hoc: true,
+                },
+                orderBy: {
+                    ma_so_sinh_vien: "asc",
+                },
+            }),
+            this.db.sinh_vien.count({ where: whereClause }),
+        ]);
+
+        return {
+            items: items.map((record) => this.toDomain(record)),
+            total,
+        };
+    }
+
     private toDomain(record: any): SinhVien {
         return SinhVien.fromPersistence({
             id: record.id,
             maSoSinhVien: record.ma_so_sinh_vien,
             hoTen: record.users?.ho_ten || "",
+            tenKhoa: record.khoa?.ten_khoa || "",
+            tenNganh: record.nganh_hoc?.ten_nganh || "",
             khoaId: record.khoa_id,
             nganhId: record.nganh_id,
             lop: record.lop,
             khoaHoc: record.khoa_hoc,
             ngayNhapHoc: record.ngay_nhap_hoc,
+            trangThaiHoatDong: record.users?.tai_khoan?.trang_thai_hoat_dong ?? true,
         });
     }
 }

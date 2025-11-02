@@ -103,9 +103,12 @@ export default function ThanhToanHocPhi() {
       </div>
 
       <div className="body__inner">
-        {/* ✅ Filters */}
+        {/* ✅ Filters - Disable auto-select để tránh infinite loop */}
         <div className="selecy__duyethp__container">
-          <HocKySelector onHocKyChange={setSelectedHocKyId} />
+          <HocKySelector
+            onHocKyChange={setSelectedHocKyId}
+            autoSelectCurrent={true} // ✅ Keep auto-select for user convenience
+          />
         </div>
 
         {/* ✅ Loading state */}
