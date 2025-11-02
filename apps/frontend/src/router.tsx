@@ -8,6 +8,7 @@ import PDTDuyetHocPhan from "./pages/pdt/DuyetHocPhan-PDT";
 import TaoLopHocPhan from "./pages/tlk/TaoLopHocPhan";
 import QuanLyNoiBo from "./pages/pdt/QuanLyNoiBo";
 import ThongKeDashboard from "./pages/pdt/ThongKeDashboard";
+import ControlPanel from "./pages/pdt/ControlPanel";
 
 import GVLayout from "./layouts/GVLayout";
 import GiaoVienDashboard from "./pages/gv/Dashboard";
@@ -57,6 +58,7 @@ export const router = createBrowserRouter([
       { path: "thong-ke-dashboard", element: <BaoCaoThongKe /> },
       { path: "chuyen-hoc-ky", element: <ChuyenHocKyHienHanh /> },
       { path: "phan-bo-phong-hoc", element: <PhanBoPhongHoc /> },
+      { path: "control-panel", element: <ControlPanel /> },
     ],
   },
 
