@@ -1,15 +1,15 @@
 import { useState, useEffect, useMemo } from "react";
 import "../../styles/reset.css";
 import "../../styles/menu.css";
-import { useGetHocKyHienHanh } from "../../features/pdt/hooks/useGetHocKyHienHanh";
-import { useHocKyNienKhoa } from "../../features/pdt/hooks/useHocKyNienKhoa";
+import { useHocKyHienHanh } from "../../features/common/hooks";
+import { useHocKyNienKhoa } from "../../features/common/hooks";
 import { useLichSuDangKy } from "../../features/sv/hooks";
-import type { HocKyDTO } from "../../features/pdt/types/pdtTypes";
+import type { HocKyItemDTO } from "../../features/common/types";
+import HocKySelector from "../../components/HocKySelector";
 
 export default function LichSuDangKy() {
-  // ✅ Load học kỳ hiện hành & danh sách học kỳ
   const { data: hocKyHienHanh, loading: loadingHocKyHienHanh } =
-    useGetHocKyHienHanh();
+    useHocKyHienHanh();
   const { data: hocKyNienKhoas, loading: loadingHocKy } = useHocKyNienKhoa();
 
   const [selectedNienKhoa, setSelectedNienKhoa] = useState<string>("");
@@ -23,7 +23,7 @@ export default function LichSuDangKy() {
 
   // ✅ Flatten data - Học kỳ list
   const flatHocKys = useMemo(() => {
-    const result: (HocKyDTO & { tenNienKhoa: string })[] = [];
+    const result: (HocKyItemDTO & { tenNienKhoa: string })[] = [];
 
     hocKyNienKhoas.forEach((nienKhoa) => {
       nienKhoa.hocKy.forEach((hk) => {
@@ -37,17 +37,37 @@ export default function LichSuDangKy() {
     return result;
   }, [hocKyNienKhoas]);
 
-  // ✅ Auto-select học kỳ hiện hành khi load
+  // ✅ Auto-select học kỳ hiện hành ONLY on mount (once)
   useEffect(() => {
-    if (hocKyHienHanh && flatHocKys.length > 0 && !selectedHocKyId) {
-      const hkHienHanh = flatHocKys.find((hk) => hk.id === hocKyHienHanh.id);
-
-      if (hkHienHanh) {
-        setSelectedNienKhoa(hkHienHanh.tenNienKhoa);
-        setSelectedHocKyId(hkHienHanh.id);
-      }
+    // Only run if both data loaded AND no selection made yet
+    if (
+      loadingHocKyHienHanh ||
+      loadingHocKy ||
+      !hocKyHienHanh ||
+      flatHocKys.length === 0
+    ) {
+      return;
     }
-  }, [hocKyHienHanh, flatHocKys, selectedHocKyId]);
+
+    // ✅ Only auto-select if BOTH fields are empty (first load)
+    if (selectedHocKyId || selectedNienKhoa) {
+      return;
+    }
+
+    const hkHienHanh = flatHocKys.find((hk) => hk.id === hocKyHienHanh.id);
+
+    if (hkHienHanh) {
+      setSelectedNienKhoa(hkHienHanh.tenNienKhoa);
+      setSelectedHocKyId(hkHienHanh.id);
+    }
+    // ✅ Remove selectedHocKyId from dependencies to prevent re-running
+  }, [
+    hocKyHienHanh,
+    flatHocKys,
+    loadingHocKyHienHanh,
+    loadingHocKy,
+    selectedNienKhoa,
+  ]);
 
   // ✅ Reset học kỳ khi đổi niên khóa
   useEffect(() => {
@@ -87,41 +107,7 @@ export default function LichSuDangKy() {
       <div className="body__inner">
         {/* Filters */}
         <div className="selecy__duyethp__container">
-          {/* Niên khóa */}
-          <div className="mr_20">
-            <select
-              className="form__select w__200"
-              value={selectedNienKhoa}
-              onChange={(e) => setSelectedNienKhoa(e.target.value)}
-              disabled={loadingHocKy}
-            >
-              <option value="">-- Chọn Niên khóa --</option>
-              {nienKhoas.map((nk) => (
-                <option key={nk} value={nk}>
-                  {nk}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Học kỳ */}
-          <div>
-            <select
-              className="form__select w__200"
-              value={selectedHocKyId}
-              onChange={(e) => setSelectedHocKyId(e.target.value)}
-              disabled={!selectedNienKhoa || loadingHocKy}
-            >
-              <option value="">-- Chọn Học kỳ --</option>
-              {flatHocKys
-                .filter((hk) => hk.tenNienKhoa === selectedNienKhoa)
-                .map((hk) => (
-                  <option key={hk.id} value={hk.id}>
-                    {hk.tenHocKy}
-                  </option>
-                ))}
-            </select>
-          </div>
+          <HocKySelector onHocKyChange={setSelectedHocKyId} />
         </div>
 
         {/* Table */}

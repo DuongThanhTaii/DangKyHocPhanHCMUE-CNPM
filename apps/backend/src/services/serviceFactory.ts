@@ -6,7 +6,6 @@ import { HocKyService } from "./hocKyService";
 import { HocPhanService } from "./hocPhanService";
 import { KyPhaseService } from "./kyPhaseService";
 import { PhongHocService } from "./phongHocService";
-import { SinhVienService } from "./sinhVienService";
 import { GiangVienService } from "./giangVienService";
 import { LopHocPhanSinhVienService } from "./lopHocPhanSinhVienService";
 import { DangKyHocPhanSinhVienService } from "./dangKyHocPhanSinhVienService";
@@ -14,7 +13,7 @@ import { GvLopHocPhanService } from "./gvLopHocPhanService";
 import { LichSuDangKySinhVienService } from "./lichSuDangKySinhVienService";
 import { HocPhiService } from "./hocPhiService";
 import { ChinhSachTinChiService } from "./chinhSachTinChiService";
-import { DanhMucService } from "./danhMucService";
+import { SinhVienService } from "./sinhVienService";
 
 export class ServiceFactory {
     private static instance: ServiceFactory;
@@ -23,7 +22,6 @@ export class ServiceFactory {
     private _hocKyService?: HocKyService;
     private _kyPhaseService?: KyPhaseService;
     private _deXuatHocPhanService?: DeXuatHocPhanService;
-    private _sinhVienService?: SinhVienService;
     private _dotDangKyService?: DotDangKyService;
     private _checkTrangThaiForSinhVien?: CheckTrangThaiForSinhVien;
     private _hocphanService?: HocPhanService;
@@ -35,7 +33,7 @@ export class ServiceFactory {
     private _lichSuDangKySinhVienService?: LichSuDangKySinhVienService;
     private _hocPhiService?: HocPhiService;
     private _chinhSachTinChiService?: ChinhSachTinChiService;
-    private _danhMucService?: DanhMucService;
+    private _sinhVienService?: SinhVienService;
     private constructor() {
         this.unitOfWork = UnitOfWork.getInstance();
     }
@@ -66,12 +64,6 @@ export class ServiceFactory {
             this._deXuatHocPhanService = new DeXuatHocPhanService(this.unitOfWork);
         }
         return this._deXuatHocPhanService;
-    }
-    get sinhVienService() {
-        if (!this._sinhVienService) {
-            this._sinhVienService = new SinhVienService(this.unitOfWork);
-        }
-        return this._sinhVienService;
     }
     get dotDangKyService() {
         if (!this._dotDangKyService) {
@@ -148,10 +140,10 @@ export class ServiceFactory {
         return this._chinhSachTinChiService;
     }
 
-    get danhMucService() {
-        if (!this._danhMucService) {
-            this._danhMucService = new DanhMucService();
+    get sinhVienService() {
+        if (!this._sinhVienService) {
+            this._sinhVienService = new SinhVienService(this.unitOfWork);
         }
-        return this._danhMucService;
+        return this._sinhVienService;
     }
 }

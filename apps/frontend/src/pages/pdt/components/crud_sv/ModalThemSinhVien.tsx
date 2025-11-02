@@ -12,7 +12,7 @@ type Props = {
 type Khoa = { id: string; tenKhoa: string }; // ✅ Change from ten_khoa to tenKhoa
 type Nganh = { id: string; tenNganh: string; khoaId: string }; // ✅ Change from ten_nganh & khoa_id
 
-const API = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+const API = import.meta.env.VITE_API_URL;
 const withToken = (init: RequestInit = {}) => {
   const headers = new Headers(init.headers || {});
   const token = localStorage.getItem("token");
@@ -163,14 +163,14 @@ export const ModalThemSinhVien: React.FC<Props> = ({
 
   const handleUploadExcel = async () => {
     if (!excelFile) {
-      openNotify?.("Vui lòng chọn file Excel (.xls, .xlsx)", "info");
+      openNotify?.("Vui lòng chọn file Excel (  .xls, .xlsx)", "info");
       return;
     }
     try {
       const form = new FormData();
       form.append("file", excelFile);
 
-      const res = await fetch(`${API}/import/sinh-vien`, {
+      const res = await fetch(`${API}/pdt/sinh-vien/import/excel`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token") || ""}`,

@@ -1,5 +1,5 @@
 import type { FormEvent } from "react";
-import type { HocKyNienKhoaDTO } from "../../../features/pdt";
+import type { HocKyNienKhoaDTO } from "../../../features/common/types";
 
 type CurrentSemester = {
   ten_hoc_ky?: string | null;
@@ -48,7 +48,7 @@ export function HocKyNienKhoaShowSetup({
   });
 
   const selectedNienKhoaObj = hocKyNienKhoas.find(
-    (nk) => nk.id === selectedNienKhoa
+    (nk) => nk.nienKhoaId === selectedNienKhoa
   );
 
   console.log(
@@ -72,7 +72,7 @@ export function HocKyNienKhoaShowSetup({
         >
           <option value="">-- Chọn niên khóa --</option>
           {hocKyNienKhoas.map((nk) => (
-            <option key={nk.id} value={nk.id}>
+            <option key={nk.nienKhoaId} value={nk.nienKhoaId}>
               {nk.tenNienKhoa}
             </option>
           ))}

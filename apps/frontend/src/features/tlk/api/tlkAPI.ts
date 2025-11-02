@@ -27,14 +27,6 @@ export const tlkAPI = {
         });
     },
 
-    /**
-     * ✅ COPY từ PDT - Lấy học kỳ hiện hành
-     */
-    getHocKyHienHanh: async (): Promise<ServiceResult<HocKyHienHanhDTO>> => {
-        return await fetchJSON("tlk/hoc-ky-hien-hanh", {
-            method: "GET",
-        });
-    },
 
     /**
      * ✅ COPY từ PDT - Lấy phòng học available

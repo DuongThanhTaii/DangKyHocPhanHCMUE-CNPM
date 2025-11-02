@@ -53,13 +53,6 @@ export interface HocKyDTO {
     ngayKetThuc: Date | null;
 }
 
-export interface HocKyNienKhoaDTO {
-    id: string;
-    tenNienKhoa: string;
-    ngayBatDau: Date | null;
-    ngayKetThuc: Date | null;
-    hocKy: HocKyDTO[];
-}
 export interface PhaseItemDTO {
     phase: string;
     startAt: string;
@@ -319,4 +312,43 @@ export interface TinhHocPhiHangLoatResponse {
     successCount: number;
     failedCount: number;
     errors: TinhHocPhiErrorItem[];
+}
+
+// ✅ Types cho Báo cáo thống kê
+export interface OverviewPayload {
+    svUnique: number;
+    soDangKy: number; // ✅ Changed from soDK
+    soLopHocPhan: number; // ✅ Changed from soLHP
+    taiChinh: { thuc_thu: number; ky_vong: number };
+    ketLuan: string;
+}
+
+export interface DKTheoKhoaRow {
+    ten_khoa: string;
+    so_dang_ky: number;
+}
+
+export interface DKTheoNganhRow {
+    ten_nganh: string;
+    so_dang_ky: number;
+}
+
+export interface TaiGiangVienRow {
+    ho_ten: string;
+    so_lop: number;
+}
+
+export interface BaoCaoTheoKhoaResponse {
+    data: DKTheoKhoaRow[];
+    ketLuan: string;
+}
+
+export interface BaoCaoTheoNganhResponse {
+    data: DKTheoNganhRow[];
+    ketLuan: string;
+}
+
+export interface BaoCaoTaiGVResponse {
+    data: TaiGiangVienRow[];
+    ketLuan: string;
 }

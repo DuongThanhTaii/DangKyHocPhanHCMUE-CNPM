@@ -3,9 +3,7 @@ import "../../styles/reset.css";
 import "../../styles/menu.css";
 import { useSVTKBWeekly } from "../../features/sv/hooks";
 import { useTietHocConfig } from "../../features/gv/hooks";
-import { useGetHocKyHienHanh } from "../../features/pdt/hooks/useGetHocKyHienHanh";
-import { useHocKyNienKhoa } from "../../features/pdt/hooks/useHocKyNienKhoa";
-import type { HocKyDTO } from "../../features/pdt/types/pdtTypes";
+import { useHocKyNienKhoa } from "../../features/common/hooks";
 import {
   buildWeeksFromHocKy,
   getCurrentWeekIndexFromHocKy,
@@ -14,29 +12,23 @@ import {
 import type { RoomItem } from "../../features/gv/types";
 import TKBClassCard from "../tlk/tao-lop-hoc-phan/TKBClassCard";
 import type { ClassInstance } from "../tlk/tao-lop-hoc-phan/TaoThoiKhoaBieuModal";
+import type { HocKyItemDTO } from "../../features/common/types";
+import HocKySelector from "../../components/HocKySelector";
 
 const WEEK_DAYS = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
 
 export default function XemThoiKhoaBieu() {
   // ========= Custom Hooks =========
-  const { data: hocKyHienHanh, loading: loadingHocKyHienHanh } =
-    useGetHocKyHienHanh();
-  const { data: hocKyNienKhoas, loading: loadingHocKy } = useHocKyNienKhoa();
+  const { data: hocKyNienKhoas } = useHocKyNienKhoa();
   const { config: tietHocConfig, loading: loadingConfig } = useTietHocConfig();
 
   // ========= State =========
-  const [selectedNienKhoa, setSelectedNienKhoa] = useState<string>("");
   const [selectedHocKyId, setSelectedHocKyId] = useState<string>("");
   const [selectedWeekIndex, setSelectedWeekIndex] = useState<number>(1);
 
   // ========= Computed Values - Flatten data =========
-  const nienKhoas = useMemo(
-    () => Array.from(new Set(hocKyNienKhoas.map((nk) => nk.tenNienKhoa))),
-    [hocKyNienKhoas]
-  );
-
   const flatHocKys = useMemo(() => {
-    const result: (HocKyDTO & { tenNienKhoa: string })[] = [];
+    const result: (HocKyItemDTO & { tenNienKhoa: string })[] = [];
 
     hocKyNienKhoas.forEach((nienKhoa) => {
       nienKhoa.hocKy.forEach((hk) => {
@@ -93,23 +85,27 @@ export default function XemThoiKhoaBieu() {
     selectedWeek?.dateEnd || ""
   );
 
-  // ========= Auto-select học kỳ hiện hành khi load =========
+  // ========= Auto-select học kỳ hiện hành ONLY on mount (once) =========
   useEffect(() => {
-    if (hocKyHienHanh && flatHocKys.length > 0 && !selectedHocKyId) {
-      const hkHienHanh = flatHocKys.find((hk) => hk.id === hocKyHienHanh.id);
-
-      if (hkHienHanh) {
-        setSelectedNienKhoa(hkHienHanh.tenNienKhoa);
-        setSelectedHocKyId(hkHienHanh.id);
-      }
+    // Only run if both data loaded AND no selection made yet
+    if (!hocKyNienKhoas || flatHocKys.length === 0) {
+      return;
     }
-  }, [hocKyHienHanh, flatHocKys, selectedHocKyId]);
 
-  // ========= Reset học kỳ & tuần khi đổi niên khóa =========
-  useEffect(() => {
-    setSelectedHocKyId("");
-    setSelectedWeekIndex(1);
-  }, [selectedNienKhoa]);
+    // ✅ Only auto-select if BOTH fields are empty (first load)
+    if (selectedHocKyId) {
+      return;
+    }
+
+    const hkHienHanh = flatHocKys.find(
+      (hk) => hk.id === hocKyNienKhoas[0].hocKy[0].id
+    );
+
+    if (hkHienHanh) {
+      setSelectedHocKyId(hkHienHanh.id);
+    }
+    // ✅ Remove selectedHocKyId from dependencies to prevent re-running
+  }, [hocKyNienKhoas, flatHocKys]);
 
   // ========= Auto-select tuần hiện tại khi chọn học kỳ =========
   useEffect(() => {
@@ -225,7 +221,7 @@ export default function XemThoiKhoaBieu() {
   };
 
   // ========= Render =========
-  if (loadingHocKy || loadingConfig || loadingHocKyHienHanh) {
+  if (loadingConfig) {
     return (
       <section className="main__body">
         <div className="body__title">
@@ -250,40 +246,7 @@ export default function XemThoiKhoaBieu() {
       <div className="body__inner">
         {/* Filters */}
         <div className="selecy__duyethp__container">
-          {/* Niên khóa */}
-          <div className="mr_20">
-            <select
-              className="form__select w__200"
-              value={selectedNienKhoa}
-              onChange={(e) => setSelectedNienKhoa(e.target.value)}
-            >
-              <option value="">-- Chọn Niên khóa --</option>
-              {nienKhoas.map((nk) => (
-                <option key={nk} value={nk}>
-                  {nk}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Học kỳ */}
-          <div className="mr_20">
-            <select
-              className="form__select w__200"
-              value={selectedHocKyId}
-              onChange={(e) => setSelectedHocKyId(e.target.value)}
-              disabled={!selectedNienKhoa}
-            >
-              <option value="">-- Chọn Học kỳ --</option>
-              {flatHocKys
-                .filter((hk) => hk.tenNienKhoa === selectedNienKhoa)
-                .map((hk) => (
-                  <option key={hk.id} value={hk.id}>
-                    {hk.tenHocKy}
-                  </option>
-                ))}
-            </select>
-          </div>
+          <HocKySelector onHocKyChange={setSelectedHocKyId} />
 
           {/* Tuần */}
           <div className="mr_20">

@@ -1,11 +1,11 @@
 import { useState, type FormEvent, useEffect } from "react";
 import "../../styles/reset.css";
 import "../../styles/menu.css";
+import { useSetHocKyHienHanh } from "../../features/pdt/hooks";
 import {
   useHocKyNienKhoa,
-  useSetHocKyHienHanh,
-  useGetHocKyHienHanh,
-} from "../../features/pdt/hooks";
+  useHocKyHienHanh,
+} from "../../features/common/hooks";
 import { useModalContext } from "../../hook/ModalContext";
 
 type CurrentSemester = {
@@ -16,15 +16,14 @@ type CurrentSemester = {
   trang_thai?: string | null;
 };
 
-// ✅ Helper function to format date string
+// ✅ Helper function to format date - accepts Date or string
 const formatDateString = (
-  dateStr: string | null | undefined
+  dateInput: Date | string | null | undefined
 ): string | null => {
-  if (!dateStr) return null;
+  if (!dateInput) return null;
 
   try {
-    // ✅ Remove instanceof check - dateStr is always string | null | undefined
-    const date = new Date(dateStr);
+    const date = dateInput instanceof Date ? dateInput : new Date(dateInput);
 
     // Check if date is valid
     if (isNaN(date.getTime())) return null;
@@ -43,7 +42,7 @@ export default function ChuyenHocKyHienHanh() {
     data: hocKyHienHanh,
     loading: loadingCurrent,
     refetch, // ✅ Now available
-  } = useGetHocKyHienHanh();
+  } = useHocKyHienHanh();
 
   const [selectedNienKhoa, setSelectedNienKhoa] = useState<string>("");
   const [selectedHocKy, setSelectedHocKy] = useState<string>("");
@@ -85,7 +84,7 @@ export default function ChuyenHocKyHienHanh() {
   useEffect(() => {
     if (hocKyNienKhoas.length > 0 && !selectedNienKhoa) {
       const firstNienKhoa = hocKyNienKhoas[0];
-      setSelectedNienKhoa(firstNienKhoa.id);
+      setSelectedNienKhoa(firstNienKhoa.nienKhoaId);
 
       if (firstNienKhoa.hocKy.length > 0) {
         setSelectedHocKy(firstNienKhoa.hocKy[0].id);
@@ -95,7 +94,7 @@ export default function ChuyenHocKyHienHanh() {
 
   const handleChangeNienKhoa = (value: string) => {
     setSelectedNienKhoa(value);
-    const nienKhoa = hocKyNienKhoas.find((nk) => nk.id === value);
+    const nienKhoa = hocKyNienKhoas.find((nk) => nk.nienKhoaId === value);
     if (nienKhoa?.hocKy.length) {
       setSelectedHocKy(nienKhoa.hocKy[0].id);
     } else {
@@ -132,7 +131,7 @@ export default function ChuyenHocKyHienHanh() {
   };
 
   const matchedNienKhoa = hocKyNienKhoas.find(
-    (nk) => nk.id === selectedNienKhoa
+    (nk) => nk.nienKhoaId === selectedNienKhoa
   );
   const hocKyOptions = matchedNienKhoa?.hocKy ?? [];
 
@@ -161,7 +160,7 @@ export default function ChuyenHocKyHienHanh() {
               >
                 <option value="">-- Chọn niên khóa --</option>
                 {hocKyNienKhoas.map((nk) => (
-                  <option key={nk.id} value={nk.id}>
+                  <option key={nk.nienKhoaId} value={nk.nienKhoaId}>
                     {nk.tenNienKhoa}
                   </option>
                 ))}

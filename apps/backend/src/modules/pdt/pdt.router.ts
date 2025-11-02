@@ -9,7 +9,6 @@ import {
   updateTrangThaiByPDTHandler,
   tuChoiDeXuatHocPhanHandler, // Import thêm
 } from "./pdt_chuyentrangthai_service";
-import sinhVienRouter from "./pdt_crud_sv_service";
 import {
   getDanhSachKhoaHandler,
   getPhasesByHocKyHandler,
@@ -57,24 +56,6 @@ r.get("/me", requireAuth, requireRole(["phong_dao_tao"]), (req, res) => {
   res.json({ ok: true, role: req.auth!.role });
 });
 
-r.get("/hoc-ky-nien-khoa", getHocKyNienKhoaHandler);
-
-r.post(
-  "/ky-phase/bulk",
-  requireAuth,
-  requireRole(["phong_dao_tao"]),
-  createBulkKyPhaseHandler
-);
-
-r.get("/hoc-ky-hien-hanh", getHocKyHienHanhHandler);
-
-r.post(
-  "/hoc-ky-hien-hanh",
-  requireAuth,
-  requireRole(["phong_dao_tao"]),
-  setHocKyHienThanhHandler
-);
-
 // Lấy danh sách đề xuất
 r.get(
   "/de-xuat-hoc-phan",
@@ -97,14 +78,6 @@ r.patch(
   requireAuth,
   requireRole(["phong_dao_tao"]),
   tuChoiDeXuatHocPhanHandler
-);
-
-// CRUD sinh viên
-r.use(
-  "/sinh-vien",
-  requireAuth,
-  requireRole(["phong_dao_tao"]),
-  sinhVienRouter
 );
 
 // CRUD giảng viên

@@ -1,10 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
-import { pdtApi } from "../api/pdtApi";
-import type { HocKyNienKhoaDTO } from "../types/pdtTypes";
-
-/**
- * Hook để lấy danh sách học kỳ - niên khóa
- */
+import { commonApi } from "../api/commonApi";
+import type  {HocKyNienKhoaDTO } from "../types";
 export const useHocKyNienKhoa = () => {
     const [data, setData] = useState<HocKyNienKhoaDTO[]>([]);
     const [loading, setLoading] = useState(false);
@@ -14,8 +10,13 @@ export const useHocKyNienKhoa = () => {
         setLoading(true);
         setError(null);
         try {
-            const result = await pdtApi.getHocKyNienKhoa();
-            setData(result);
+            const result = await commonApi.getHocKyNienKhoa();
+
+            if (result.isSuccess && result.data) {
+                setData(result.data);
+            } else {
+                setError(result.message || "Lỗi khi tải danh sách");
+            }
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : "Lỗi khi tải danh sách";
             setError(errorMessage);

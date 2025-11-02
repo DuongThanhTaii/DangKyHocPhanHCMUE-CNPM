@@ -63,7 +63,8 @@ import { SendTuitionCalculationNotificationUseCase } from "../../application/use
 const container = new Container();
 
 // Bind Prisma Client (Singleton)
-container.bind<PrismaClient>(PrismaClient).toConstantValue(new PrismaClient());
+const prisma = new PrismaClient();
+container.bind<PrismaClient>(PrismaClient).toConstantValue(prisma);
 
 // ==================== PAYMENT BINDINGS ====================
 
@@ -98,5 +99,26 @@ container.bind<TuitionController>(TuitionController).toSelf();
 
 container.bind<IEmailService>(IEmailService).to(ConsoleEmailService);
 container.bind<SendTuitionCalculationNotificationUseCase>(SendTuitionCalculationNotificationUseCase).toSelf();
+
+// ✅ Import new module bindings
+import { registerQlSinhVienPDTBindings } from "./modules/qlSinhVienPDT.bindings";
+import { registerHocKyPublicBindings } from "./modules/hocKyPublic.bindings";
+// ✅ Import PDT Quan Ly Hoc Ky module bindings
+import { registerPdtQuanLyHocKyBindings } from "./modules/pdtQuanLyHocKy.bindings";
+// ✅ Import BaoCaoThongKe module bindings
+import { registerBaoCaoThongKeBindings } from "./modules/baoCaoThongKe.bindings";
+import { bindDanhMucModule } from "./modules/dm.bindings";
+
+// ✅ Register QL Sinh Vien PDT module
+registerQlSinhVienPDTBindings(container);
+// ✅ Register HocKy Public module
+registerHocKyPublicBindings(container);
+// ✅ Register PDT Quan Ly Hoc Ky module
+registerPdtQuanLyHocKyBindings(container);
+// ✅ Register BaoCao Thong Ke module
+registerBaoCaoThongKeBindings(container);
+
+// ✅ Bind DM module
+bindDanhMucModule(container, prisma);
 
 export { container };

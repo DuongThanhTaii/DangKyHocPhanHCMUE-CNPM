@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { pdtApi } from "../api/pdtApi";
-import type { HocKyHienHanhDTO } from "../types/pdtTypes";
+import { commonApi } from "../api/commonApi";
+import type { HocKyHienHanhDTO } from "../types";
 
 /**
- * Hook lấy học kỳ hiện hành (đơn giản)
+ * ✅ Hook lấy học kỳ hiện hành (public, auth required)
  */
-export const useGetHocKyHienHanh = () => {
+export const useHocKyHienHanh = () => {
     const [data, setData] = useState<HocKyHienHanhDTO | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -15,7 +15,7 @@ export const useGetHocKyHienHanh = () => {
         setError(null);
 
         try {
-            const result = await pdtApi.getHocKyHienHanh();
+            const result = await commonApi.getHocKyHienHanh();
 
             if (result.isSuccess && result.data) {
                 setData(result.data);
@@ -33,15 +33,10 @@ export const useGetHocKyHienHanh = () => {
         fetchData();
     }, []);
 
-    // ✅ Expose refetch method
-    const refetch = () => {
-        fetchData();
-    };
-
     return {
         data,
         loading,
         error,
-        refetch, // ✅ Add refetch
+        refetch: fetchData,
     };
 };

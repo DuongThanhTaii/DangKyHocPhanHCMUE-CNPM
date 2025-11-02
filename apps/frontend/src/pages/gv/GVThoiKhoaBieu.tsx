@@ -1,26 +1,28 @@
 import { useEffect, useMemo, useState } from "react";
 import "../../styles/reset.css";
 import "../../styles/menu.css";
-import { useGVTKBWeekly, useTietHocConfig } from "../../features/gv/hooks";
-import { useGetHocKyHienHanh } from "../../features/pdt/hooks/useGetHocKyHienHanh";
-import { useHocKyNienKhoa } from "../../features/pdt/hooks/useHocKyNienKhoa";
-import type { HocKyDTO } from "../../features/pdt/types/pdtTypes";
 import {
-  buildWeeksFromHocKy,
-  getCurrentWeekIndexFromHocKy,
+  useHocKyHienHanh,
+  useHocKyNienKhoa,
+} from "../../features/common/hooks";
+import { useTietHocConfig, useGVTKBWeekly } from "../../features/gv/hooks";
+import {
   formatDate,
-  getThoiGianLabel,
+  getCurrentWeekIndexFromHocKy,
+  buildWeeksFromHocKy,
 } from "../../features/gv/utils/weekUtils";
 import type { RoomItem } from "../../features/gv/types";
 import TKBClassCard from "../tlk/tao-lop-hoc-phan/TKBClassCard";
 import type { ClassInstance } from "../tlk/tao-lop-hoc-phan/TaoThoiKhoaBieuModal";
+import type { HocKyDTO } from "../../features/pdt";
+import type { HocKyItemDTO } from "../../features/common/types";
 
 const WEEK_DAYS = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
 
 export default function GVThoiKhoaBieu() {
-  // ========= Custom Hooks =========
+  // ✅ Use common hooks
   const { data: hocKyHienHanh, loading: loadingHocKyHienHanh } =
-    useGetHocKyHienHanh();
+    useHocKyHienHanh();
   const { data: hocKyNienKhoas, loading: loadingHocKy } = useHocKyNienKhoa();
   const { config: tietHocConfig, loading: loadingConfig } = useTietHocConfig();
 
@@ -36,7 +38,7 @@ export default function GVThoiKhoaBieu() {
   );
 
   const flatHocKys = useMemo(() => {
-    const result: (HocKyDTO & { tenNienKhoa: string })[] = [];
+    const result: (HocKyItemDTO & { tenNienKhoa: string })[] = [];
 
     hocKyNienKhoas.forEach((nienKhoa) => {
       nienKhoa.hocKy.forEach((hk) => {
