@@ -44,9 +44,20 @@ const ModalThemGiangVien: React.FC<PropsAdd> = ({
       try {
         const res = await fetch(`${API2}/dm/khoa`, withToken2());
         const json = await res.json();
-        setDanhSachKhoa(json?.data || []);
-      } catch {
-        // có thể bỏ qua, không cần notify
+        console.log("📦 [ModalGV] Response:", json);
+
+        // ✅ Lấy mảng khoa từ json.message
+        const khoaData = json?.message || [];
+
+        // ✅ Kiểm tra và cập nhật state
+        if (Array.isArray(khoaData)) {
+          setDanhSachKhoa(khoaData);
+        } else {
+          setDanhSachKhoa([]);
+        }
+      } catch (err) {
+        console.error("❌ [ModalGV] Lỗi khi tải danh sách khoa:", err);
+        openNotify?.("Không thể tải danh sách khoa", "error");
       }
     })();
   }, [isOpen]);

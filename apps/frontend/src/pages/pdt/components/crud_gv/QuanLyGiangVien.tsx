@@ -186,7 +186,7 @@ const QuanLyGiangVien: React.FC = () => {
                 <th>Họ và Tên</th>
                 <th>MGV</th>
                 <th>Khoa</th>
-                <th>Trình độ</th>
+                {/* <th>Trình độ</th> */}
                 <th>Chuyên môn</th>
                 <th>Kinh nghiệm (năm)</th>
                 <th>Thao tác</th>
@@ -198,7 +198,7 @@ const QuanLyGiangVien: React.FC = () => {
                   <td>{gv.users?.ho_ten}</td>
                   <td>{gv.users?.ma_nhan_vien}</td>
                   <td>{gv.khoa?.ten_khoa}</td>
-                  <td>{gv.trinh_do}</td>
+                  {/* <td>{gv.trinh_do}</td> */}
                   <td>{gv.chuyen_mon}</td>
                   <td>{gv.kinh_nghiem_giang_day ?? 0}</td>
                   <td className="w40">

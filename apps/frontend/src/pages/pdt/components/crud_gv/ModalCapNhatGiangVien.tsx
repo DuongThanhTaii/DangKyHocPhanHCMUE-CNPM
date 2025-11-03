@@ -63,13 +63,19 @@ const ModalCapNhatGiangVien: React.FC<PropsEdit> = ({
         const djson = await detailRes.json();
         const kjson = await khoaRes.json();
 
-        if (djson.isSuccess) {
-          const d: Detail = djson.data;
+        console.log("[GV Edit] detail:", djson);
+        console.log("[GV Edit] khoa:", kjson);
+
+        // ✅ Parse detail an toàn (data | message)
+        const d: Detail | null = (djson?.data ?? djson?.message ?? null) as any;
+
+        if (d) {
           setDetail(d);
           setForm({
             ho_ten: d.users?.ho_ten || "",
             mat_khau: "",
-            khoa_id: d.khoa_id || "",
+            // ưu tiên d.khoa_id; fallback d.khoa?.id nếu backend chỉ join
+            khoa_id: d.khoa_id || d.khoa?.id || "",
             trinh_do: d.trinh_do || "",
             chuyen_mon: d.chuyen_mon || "",
             kinh_nghiem_giang_day: (d.kinh_nghiem_giang_day ?? "").toString(),
@@ -77,8 +83,14 @@ const ModalCapNhatGiangVien: React.FC<PropsEdit> = ({
         } else {
           openNotify?.("Không tải được dữ liệu giảng viên", "error");
         }
-        setKhoaList(kjson?.data || []);
-      } catch {
+
+        // ✅ Parse danh sách khoa từ message (không phải data)
+        const khoaData =
+          kjson?.message ?? kjson?.data ?? kjson?.items ?? kjson ?? [];
+        const safeKhoa = Array.isArray(khoaData) ? khoaData : [];
+        setKhoaList(safeKhoa);
+      } catch (e) {
+        console.error("[GV Edit] load failed:", e);
         openNotify?.("Lỗi khi tải dữ liệu", "error");
       }
     })();
