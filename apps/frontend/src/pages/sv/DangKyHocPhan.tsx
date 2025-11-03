@@ -330,6 +330,53 @@ export default function DangKyHocPhan() {
     );
   }
 
+  // Ở đầu component
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
+  // bỏ dấu tiếng Việt + lowercase để tìm “mềm” hơn
+  const norm = (s: string) =>
+    (s || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+
+  // nguồn dữ liệu theo tab hiện tại
+  const sourceByTab = useMemo(
+    () => ({
+      monChung: lopHocPhanData?.monChung || [],
+      batBuoc: lopHocPhanData?.batBuoc || [],
+      tuChon: lopHocPhanData?.tuChon || [],
+    }),
+    [lopHocPhanData]
+  );
+
+  // danh sách đã lọc theo search + tab đang chọn
+  const filteredMonHoc = useMemo(() => {
+    const src = sourceByTab[activeTab] as MonHocInfoDTO[];
+    const q = norm(searchQuery.trim());
+    if (!q) return src;
+    return src.filter(
+      (m) => norm(m.maMon).includes(q) || norm(m.tenMon).includes(q)
+    );
+  }, [sourceByTab, activeTab, searchQuery]);
+
+  // handler giống màn trước
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const q = searchQuery.trim();
+    if (!q) {
+      // reset (không cần set list vì đang tính qua useMemo)
+      openNotify({ message: "Đã làm mới danh sách môn học", type: "info" });
+      return;
+    }
+    const count = filteredMonHoc.length;
+    if (count === 0) {
+      openNotify({ message: "Không tìm thấy môn phù hợp", type: "warning" });
+    } else {
+      openNotify({ message: `Tìm thấy ${count} môn`, type: "info" });
+    }
+  };
+
   return (
     <section className="main__body">
       <div className="body__title">
@@ -338,6 +385,37 @@ export default function DangKyHocPhan() {
 
       <div className="body__inner">
         <p className="sub__title_gd">{hocKyHienHanh?.tenHocKy}</p>
+
+        {/* Thanh tìm kiếm */}
+        <form
+          className="search-form search-form__gd"
+          onSubmit={handleSearch}
+          style={{ marginTop: 12 }}
+        >
+          <div className="form__group">
+            <input
+              type="text"
+              placeholder="Tìm kiếm mã hoặc tên môn..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="form__input h__40"
+            />
+          </div>
+          <button type="submit" className="form__button w__140">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 640 640"
+              width="20"
+              height="20"
+            >
+              <path
+                fill="currentColor"
+                d="M500.7 138.7L512 149.4L512 96C512 78.3 526.3 64 544 64C561.7 64 576 78.3 576 96L576 224C576 241.7 561.7 256 544 256L416 256C398.3 256 384 241.7 384 224C384 206.3 398.3 192 416 192L463.9 192L456.3 184.8C380.7 109.2 259.2 109.2 184.2 184.2C109.2 259.2 109.2 380.7 184.2 455.7C259.2 530.7 380.7 530.7 455.7 455.7C463.9 447.5 471.2 438.8 477.6 429.6C487.7 415.1 507.7 411.6 522.2 421.7C536.7 431.8 540.2 451.8 530.1 466.3C521.6 478.5 511.9 490.1 501 501C401 601 238.9 601 139 501C39.1 401 39 239 139 139C238.9 39.1 400.7 39 500.7 138.7z"
+              />
+            </svg>
+            Làm mới
+          </button>
+        </form>
 
         {/* Tabs */}
         <div className="tabs-container" style={{ marginTop: 20 }}>

@@ -306,7 +306,7 @@ button.btn__quanlylhp.active {
 
 .modal {
   position: absolute;
-  width: 240px;
+  width: max-content;
   top: 50px; /* ngay dưới hình tròn (100 + 10px margin) */
   right: 20px;
   background-color: #fff;
@@ -322,6 +322,7 @@ button.btn__quanlylhp.active {
   font-size: 1.4rem;
   color: rgb(107, 119, 140);
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .name__student,
