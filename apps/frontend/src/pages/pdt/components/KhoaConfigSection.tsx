@@ -318,7 +318,7 @@ export const KhoaConfigSection = forwardRef<
                 : "khoa-config-toggle-btn--view"
             }`}
           >
-            {isEditMode ? "💾 Lưu và xem" : "✏️ Chỉnh sửa"}
+            {isEditMode ? "Lưu và xem" : "Chỉnh sửa"}
           </button>
         </div>
 
