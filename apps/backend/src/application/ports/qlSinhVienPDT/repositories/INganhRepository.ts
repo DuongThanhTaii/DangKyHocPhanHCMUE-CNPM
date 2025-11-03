@@ -5,8 +5,9 @@ export interface NganhDTO {
 }
 
 export interface INganhRepository {
-    findById(id: string): Promise<NganhDTO | null>;
     findByMaNganh(maNganh: string): Promise<NganhDTO | null>;
+    findById(id: string): Promise<NganhDTO | null>;
+    findAll(): Promise<NganhDTO[]>;
 }
 
 export const INganhRepository = Symbol.for("INganhRepository");

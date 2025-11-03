@@ -5,11 +5,13 @@ export interface CreateTaiKhoanData {
     trangThaiHoatDong: boolean;
 }
 
+export interface TaiKhoanDTO {
+    id: string;
+    tenDangNhap: string;
+}
+
 export interface ITaiKhoanRepository {
-    findByUsername(username: string): Promise<{ id: string } | null>;
-    create(data: CreateTaiKhoanData): Promise<string>;
-    update(id: string, data: { matKhau?: string; trangThaiHoatDong?: boolean }): Promise<void>;
-    delete(id: string): Promise<void>;
+    findByUsername(username: string): Promise<TaiKhoanDTO | null>;
 }
 
 export const ITaiKhoanRepository = Symbol.for("ITaiKhoanRepository");

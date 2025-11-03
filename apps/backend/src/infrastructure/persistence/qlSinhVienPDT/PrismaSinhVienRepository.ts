@@ -11,7 +11,11 @@ export class PrismaSinhVienRepository implements ISinhVienRepository {
         const record = await this.db.sinh_vien.findUnique({
             where: { id },
             include: {
-                users: true,
+                users: {
+                    include: {
+                        tai_khoan: true,
+                    },
+                },
                 khoa: true,
                 nganh_hoc: true,
             },
@@ -23,6 +27,15 @@ export class PrismaSinhVienRepository implements ISinhVienRepository {
     async findByMssv(mssv: string): Promise<SinhVien | null> {
         const record = await this.db.sinh_vien.findUnique({
             where: { ma_so_sinh_vien: mssv },
+            include: {
+                users: {
+                    include: {
+                        tai_khoan: true,
+                    },
+                },
+                khoa: true,
+                nganh_hoc: true,
+            },
         });
 
         return record ? this.toDomain(record) : null;
@@ -94,6 +107,14 @@ export class PrismaSinhVienRepository implements ISinhVienRepository {
                 ngay_nhap_hoc: sinhVien.ngayNhapHoc,
                 nganh_id: sinhVien.nganhId,
             },
+        });
+    }
+
+    // ✅ Thêm method update ho_ten
+    async updateUserName(userId: string, hoTen: string): Promise<void> {
+        await this.db.users.update({
+            where: { id: userId },
+            data: { ho_ten: hoTen },
         });
     }
 
@@ -173,6 +194,8 @@ export class PrismaSinhVienRepository implements ISinhVienRepository {
             khoaHoc: record.khoa_hoc,
             ngayNhapHoc: record.ngay_nhap_hoc,
             trangThaiHoatDong: record.users?.tai_khoan?.trang_thai_hoat_dong ?? true,
+            // ✅ Add tai_khoan_id
+            taiKhoanId: record.users?.tai_khoan_id,
         });
     }
 }

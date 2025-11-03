@@ -26,8 +26,9 @@ export class GetHocKyNienKhoaUseCase {
                         id: hk.id,
                         tenHocKy: hk.tenHocKy,
                         maHocKy: hk.maHocKy,
-                        ngayBatDau: hk.ngayBatDau || undefined,
-                        ngayKetThuc: hk.ngayKetThuc || undefined,
+                        // ✅ FIX: Return null if not exist (don't use || undefined)
+                        ngayBatDau: hk.ngayBatDau ?? null,
+                        ngayKetThuc: hk.ngayKetThuc ?? null,
                     })),
             }));
 

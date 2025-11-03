@@ -14,6 +14,7 @@ import { toDatetimeLocal } from "../../utils/dateHelpers";
 import {
   useHocKyHienHanh,
   useHocKyNienKhoa,
+  useUpdateHocKyDate, // ✅ Add new import
 } from "../../features/common/hooks";
 import { useModalContext } from "../../hook/ModalContext";
 
@@ -59,11 +60,14 @@ export default function ChuyenTrangThai() {
   const { createBulkKyPhase, loading: submittingPhase } =
     useCreateBulkKyPhase();
   const { updateDotGhiDanh, loading: ghiDanhLoading } = useUpdateDotGhiDanh();
+  const { updateHocKyDate, loading: updatingHocKyDate } = useUpdateHocKyDate(); // ✅ Add new hook
 
   // ✅ THÊM: Lấy học kỳ hiện hành để auto-select
   const { data: hocKyHienHanh, loading: loadingHienHanh } = useHocKyHienHanh();
 
   const [selectedHocKyId, setSelectedHocKyId] = useState<string>("");
+
+  // ✅ Gọi hook để load phases
   const { data: phasesData, loading: loadingPhases } =
     usePhasesByHocKy(selectedHocKyId);
 
@@ -148,42 +152,64 @@ export default function ChuyenTrangThai() {
     });
   }, [hocKyHienHanh, hocKyNienKhoas]);
 
-  // ✅ Load phases khi có selectedHocKyId
+  // ✅ Load phases từ API khi có selectedHocKyId
   useEffect(() => {
+    console.log("🔄 [ChuyenTrangThai] useEffect for phasesData triggered");
+    console.log("📦 selectedHocKyId:", selectedHocKyId);
+    console.log("📦 phasesData:", phasesData);
+    console.log(
+      "📦 phasesData type:",
+      Array.isArray(phasesData) ? "Array" : typeof phasesData
+    );
+
     if (!selectedHocKyId) {
       setPhaseTimes(getEmptyPhaseTimes());
       setCurrentPhase("");
       return;
     }
 
-    // ✅ FIX: Check if phasesData and phasesData.phases exist
-    if (!phasesData || !phasesData.phases) {
+    // ✅ FIX: Check if phasesData is object with phases property OR direct array
+    const phases =
+      phasesData?.phases || (Array.isArray(phasesData) ? phasesData : []);
+
+    if (!phases || phases.length === 0) {
+      console.log("⚠️ [ChuyenTrangThai] No phases data, using empty");
       setPhaseTimes(getEmptyPhaseTimes());
       setCurrentPhase("");
       return;
     }
 
+    console.log("✅ [ChuyenTrangThai] Loading phases:", phases);
+
     const newPhaseTimes: Record<string, PhaseTime> = getEmptyPhaseTimes();
 
-    phasesData.phases.forEach((phase) => {
+    // ✅ Map API data to local state
+    phases.forEach((phase: any) => {
       newPhaseTimes[phase.phase] = {
         start: toDatetimeLocal(phase.startAt),
         end: toDatetimeLocal(phase.endAt),
       };
     });
 
+    console.log("✅ [ChuyenTrangThai] New phase times:", newPhaseTimes);
     setPhaseTimes(newPhaseTimes);
 
+    // ✅ Xác định phase hiện tại
     const now = new Date();
-    const currentPhaseItem = phasesData.phases.find((p) => {
+    const currentPhaseItem = phases.find((p: any) => {
       const start = new Date(p.startAt);
       const end = new Date(p.endAt);
       return p.isEnabled && now >= start && now <= end;
     });
 
     if (currentPhaseItem) {
+      console.log(
+        "✅ [ChuyenTrangThai] Current phase:",
+        currentPhaseItem.phase
+      );
       setCurrentPhase(currentPhaseItem.phase);
     } else {
+      console.log("⚠️ [ChuyenTrangThai] No active phase");
       setCurrentPhase("");
     }
   }, [phasesData, selectedHocKyId]);
@@ -224,6 +250,27 @@ export default function ChuyenTrangThai() {
       return;
     }
 
+    // ✅ Debug: Log payload trước khi gửi
+    const datePayload = {
+      hocKyId: selectedHocKyId,
+      ngayBatDau: semesterStart,
+      ngayKetThuc: semesterEnd,
+    };
+    console.log("📤 Sending date payload:", datePayload);
+
+    // ✅ Step 1: Update ngày bắt đầu/kết thúc trước
+    const updateDateResult = await updateHocKyDate(datePayload);
+
+    console.log("📥 Date update result:", updateDateResult);
+
+    if (!updateDateResult.isSuccess) {
+      setSemesterMessage(
+        `❌ ${updateDateResult.message || "Không thể cập nhật ngày học kỳ"}`
+      );
+      return;
+    }
+
+    // ✅ Step 2: Set học kỳ hiện tại
     const payload: SetHocKyHienTaiRequest = {
       id_nien_khoa: selectedNienKhoa,
       id_hoc_ky: selectedHocKyId,
@@ -274,14 +321,11 @@ export default function ChuyenTrangThai() {
       return;
     }
 
-    // ✅ Get học kỳ info
-    const nienKhoa = hocKyNienKhoas.find(
-      (nk) => nk.nienKhoaId === selectedNienKhoa
-    );
-    const hocKy = nienKhoa?.hocKy.find((hk) => hk.id === selectedHocKyId);
-
-    if (!hocKy?.ngayBatDau || !hocKy?.ngayKetThuc) {
-      setMessage("❌ Học kỳ chưa có ngày bắt đầu/kết thúc");
+    // ✅ FIX: Kiểm tra từ state thay vì từ hocKy object
+    if (!semesterStart || !semesterEnd) {
+      setMessage(
+        "❌ Học kỳ chưa có ngày bắt đầu/kết thúc. Vui lòng thiết lập ở phần trên."
+      );
       return;
     }
 
@@ -301,11 +345,11 @@ export default function ChuyenTrangThai() {
       endAt: new Date(phaseTimes[phase].end).toISOString(),
     }));
 
-    // ✅ FIX: Gọi đúng API với đúng payload
+    // ✅ FIX: Dùng state semesterStart/semesterEnd thay vì hocKy object
     const result = await createBulkKyPhase({
       hocKyId: selectedHocKyId,
-      hocKyStartAt: new Date(hocKy.ngayBatDau).toISOString().split("T")[0], // ✅ YYYY-MM-DD
-      hocKyEndAt: new Date(hocKy.ngayKetThuc).toISOString().split("T")[0], // ✅ YYYY-MM-DD
+      hocKyStartAt: semesterStart, // ✅ Dùng state
+      hocKyEndAt: semesterEnd, // ✅ Dùng state
       phases,
     });
 
@@ -354,18 +398,25 @@ export default function ChuyenTrangThai() {
     console.log("🔍 Found học kỳ:", hocKy);
 
     if (hocKy) {
-      // ✅ Set semester dates from học kỳ
+      // ✅ WORKAROUND: Chỉ set nếu BE đã gửi, không thì để user tự nhập
       const startDate = hocKy.ngayBatDau
         ? new Date(hocKy.ngayBatDau).toISOString().split("T")[0]
-        : "";
+        : semesterStart; // ✅ Giữ giá trị cũ nếu không có từ BE
       const endDate = hocKy.ngayKetThuc
         ? new Date(hocKy.ngayKetThuc).toISOString().split("T")[0]
-        : "";
+        : semesterEnd; // ✅ Giữ giá trị cũ nếu không có từ BE
 
       console.log("📅 Setting dates:", { startDate, endDate });
 
       setSemesterStart(startDate);
       setSemesterEnd(endDate);
+
+      // ✅ Hiển thị thông báo nếu BE chưa gửi dữ liệu
+      if (!hocKy.ngayBatDau || !hocKy.ngayKetThuc) {
+        setSemesterMessage(
+          "⚠️ Vui lòng nhập ngày bắt đầu/kết thúc học kỳ ở phần trên trước khi thiết lập phase"
+        );
+      }
     }
   }, [selectedHocKyId, selectedNienKhoa, hocKyNienKhoas]);
 
@@ -425,7 +476,7 @@ export default function ChuyenTrangThai() {
       <div className="body__inner">
         {/* ✅ Hiển thị loading state */}
         {(loadingHienHanh || loadingPhases) && (
-          <p style={{ textAlign: "center", padding: "20px" }}>
+          <p style={{ textAlign: "center", padding: "20px", color: "#6b7280" }}>
             Đang tải dữ liệu...
           </p>
         )}
@@ -434,7 +485,7 @@ export default function ChuyenTrangThai() {
         <HocKyNienKhoaShowSetup
           hocKyNienKhoas={hocKyNienKhoas}
           loadingHocKy={loadingHocKy}
-          submitting={submittingHocKy}
+          submitting={submittingHocKy || updatingHocKyDate} // ✅ Add updatingHocKyDate
           selectedNienKhoa={selectedNienKhoa}
           selectedHocKy={selectedHocKyId || ""}
           semesterStart={semesterStart}

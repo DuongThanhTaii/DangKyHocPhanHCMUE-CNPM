@@ -16,19 +16,18 @@ import { INganhRepository } from "../../../application/ports/dm/repositories/INg
 import { ICoSoRepository } from "../../../application/ports/dm/repositories/ICoSoRepository";
 
 export function bindDanhMucModule(container: Container, prisma: PrismaClient) {
-    // ✅ Bind Repositories
-    container.bind<IKhoaRepository>(TYPES.IKhoaRepository).toDynamicValue(() => {
-        return new PrismaKhoaRepository(prisma);
-    }).inSingletonScope();
+  // ✅ Use TYPES.DanhMuc.*
+  container.bind<IKhoaRepository>(TYPES.DanhMuc.IKhoaRepository)
+    .toDynamicValue(() => new PrismaKhoaRepository(prisma))
+    .inSingletonScope();
 
-    container.bind<INganhRepository>(TYPES.INganhRepository).toDynamicValue(() => {
-        return new PrismaNganhRepository(prisma);
-    }).inSingletonScope();
+  container.bind<INganhRepository>(TYPES.DanhMuc.INganhRepository)
+    .toDynamicValue(() => new PrismaNganhRepository(prisma))
+    .inSingletonScope();
 
-    container.bind<ICoSoRepository>(TYPES.ICoSoRepository).toDynamicValue(() => {
-        return new PrismaCoSoRepository(prisma);
-    }).inSingletonScope();
+  container.bind<ICoSoRepository>(TYPES.DanhMuc.ICoSoRepository)
+    .toDynamicValue(() => new PrismaCoSoRepository(prisma))
+    .inSingletonScope();
 
-    // ✅ Bind Use Cases
-    container.bind<DanhMucUseCases>(TYPES.DanhMucUseCases).to(DanhMucUseCases).inSingletonScope();
+  container.bind<DanhMucUseCases>(TYPES.DanhMuc.DanhMucUseCases).to(DanhMucUseCases).inSingletonScope();
 }

@@ -20,6 +20,7 @@ import quanLyHocKyRoutes from "./presentation/http/routes/pdtQuanLyHocKy/quan-ly
 // ✅ Import BaoCao routes (Clean Architecture)
 import baoCaoThongKeRoutes from "./presentation/http/routes/baoCaoThongKe/bao-cao.routes";
 import danhMucRoutes from "./presentation/http/routes/dm/danh-muc.routes";
+import kyPhaseRoutes from "./presentation/http/routes/pdtQuanLyPhase/ky-phase.routes";
 
 const router = Router();
 
@@ -60,5 +61,7 @@ router.use("/pdt/sinh-vien/import", importSinhVienRoutes);
 router.use("/", hocKyPublicRoutes);
 // ✅ Mount PDT Quan Ly Hoc Ky routes
 router.use("/pdt/quan-ly-hoc-ky", quanLyHocKyRoutes);
+// ✅ Mount Ky Phase routes
+router.use("/pdt/ky-phase", kyPhaseRoutes);
 
 export default router;

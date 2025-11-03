@@ -1,45 +1,51 @@
-import { injectable, inject } from "inversify";
 import { PrismaClient, Prisma } from "@prisma/client";
-import { IUnitOfWork, TransactionRepositories } from "../../../application/ports/qlSinhVienPDT/IUnitOfWork";
+import { IUnitOfWork, TransactionClient } from "../../../application/ports/qlSinhVienPDT/IUnitOfWork";
+import { ISinhVienRepository } from "../../../application/ports/qlSinhVienPDT/repositories/ISinhVienRepository";
 import { PrismaSinhVienRepository } from "./PrismaSinhVienRepository";
-import { PrismaTaiKhoanRepository } from "./PrismaTaiKhoanRepository";
-import { PrismaUsersRepository } from "./PrismaUsersRepository";
+import { IKhoaRepository } from "../../../application/ports/qlSinhVienPDT/repositories/IKhoaRepository";
+import { INganhRepository } from "../../../application/ports/qlSinhVienPDT/repositories/INganhRepository";
+import { ITaiKhoanRepository } from "../../../application/ports/qlSinhVienPDT/repositories/ITaiKhoanRepository";
+import { IUsersRepository } from "../../../application/ports/qlSinhVienPDT/repositories/IUsersRepository";
 import { PrismaKhoaRepository } from "./PrismaKhoaRepository";
 import { PrismaNganhRepository } from "./PrismaNganhRepository";
+import { PrismaTaiKhoanRepository } from "./PrismaTaiKhoanRepository";
+import { PrismaUsersRepository } from "./PrismaUsersRepository";
 
-@injectable()
 export class PrismaUnitOfWork implements IUnitOfWork {
-    constructor(
-        @inject(PrismaClient) private prisma: PrismaClient
-    ) { }
+    private sinhVienRepo: ISinhVienRepository;
+    private khoaRepo: IKhoaRepository;
+    private nganhRepo: INganhRepository;
+    private taiKhoanRepo: ITaiKhoanRepository;
+    private usersRepo: IUsersRepository;
 
-    async transaction<T>(work: (repos: TransactionRepositories) => Promise<T>): Promise<T> {
-        return this.prisma.$transaction(async (tx) => {
-            const repos: TransactionRepositories = {
-                sinhVienRepo: new PrismaSinhVienRepository(tx),
-                taiKhoanRepo: new PrismaTaiKhoanRepository(tx),
-                usersRepo: new PrismaUsersRepository(tx),
-                khoaRepo: new PrismaKhoaRepository(tx),
-                nganhRepo: new PrismaNganhRepository(tx),
-            };
+    constructor(private prisma: PrismaClient) {
+        this.sinhVienRepo = new PrismaSinhVienRepository(prisma);
+        this.khoaRepo = new PrismaKhoaRepository(prisma);
+        this.nganhRepo = new PrismaNganhRepository(prisma);
+        this.taiKhoanRepo = new PrismaTaiKhoanRepository(prisma);
+        this.usersRepo = new PrismaUsersRepository(prisma);
+    }
 
-            return work(repos);
-        });
+    /**
+     * ✅ Transaction sử dụng Prisma.$transaction (giống legacy)
+     */
+    async transaction<T>(work: (tx: TransactionClient) => Promise<T>): Promise<T> {
+        return this.prisma.$transaction(work);
     }
 
     getSinhVienRepository() {
-        return new PrismaSinhVienRepository(this.prisma);
+        return this.sinhVienRepo;
     }
-
-    getTaiKhoanRepository() {
-        return new PrismaTaiKhoanRepository(this.prisma);
-    }
-
     getKhoaRepository() {
-        return new PrismaKhoaRepository(this.prisma);
+        return this.khoaRepo;
     }
-
     getNganhRepository() {
-        return new PrismaNganhRepository(this.prisma);
+        return this.nganhRepo;
+    }
+    getTaiKhoanRepository() {
+        return this.taiKhoanRepo;
+    }
+    getUsersRepository() {
+        return this.usersRepo;
     }
 }

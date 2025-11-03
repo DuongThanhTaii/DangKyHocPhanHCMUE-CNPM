@@ -9,36 +9,27 @@ export class GetHocKyHienHanhUseCase {
         @inject(IUnitOfWork) private unitOfWork: IUnitOfWork
     ) { }
 
-    async execute(): Promise<ServiceResult<HocKyHienHanhOutputDTO>> {
+    async execute(): Promise<ServiceResult<HocKyHienHanhOutputDTO | null>> {
         try {
             const hocKy = await this.unitOfWork.getHocKyRepository().findHienHanh();
 
             if (!hocKy) {
-                return ServiceResultBuilder.failure(
-                    "Không có học kỳ hiện hành",
-                    "HOC_KY_HIEN_HANH_NOT_FOUND"
-                );
+                return ServiceResultBuilder.success("Không có học kỳ hiện hành", null);
             }
 
             const nienKhoa = await this.unitOfWork.getNienKhoaRepository().findById(hocKy.nienKhoaId);
-
-            if (!nienKhoa) {
-                return ServiceResultBuilder.failure(
-                    "Không tìm thấy niên khóa",
-                    "NIEN_KHOA_NOT_FOUND"
-                );
-            }
 
             const output: HocKyHienHanhOutputDTO = {
                 id: hocKy.id,
                 tenHocKy: hocKy.tenHocKy,
                 maHocKy: hocKy.maHocKy,
                 nienKhoa: {
-                    id: nienKhoa.id,
-                    tenNienKhoa: nienKhoa.tenNienKhoa,
+                    id: nienKhoa?.id || hocKy.nienKhoaId,
+                    tenNienKhoa: nienKhoa?.tenNienKhoa || "",
                 },
-                ngayBatDau: hocKy.ngayBatDau || undefined,
-                ngayKetThuc: hocKy.ngayKetThuc || undefined,
+                // ✅ FIX: Return null if not exist
+                ngayBatDau: hocKy.ngayBatDau ?? null,
+                ngayKetThuc: hocKy.ngayKetThuc ?? null,
             };
 
             return ServiceResultBuilder.success("Lấy học kỳ hiện hành thành công", output);

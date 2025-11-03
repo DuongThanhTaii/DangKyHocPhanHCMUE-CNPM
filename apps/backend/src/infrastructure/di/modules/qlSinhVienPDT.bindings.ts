@@ -1,48 +1,54 @@
 import { Container } from "inversify";
+import { PrismaClient } from "@prisma/client";
+import { TYPES } from "../types";
 
 // Ports
 import { IUnitOfWork } from "../../../application/ports/qlSinhVienPDT/IUnitOfWork";
+import { ISinhVienRepository } from "../../../application/ports/qlSinhVienPDT/repositories/ISinhVienRepository";
 import { IPasswordHasher } from "../../../application/ports/qlSinhVienPDT/services/IPasswordHasher";
-import { IImportStrategy } from "../../../application/ports/qlSinhVienPDT/services/IImportStrategy";
 
 // Implementations
 import { PrismaUnitOfWork } from "../../persistence/qlSinhVienPDT/PrismaUnitOfWork";
-import { BcryptPasswordHasher } from "../../services/qlSinhVienPDT/security/BcryptPasswordHasher";
-import { ExcelImportStrategy } from "../../services/qlSinhVienPDT/import-strategies/ExcelImportStrategy";
-import { SelfInputImportStrategy } from "../../services/qlSinhVienPDT/import-strategies/SelfInputImportStrategy";
+import { PrismaSinhVienRepository } from "../../persistence/qlSinhVienPDT/PrismaSinhVienRepository";
+import { BcryptPasswordHasher } from "../../services/qlSinhVienPDT/BcryptPasswordHasher";
 
 // Use Cases
 import { CreateSinhVienUseCase } from "../../../application/use-cases/qlSinhVienPDT/crud/CreateSinhVien.usecase";
+import { UpdateSinhVienUseCase } from "../../../application/use-cases/qlSinhVienPDT/crud/UpdateSinhVien.usecase";
 import { ListSinhVienUseCase } from "../../../application/use-cases/qlSinhVienPDT/crud/ListSinhVien.usecase";
 import { GetSinhVienDetailUseCase } from "../../../application/use-cases/qlSinhVienPDT/crud/GetSinhVienDetail.usecase";
-import { UpdateSinhVienUseCase } from "../../../application/use-cases/qlSinhVienPDT/crud/UpdateSinhVien.usecase";
 import { DeleteSinhVienUseCase } from "../../../application/use-cases/qlSinhVienPDT/crud/DeleteSinhVien.usecase";
 import { ImportSinhVienUseCase } from "../../../application/use-cases/qlSinhVienPDT/import/ImportSinhVien.usecase";
-
-// Controllers
 import { SinhVienController } from "../../../presentation/http/controllers/qlSinhVienPDT/SinhVienController";
 import { ImportSinhVienController } from "../../../presentation/http/controllers/qlSinhVienPDT/ImportSinhVienController";
 
 export function registerQlSinhVienPDTBindings(container: Container) {
-    // Bind Ports → Implementations
-    container.bind(IUnitOfWork).to(PrismaUnitOfWork).inSingletonScope();
-    container.bind(IPasswordHasher).to(BcryptPasswordHasher).inSingletonScope();
+  const prisma = container.get<PrismaClient>(PrismaClient);
 
-    // ✅ Fix: Bind strategies với identifier string thay vì named
-    container.bind<IImportStrategy>("IImportStrategy.Excel").to(ExcelImportStrategy).inSingletonScope();
-    container.bind<IImportStrategy>("IImportStrategy.SelfInput").to(SelfInputImportStrategy).inSingletonScope();
+  // ✅ Bind Infrastructure (use TYPES.QlSinhVienPDT.*)
+  container.bind<IUnitOfWork>(TYPES.QlSinhVienPDT.IUnitOfWork)
+    .toDynamicValue(() => new PrismaUnitOfWork(prisma))
+    .inSingletonScope();
 
-    // Bind Use Cases
-    container.bind(CreateSinhVienUseCase).toSelf();
-    container.bind(ListSinhVienUseCase).toSelf();
-    container.bind(GetSinhVienDetailUseCase).toSelf();
-    container.bind(UpdateSinhVienUseCase).toSelf();
-    container.bind(DeleteSinhVienUseCase).toSelf();
-    container.bind(ImportSinhVienUseCase).toSelf();
+  container.bind<ISinhVienRepository>(TYPES.QlSinhVienPDT.ISinhVienRepository)
+    .toDynamicValue(() => new PrismaSinhVienRepository(prisma))
+    .inSingletonScope();
 
-    // Bind Controllers
-    container.bind(SinhVienController).toSelf();
-    container.bind(ImportSinhVienController).toSelf();
+  container.bind<IPasswordHasher>(TYPES.QlSinhVienPDT.IPasswordHasher)
+    .to(BcryptPasswordHasher)
+    .inSingletonScope();
 
-    console.log("[DI] ✅ QL Sinh Vien PDT bindings registered");
+  // ✅ Bind Use Cases
+  container.bind<CreateSinhVienUseCase>(TYPES.QlSinhVienPDT.CreateSinhVienUseCase).to(CreateSinhVienUseCase);
+  container.bind<UpdateSinhVienUseCase>(TYPES.QlSinhVienPDT.UpdateSinhVienUseCase).to(UpdateSinhVienUseCase);
+  container.bind<ListSinhVienUseCase>(TYPES.QlSinhVienPDT.ListSinhVienUseCase).to(ListSinhVienUseCase);
+  container.bind<GetSinhVienDetailUseCase>(TYPES.QlSinhVienPDT.GetSinhVienDetailUseCase).to(GetSinhVienDetailUseCase);
+  container.bind<DeleteSinhVienUseCase>(TYPES.QlSinhVienPDT.DeleteSinhVienUseCase).to(DeleteSinhVienUseCase);
+  container.bind<ImportSinhVienUseCase>(TYPES.QlSinhVienPDT.ImportSinhVienUseCase).to(ImportSinhVienUseCase);
+
+  // ✅ Bind Controllers
+  container.bind<SinhVienController>(TYPES.QlSinhVienPDT.SinhVienController).to(SinhVienController);
+  container.bind<ImportSinhVienController>(TYPES.QlSinhVienPDT.ImportSinhVienController).to(ImportSinhVienController);
+
+  console.log("[DI] ✅ QL Sinh Vien PDT bindings registered");
 }

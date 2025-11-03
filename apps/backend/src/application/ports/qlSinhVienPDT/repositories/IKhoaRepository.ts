@@ -5,8 +5,9 @@ export interface KhoaDTO {
 }
 
 export interface IKhoaRepository {
-    findById(id: string): Promise<KhoaDTO | null>;
     findByMaKhoa(maKhoa: string): Promise<KhoaDTO | null>;
+    findById(id: string): Promise<KhoaDTO | null>;
+    findAll(): Promise<KhoaDTO[]>;
 }
 
 export const IKhoaRepository = Symbol.for("IKhoaRepository");

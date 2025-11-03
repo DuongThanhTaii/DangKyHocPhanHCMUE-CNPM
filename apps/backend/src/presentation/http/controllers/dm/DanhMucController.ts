@@ -8,7 +8,7 @@ export class DanhMucController {
     private useCases: DanhMucUseCases;
 
     constructor() {
-        this.useCases = container.get<DanhMucUseCases>(TYPES.DanhMucUseCases);
+        this.useCases = container.get<DanhMucUseCases>(TYPES.DanhMuc.DanhMucUseCases);
     }
 
     /**
@@ -17,7 +17,8 @@ export class DanhMucController {
     getAllKhoa = async (_req: Request, res: Response) => {
         try {
             const khoas = await this.useCases.getAllKhoa();
-            return res.json(ServiceResultBuilder.success(khoas as any));
+            // ✅ FIX: Return ServiceResult format
+            return res.json(ServiceResultBuilder.success("OK", khoas));
         } catch (err: any) {
             return res.status(500).json(ServiceResultBuilder.failure(err.message));
         }
@@ -30,7 +31,8 @@ export class DanhMucController {
         try {
             const { khoa_id } = req.query;
             const nganhs = await this.useCases.getAllNganh(khoa_id as string | undefined);
-            return res.json(ServiceResultBuilder.success(nganhs as any));
+            // ✅ FIX: Return ServiceResult format
+            return res.json(ServiceResultBuilder.success("OK", nganhs));
         } catch (err: any) {
             return res.status(500).json(ServiceResultBuilder.failure(err.message));
         }
@@ -42,7 +44,8 @@ export class DanhMucController {
     getAllCoSo = async (_req: Request, res: Response) => {
         try {
             const coSos = await this.useCases.getAllCoSo();
-            return res.json(ServiceResultBuilder.success(coSos as any));
+            // ✅ FIX: Return ServiceResult format
+            return res.json(ServiceResultBuilder.success("OK", coSos));
         } catch (err: any) {
             return res.status(500).json(ServiceResultBuilder.failure(err.message));
         }
@@ -68,7 +71,8 @@ export class DanhMucController {
                 khoa_id as string
             );
 
-            return res.json(ServiceResultBuilder.success(nganhs as any));
+            // ✅ FIX: Return ServiceResult format
+            return res.json(ServiceResultBuilder.success("OK", nganhs));
         } catch (err: any) {
             return res.status(500).json(ServiceResultBuilder.failure(err.message));
         }

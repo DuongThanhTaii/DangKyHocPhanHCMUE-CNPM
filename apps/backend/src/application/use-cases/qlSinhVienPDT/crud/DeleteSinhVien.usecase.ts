@@ -10,29 +10,28 @@ export class DeleteSinhVienUseCase {
 
     async execute(id: string): Promise<ServiceResult<void>> {
         try {
-            // Step 1: Find sinh vien
+            // Step 1: Get sinh vien with relations (outside transaction)
             const sinhVien = await this.unitOfWork.getSinhVienRepository().findById(id);
-
             if (!sinhVien) {
                 return ServiceResultBuilder.failure("Không tìm thấy sinh viên", "SINH_VIEN_NOT_FOUND");
             }
 
-            // Step 2: Get tai_khoan_id (for cascade delete)
-            const usersRepo = this.unitOfWork.getSinhVienRepository();
-            const user = await this.unitOfWork.transaction(async (repos) => {
-                return repos.usersRepo.findById(id);
-            });
+            // Step 2: Get tai_khoan_id from DB
+            const svRecord = await this.unitOfWork.getSinhVienRepository().findById(id);
+            const taiKhoanId = svRecord?.taiKhoanId;
 
-            if (!user) {
-                return ServiceResultBuilder.failure("Không tìm thấy thông tin người dùng", "USER_NOT_FOUND");
+            if (!taiKhoanId) {
+                return ServiceResultBuilder.failure("Sinh viên không có tài khoản liên kết", "NO_TAI_KHOAN");
             }
 
-            // Step 3: Delete tai_khoan (cascade delete users → sinh_vien)
-            await this.unitOfWork.transaction(async (repos) => {
-                await repos.taiKhoanRepo.delete(user.taiKhoanId);
+            // Step 3: Transaction (Prisma cascade delete)
+            await this.unitOfWork.transaction(async (tx) => {
+                // ✅ FIX: Use tx.tai_khoan (Prisma model)
+                // Xóa tai_khoan sẽ cascade xóa users → cascade xóa sinh_vien
+                await tx.tai_khoan.delete({ where: { id: taiKhoanId } });
             });
 
-            return ServiceResultBuilder.success("Xóa sinh viên thành công");
+            return ServiceResultBuilder.success("Đã xóa tài khoản sinh viên");
         } catch (error: any) {
             console.error("[DeleteSinhVienUseCase] Error:", error);
             return ServiceResultBuilder.failure(

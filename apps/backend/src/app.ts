@@ -26,7 +26,7 @@ app.get("/api/health", (_req: Request, res: Response) => {
 
 // ✅ Phase scheduler
 const phaseSchedulerService = PhaseSchedulerService.getInstance();
-phaseSchedulerService.start();
+//phaseSchedulerService.start();
 
 // ✅ Tất cả routes được mount từ routes.ts
 app.use("/api", routes);

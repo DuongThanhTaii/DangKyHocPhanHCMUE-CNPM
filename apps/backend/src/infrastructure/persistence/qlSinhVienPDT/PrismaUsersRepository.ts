@@ -1,23 +1,13 @@
-import { PrismaClient, Prisma } from "@prisma/client";
-import { IUsersRepository, CreateUserData } from "../../../application/ports/qlSinhVienPDT/repositories/IUsersRepository";
+import { injectable } from "inversify";
+import { PrismaClient } from "@prisma/client";
+import { IUsersRepository } from "../../../application/ports/qlSinhVienPDT/repositories/IUsersRepository";
 
+@injectable()
 export class PrismaUsersRepository implements IUsersRepository {
-    constructor(private db: PrismaClient | Prisma.TransactionClient) { }
+    constructor(private prisma: PrismaClient) { }
 
-    async findById(id: string): Promise<{ id: string; taiKhoanId: string } | null> {
-        const record = await this.db.users.findUnique({
-            where: { id },
-            select: { id: true, tai_khoan_id: true },
-        });
-
-        // ✅ Fix: Handle nullable tai_khoan_id
-        if (!record || !record.tai_khoan_id) return null;
-
-        return { id: record.id, taiKhoanId: record.tai_khoan_id };
-    }
-
-    async create(data: CreateUserData): Promise<string> {
-        const record = await this.db.users.create({
+    async create(data: { id: string; hoTen: string; taiKhoanId: string; maNhanVien: string; email: string }) {
+        const result = await this.prisma.users.create({
             data: {
                 id: data.id,
                 ho_ten: data.hoTen,
@@ -26,15 +16,13 @@ export class PrismaUsersRepository implements IUsersRepository {
                 email: data.email,
             },
         });
-        return record.id;
+        return result.id;
     }
 
-    async update(id: string, data: { hoTen?: string }): Promise<void> {
-        if (data.hoTen) {
-            await this.db.users.update({
-                where: { id },
-                data: { ho_ten: data.hoTen },
-            });
-        }
+    async update(id: string, data: { hoTen?: string }) {
+        await this.prisma.users.update({
+            where: { id },
+            data: { ho_ten: data.hoTen },
+        });
     }
 }

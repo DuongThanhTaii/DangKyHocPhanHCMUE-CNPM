@@ -47,11 +47,13 @@ export class KyPhaseRepository extends BaseRepository<ky_phase> {
         return this.model.findFirst({ where });
     }
 
-    async getCurrentPhase(hocKyId: string): Promise<ky_phase | null> {
-        return this.model.findFirst({
+    async getCurrentPhase(hocKyId: string, phase: string) {
+        return this.prisma.ky_phase.findFirst({
             where: {
                 hoc_ky_id: hocKyId,
+                phase,
                 is_enabled: true,
+                // ❌ BỎ: start_at, end_at
             },
         });
     }

@@ -20,6 +20,14 @@ export interface ISinhVienRepository {
     create(sinhVien: SinhVien): Promise<void>;
     update(sinhVien: SinhVien): Promise<void>;
     delete(id: string): Promise<void>;
+    /**
+     * Cập nhật thông tin sinh viên (bao gồm cả users.ho_ten)
+     */
+    update(sinhVien: SinhVien): Promise<void>;
+    /**
+     * Cập nhật tên sinh viên trong bảng users
+     */
+    updateUserName(userId: string, hoTen: string): Promise<void>;
 }
 
 export const ISinhVienRepository = Symbol.for("ISinhVienRepository");

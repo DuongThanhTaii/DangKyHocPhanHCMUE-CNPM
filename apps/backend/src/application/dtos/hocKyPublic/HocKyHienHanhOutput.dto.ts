@@ -6,6 +6,6 @@ export interface HocKyHienHanhOutputDTO {
         id: string;
         tenNienKhoa: string;
     };
-    ngayBatDau?: Date;
-    ngayKetThuc?: Date;
+    ngayBatDau?: Date | null;
+    ngayKetThuc?: Date | null;
 }

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useModalContext } from "../../../../hook/ModalContext";
+import { useDanhSachNganh } from "../../../../features/common/hooks"; // ✅ Import hook
 import "../../../../styles/reset.css";
 import "../../../../styles/menu.css";
 
@@ -9,8 +10,7 @@ type Props = {
   onCreated?: () => void;
 };
 
-type Khoa = { id: string; tenKhoa: string }; // ✅ Change from ten_khoa to tenKhoa
-type Nganh = { id: string; tenNganh: string; khoaId: string }; // ✅ Change from ten_nganh & khoa_id
+type Khoa = { id: string; tenKhoa: string };
 
 const API = import.meta.env.VITE_API_URL;
 const withToken = (init: RequestInit = {}) => {
@@ -29,70 +29,45 @@ export const ModalThemSinhVien: React.FC<Props> = ({
   const { openNotify } = useModalContext();
 
   const [danhSachKhoa, setDanhSachKhoa] = useState<Khoa[]>([]);
-  const [danhSachNganh, setDanhSachNganh] = useState<Nganh[]>([]);
-
   const [formData, setFormData] = useState({
-    ma_so_sinh_vien: "",
-    ho_ten: "",
-    ten_dang_nhap: "",
-    mat_khau: "",
+    maSoSinhVien: "",
+    hoTen: "",
+    tenDangNhap: "",
+    matKhau: "",
     lop: "",
-    khoa_id: "",
-    nganh_id: "",
-    khoa_hoc: "",
-    ngay_nhap_hoc: "",
+    khoaId: "",
+    nganhId: "",
+    khoaHoc: "",
+    ngayNhapHoc: "",
   });
 
-  // Excel file state
+  // ✅ Use hook - fetch ngành when khoaId changes
+  const { data: danhSachNganh, loading: loadingNganh } = useDanhSachNganh(
+    formData.khoaId || undefined
+  );
+
+  // ✅ Debug log
+  useEffect(() => {
+    console.log("🔍 [Modal] Ngành list:", danhSachNganh);
+    console.log("🔍 [Modal] Loading:", loadingNganh);
+  }, [danhSachNganh, loadingNganh]);
+
   const [excelFile, setExcelFile] = useState<File | null>(null);
 
   useEffect(() => {
     if (!isOpen) return;
     (async () => {
       try {
-        console.log("🔍 [Modal] Loading Khoa & Nganh...");
-
-        const [khoaRes, nganhRes] = await Promise.all([
-          fetch(`${API}/pdt/khoa`, withToken()),
-          fetch(`${API}/dm/nganh`, withToken()),
-        ]);
-
+        const khoaRes = await fetch(`${API}/pdt/khoa`, withToken());
         const kjson = await khoaRes.json();
-        const njson = await nganhRes.json();
 
-        console.log("📦 [Modal] Khoa response:", kjson);
-        console.log("📦 [Modal] Nganh response:", njson);
-
-        // ✅ Handle multiple nested formats
         const khoaData =
-          kjson?.data?.items || // { data: { items: [...] } }
-          kjson?.data || // { data: [...] }
-          kjson?.items || // { items: [...] }
-          kjson || // Direct array
-          [];
+          kjson?.data?.items || kjson?.data || kjson?.items || kjson || [];
 
-        const nganhData =
-          njson?.data?.items || njson?.data || njson?.items || njson || [];
-
-        console.log("✅ [Modal] Parsed Khoa:", khoaData);
-        console.log("✅ [Modal] Parsed Nganh:", nganhData);
-
-        // ✅ Validate array before setState
         setDanhSachKhoa(Array.isArray(khoaData) ? khoaData : []);
-        setDanhSachNganh(Array.isArray(nganhData) ? nganhData : []);
-
-        // ✅ Debug final state
-        console.log(
-          "✅ [Modal] Khoa count:",
-          Array.isArray(khoaData) ? khoaData.length : 0
-        );
-        console.log(
-          "✅ [Modal] Nganh count:",
-          Array.isArray(nganhData) ? nganhData.length : 0
-        );
       } catch (error) {
-        console.error("❌ [Modal] Error loading data:", error);
-        openNotify?.("Không thể tải danh sách Khoa/Ngành", "error");
+        console.error("❌ [Modal] Error loading khoa:", error);
+        openNotify?.("Không thể tải danh sách Khoa", "error");
       }
     })();
   }, [isOpen, openNotify]);
@@ -101,41 +76,40 @@ export const ModalThemSinhVien: React.FC<Props> = ({
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((s) => ({ ...s, [name]: value }));
+
+    if (name === "khoaId") {
+      setFormData((s) => ({ ...s, [name]: value, nganhId: "" }));
+    } else {
+      setFormData((s) => ({ ...s, [name]: value }));
+    }
   };
 
   const handleSubmit = async () => {
-    // Mặc định username/password = MSSV nếu bỏ trống
-    const ten_dang_nhap =
-      formData.ten_dang_nhap || formData.ma_so_sinh_vien || "";
-    const mat_khau = formData.mat_khau || formData.ma_so_sinh_vien || "";
+    const tenDangNhap = formData.tenDangNhap || formData.maSoSinhVien || "";
+    const matKhau = formData.matKhau || formData.maSoSinhVien || "";
 
-    // Validate tối thiểu
     if (
-      !formData.ma_so_sinh_vien ||
-      !formData.ho_ten ||
-      !ten_dang_nhap ||
-      !mat_khau ||
-      !formData.khoa_id
+      !formData.maSoSinhVien ||
+      !formData.hoTen ||
+      !tenDangNhap ||
+      !matKhau ||
+      !formData.khoaId
     ) {
-      openNotify?.(
-        "Vui lòng nhập đủ MSSV, Họ tên, Khoa (tên đăng nhập/mật khẩu mặc định = MSSV nếu bỏ trống)",
-        "warning"
-      );
+      openNotify?.("Vui lòng nhập đủ MSSV, Họ tên, Khoa", "warning");
       return;
     }
 
     const payload = {
-      ten_dang_nhap,
-      mat_khau,
-      ho_ten: formData.ho_ten,
-      ma_so_sinh_vien: formData.ma_so_sinh_vien,
-      khoa_id: formData.khoa_id,
+      tenDangNhap,
+      matKhau,
+      hoTen: formData.hoTen,
+      maSoSinhVien: formData.maSoSinhVien,
+      maKhoa: formData.khoaId,
       lop: formData.lop || undefined,
-      khoa_hoc: formData.khoa_hoc || undefined,
-      ngay_nhap_hoc: formData.ngay_nhap_hoc || undefined,
-      nganh_id: formData.nganh_id || undefined,
-      trang_thai_hoat_dong: true,
+      khoaHoc: formData.khoaHoc || undefined,
+      ngayNhapHoc: formData.ngayNhapHoc || undefined,
+      maNganh: formData.nganhId || undefined,
+      trangThaiHoatDong: true,
     };
 
     try {
@@ -226,6 +200,8 @@ export const ModalThemSinhVien: React.FC<Props> = ({
         }}
       >
         <div className="modal-popup">
+          {" "}
+          {/* ✅ Changed back from modal-content */}
           <form onSubmit={(e) => e.preventDefault()}>
             <div className="modal-header">
               <h1>Thêm sinh viên</h1>
@@ -239,14 +215,20 @@ export const ModalThemSinhVien: React.FC<Props> = ({
               <div className="form__group ">
                 <label className="pos__unset">Mã số sinh viên</label>
                 <input
-                  name="ma_so_sinh_vien"
+                  name="maSoSinhVien"
                   type="text"
+                  value={formData.maSoSinhVien}
                   onChange={handleChange}
                 />
               </div>
               <div className="form__group">
                 <label className="pos__unset">Tên sinh viên</label>
-                <input name="ho_ten" type="text" onChange={handleChange} />
+                <input
+                  name="hoTen"
+                  type="text"
+                  value={formData.hoTen}
+                  onChange={handleChange}
+                />
               </div>
             </div>
 
@@ -257,8 +239,9 @@ export const ModalThemSinhVien: React.FC<Props> = ({
                   Tên đăng nhập <small>(mặc định = MSSV nếu bỏ trống)</small>
                 </label>
                 <input
-                  name="ten_dang_nhap"
+                  name="tenDangNhap"
                   type="text"
+                  value={formData.tenDangNhap}
                   onChange={handleChange}
                 />
               </div>
@@ -267,8 +250,9 @@ export const ModalThemSinhVien: React.FC<Props> = ({
                   Mật khẩu <small>(mặc định = MSSV nếu bỏ trống)</small>
                 </label>
                 <input
-                  name="mat_khau"
+                  name="matKhau"
                   type="password"
+                  value={formData.matKhau}
                   onChange={handleChange}
                 />
               </div>
@@ -278,21 +262,25 @@ export const ModalThemSinhVien: React.FC<Props> = ({
             <div className="modal-popup-row">
               <div className="form__group">
                 <label className="pos__unset">Lớp</label>
-                <input name="lop" type="text" onChange={handleChange} />
+                <input
+                  name="lop"
+                  type="text"
+                  value={formData.lop}
+                  onChange={handleChange}
+                />
               </div>
-              {/* Khoa dropdown */}
               <div className="form__group">
                 <label className="pos__unset">Khoa</label>
                 <select
                   id="md-Khoa"
-                  name="khoa_id"
-                  value={formData.khoa_id}
+                  name="khoaId"
+                  value={formData.khoaId}
                   onChange={handleChange}
                 >
                   <option value="">-- Chọn khoa --</option>
                   {danhSachKhoa.map((khoa) => (
                     <option key={khoa.id} value={khoa.id}>
-                      {khoa.tenKhoa} {/* ✅ Change from ten_khoa */}
+                      {khoa.tenKhoa}
                     </option>
                   ))}
                 </select>
@@ -305,25 +293,33 @@ export const ModalThemSinhVien: React.FC<Props> = ({
                 <label className="pos__unset">Ngành</label>
                 <select
                   id="md-Nganh"
-                  name="nganh_id"
-                  value={formData.nganh_id}
+                  name="nganhId"
+                  value={formData.nganhId}
                   onChange={handleChange}
+                  disabled={!formData.khoaId || loadingNganh}
                 >
-                  <option value="">-- Chọn ngành --</option>
-                  {danhSachNganh
-                    .filter(
-                      (n) => !formData.khoa_id || n.khoaId === formData.khoa_id // ✅ Change from khoa_id
-                    )
-                    .map((nganh) => (
-                      <option key={nganh.id} value={nganh.id}>
-                        {nganh.tenNganh} {/* ✅ Change from ten_nganh */}
-                      </option>
-                    ))}
+                  <option value="">
+                    {loadingNganh
+                      ? "Đang tải..."
+                      : !formData.khoaId
+                      ? "Chọn khoa trước"
+                      : "-- Chọn ngành --"}
+                  </option>
+                  {danhSachNganh.map((nganh: any) => (
+                    <option key={nganh.id} value={nganh.id}>
+                      {nganh.tenNganh || nganh.ten_nganh}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div className="form__group">
                 <label className="pos__unset">Khóa học</label>
-                <input name="khoa_hoc" type="text" onChange={handleChange} />
+                <input
+                  name="khoaHoc"
+                  type="text"
+                  value={formData.khoaHoc}
+                  onChange={handleChange}
+                />
               </div>
             </div>
 
@@ -332,8 +328,9 @@ export const ModalThemSinhVien: React.FC<Props> = ({
               <div className="form__group">
                 <label className="pos__unset">Ngày nhập học</label>
                 <input
-                  name="ngay_nhap_hoc"
+                  name="ngayNhapHoc"
                   type="date"
+                  value={formData.ngayNhapHoc}
                   onChange={handleChange}
                 />
               </div>

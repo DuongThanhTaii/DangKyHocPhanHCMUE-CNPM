@@ -1,50 +1,64 @@
 import { injectable, inject } from "inversify";
 import { Request, Response } from "express";
+import { TYPES } from "../../../../infrastructure/di/types";
 import { ImportSinhVienUseCase } from "../../../../application/use-cases/qlSinhVienPDT/import/ImportSinhVien.usecase";
-import { IImportStrategy } from "../../../../application/ports/qlSinhVienPDT/services/IImportStrategy";
+import XLSX from "xlsx";
 
 @injectable()
 export class ImportSinhVienController {
     constructor(
-        @inject(ImportSinhVienUseCase) private importUseCase: ImportSinhVienUseCase,
-        @inject("IImportStrategy.Excel") private excelStrategy: IImportStrategy,
-        @inject("IImportStrategy.SelfInput") private selfInputStrategy: IImportStrategy
+        @inject(TYPES.QlSinhVienPDT.ImportSinhVienUseCase)
+        private importUseCase: ImportSinhVienUseCase
     ) { }
 
-    async importWithExcel(req: Request, res: Response) {
+    async import(req: Request, res: Response) {
         try {
-            if (!req.file?.buffer) {
+            let records: any[] | undefined;
+
+            // 1) If multipart upload with file 'file'
+            if (req.file && req.file.buffer) {
+                const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
+                const sheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[sheetName];
+                const raw = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+
+                // ✅ FIX: Map exact Excel column headers (snake_case)
+                records = raw.map((r: any) => ({
+                    maSoSinhVien: r.ma_so_sinh_vien || r["ma_so_sinh_vien"] || "",
+                    hoTen: r.ho_ten || r["ho_ten"] || "",
+                    maKhoa: r.ma_khoa || r["ma_khoa"] || "",
+                    maNganh: r.ma_nganh || r["ma_nganh"] || "",
+                    lop: r.lop || r["lop"] || "",
+                    khoaHoc: r.khoa_hoc || r["khoa_hoc"] || "",
+                    ngayNhapHoc: r.ngay_nhap_hoc ? new Date(r.ngay_nhap_hoc) : undefined,
+                }));
+            } else {
+                // 2) If JSON body contains records array or stringified JSON
+                const bodyRecords = (req.body && (req.body.records ?? req.body)) as any;
+                if (Array.isArray(bodyRecords)) {
+                    records = bodyRecords;
+                } else if (typeof bodyRecords === "string") {
+                    try {
+                        const parsed = JSON.parse(bodyRecords);
+                        if (Array.isArray(parsed)) records = parsed;
+                    } catch {
+                        // ignore parse error
+                    }
+                }
+            }
+
+            if (!records || records.length === 0) {
                 return res.status(400).json({
                     isSuccess: false,
-                    message: "Thiếu file upload",
+                    message: "Danh sách sinh viên không hợp lệ hoặc trống",
                 });
             }
 
-            const result = await this.importUseCase.execute(this.excelStrategy, req.file.buffer);
+            const result = await this.importUseCase.execute(records);
 
             return res.status(result.isSuccess ? 200 : 400).json(result);
         } catch (error: any) {
-            console.error("[ImportSinhVienController.importWithExcel] Error:", error);
-            return res.status(500).json({ isSuccess: false, message: "Internal server error" });
-        }
-    }
-
-    async importWithSelfInput(req: Request, res: Response) {
-        try {
-            const { records } = req.body;
-
-            if (!Array.isArray(records) || records.length === 0) {
-                return res.status(400).json({
-                    isSuccess: false,
-                    message: "Danh sách sinh viên không hợp lệ",
-                });
-            }
-
-            const result = await this.importUseCase.execute(this.selfInputStrategy, records);
-
-            return res.status(result.isSuccess ? 200 : 400).json(result);
-        } catch (error: any) {
-            console.error("[ImportSinhVienController.importWithSelfInput] Error:", error);
+            console.error("[ImportSinhVienController.import] Error:", error);
             return res.status(500).json({ isSuccess: false, message: "Internal server error" });
         }
     }

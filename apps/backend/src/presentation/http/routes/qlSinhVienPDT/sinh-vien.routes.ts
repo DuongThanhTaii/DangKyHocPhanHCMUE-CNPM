@@ -1,12 +1,15 @@
 import { Router } from "express";
 import { container } from "../../../../infrastructure/di/container";
+import { TYPES } from "../../../../infrastructure/di/types";
 import { SinhVienController } from "../../controllers/qlSinhVienPDT/SinhVienController";
 import { requireAuth, requireRole } from "../../../../middlewares/auth";
 
 const router = Router();
-const controller = container.get(SinhVienController);
 
-// GET /api/pdt/sinh-vien?page=1&pageSize=20&search=abc
+// ✅ Get controller from DI container (use TYPES.QlSinhVienPDT.*)
+const controller = container.get<SinhVienController>(TYPES.QlSinhVienPDT.SinhVienController);
+
+// ✅ Routes (giữ nguyên endpoints để FE không sửa)
 router.get(
     "/",
     requireAuth,
@@ -14,7 +17,6 @@ router.get(
     (req, res) => controller.list(req, res)
 );
 
-// GET /api/pdt/sinh-vien/:id
 router.get(
     "/:id",
     requireAuth,
@@ -22,7 +24,6 @@ router.get(
     (req, res) => controller.getDetail(req, res)
 );
 
-// POST /api/pdt/sinh-vien
 router.post(
     "/",
     requireAuth,
@@ -30,7 +31,6 @@ router.post(
     (req, res) => controller.create(req, res)
 );
 
-// PUT /api/pdt/sinh-vien/:id
 router.put(
     "/:id",
     requireAuth,
@@ -38,7 +38,6 @@ router.put(
     (req, res) => controller.update(req, res)
 );
 
-// DELETE /api/pdt/sinh-vien/:id
 router.delete(
     "/:id",
     requireAuth,

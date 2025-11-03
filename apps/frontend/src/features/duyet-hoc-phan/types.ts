@@ -10,3 +10,9 @@ export interface DuyetHocPhanProps {
     error: string | null;
     actions: DeXuatHocPhanActions;
 }
+
+export interface NganhDTO {
+    id: string;
+    tenNganh: string;
+    khoaId: string;
+}

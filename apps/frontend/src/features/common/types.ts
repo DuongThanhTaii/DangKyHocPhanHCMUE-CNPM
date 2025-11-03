@@ -27,6 +27,11 @@ export interface HocKyNienKhoaDTO {
     tenNienKhoa: string;
     hocKy: HocKyItemDTO[];
 }
+export interface NganhDTO {
+    id: string;
+    ten_nganh: string; // ✅ Changed from tenNganh
+    khoa_id: string;   // ✅ Changed from khoaId
+}
 
 // ✅ Alias for backward compatibility - use HocKyItemDTO structure
 export type HocKyDTO = HocKyItemDTO;

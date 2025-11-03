@@ -108,21 +108,30 @@ export function PhaseHocKyNienKhoaSetup({
       return;
     }
 
+    const newStart = new Date(tempStart);
+    const newEnd = new Date(tempEnd);
+
+    // ✅ Kiểm tra thời gian hợp lệ
+    if (newEnd <= newStart) {
+      setValidationError("Ngày kết thúc phải sau ngày bắt đầu!");
+      return;
+    }
+
+    // ✅ Kiểm tra overlap với các phase khác
     const hasOverlap = phaseOrder.some((phase) => {
       if (phase === editingPhase) return false;
       const otherPhase = phaseTimes[phase];
       if (!otherPhase?.start || !otherPhase?.end) return false;
 
-      const newStart = new Date(tempStart);
-      const newEnd = new Date(tempEnd);
       const otherStart = new Date(otherPhase.start);
       const otherEnd = new Date(otherPhase.end);
 
-      return (
-        (newStart >= otherStart && newStart <= otherEnd) ||
-        (newEnd >= otherStart && newEnd <= otherEnd) ||
-        (newStart <= otherStart && newEnd >= otherEnd)
-      );
+      // Hai khoảng KHÔNG overlap khi:
+      // - Phase mới kết thúc trước/bằng khi phase khác bắt đầu
+      // - HOẶC phase khác kết thúc trước/bằng khi phase mới bắt đầu
+      const noOverlap = newEnd <= otherStart || otherEnd <= newStart;
+
+      return !noOverlap; // Có overlap khi KHÔNG thỏa điều kiện noOverlap
     });
 
     if (hasOverlap) {

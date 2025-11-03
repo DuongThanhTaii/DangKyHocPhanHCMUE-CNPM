@@ -11,7 +11,9 @@ export class SinhVien {
         // ✅ Add new readonly fields for display
         public readonly tenKhoa?: string,
         public readonly tenNganh?: string,
-        public readonly trangThaiHoatDong?: boolean
+        public readonly trangThaiHoatDong?: boolean,
+        // ✅ Add tai_khoan_id (needed for update)
+        public readonly taiKhoanId?: string
     ) { }
 
     static create(props: {
@@ -48,6 +50,7 @@ export class SinhVien {
         tenKhoa?: string;
         tenNganh?: string;
         trangThaiHoatDong?: boolean;
+        taiKhoanId?: string; // ✅ Add this
     }): SinhVien {
         return new SinhVien(
             data.id,
@@ -60,7 +63,8 @@ export class SinhVien {
             data.ngayNhapHoc,
             data.tenKhoa,
             data.tenNganh,
-            data.trangThaiHoatDong
+            data.trangThaiHoatDong,
+            data.taiKhoanId // ✅ Add this
         );
     }
 

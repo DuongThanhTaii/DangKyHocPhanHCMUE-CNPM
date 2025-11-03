@@ -10,9 +10,9 @@ import { CoSoDto } from "../../dtos/dm/CoSoDto";
 @injectable()
 export class DanhMucUseCases {
     constructor(
-        @inject(TYPES.IKhoaRepository) private khoaRepo: IKhoaRepository,
-        @inject(TYPES.INganhRepository) private nganhRepo: INganhRepository,
-        @inject(TYPES.ICoSoRepository) private coSoRepo: ICoSoRepository
+        @inject(TYPES.DanhMuc.IKhoaRepository) private khoaRepo: IKhoaRepository,
+        @inject(TYPES.DanhMuc.INganhRepository) private nganhRepo: INganhRepository,
+        @inject(TYPES.DanhMuc.ICoSoRepository) private coSoRepo: ICoSoRepository
     ) { }
 
     /**

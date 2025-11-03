@@ -10,6 +10,9 @@ export class PrismaHocKyRepository implements IHocKyRepository {
             orderBy: { ngay_bat_dau: "desc" },
         });
 
+        // ✅ DEBUG: Log raw data from DB
+        console.log("[PrismaHocKyRepository.findAll] Raw records:", JSON.stringify(records.slice(0, 2), null, 2));
+
         return records.map((r) => this.toDomain(r));
     }
 
@@ -17,6 +20,9 @@ export class PrismaHocKyRepository implements IHocKyRepository {
         const record = await this.db.hoc_ky.findFirst({
             where: { trang_thai_hien_tai: true },
         });
+
+        // ✅ DEBUG: Log raw data
+        console.log("[PrismaHocKyRepository.findHienHanh] Raw record:", JSON.stringify(record, null, 2));
 
         return record ? this.toDomain(record) : null;
     }
@@ -27,6 +33,16 @@ export class PrismaHocKyRepository implements IHocKyRepository {
         });
 
         return record ? this.toDomain(record) : null;
+    }
+
+    async updateDates(id: string, ngayBatDau: Date, ngayKetThuc: Date): Promise<void> {
+        await this.db.hoc_ky.update({
+            where: { id },
+            data: {
+                ngay_bat_dau: ngayBatDau,
+                ngay_ket_thuc: ngayKetThuc,
+            },
+        });
     }
 
     private toDomain(record: any): HocKy {

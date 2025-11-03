@@ -1,33 +1,25 @@
 import { Router } from "express";
-import multer from "multer";
 import { container } from "../../../../infrastructure/di/container";
+import { TYPES } from "../../../../infrastructure/di/types";
 import { ImportSinhVienController } from "../../controllers/qlSinhVienPDT/ImportSinhVienController";
 import { requireAuth, requireRole } from "../../../../middlewares/auth";
+import multer from "multer";
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 const router = Router();
-const controller = container.get(ImportSinhVienController);
 
-// Multer configuration
-const upload = multer({
-    storage: multer.memoryStorage(),
-    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
-});
+// ✅ Get controller from DI container
+const controller = container.get<ImportSinhVienController>(TYPES.QlSinhVienPDT.ImportSinhVienController);
 
-// POST /api/pdt/sinh-vien/import/excel
+// ✅ POST /api/pdt/sinh-vien/import/excel (FE endpoint)
 router.post(
-    "/excel",
-    requireAuth,
-    requireRole(["phong_dao_tao"]),
-    upload.single("file"),
-    (req, res) => controller.importWithExcel(req, res)
-);
-
-// POST /api/pdt/sinh-vien/import/self-input
-router.post(
-    "/self-input",
-    requireAuth,
-    requireRole(["phong_dao_tao"]),
-    (req, res) => controller.importWithSelfInput(req, res)
+  "/excel",
+  requireAuth,
+  requireRole(["phong_dao_tao"]),
+  // accept single file field named 'file' (optional)
+  upload.single("file"),
+  (req, res) => controller.import(req, res)
 );
 
 export default router;

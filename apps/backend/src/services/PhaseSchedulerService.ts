@@ -18,15 +18,10 @@ export class PhaseSchedulerService {
     }
 
     start() {
-        // Chạy mỗi phút để check phases
-        this.cronJob = cron.schedule("* * * * *", async () => {
-            await this.updatePhaseStatus();
-        });
-
-        console.log("Phase Scheduler started - checking every minute");
-
-        // Chạy ngay lần đầu khi start
-        this.updatePhaseStatus();
+        // ❌ COMMENT hoặc XÓA auto-enable logic
+        // setInterval(() => this.checkAndEnablePhases(), 60000);
+        
+        console.log("[PhaseScheduler] ⚠️ DISABLED for demo (manual control via admin panel)");
     }
 
     stop() {

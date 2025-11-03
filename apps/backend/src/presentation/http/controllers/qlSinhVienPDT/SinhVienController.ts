@@ -1,21 +1,22 @@
 import { injectable, inject } from "inversify";
 import { Request, Response } from "express";
+import { TYPES } from "../../../../infrastructure/di/types";
 import { CreateSinhVienUseCase } from "../../../../application/use-cases/qlSinhVienPDT/crud/CreateSinhVien.usecase";
 import { ListSinhVienUseCase } from "../../../../application/use-cases/qlSinhVienPDT/crud/ListSinhVien.usecase";
 import { GetSinhVienDetailUseCase } from "../../../../application/use-cases/qlSinhVienPDT/crud/GetSinhVienDetail.usecase";
 import { UpdateSinhVienUseCase } from "../../../../application/use-cases/qlSinhVienPDT/crud/UpdateSinhVien.usecase";
 import { DeleteSinhVienUseCase } from "../../../../application/use-cases/qlSinhVienPDT/crud/DeleteSinhVien.usecase";
 import { CreateSinhVienSchema } from "../../../../application/dtos/qlSinhVienPDT/crud/CreateSinhVien.dto";
-import { UpdateSinhVienSchema } from "../../../../application/dtos/qlSinhVienPDT/crud/UpdateSinhVien.dto";
+import { UpdateSinhVienInputDTOSchema } from "../../../../application/dtos/qlSinhVienPDT/crud/UpdateSinhVien.dto";
 
 @injectable()
 export class SinhVienController {
     constructor(
-        @inject(CreateSinhVienUseCase) private createUseCase: CreateSinhVienUseCase,
-        @inject(ListSinhVienUseCase) private listUseCase: ListSinhVienUseCase,
-        @inject(GetSinhVienDetailUseCase) private detailUseCase: GetSinhVienDetailUseCase,
-        @inject(UpdateSinhVienUseCase) private updateUseCase: UpdateSinhVienUseCase,
-        @inject(DeleteSinhVienUseCase) private deleteUseCase: DeleteSinhVienUseCase
+        @inject(TYPES.QlSinhVienPDT.CreateSinhVienUseCase) private createUseCase: CreateSinhVienUseCase,
+        @inject(TYPES.QlSinhVienPDT.ListSinhVienUseCase) private listUseCase: ListSinhVienUseCase,
+        @inject(TYPES.QlSinhVienPDT.GetSinhVienDetailUseCase) private detailUseCase: GetSinhVienDetailUseCase,
+        @inject(TYPES.QlSinhVienPDT.UpdateSinhVienUseCase) private updateUseCase: UpdateSinhVienUseCase,
+        @inject(TYPES.QlSinhVienPDT.DeleteSinhVienUseCase) private deleteUseCase: DeleteSinhVienUseCase
     ) { }
 
     async list(req: Request, res: Response) {
@@ -69,7 +70,7 @@ export class SinhVienController {
     async update(req: Request, res: Response) {
         try {
             const { id } = req.params;
-            const parsed = UpdateSinhVienSchema.safeParse(req.body);
+            const parsed = UpdateSinhVienInputDTOSchema.safeParse(req.body);
 
             if (!parsed.success) {
                 return res.status(400).json({

@@ -42,3 +42,4 @@ export const updateDotGhiDanhHandler: RequestHandler = async (req, res, next) =>
         next(error);
     }
 };
+

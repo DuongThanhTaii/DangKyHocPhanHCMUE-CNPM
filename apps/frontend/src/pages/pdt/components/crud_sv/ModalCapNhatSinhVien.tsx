@@ -9,14 +9,15 @@ type Props = {
   onClose: () => void;
 };
 
+// ✅ Update type to match API response (camelCase)
 type Detail = {
   id: string;
-  ma_so_sinh_vien: string;
+  maSoSinhVien: string;
+  hoTen: string;
   lop?: string | null;
-  khoa_hoc?: string | null;
-  users: { ho_ten: string; tai_khoan?: { ten_dang_nhap: string } | null };
-  khoa?: { id: string; ten_khoa: string } | null;
-  nganh_hoc?: { id: string; ten_nganh: string } | null;
+  khoaHoc?: string | null;
+  tenKhoa?: string | null;
+  tenNganh?: string | null;
 };
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
@@ -32,11 +33,11 @@ const ModalCapNhatSinhVien: React.FC<Props> = ({ id, isOpen, onClose }) => {
   const { openNotify } = useModalContext();
   const [detail, setDetail] = useState<Detail | null>(null);
   const [form, setForm] = useState({
-    ho_ten: "",
-    ma_so_sinh_vien: "",
+    hoTen: "",
+    maSoSinhVien: "",
     lop: "",
-    khoa_hoc: "",
-    mat_khau: "", // optional: nếu nhập sẽ đổi
+    khoaHoc: "",
+    matKhau: "",
   });
 
   useEffect(() => {
@@ -45,14 +46,14 @@ const ModalCapNhatSinhVien: React.FC<Props> = ({ id, isOpen, onClose }) => {
       const res = await fetch(`${API}/pdt/sinh-vien/${id}`, withToken());
       const json = await res.json();
       if (json.success || json.isSuccess) {
-        const d = (json.data || json)?.data || json;
+        const d = json.data || json;
         setDetail(d);
         setForm({
-          ho_ten: d?.users?.ho_ten || "",
-          ma_so_sinh_vien: d?.ma_so_sinh_vien || "",
-          lop: d?.lop || "",
-          khoa_hoc: d?.khoa_hoc || "",
-          mat_khau: "",
+          hoTen: d.hoTen || "",
+          maSoSinhVien: d.maSoSinhVien || "",
+          lop: d.lop || "",
+          khoaHoc: d.khoaHoc || "",
+          matKhau: "",
         });
       } else {
         openNotify?.(json.message || "Không tải được chi tiết", "error");
@@ -66,13 +67,21 @@ const ModalCapNhatSinhVien: React.FC<Props> = ({ id, isOpen, onClose }) => {
   };
 
   const onSave = async () => {
-    const payload: any = {
-      ho_ten: form.ho_ten || undefined,
-      ma_so_sinh_vien: form.ma_so_sinh_vien || undefined,
-      lop: form.lop || undefined,
-      khoa_hoc: form.khoa_hoc || undefined,
-    };
-    if (form.mat_khau) payload.mat_khau = form.mat_khau;
+    // ✅ Send camelCase payload (only changed fields)
+    const payload: any = {};
+
+    if (form.hoTen !== detail?.hoTen) payload.hoTen = form.hoTen;
+    if (form.maSoSinhVien !== detail?.maSoSinhVien)
+      payload.maSoSinhVien = form.maSoSinhVien;
+    if (form.lop !== detail?.lop) payload.lop = form.lop;
+    if (form.khoaHoc !== detail?.khoaHoc) payload.khoaHoc = form.khoaHoc;
+    if (form.matKhau) payload.matKhau = form.matKhau;
+
+    // ✅ Check if there are any changes
+    if (Object.keys(payload).length === 0) {
+      openNotify?.("Không có thay đổi nào", "info");
+      return;
+    }
 
     const res = await fetch(
       `${API}/pdt/sinh-vien/${id}`,
@@ -97,7 +106,7 @@ const ModalCapNhatSinhVien: React.FC<Props> = ({ id, isOpen, onClose }) => {
           if (e.target === e.currentTarget) onClose();
         }}
       >
-        <div className="modal-popup">
+        <div className="modal-popup" onClick={(e) => e.stopPropagation()}>
           <div className="modal-header">
             <h1>Chỉnh sửa sinh viên</h1>
             <button type="button" className="md-btn-cancel" onClick={onClose}>
@@ -109,14 +118,14 @@ const ModalCapNhatSinhVien: React.FC<Props> = ({ id, isOpen, onClose }) => {
             <div className="form__group">
               <label className="pos__unset">MSSV</label>
               <input
-                name="ma_so_sinh_vien"
-                value={form.ma_so_sinh_vien}
+                name="maSoSinhVien"
+                value={form.maSoSinhVien}
                 onChange={onChange}
               />
             </div>
             <div className="form__group">
               <label className="pos__unset">Họ tên</label>
-              <input name="ho_ten" value={form.ho_ten} onChange={onChange} />
+              <input name="hoTen" value={form.hoTen} onChange={onChange} />
             </div>
           </div>
 
@@ -126,26 +135,27 @@ const ModalCapNhatSinhVien: React.FC<Props> = ({ id, isOpen, onClose }) => {
               <input name="lop" value={form.lop} onChange={onChange} />
             </div>
             <div className="form__group">
-              <label className="pos__unset">Niên khóa</label>
-              <input
-                name="khoa_hoc"
-                value={form.khoa_hoc}
-                onChange={onChange}
-              />
+              <label className="pos__unset">Khóa học</label>
+              <input name="khoaHoc" value={form.khoaHoc} onChange={onChange} />
             </div>
           </div>
 
           <div className="modal-popup-row">
             <div className="form__group">
-              <label className="pos__unset">Mật khẩu mới</label>
+              <label className="pos__unset">
+                Mật khẩu mới (bỏ trống nếu không đổi)
+              </label>
               <input
-                name="mat_khau"
+                name="matKhau"
                 type="password"
-                value={form.mat_khau}
+                value={form.matKhau}
                 onChange={onChange}
+                placeholder="Tối thiểu 6 ký tự"
               />
             </div>
           </div>
+
+          {/* ✅ Display readonly info */}
 
           <div className="modal-popup-row">
             <button className="md-btn-add" onClick={onSave}>
