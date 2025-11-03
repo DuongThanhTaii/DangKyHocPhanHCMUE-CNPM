@@ -1,0 +1,980 @@
+[
+  {
+    "page": 42,
+    "table_index": 1,
+    "type": "thang_diem_10_chu",
+    "columns": [
+      "Loại",
+      "Thang điểm 10",
+      "Thang điểm chữ"
+    ],
+    "data": [
+      {
+        "Loại": "Đạt",
+        "Thang điểm 10": "8,5 – 10",
+        "Thang điểm chữ": "A"
+      },
+      {
+        "Loại": "",
+        "Thang điểm 10": "7,8 – 8,4",
+        "Thang điểm chữ": "B+"
+      },
+      {
+        "Loại": "",
+        "Thang điểm 10": "7,0 – 7,7",
+        "Thang điểm chữ": "B"
+      },
+      {
+        "Loại": "",
+        "Thang điểm 10": "6,3 – 6,9",
+        "Thang điểm chữ": "C+"
+      },
+      {
+        "Loại": "",
+        "Thang điểm 10": "5,5 – 6,2",
+        "Thang điểm chữ": "C"
+      },
+      {
+        "Loại": "",
+        "Thang điểm 10": "4,8 – 5,4",
+        "Thang điểm chữ": "D+"
+      },
+      {
+        "Loại": "",
+        "Thang điểm 10": "4,0 – 4,7",
+        "Thang điểm chữ": "D"
+      },
+      {
+        "Loại": "Không đạt",
+        "Thang điểm 10": "3,0 – 3,9",
+        "Thang điểm chữ": "F+"
+      },
+      {
+        "Loại": "",
+        "Thang điểm 10": "0,0 – 2,9",
+        "Thang điểm chữ": "F"
+      }
+    ]
+  },
+  {
+    "page": 44,
+    "table_index": 1,
+    "type": "thang_diem_4",
+    "columns": [
+      "Thang điểm chữ",
+      "Thang điểm 4"
+    ],
+    "data": [
+      {
+        "Thang điểm chữ": "A",
+        "Thang điểm 4": "4,0"
+      },
+      {
+        "Thang điểm chữ": "B+",
+        "Thang điểm 4": "3,5"
+      },
+      {
+        "Thang điểm chữ": "B",
+        "Thang điểm 4": "3,0"
+      },
+      {
+        "Thang điểm chữ": "C+",
+        "Thang điểm 4": "2,5"
+      },
+      {
+        "Thang điểm chữ": "C",
+        "Thang điểm 4": "2,0"
+      },
+      {
+        "Thang điểm chữ": "D+",
+        "Thang điểm 4": "1,5"
+      },
+      {
+        "Thang điểm chữ": "D",
+        "Thang điểm 4": "1,0"
+      },
+      {
+        "Thang điểm chữ": "F+",
+        "Thang điểm 4": "0,5"
+      },
+      {
+        "Thang điểm chữ": "F",
+        "Thang điểm 4": "0,0"
+      }
+    ]
+  },
+  {
+    "page": 45,
+    "table_index": 1,
+    "type": "xep_loai_hoc_luc",
+    "columns": [
+      "Xếp loại",
+      "Thang điểm 4"
+    ],
+    "data": [
+      {
+        "Xếp loại": "Xuất sắc",
+        "Thang điểm 4": "Từ 3,6 đến 4,0"
+      },
+      {
+        "Xếp loại": "Giỏi",
+        "Thang điểm 4": "Từ 3,2 đến dưới 3,6"
+      },
+      {
+        "Xếp loại": "Khá",
+        "Thang điểm 4": "Từ 2,5 đến dưới 3,2"
+      },
+      {
+        "Xếp loại": "Trung bình",
+        "Thang điểm 4": "Từ 2,0 đến dưới 2,5"
+      },
+      {
+        "Xếp loại": "Yếu",
+        "Thang điểm 4": "Từ 1,0 đến dưới 2,0"
+      },
+      {
+        "Xếp loại": "Kém",
+        "Thang điểm 4": "Dưới 1,0"
+      }
+    ]
+  },
+  {
+    "page": 70,
+    "table_index": 1,
+    "type": "yeu_cau_hoc_bong",
+    "columns": [
+      "TT",
+      "Loại học bổng",
+      "Yêu cầu",
+      ""
+    ],
+    "data": [
+      {
+        "TT": "",
+        "Loại học bổng": "",
+        "Yêu cầu": "Kết quả học tập",
+        "": "Kết quả rèn luyện"
+      },
+      {
+        "TT": "1",
+        "Loại học bổng": "Xuất sắc",
+        "Yêu cầu": "Xuất sắc",
+        "": "Xuất sắc"
+      },
+      {
+        "TT": "2",
+        "Loại học bổng": "Giỏi",
+        "Yêu cầu": "Xuất sắc",
+        "": "Tốt"
+      },
+      {
+        "TT": "",
+        "Loại học bổng": "",
+        "Yêu cầu": "Giỏi",
+        "": "Tốt trở lên"
+      },
+      {
+        "TT": "3",
+        "Loại học bổng": "Khá",
+        "Yêu cầu": "Xuất sắc",
+        "": "Khá"
+      },
+      {
+        "TT": "",
+        "Loại học bổng": "",
+        "Yêu cầu": "Giỏi",
+        "": "Khá"
+      },
+      {
+        "TT": "",
+        "Loại học bổng": "",
+        "Yêu cầu": "Khá",
+        "": "Khá trở lên"
+      }
+    ]
+  },
+  {
+    "page": 91,
+    "table_index": 1,
+    "type": "xep_loai_hoc_bong",
+    "columns": [
+      "TT",
+      "Khung điểm",
+      "Xếp loại"
+    ],
+    "data": [
+      {
+        "TT": "1",
+        "Khung điểm": "Từ 90 đến 100 điểm",
+        "Xếp loại": "Xuất sắc"
+      },
+      {
+        "TT": "2",
+        "Khung điểm": "Từ 80 đến dưới 90 điểm",
+        "Xếp loại": "Tốt"
+      },
+      {
+        "TT": "3",
+        "Khung điểm": "Từ 65 đến dưới 80 điểm",
+        "Xếp loại": "Khá"
+      },
+      {
+        "TT": "4",
+        "Khung điểm": "Từ 50 đến dưới 65 điểm",
+        "Xếp loại": "Trung bình"
+      },
+      {
+        "TT": "5",
+        "Khung điểm": "Từ 35 đến dưới 50 điểm",
+        "Xếp loại": "Yếu"
+      },
+      {
+        "TT": "6",
+        "Khung điểm": "Dưới 35 điểm",
+        "Xếp loại": "Kém"
+      }
+    ]
+  },
+  {
+    "page": 99,
+    "table_index": 1,
+    "type": "diem_ren_luyen1",
+    "columns": [
+      "NỘI DUNG ĐÁNH GIÁ",
+      "",
+      "KHUNG ĐIỂM"
+    ],
+    "data": [
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "I.",
+        "": "ĐÁNH GIÁ VỀ Ý THỨC THAM GIA HỌC TẬP",
+        "KHUNG ĐIỂM": "0 đến 20 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "a",
+        "": "Tinh thần và thái độ trong học tập",
+        "KHUNG ĐIỂM": "0 đến 3 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "– Vào lớp học đúng giờ, tham gia các giờ học đầy đủ",
+        "KHUNG ĐIỂM": "1,5 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "– Chuẩn bị bài tốt, ý thức trong giờ học nghiêm túc",
+        "KHUNG ĐIỂM": "1,5 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "b",
+        "": "Tham gia các hoạt động học thuật, hoạt động NCKH",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "– Tham gia các hoạt động học thuật: hội thảo, tọa đàm, lớp \nhướng dẫn NCKH, hoạt động khảo sát của Trường,…",
+        "KHUNG ĐIỂM": "3 điểm/hoạt động"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "–  Tham  gia  hoạt  động  NCKH:  có  bài  báo  khoa  học,  tham \nluận được đăng tải trên các tạp chí, tập san uy tín được công \nnhận; thực hiện đề tài NCKH, bài viết, bài tham luận tại các \nhội thảo khoa học,…",
+        "KHUNG ĐIỂM": "5 điểm/nghiên cứu"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "c",
+        "": "Tham gia các kỳ thi, cuộc thi",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "– Tham gia cổ vũ các kỳ thi, cuộc thi học thuật",
+        "KHUNG ĐIỂM": "1 điểm/hoạt động"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "– Tham gia các cuộc thi học thuật cấp khoa, phân hiệu \n(tương đương)",
+        "KHUNG ĐIỂM": "3 điểm/hoạt động"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "– Tham gia các cuộc thi học thuật cấp Trường  \n(tương đương)",
+        "KHUNG ĐIỂM": "4 điểm/hoạt động"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "– Tham gia các cuộc thi học thuật cấp tỉnh/thành  \n(tương đương) trở lên",
+        "KHUNG ĐIỂM": "5 điểm/hoạt động"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "d",
+        "": "Kết quả học tập",
+        "KHUNG ĐIỂM": "0 đến 10 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "Kết quả học tập của học kỳ đạt:",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Xuất sắc",
+        "KHUNG ĐIỂM": "10 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Giỏi",
+        "KHUNG ĐIỂM": "8 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Khá",
+        "KHUNG ĐIỂM": "6 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Trung bình",
+        "KHUNG ĐIỂM": "5 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Yếu",
+        "KHUNG ĐIỂM": "3 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Kém",
+        "KHUNG ĐIỂM": "0 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "e",
+        "": "Tinh thần vượt khó, phấn đấu vươn lên trong học tập",
+        "KHUNG ĐIỂM": "0 đến 3 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "f",
+        "": "Khen thưởng – kỷ luật",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "– Khen thưởng sinh viên đạt thành tích hoạt động học thuật",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Cấp khoa, phân hiệu (tương đương)",
+        "KHUNG ĐIỂM": "3 điểm/thành tích"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Cấp Trường (tương đương)",
+        "KHUNG ĐIỂM": "4 điểm/thành tích"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Cấp tỉnh/thành (tương đương)",
+        "KHUNG ĐIỂM": "5 điểm/thành tích"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Cấp Trung ương",
+        "KHUNG ĐIỂM": "6 điểm/thành tích"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "– Kỷ luật:",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Không thực hiện trọn vẹn các bài khảo sát",
+        "KHUNG ĐIỂM": "-3 điểm/lần"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Vi phạm quy định các kỳ thi và bị lập biên bản hình \nthức kỷ luật:",
+        "KHUNG ĐIỂM": ""
+      }
+    ]
+  },
+  {
+    "page": 100,
+    "table_index": 1,
+    "type": "diem_ren_luyen2",
+    "columns": [
+      "NỘI DUNG ĐÁNH GIÁ",
+      "",
+      "",
+      "KHUNG ĐIỂM",
+      ""
+    ],
+    "data": [
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "Điểm trừ \nđược tính \ntất cả \nnhững \nlần vi \nphạm và \nkhông \nvượt quá \nkhung 20 \nđiểm",
+        "KHUNG ĐIỂM": "Lần thứ \n2 trở \nlên"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "",
+        "KHUNG ĐIỂM": "-4 \nđiểm/lần"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "",
+        "KHUNG ĐIỂM": "-6 \nđiểm/lần"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "",
+        "KHUNG ĐIỂM": "-8 \nđiểm/lần"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "II",
+        "": "",
+        "KHUNG ĐIỂM": "0 đến 25 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "a",
+        "": "",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "",
+        "KHUNG ĐIỂM": "2 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "",
+        "KHUNG ĐIỂM": "-3 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "",
+        "KHUNG ĐIỂM": "-3 điểm/lần"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "",
+        "KHUNG ĐIỂM": "-4 điểm/lần"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "",
+        "KHUNG ĐIỂM": "-3 điểm/lần"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "",
+        "KHUNG ĐIỂM": "3 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "",
+        "KHUNG ĐIỂM": "3 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "",
+        "KHUNG ĐIỂM": "2 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "",
+        "KHUNG ĐIỂM": "-5 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "",
+        "KHUNG ĐIỂM": "-5 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "",
+        "KHUNG ĐIỂM": "-10 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "",
+        "KHUNG ĐIỂM": "Rèn luyện Kém"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "",
+        "KHUNG ĐIỂM": "3 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "b",
+        "": "",
+        "KHUNG ĐIỂM": "0 đến 10 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "",
+        "KHUNG ĐIỂM": "10 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "",
+        "KHUNG ĐIỂM": "0 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "c",
+        "": "",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "",
+        "KHUNG ĐIỂM": "2 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "",
+        "KHUNG ĐIỂM": "-3 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "",
+        "KHUNG ĐIỂM": "Rèn luyện Kém"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "d",
+        "": "",
+        "KHUNG ĐIỂM": "0 đến 5 điểm"
+      }
+    ]
+  },
+  {
+    "page": 101,
+    "table_index": 1,
+    "type": "diem_ren_luyen3",
+    "columns": [
+      "NỘI DUNG ĐÁNH GIÁ",
+      "",
+      "KHUNG ĐIỂM"
+    ],
+    "data": [
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "III",
+        "": "ĐÁNH GIÁ VỀ Ý THỨC THAM GIA CÁC HOẠT \nĐỘNG CHÍNH TRỊ, XÃ HỘI, VĂN HÓA, VĂN NGHỆ, \nTHỂ THAO, PHÒNG CHỐNG TỘI PHẠM VÀ CÁC \nTỆ NẠN XÃ HỘI",
+        "KHUNG ĐIỂM": "0 đến 20 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "a",
+        "": "Tham gia các hoạt động rèn luyện về chính trị, xã hội, văn \nhóa, văn nghệ, thể thao",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "– Thành viên các câu lạc bộ",
+        "KHUNG ĐIỂM": "3 điểm/CLB"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "– Tham gia cổ vũ các hoạt động",
+        "KHUNG ĐIỂM": "1 điểm/hoạt động"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "– Tham gia các hoạt động về chính trị, xã hội:",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Tham gia các hoạt động, các buổi hội nghị, đại hội \ndo Trường, tổ chức Đoàn – Hội tổ chức, triệu tập (Đại \nhội, Hội nghị, Hội nghị Lớp trưởng, tọa đàm về tình \nhình thời sự, chính trị,…)",
+        "KHUNG ĐIỂM": "4 điểm/hoạt động"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Không tham gia (không có lý do chính đáng khi \nđược triệu tập)",
+        "KHUNG ĐIỂM": "-4 điểm/hoạt động"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "– Tham gia đầy đủ và nghiêm túc các hoạt động văn hóa, \nvăn nghệ, thể dục thể thao:",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Cấp lớp (tương đương)",
+        "KHUNG ĐIỂM": "1 điểm/hoạt động"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Cấp khoa, phân hiệu (tương đương)",
+        "KHUNG ĐIỂM": "2 điểm/hoạt động"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Cấp Trường (tương đương)",
+        "KHUNG ĐIỂM": "3 điểm/hoạt động"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Cấp tỉnh/thành (tương đương) trở lên",
+        "KHUNG ĐIỂM": "4 điểm/hoạt động"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "b",
+        "": "Tham gia các hoạt động hiến máu, công ích hoặc các hoạt \nđộng an sinh xã hội",
+        "KHUNG ĐIỂM": "3 điểm/hoạt động"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "c",
+        "": "Tham gia tuyên truyền, phòng chống tội phạm và các tệ nạn \nxã hội",
+        "KHUNG ĐIỂM": "3 điểm/hoạt động"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "d",
+        "": "Sinh viên được kết nạp Đoàn Thanh niên Cộng sản Hồ Chí Minh",
+        "KHUNG ĐIỂM": "2 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "e",
+        "": "Sinh viên được kết nạp vào Đảng Cộng sản Việt Nam",
+        "KHUNG ĐIỂM": "3 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "f",
+        "": "Khen thưởng sinh viên đạt thành tích hoạt động chính trị, xã \nhội, văn hóa, văn nghệ, thể thao, phòng chống tội phạm và \ncác tệ nạn xã hội",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Cấp khoa, phân hiệu (tương đương)",
+        "KHUNG ĐIỂM": "3 điểm/thành tích"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Cấp Trường (tương đương)",
+        "KHUNG ĐIỂM": "4 điểm/thành tích"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Cấp tỉnh/thành (tương đương)",
+        "KHUNG ĐIỂM": "5 điểm/thành tích"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Cấp Trung ương",
+        "KHUNG ĐIỂM": "6 điểm/thành tích"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "IV",
+        "": "ĐÁNH GIÁ VỀ Ý THỨC CÔNG DÂN TRONG QUAN \nHỆ CỘNG ĐỒNG",
+        "KHUNG ĐIỂM": "0 đến 25 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "a",
+        "": "Ý thức chấp hành và tham gia tuyên truyền các chủ trương \ncủa Đảng, chính sách pháp luật của Nhà nước trong cộng đồng",
+        "KHUNG ĐIỂM": "0 đến 5 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "– Tích cực tìm hiểu và chấp hành tốt chủ trương, đường lối \ncủa Đảng, chính sách, pháp luật của Nhà nước",
+        "KHUNG ĐIỂM": "2,5 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "– Tích cực tham gia hưởng ứng các buổi học tập, triển khai, \ntuyên truyền các chủ trương, đường lối của Đảng, chính \nsách, pháp luật của Nhà nước",
+        "KHUNG ĐIỂM": "2,5 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "b",
+        "": "Tham gia các hoạt động tình nguyện vì cộng đồng",
+        "KHUNG ĐIỂM": "3 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "Có ý thức và tham gia các hoạt động tình nguyện vì cộng đồng",
+        "KHUNG ĐIỂM": ""
+      }
+    ]
+  },
+  {
+    "page": 102,
+    "table_index": 1,
+    "type": "diem_ren_luyen4",
+    "columns": [
+      "NỘI DUNG ĐÁNH GIÁ",
+      "",
+      "KHUNG ĐIỂM"
+    ],
+    "data": [
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Cấp lớp (tương đương)",
+        "KHUNG ĐIỂM": "2 điểm/hoạt động"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Cấp khoa, phân hiệu (tương đương)",
+        "KHUNG ĐIỂM": "3 điểm/hoạt động"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Cấp Trường (tương đương) trở lên",
+        "KHUNG ĐIỂM": "4 điểm/hoạt động"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "c",
+        "": "Khen thưởng sinh viên tham gia các hoạt động vì cộng đồng \ncó thành tích được ghi nhận, biểu dương, khen thưởng",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Cấp khoa, phân hiệu (tương đương)",
+        "KHUNG ĐIỂM": "3 điểm/thành tích"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Cấp Trường (tương đương)",
+        "KHUNG ĐIỂM": "4 điểm/thành tích"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Cấp tỉnh/thành (tương đương)",
+        "KHUNG ĐIỂM": "5 điểm/thành tích"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Cấp Trung ương",
+        "KHUNG ĐIỂM": "6 điểm/thành tích"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "V",
+        "": "ĐÁNH GIÁ VỀ Ý THỨC VÀ KẾT QUẢ THAM GIA \nCÔNG TÁC PHỤ TRÁCH LỚP, CÁC ĐOÀN THỂ, TỔ \nCHỨC TRONG TRƯỜNG; ĐẠT THÀNH TÍCH XUẤT \nSẮC TRONG HỌC TẬP, RÈN LUYỆN",
+        "KHUNG ĐIỂM": "0 đến 10 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "a",
+        "": "Hỗ trợ và tham gia tích cực vào các hoạt động chung của \nlớp, tập thể, của Trường",
+        "KHUNG ĐIỂM": "3 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "b",
+        "": "Đánh giá mức độ hoàn thành nhiệm vụ của sinh viên giữ \nmột trong các chức vụ sau (đối với sinh viên đảm nhiệm \nnhiều chức vụ thì chọn chức vụ cao nhất)",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "– BCS lớp; BCH Chi đoàn – Chi hội; ủy viên BCH Đoàn \nkhoa – Liên Chi hội Sinh viên khoa hoặc tại phân hiệu; Ban \nChủ nhiệm các câu lạc bộ – đội – nhóm; thành viên Ban Tự \nquản KTX",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Hoàn thành xuất sắc nhiệm vụ",
+        "KHUNG ĐIỂM": "3 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Hoàn thành tốt nhiệm vụ",
+        "KHUNG ĐIỂM": "2 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Hoàn thành nhiệm vụ",
+        "KHUNG ĐIỂM": "1 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Không hoàn thành nhiệm vụ",
+        "KHUNG ĐIỂM": "-3 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "– Bí thư, Phó Bí thư Đoàn khoa hoặc tại phân hiệu; Liên Chi \nhội trưởng, Liên Chi hội phó; ủy viên BCH Đoàn Trường – \nHội Sinh viên Trường; Chủ nhiệm, Phó Chủ nhiệm câu lạc \nbộ – đội – nhóm; Trưởng, Phó Ban Tự quản KTX",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Hoàn thành xuất sắc nhiệm vụ",
+        "KHUNG ĐIỂM": "4 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Hoàn thành tốt nhiệm vụ",
+        "KHUNG ĐIỂM": "3 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Hoàn thành nhiệm vụ",
+        "KHUNG ĐIỂM": "2 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Không hoàn thành nhiệm vụ",
+        "KHUNG ĐIỂM": "-5 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "– Ủy viên Thường vụ Đoàn Trường – Ban Thư ký Hội Sinh \nviên Trường; Chi ủy viên Chi bộ Sinh viên",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Hoàn thành xuất sắc nhiệm vụ",
+        "KHUNG ĐIỂM": "4 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Hoàn thành tốt nhiệm vụ",
+        "KHUNG ĐIỂM": "3 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Hoàn thành nhiệm vụ",
+        "KHUNG ĐIỂM": "2 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Không hoàn thành nhiệm vụ",
+        "KHUNG ĐIỂM": "-5 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "c",
+        "": "Sinh viên đạt được các thành tích đặc biệt trong học tập, rèn \nluyện (chỉ tính mức khen thưởng cao nhất cho 01 nội dung)",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "– Khen thưởng cấp Trường",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Danh hiệu “Sinh viên 5 tốt”",
+        "KHUNG ĐIỂM": "4 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Danh hiệu “Thanh niên tiên tiến làm theo lời Bác”",
+        "KHUNG ĐIỂM": "4 điểm"
+      }
+    ]
+  },
+  {
+    "page": 103,
+    "table_index": 1,
+    "type": "diem_ren_luyen5",
+    "columns": [
+      "NỘI DUNG ĐÁNH GIÁ",
+      "",
+      "KHUNG ĐIỂM"
+    ],
+    "data": [
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Danh hiệu “Cán bộ Đoàn – Hội xuất sắc”, giấy khen \nhoàn thành xuất sắc công tác Đoàn – Hội",
+        "KHUNG ĐIỂM": "4 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "– Khen thưởng cấp tỉnh/thành (tương đương)",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Danh hiệu “Sinh viên 5 tốt”",
+        "KHUNG ĐIỂM": "5 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Đạt giải I, II, III Giải thưởng NCKH cấp Thành",
+        "KHUNG ĐIỂM": "5 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Giấy khen của Thành Đoàn – Hội Sinh viên Thành \nphố về hoàn thành xuất sắc công tác Đoàn – Hội (cá nhân)",
+        "KHUNG ĐIỂM": "5 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Các hình thức khen thưởng tương đương khác (do \nHội đồng cấp Trường công nhận)",
+        "KHUNG ĐIỂM": "5 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "– Khen thưởng cấp Trung ương (tương đương)",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Danh hiệu “Sinh viên 5 tốt”",
+        "KHUNG ĐIỂM": "7 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Danh hiệu “Sao Tháng Giêng”",
+        "KHUNG ĐIỂM": "7 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Đạt giải I, II, III Giải thưởng NCKH cấp Bộ",
+        "KHUNG ĐIỂM": "7 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Đạt giải Khuyến khích Giải thưởng NCKH cấp Bộ",
+        "KHUNG ĐIỂM": "6 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Bằng khen của Trung ương Đoàn – Trung ương Hội \nvề hoàn thành xuất sắc công tác Đoàn – Hội (cá nhân)",
+        "KHUNG ĐIỂM": "6 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Bằng khen cấp Trung ương vì có thành tích xuất sắc \ntrong công tác xã hội, giữ gìn an ninh trật tự, an toàn \nxã hội, hoạt động tình nguyện vì cộng đồng (cá nhân)",
+        "KHUNG ĐIỂM": "6 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "",
+        "": "+ Các hình thức khen thưởng tương đương khác (do \nHội đồng rèn luyện cấp Trường công nhận)",
+        "KHUNG ĐIỂM": "6 điểm"
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "Tổng điểm của phần 1 là 20 điểm, nếu điểm vượt khung thì quy về 20 điểm",
+        "": "",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "Tổng điểm của phần 2 là 25 điểm, nếu điểm vượt khung thì quy về 25 điểm",
+        "": "",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "Tổng điểm của phần 3, phần 4 là 45 điểm, nếu điểm vượt khung thì quy về 45 điểm",
+        "": "",
+        "KHUNG ĐIỂM": ""
+      },
+      {
+        "NỘI DUNG ĐÁNH GIÁ": "Tổng điểm của phần 5 là 10 điểm, nếu điểm vượt quá 10 điểm thì phần điểm vượt \nsẽ cộng vào tổng điểm chung",
+        "": "",
+        "KHUNG ĐIỂM": ""
+      }
+    ]
+  }
+]

@@ -1,0 +1,410 @@
+[
+    {
+        "ten_mon":"Lập trình cơ bản",
+        "Description":"Học phần lập trình cơ bản bao gồm 7 phần lý thuyết và 7 bài thực hành, là học phần chung bắt buộc trong nhóm các học phần nền tảng. Thông qua học phần, người học sẽ có những kiến thức cơ bản về lập trình, ngôn ngữ lập trình và chương trình dịch. Học phần này cũng giúp người học hiểu được tầm quan trọng của giải thuật, đồng thời, người học cũng được củng cố về kỹ năng lập trình."
+    },
+    {
+        "ten_mon":"Cơ sở toán trong Công nghệ thông tin",
+        "Description":"Học phần gồm có 8 phần lý thuyết, là học phần chung bắt buộc trong nhóm các học phần nền tảng. Học phần này nhằm trang bị cho sinh viên những kiến thức cơ sở về toán học làm nền tảng cho các môn học chuyên ngành về sau. Trang bị cho sinh viên những kiến thức cơ bản về Toán ứng dụng trong CNTT như ma trận, hệ phương trình, không gian véc tơ, ánh xạ tuyến tính, tìm giá trị riêng - véc tơ riêng của một ma trận, chéo hóa một ma trận và dạng toàn phương. Từ đó sinh viên có thể tự hoàn thiện, phát triển, vận dụng và giải quyết những vấn đề liên quan trong các môn học chuyên nghành sau này."
+    },
+    {
+        "ten_mon":"Toán rời rạc và ứng dụng",
+        "Description":"Học phần Toán rời rạc bao gồm 5 chương lý thuyết và các bài tập luyện tập, là học phần chung bắt buộc trong nhóm các học phần nền tảng, tạo nền tảng lý thuyết cho các học phần khác của ngành Công nghệ Thông tin. Học phần bao gồm 5 chương lí thuyết. Học phần này trang bị cho sinh viên các kiến thức cơ bản về lý thuyết cơ sở logic, lý thuyết quan hệ, hệ thức đệ qui, đại số Boole và hàm Boole dùng làm cơ sở cho việc học tập chuyên sâu về khoa học máy tính."
+    },
+    {
+        "ten_mon":"Thiết kế web",
+        "Description":"Học phần gồm có 6 phần lý thuyết và 3 bài thực hành, là học phần bắt buộc trong nhóm học phần nền tảng. Thông qua học phần, người học lĩnh hội những kiến thức cơ bản về thiết kế website tĩnh, làm cơ sở cho các môn học lập trình web động sau này. Sau khi kết thúc môn học người học có thể tự thiết kế các website, vận dụng các kiến thức đã học ở môn lập trình, xử lý ảnh để tạo các trang web sinh động hơn."
+    },
+    {
+        "ten_mon":"Đường lối quốc phòng và an ninh của Đảng Cộng sản Việt Nam",
+        "Description":"Học phần gồm có 11 phần lý thuyết và 4 bài thảo luận. Học phần này là học phần bắt buộc trong nhóm học phần nền tảng. Thông qua học phần, người học lĩnh hội những kiến thức cơ bản về đường lối quốc phòng và an ninh của Đảng Cộng sản Việt Nam. Trên cơ sở này, người học phân tích được những đặc trưng của nền quốc phòng toàn dân, an ninh nhân dân hiện nay và quan điểm của Đảng Cộng sản Việt Nam về quốc phòng và an ninh, sẵn sàng thực hiện nghĩa vụ quân sự, nghĩa vụ công an, góp phần bảo vệ an ninh Tổ quốc."
+    },
+    {
+        "ten_mon":"Pháp luật đại cương",
+        "Description":"Học phần gồm có 8 phần. Học phần này là học phần bắt buộc trong nhóm học phần nền tảng. Học phần giúp người học có kiến thức cơ bản về nguồn gốc, bản chất và đặc trưng của nhà nước và pháp luật; nội dung cơ bản của Hiến pháp Việt Nam; quy phạm pháp luật; khái quát về một số ngành luật trong hệ thống pháp luật Việt Nam. Trên cơ sở đó, người học tuân thủ, chấp hành đường lối, chủ trương của Đảng, chính sách, pháp luật của Nhà nước, đồng thời thể hiện được tinh thần trách nhiệm của người công dân toàn cầu với tinh thần quan tâm, chia sẻ và giúp đỡ mọi người."
+    },
+    {
+        "ten_mon":"Triết học Mác – Lênin",
+        "Description":"Học phần gồm có 3 phần. Học phần này là học phần bắt buộc trong nhóm học phần nền tảng. Thông qua việc cung cấp cho người học những hiểu biết có tính căn bản, hệ thống về triết học Mác – Lênin, học phần giúp người học xây dựng thế giới quan duy vật biện chứng và phương pháp luận biện chứng duy vật làm nền tảng lý luận cho việc nhận thức các vấn đề, nội dung của các môn học khác. Trên cơ sở này, người học vận dụng được triết học Mác – Lênin vào trong hoạt động nhận thức và thực tiễn."
+    },
+    {
+        "ten_mon":"Tâm lý học đại cương",
+        "Description":"Học phần Tâm lý học đại cương bao gồm 7 phần lý thuyết và 6 bài tập nhóm, 2 bài kiểm tra trắc nghiệm (giữa kì và cuối kỳ). Học phần này là học phần chung bắt buộc trong nhóm các học phần nền tảng. Thông qua học phần này, người học lĩnh hội được những kiến thức cơ bản về bản chất, đặc điểm các hiện tượng tâm lý và các quy luật tâm lý của con người (nhận thức, tình cảm, ý chí, hành động và nhân cách...). Trên cơ sở đó, người học vận dụng kiến thức vào thực tế để nhận diện, phân biệt và giải thích được các hiện tượng tâm lý cơ bản của con người, góp phần định hướng cho hoạt động của người học. 4. Kinh tế chính trị học Mác - Lênin - Số tín chỉ: 2 - Mã học phần: POLI2002 - Nhóm học phần: HỌC PHẦN NỀN TẢNG - Học phần tiên quyết: Không - Học phần học trước: Không - Học phần song hành: Không Học phần gồm có 6 phần lý thuyết. Đây là học phần bắt buộc trong nhóm học phần nền tảng. Thông qua học phần này, người học lĩnh hội những nội dung cơ bản về phương thức sản xuất tư bản chủ nghĩa, nền kinh tế thị trường định hướng xã hội chủ nghĩa, công nghiệp hóa, hiện đại hóa, hội nhập kinh tế quốc tế của Việt Nam. Trên cơ sở đó, người học nhận thức được trách nhiệm đối với bản thân và trách nhiệm với Tổ quốc; tuân thủ đường lối, chủ trương của Đảng, chính sách, pháp luật của Nhà nước về phát triển kinh tế ở Việt Nam hiện nay."
+    },
+    {
+        "ten_mon":"Giáo dục thể chất 1 (Thể dục - Điền kinh)",
+        "Description":"không Học phần Giáo dục Thể chất học phần 1 gồm 2 phần: lí thuyết và thực hành. Học phần giúp người học lĩnh hội được những kiến thức cơ bản về rèn luyện thể chất và tập luyện thể dục thể thao thông qua các bài tập thể dục phát triển chung, bài tập thể lực, chạy cự li ngắn. Trên cơ sở đó người học vận dụng vào kĩ năng vận động trong cuộc sống, tự rèn luyện năng cao sức khỏe trong học tập và rèn luyện thể chất."
+    },
+    {
+        "ten_mon":"Lập trình nâng cao",
+        "Description":"Học phần lập trình nâng cao bao gồm 7 phần lý thuyết và 7 bài thực hành, là học phần chung bắt buộc trong nhóm các học phần nền tảng. Thông qua học phần, người học sẽ có một số kỹ thuật lập trình nâng cao như quản lý vùng nhớ, thao tác trên dữ liệu có cấu trúc, cũng như quản lý dữ liệu trên thiết bị lưu trữ ngoài. Ngoài ra, học phần trang bị cho người học cách thức viết một chương trình lớn, có độ tin cậy cũng như khả năng sử dụng lại."
+    },
+    {
+        "ten_mon":"Lập trình hướng đối tượng",
+        "Description":"Học phần gồm có 5 phần lý thuyết và 10 bài thực hành, là học phần bắt buộc trong nhóm các học phần nên tảng. Thông qua học phần, người học lĩnh hội các kiến thức về cơ bản về phương pháp lập trình hướng đối tượng. Định hướng cho người học trong việc phân tích, thiết kế một chương trình theo phương pháp hướng đối tượng, sử dụng các khái niệm: kiểu dữ liệu trừu tượng, sự kế thừa, tính đa hình."
+    },
+    {
+        "ten_mon":"Công tác quốc phòng và an ninh",
+        "Description":"Học phần gồm 7 phần lý thuyết và 4 bài thảo luận. Học phần này là học phần bắt buộc trong nhóm học phần nền tảng. Thông qua học phần, người học lĩnh hội được những nội dung cơ bản về công tác quốc phòng và an ninh, phân tích được những quan điểm của Đảng Cộng sản Việt Nam về quốc phòng và an ninh. Trên cơ sở đó, người học chấp hành tốt chủ trương, đường lối của Đảng, chính sách pháp luật của Nhà nước và vận dụng vào việc phòng chống một số loại tội phạm trong tình hình mới."
+    },
+    {
+        "ten_mon":"Kinh tế chính trị học Mác - Lênin",
+        "Description":"Học phần Kinh tế chính trị học Mác - Lênin"
+    },
+    {
+        "ten_mon":"Chủ nghĩa xã hội khoa học",
+        "Description":"Học phần gồm có 6 phần. Học phần này là học phần bắt buộc trong nhóm học phần nền tảng. Thông qua học phần, người học được trang bị những tri thức cơ bản về sứ mệnh lịch sử của giai cấp công nhân; đặc trưng cơ bản của chủ nghĩa xã hội và thời kỳ quá độ lên chủ nghĩa xã hội; các vấn đề chính trị - xã hội có tính quy luật trong trong tiến trình cách mạng xã hội chủ nghĩa. Trên cơ sở này, người học củng cố niềm tin vào con đường xây dựng chủ nghĩa xã hội ở Việt Nam, củng cố lòng yêu nước và bước đầu có khả năng nhận biết, phản đối các luận điệu xuyên tạc về chủ nghĩa xã hội, tuân thủ, chấp hành đường lối, chủ trương của Đảng, chính sách, pháp luật của Nhà nước, tham gia xây dựng môi trường giáo dục dân chủ, an toàn, thân thiện, lành mạnh và tạo động lực cho người học với sự tham gia của các bên có liên quan."
+    },
+    {
+        "ten_mon":"Phương pháp nghiên cứu khoa học",
+        "Description":"Học phần Phương pháp nghiên cứu khoa học gồm bốn nội dung chính. Học phần này là học phần bắt buộc trong nhóm học phần nền tảng. Thông qua học phần, người học sẽ được học các nội dung về (a) những vấn đề chung về nghiên cứu khoa học, (b) Quy trình thực hiện nghiên cứu khoa học, (c) phương pháp nghiên cứu, và (d) xây dựng đề cương và báo cáo kết quả. Học phần sẽ giúp người học có kiến thức nền tảng để có thể thực hiện được một công trình nghiên cứu khoa học và trình bày được kết quả của công trình nghiên cứu khoa học đó."
+    },
+    {
+        "ten_mon":"Giáo dục đời sống",
+        "Description":"không Nhóm học phần Giáo dục đời sống gồm các học phần gắn liền với cuộc sống như: Kỹ thuật chế biến các món ăn; Kỹ thuật làm bánh; Kỹ thuật cắt may; Kỹ thuật trang điểm; Kỹ thuật làm các loại hoa giả từ các nguyên liệu khác nhau (giấy nhún, vải voan); Kỹ thuật cắt tỉa rau củ trang trí món ăn.... Học phần này là học phần tự chọn trong nhóm học phần nền tảng. Thông qua những học phần Giáo dục đời sống người học lĩnh hội được những kiến thức, kỹ năng cơ bản trong cuộc sống nhằm tự phục vụ cho bản thân và gia đình."
+    },
+    {
+        "ten_mon":"Phương pháp học tập hiệu quả",
+        "Description":"không Học phần gồm có 2 phần lí thuyết và 4 bài thực hành. Học phần này là học phần tự chọn trong nhóm học phần nền tảng. Học phần “Phương pháp học tập hiệu quả” trong chương trình đào tạo trình độ đại học nhằm phát triển cho người học năng lực xác định phong cách học tập của bản thân, phát triển các kĩ năng học tập hiệu quả cụ thể cho người học, đồng thời rèn luyện kĩ năng vận dụng những kĩ năng học tập hiệu quả trong học tập các nội dung học phần ở đại học."
+    },
+    {
+        "ten_mon":"Giáo dục Thể chất 2",
+        "Description":"Học phần Giáo dục Thể chất 2"
+    },
+    {
+        "ten_mon":"Kỹ năng thích ứng và giải quyết vấn đề",
+        "Description":"không Học phần này bao gồm 2 phần lý thuyết và 4 bài thực hành, là học phần tự chọn trong nhóm học phần nền tảng. Học phần cung cấp các kiến thức và kỹ năng để rèn luyện các kỹ năng mềm cần thiết cho người học: kỹ năng thích ứng và kỹ năng giải quyết vấn đề. Bao gồm các nội dung liên quan đến vai trò của kỹ năng, quy trình, các bước và cách thức rèn luyện các kỹ năng này. Học phần có các nội dung thực hành xen kẽ lý thuyết nhằm giúp người học vận dụng được các thao tác, hành vi liên quan đến kỹ năng để xử lý các tình huống giả định và liên hệ với thực tiễn trong công việc và cuộc sống. Trên cơ sở này, người học có khả năng giải quyết được vấn đề hiệu quả hơn và thể hiện sự thích ứng với hoàn cảnh mới, với công việc, với các mối quan hệ khác."
+    },
+    {
+        "ten_mon":"Kỹ năng làm việc nhóm và tư duy sáng tạo",
+        "Description":"không Học phần kỹ năng làm việc nhóm và tư duy sáng tạo bao gồm 2 phần lý thuyết và 4 bài thực hành, là học phần tự chọn trong nhóm học phần nền tảng. Học phần cung cấp các kiến thức cơ bản và hướng dẫn rèn luyện các kỹ năng mềm cần thiết cho người học: kỹ năng làm việc nhóm, kỹ năng tư duy sáng tạo. Bao gồm vai trò của kỹ năng, kỹ năng thành phần của kỹ năng làm việc nhóm, kỹ thuật tư duy sáng tạo và biện pháp rèn luyện cho mỗi kỹ năng. Trên cơ sở đó, người học vận dụng được các kỹ năng mềm này để tham gia, tổ chức nhóm hiệu quả và sử dụng các nguồn lực của bản thân và nhóm để giải quyết vấn đề mới mẻ, độc đáo hơn."
+    },
+    {
+        "ten_mon":"Cấu trúc dữ liệu",
+        "Description":"Học phần gồm có 6 phần lý thuyết và 6 bài tập thực hành, là học phần bắt buộc chung trong nhóm các học phần nền tảng. Học phần trang bị cho người học những phương pháp tổ chức và những thao tác cơ sở trên từng cấu trúc dữ liệu: mảng, danh sách liên kết, ngăn xếp, hàng đợi, cây. Học phần này cũng giúp người học hiểu được tầm quan trọng của giải thuật các cách tổ chức dữ liệu, đồng thời, người học cũng được củng cố về kĩ năng lập trình trên C++ và ứng dụng thực tế."
+    },
+    {
+        "ten_mon":"Cơ sở dữ liệu",
+        "Description":"Học phần gồm có 7 phần lý thuyết và 7 bài tập thực hành, là học phần bắt buộc chung trong nhóm các học phần nền tảng. Học phần này trang bị cho sinh viên các khái niệm về dữ liệu, cơ sở dữ liệu, hệ quản trị cơ sở dữ liệu, mô hình cơ sở dữ liệu quan hệ, ngôn ngữ thao tác trên mô hình cơ sở dữ liệu quan hệ và phƣơng pháp thiết kế cơ sở dữ liệu. Học phần cập nhật một số vấn đề mới của cơ sở dữ liệu nhƣ khái niệm dạng chuẩn, các vấn đề về an toàn và bảo mật cơ sở dữ liệu... Học phần cung cấp một số kiến thức cơ bản về cơ sở dữ liệu cho người học. bên cạnh đó, học phần sẽ cung cấp các kiến thức cần thiết để thiết kế và khai thác hiệu quả một cơ sở dữ liệu. Khi thực hành, người học sẽ được làm trên hệ quản trị cơ sở dữ liệu SQL- Server."
+    },
+    {
+        "ten_mon":"Lập trình trên Windows",
+        "Description":"Học phần gồm có 7 phần lý thuyết và 5 bài thực hành, là học phần bắt buộc chung trong nhóm các học phần nền tảng. Học phần giới thiệu về cơ chế quản lý chương trình, lập trình giao diện đồ họa, cơ chế quản lý bộ nhớ, kỹ thuật in ấn. Giúp người học có nền tảng trong việc tiếp thu các ngôn ngữ lập trình cao cấp trên với giao diện giao diện đồ họa. Ở học phần này, sinh viên sẽ được học và sử dụng ngôn ngữ lập trình C#, ngoài ra biết được các Công nghệ và mô hình thông dụng khi xây dựng ứng dụng Windows."
+    },
+    {
+        "ten_mon":"Xác suất thống kê và ứng dụng",
+        "Description":"Học phần này bao gồm 9 phần lý thuyết, là học phần bắt buộc trong nhóm học phần nên tảng, cung cấp các kiến thức về toán xác suất thống kê. Nội dung bao gồm: Biến cố ngẫu nhiên, xác suất của một biến cố; Biến ngẫu nhiên, luật phân phối xác suất, các đặc trưng số của biến ngẫu nhiên, luật số lớn; biến ngẫu nhiên nhiều chiều; Mẫu và các đặc trưng mẫu, các phân phối xác suất của các đặc trưng mẫu; ước lượng tham số; kiểm định giả thuyết thống kê; lí thuyết tương quan và hồi quy. Các vấn đề ở cấp độ cao hơn có liên quan đến ứng dụng của xác suất thống kê đối với phân tích số liệu, thông tin liên quan đến các khối ngành kỹ thuật, kinh tế, xã hội được giới thiệu trong quá trình học và là vấn đề mở cho người học làm các nghiên cứu nhỏ."
+    },
+    {
+        "ten_mon":"Lý thuyết đồ thị và ứng dụng",
+        "Description":"Học phần bao gồm 6 chương lí thuyết, là học phần bắt buộc chung trong nhóm các học phần nền tảng. Học phần này trang bị cho người học các khái niệm cơ sở của lí thuyết đồ thị như: đường đi, chu trình, liên thông, đồ thị Euler, đồ thị Hamilton cùng các thuật toán để tìm đường đi ngắn nhất, các phép duyệt cây, tìm cây tối đại (cây khung) của đồ thị. Học phần cũng cung cấp những ứng dụng thực tiễn của lí thuyết đồ thị để giải quyết một cách hiệu quả các bài toán trong thực tế."
+    },
+    {
+        "ten_mon":"Quân sự chung",
+        "Description":"Học phần gồm có 6 phần lý thuyết và 2 bài thực hành. Học phần này là học phần bắt buộc trong nhóm học phần nền tảng. Thông qua học phần, người học lĩnh hội các chế độ sinh hoạt, học tập công tác ngày, tuần; thực hiện các chế độ nề nếp chính quy, bố trí trật tự nội vụ trong doanh trại; thực hiện Điều lệnh đội ngũ từng người có súng; Đội ngũ đơn vị và sử dụng bản đồ địa hình quân sự; Phòng chống địch tiến công bằng vũ khí công nghệ cao; Ba môn quân sự phối hợp; Hiểu biết chung về các Quân, Binh chủng trong quân đội nhân dân Việt Nam. Trên cơ sở này, người học có trách nhiệm với bản thân, học sinh, gia đình, nhà trường và xã hội, trách nhiệm công dân với nhiệm vụ xây dựng và bảo vệ Tổ quốc Việt Nam xã hội chủ nghĩa."
+    },
+    {
+        "ten_mon":"Tư tưởng Hồ Chí Minh",
+        "Description":"Học phần gồm có 6 phần lý thuyết và 1 phần thực tế. Đây là học phần bắt buộc trong nhóm học phần nền tảng. Thông qua học phần, người học lĩnh hội những tri thức về cơ sở, quá trình hình thành và phát triển tư tưởng Hồ Chí Minh; những nội dung cơ bản của tư tưởng Hồ Chí Minh về độc lập dân tộc và chủ nghĩa xã hội, về Đảng Cộng sản và nhà nước Việt Nam, về đại đoàn kết dân tộc và đoàn kết quốc tế, về văn hóa, đạo đức, con người. Trên cơ sở này, người học phân tích được nội dung cơ bản của tư tưởng Hồ Chí Minh, biết trân trọng, phát huy giá trị tư tưởng Hồ Chí Minh trong thực tiễn cuộc sống. Dựa trên tư tưởng Hồ Chí Minh, người học có khả năng phân tích và giải thích được các vấn đề thuộc lĩnh vực giáo dục kinh tế và pháp luật góp phần hình thành ý thức, trách nhiệm chấp hành chủ trương của Đảng, chính sách, pháp luật của Nhà nước."
+    },
+    {
+        "ten_mon":"Giáo dục Thể chất 3",
+        "Description":"Học phần Giáo dục Thể chất 3"
+    },
+    {
+        "ten_mon":"Kiến trúc máy tính và hợp ngữ",
+        "Description":"Học phần này bao gồm 6 phần lý thuyết, là học phần bắt buộc chung trong nhóm các học phần nền tảng. Học phần trang bị cho người học những kiến thức về kiến trúc, thiết kế của các máy tính. Người học được giới thiệu các ý niệm cơ bản liên quan đến kiến trúc máy tính: mạch số cơ bản (các cổng logic, flip flop, hệ tổ hợp, hệ tuần tự), phương pháp đo năng lực của máy tính, bộ lệnh, hệ thống phần cứng, hệ thống xử lí, bộ nhớ. Bên cạnh đó còn cung cấp các kiến thức về hệ số đếm dùng trong máy tính; một số kiến trúc mẫu của máy tính cũng như các thành phần chính và nhiệm vụ của chúng; cung cấp kiên thức về sơ đồ phần cứng của CPU và lập trình hợp ngữ."
+    },
+    {
+        "ten_mon":"Nhập môn mạng máy tính",
+        "Description":"Học phần gồm có 8 phần lý thuyết và 5 bài tập, là học phần bắt buộc chung trong nhóm các học phần nền tảng. Học phần thường được giảng dạy vào học kì 3 trong chương trình đào tạo. Trang bị cho người học những kiến thức cơ bản về mạng máy tính và các cách thức giao tiếp, các mô hình OSI, TCP\/IP cùng các khái niệm dịch vụ mạng. Môn học giúp người học nắm được một số kiến thức cơ bản về mạng máy tính và truyền thông. Giúp người học nhận biết và phân loại các thiết bị mạng không dây, mạng có dây được sử dụng trong thực tế."
+    },
+    {
+        "ten_mon":"Hệ điều hành",
+        "Description":"Học phần gồm có 7 phần lý thuyết, là học phần bắt buộc chung trong nhóm các học phần nền tảng. Học phần trang bị cho sinh viên các kiến thức cơ bản về hệ điều hành và các phương thức hoạt động của hệ điều hành như xử lý tin, xử lý bộ nhớ, các thao tác nhập xuất, cấu trúc lưu trữ, xử lý ngắt, lập lịch, hệ thống quản lý tập tin, bảo vệ phần cứng, quản lý bộ nhớ. Học phần bao gồm 7 phần, trang bị cho sinh viên các kiến thức cơ bản về cấu trúc, nguyên lý hoạt động, process, thread, quản lý bộ nhớ, quản lý xuất nhập, hệ thống tệp tin của hệ điều hành. Giúp sinh viên hiểu nguyên tắc hoạt động của hệ điều hành."
+    },
+    {
+        "ten_mon":"Phân tích và thiết kế giải thuật",
+        "Description":"Học phần gồm có 6 phần lý thuyết và 4 bài thực hành, là học phần bắt buộc chung trong nhóm các học phần nền tảng. Học phần này trình bày các kĩ thuật để phân tích và thiết kế các giải thuật hiệu quả, tập trung vào các phương pháp phổ biến trong thực tế. Các chủ đề chính bao gồm: độ phức tạp và phân tích các giải thuật sắp xếp, bảng băm; chia để trị; quy hoạch động; giải thuật tham lam, giải thuật đồ thị; đường đi ngắn nhất; tính toán ma trận và đa thức"
+    },
+    {
+        "ten_mon":"Quy hoạch tuyến tính và ứng dụng",
+        "Description":"Học phần gồm có 4 phần lý thuyết và 9 bài tập thảo luận, là học phần bắt buộc chung trong nhóm các học phần nền tảng. Học phần cung cấp các kiến thức cơ bản được gói gọn trong các vấn đề: bài toán quy hoạch tuyến tính giải bằng phương pháp đơn hình, phương pháp đơn hình mở rộng, lí thuyết đối ngẫu, bài toán vận tải và phương pháp phân phối. Tính ứng dụng được chú trọng quan tâm trong học phần này. Các vấn đề ở cấp độ cao hơn có liên quan đến quy hoạch tuyến tính được giới thiệu sơ lược trong quá trình học và là vấn đề mở cho người học làm các nghiên cứu nhỏ."
+    },
+    {
+        "ten_mon":"Kỹ thuật chiến đấu bộ binh và chiến thuật",
+        "Description":"Học phần gồm có 5 bài thực hành. Học phần này là học phần bắt buộc trong nhóm học phần nền tảng. Thông qua học phần, người học lĩnh hội những kiến thức kỹ thuật bắn súng tiểu liên AK, sử dụng một số loại lựu đạn thông thường; thực hành các bài chiến thuật từng người trong chiến đấu tiến công, từng người trong chiến đấu phòng ngự, từng người làm nhiệm vụ tuần tra, canh gác. Trên cơ sở này, người học có trách nhiệm với bản thân, học sinh, gia đình, nhà trường và xã hội, trách nhiệm công dân với nhiệm vụ xây dựng, bảo vệ Tổ quốc Việt Nam xã hội chủ nghĩa."
+    },
+    {
+        "ten_mon":"Lịch sử Đảng cộng sản Việt Nam",
+        "Description":"Học phần gồm 3 phần lý thuyết. Đây là học phần bắt buộc trong nhóm học phần nền tảng. Thông qua học phần, người học hiểu biết về sự ra đời của Đảng Cộng sản Việt Nam và quá trình lãnh đạo cách mạng dân tộc dân chủ nhân dân và cách mạng xã hội chủ nghĩa của Đảng. Trên cơ sở này, người học có thể vận dụng kiến thức lịch sử Đảng vào giải quyết các vấn đề trong thực tiễn và hình thành ý thức, trách nhiệm chấp hành chủ trương, đường lối của Đảng, chính sách pháp luật của Nhà nước."
+    },
+    {
+        "ten_mon":"Nhập môn công nghệ phần mềm",
+        "Description":"Học phần gồm có 7 phần lý thuyết và 7 bài tập thực hành, là học phần bắt buộc chung trong nhóm các học phần nền tảng. Học phần cung cấp các kiến thức cơ sở liên quan đến các đối tượng chính yếu trong lĩnh vực công nghệ phần mềm (quy trình công nghệ, phương pháp kỹ thuật thực hiện, …). Giúp người học hiểu và biết tiến hành xây dựng phần mềm một cách có hệ thống, có phương pháp. Ngoài ra, học phần này giới thiệu - Các nguyên lý cơ bản trong kỹ thuật phần mềm trên ba lĩnh vực yêu cầu, thiết kế và kiểm tra. - Kỹ thuật phân tích dựa trên sơ đồ dòng dữ liệu (DFD) - Các phân tích hướng đối tượng sử dụng UML. - Các mô hình phát triển phần mềm. - Kiểm tra đánh giá hệ thống - Quản trị và ước lượng dự án Môn học có luyện tập về qui trình xây dựng một sản phẩm phần mềm"
+    },
+    {
+        "ten_mon":"Phân tích thiết kế hướng đối tượng",
+        "Description":"Học phần gồm có 6 phần lý thuyết và 6 bài thực hành, là học phần bắt buộc thuộc trong nhóm học phần nghiệp vụ. Thông qua học phần, người học lĩnh hội các kiến thức để xây dựng và phát triển phần mềm theo ngôn ngữ mô hình hóa UML. Trên cơ sở này, người học vận dụng nhằm các kiến thức để phân tích, thiết kế cho dự án công nghệ phần mềm cụ thể."
+    },
+    {
+        "ten_mon":"Trí tuệ nhân tạo",
+        "Description":"Học phần gồm 5 phần lý thuyết, là học phần bắt buộc thuộc trong nhóm học phần nghiệp vụ. Nội dung của môn học cung cấp kiến thức tổng quát về lĩnh vực trí tuệ nhân tạo, vai trò của trí tuệ nhân tạo trong chuyên ngành khoa học máy tính, và sự cần thiết của việc ứng dụng các thành tựu trong lĩnh vực này vào đời sống thực tế. Học phần cung cấp cơ sở lý thuyết, công nghệ và kỹ thuật giải quyết các bài toán thực tế dựa trên các nền tảng trí tuệ nhân tạo cơ bản như: các giải thuât tìm kiếm heuristic và metaheuristic, hệ thống suy diễn dự trên tập luật, mạng Bayes. Các thực nghiệm nhắm đến phát triển ứng dụng thực tế đòi hỏi giải pháp trí tuệ nhân tạo như: lọc email rác, chatbot, v.v."
+    },
+    {
+        "ten_mon":"Các hệ cơ sở dữ liệu",
+        "Description":"Học phần gồm có 6 phần lý thuyết và 5 bài tập thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nền tảng. Học phần trang bị cho người học những kiến thức quản lý dữ liệu và những thao tác trên hệ quản trị cơ sở dữ liệu MS SQL Server. Học phần này cũng giúp người học hiểu được tầm quan trọng của việc truy vấn dữ liệu tối ưu như tăng tốc độ truy xuất, thiết lập và xử lý truy xuất đồng thời, sử dụng cursor trong lập trình cơ sở dữ liệu. Đồng thơi nắm được cách tổ chức lưu trữ dữ liệu trên thiết bị lưu trữ."
+    },
+    {
+        "ten_mon":"Thiết kế và quản lý mạng LAN",
+        "Description":"Học phần gồm 4 phần lý thuyết, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần giúp người học biết cách phân tích, thiết kế và quản lí một mạng LAN ở cấp độ một trường học, một tòa nhà văn phòng cao tầng. Người học có thể vận dụng các kiến thức về mô hình, kiến trúc và công nghệ mạng trong học phần Mạng máy tính vào thực tế để triển khai một hệ thống mạng cụ thể."
+    },
+    {
+        "ten_mon":"Phân tích và thiết kế hệ thống thông tin",
+        "Description":"Học phần gồm có 9 phần lý thuyết và bài tập thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần bao gồm các khái niệm, phương pháp, kỹ thuật, kỹ năng để phân tích và thiết kế thành công các hệ thống thông tin. Chú trọng chủ yếu vào 2 thành phần quan trọng nhất của một hệ thống thông tin, đó là các thành phần dữ liệu (khía cạnh tĩnh của hệ thống thông tin) và xử lý (khía cạnh động của hệ thống thông tin). Áp dụng ngôn ngữ mô hình hoá thống nhất (UML) trong các vấn đề phân tích thiết kế hệ thống thông tin. Kiến thức sẽ được vận dụng ngay vào các bài tập nghiên cứu tình huống, và một tiểu luận môn học dựa trên một bài toán thực tế sẽ được thực hiện theo nhóm các người học, đi từ phân tích đến cài đặt cụ thể với một phần mềm quản trị cơ sở dữ liệu. Một số công cụ hỗ trợ phân tích thiết kế sẽ được đưa vào áp dụng cho các bài tập và tiểu luận môn học."
+    },
+    {
+        "ten_mon":"Cơ sở dữ liệu nâng cao",
+        "Description":"Học phần gồm có 9 phần lý thuyết và 7 bài tập thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần cung cấp các khái niệm về cơ sở dữ liệu không tổ chức theo mô hình quan hệ truyền thống: dữ liệu không gian, dữ liệu thời gian, dữ liệu bán cấu trúc, dữ liệu đa truyền thông, …"
+    },
+    {
+        "ten_mon":"Hệ thống mã nguồn mở",
+        "Description":"Học phần gồm có 7 chương lý thuyết và 2 hoạt động thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần trang bị cho sinh viên những những vấn đề chung về các hệ thống mã nguồn mở, cách quản lý vận hành của cộng đồng mã nguồn mở cũng nhưng những giấy phép quan trọng trong mã nguồn mở. Học phần giúp sinh viên có khả năng ứng dụng các hệ thống mã nguồn mở được xây dựng sẵn một cách nhanh chóng và phù hợp."
+    },
+    {
+        "ten_mon":"Xử lý ảnh số",
+        "Description":"Học phần gồm 8 phần lý thuyết và 6 bài thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nền tảng. Học phần trình bày các kiến thức và phương pháp xử lý ảnh được sử dụng phổ biến như nâng cao chất lượng, phục hồi ảnh, các xử lý quan trọng nhằm làm nổi bật được các đặc trưng như vùng, cạnh. Trọng tâm của học phần là yêu cầu người học giải quyết một số yêu cầu xử lý ảnh với ngôn ngữ C++, C# Python hoặc MATLAB cụ thể dựa trên các kiến thức cơ bản về xử lý ảnh."
+    },
+    {
+        "ten_mon":"Quản trị cơ bản với Windows Server",
+        "Description":"Học phần gồm 11 phần lý thuyết, là học phần tự chọn trong chương trình, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần này cung cấp kiến thức về cách thức quản lý người dùng, nhóm người dùng, vận hành, quản trị tài nguyên và bảo mật trên nền máy chủ Windows. Người học phải thực hành trên máy chủ Windows Server 2003 và Windows Server 2008"
+    },
+    {
+        "ten_mon":"Nghi thức giao tiếp mạng (CISCO 1)",
+        "Description":"Học phần gồm 8 phần lý thuyết và 8 bài tập thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Mục tiêu của môn học này nhằm trang bị kiến thức cho người học lấy bằng CCNA của CISCO. Sau khi học môn học môn học này người học có khả năng: - Mô tả kiến trúc, cấu trúc, chức năng và các thành phần cấu thành mạng Internet cũng như các hệ thống mạng khác. - Khảo sát chức năng, vai trò của các giao thức và dịch vụ của mỗi tầng của mô hình TCP\/IP và mô hình OSI - Mô tả chức năng và cấu trúc của địa chỉ IPv4. Khả năng hoạch định IP scheme. - Nắm vững khái niệm và nguyên lý hoạt động của công nghệ Ethernet, môi trường truyền dẫn và phương tiện truyền dẫn. - Có khả năng triển khai hệ thống mạng LAN đơn giản. - Mô tả kiến trúc, các bộ phận và cơ chế hoạt động của router - Nắm vững nguyên lý hoạt động cũng như các hạn chế của quá trình định tuyến và giao thức định tuyến. - Có khả năng phân tích và cấu hình căn bản một số giao thức như RIPv1, RIPv2, OSPF và EIGRP."
+    },
+    {
+        "ten_mon":"Phát triển ứng dụng trên thiết bị di động",
+        "Description":"Học phần gồm 6 phần lý thuyết và 6 bài thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nền tảng. Học phần cung cấp cho người học kiến thức và kĩ năng nâng cao và chuyên sâu trong lập trình di động trên nền tảng Android. Đồng thời, còn cung cấp thông tin về kiến trúc và cách thức làm việc chung để người học có thể tự nghiên cứu và tìm hiểu nhiều nền tảng di động khác."
+    },
+    {
+        "ten_mon":"Quản lý dự án Công nghệ Thông tin",
+        "Description":"Học phần gồm có 8 phần lý thuyết và 6 bài tập thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nền tảng. Học phần này nhằm cung cấp cho các người học các kiến thức cơ sở liên quan đến việc tổ chức, quản lý quá trình triển khai một đề án phần mềm. Phần đầu tiên trong môn học liên quan đến xây dựng hồ sơ khả thi (khảo sát hiện trạng, đề xuất phương án, ước lượng chi phí, đánh giá rủi ro…) cho một đề án phần mềm, sau đó là các kỹ năng liên quan đến việc tổ chức triển khai (lập kế hoạch, tổ chức nhân sự, theo dõi việc thực hiện…)."
+    },
+    {
+        "ten_mon":"Kiểm thử phần mềm cơ bản",
+        "Description":"Học phần gồm có 6 phần lý thuyết và 10 bài tập thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần trang bị cho người học kiến thức cơ bản về các khái niệm trong kiểm thử phần mềm, kỹ năng, và quy trình kiểm định chất lượng phần mềm. Học phần trình bày các chiến lược kiểm tra phần mềm theo mức đơn vi, mức tích hợp, mức hệ thống,… Học phần cũng trình bày một số công cụ để kiểm thử phần mềm thông qua lập trình."
+    },
+    {
+        "ten_mon":"Phát triển ứng dụng trò chơi",
+        "Description":"Phát triển ứng dụng trên thiết bị di động, Học phần gồm có 7 phần lý thuyết và 6 bài thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nền tảng. Học phần sẽ trang bị cho người học các kiến thức cơ bản về lập trình game. Cụ thể người học sẽ được giới thiệu về qui trình phát triển game, các thành phần cơ bản của một game và thiết kế game, cũng như các kiến thức cơ bản về các game engine. Người học được cung cấp các kiến thức cơ bản về các thành phần đồ họa trong game 2D, 3D và làm thế nào để lập trình một game 2D, 3D, biên dịch game ra các nền tảng phổ biến như iOS, Android, Windows 10\/11, PC\/Mac."
+    },
+    {
+        "ten_mon":"Quy trình phát triển phần mềm Agile",
+        "Description":"Học phần gồm có 5 phần lý thuyết và 8 bài tập thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần trình bày quy trình phát triển phần mềm theo Agile và các nguyên tắc cơ bản của Agile. Các công việc và các kỹ năng cần thiết cho các vị trí trong quy trình. Đồng thời đi sâu trình bày một minh họa cụ thể Agile-SCRUM.."
+    },
+    {
+        "ten_mon":"Hệ thống nhúng và ứng dụng",
+        "Description":"Học phần gồm có 6 phần lý thuyết và 5 bài thực hành, thảo luận, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần trình bày cách tiếp cận khoa học máy tính cho giáo dục dựa trên sử dụng ngôn ngữ lập trình trong các ngữ cảnh đa dạng: (1) Tangible programming, (2) Graphical programming, (3) syntax based traditional programming sử dụng opensource hardware Arduino và Raspberry Pi. Học phần hỗ trợ kỹ năng giảng dạy STEM. Học phần giúp người học đạt được năng lực phát triển sản phẩm thực tế hỗ trợ trong giáo dục, và một số lĩnh vực liên quan. Các kiến thức bao gồm: Tangible programming, Scratch programming, Arduino programming, Raspberry Pi programming."
+    },
+    {
+        "ten_mon":"Học máy",
+        "Description":"Học phần gồm có 7 phần lý thuyết, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nền tảng. Học phần thường được giảng dạy vào học kì 6 trong chương trình đào tạo. Học phần trình bày các phương pháp và giải thuật học máy: Các phương pháp học máy; Một số khái niệm cơ bản như độ thiên vị, phương sai, quá và dưới khớp; Các giải thuật học giám sát và không giám sát; Các giải thuật học tham số và không tham số."
+    },
+    {
+        "ten_mon":"Lập trình Python",
+        "Description":"Quản trị cơ bản với Windows Server, Học phần gồm có 7 phần lý thuyết và 11 bài thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần giới thiệu về ngôn ngữ lập trình Python, trình soạn thảo, môi trường thông dịch và thực thi chương trình. Các kiến thức cơ bản về lập trình như biến, các cấu trúc và dữ liệu cơ bản, nhập xuất, bắt ngoại lệ, lập trình hướng đối tượng, tương tác với cơ sở dữ liệu. Ngoài lý thuyết, học phần còn giới thiệu các ví dụ minh họa ứng dụng Python trong học máy."
+    },
+    {
+        "ten_mon":"Lập trình PHP",
+        "Description":"Học phần gồm 7 phần lý thuyết và 8 bài tập thực hành, là học phần bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần này cung cấp cho người học công cụ lập trình để xây dựng Website với ngôn ngữ lập trình. Trong đó tập trung vào việc sử dụng hệ quản trị cơ sở dữ liệu mã nguồn mở MySQL; Ngôn ngữ truy vấn dữ liệu cấu trúc (SQL); Ngôn ngữ PHP cho lập trình, mô hình MVC. Hướng tới xây dựng một ứng dụng quản lý trên môi trường Web với Framework PHP đáp ứng theo nhu cầu thực tế."
+    },
+    {
+        "ten_mon":"Thực hành nghề nghiệp",
+        "Description":"Học phần thực hành nghề nghiệp là học phần bắt buộc trong nhóm thực hành, thực tập nghề nghiệp, được thực hiện vào học kỳ 6 của chương trình đào tạo. Học phần này tạo điều kiện người học tiếp cận với các mô hình hoạt động của doanh nghiệp; Bước đầu tìm hiểu, làm quen với doanh nghiệp; Củng cố kiến thức lý thuyết đã được trang bị trong nhà trường để có thể tìm hiểu các hoạt động của doanh nghiệp; Rèn kỹ năng giao tiếp với doanh nghiệp, phát huy tinh thần học hỏi nơi doanh nghiệp."
+    },
+    {
+        "ten_mon":"Mạng máy tính nâng cao",
+        "Description":"Học phần gồm có 8 phần lý thuyết và 10 bài thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Thông qua học phần, học sinh được trang bị cho sinh viên các kiến thức nâng cao về hệ thống mạng máy tính. Sinh viên sẽ hiểu được các nguyên lý hoạt động, các nghi thức giao tiếp trong hệ thống. Giúp sinh viên hiểu biết và có thể tự nghiên cứu các kỹ thuật chuyên sâu về mạng truyền thông."
+    },
+    {
+        "ten_mon":"Công nghệ Web",
+        "Description":"Học phần gồm có 10 phần lý thuyết và 10 bài tập thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Thông qua học phần, người học lĩnh hội kiến thức và kỹ năng liên quan đến xây dựng ứng dụng web đã học trong học phần Phát triển ứng dụng web. Áp dụng các công nghệ hỗ trợ việc xây dựng ứng dụng web hoàn chỉnh, tiếp cận một số công nghệ và kỹ năng cụ thể: Web template, Web Icon, Bootstrap; Jquery, Jquery UI, Widget Factory, RequireJS; W2UI; AngularJS, ReactJs, VueJs; Websocket, Webworker, Web 3D, MathML, Web Multimedia, Web Storage, Geolocation, Framework Phổ biến; PHP: Laravel, Symfony, CodeIgniter, Zend Framework, FuelPHP, Slim, Phalcon, Aura, Yii 2, CakePHP, ….; NET: ASP.NET Boilerplate, DotVVM, Nancy, NemerleWeb, Composite C1, DNN (DotNetNuke), Kaliko CMS, N2CMS, Orchard, Piranha CMS, Platformus, Suave, Umbraco; SmartStoreNET, nopCommerce, Virto Commerce."
+    },
+    {
+        "ten_mon":"Công nghệ JAVA",
+        "Description":"Học phần gồm có 7 phần lý thuyết và 5 bài tập thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần trang bị cho người học kiến thức và kỹ năng làm việc trên công nghệ lập trình Java. Người học sẽ được giới thiệu các đặc điểm nổi bật trong công nghệ này và việc ứng dụng chúng trong việc xây dựng các ứng dụng cụ thể. Cụ thể, trong học phần này, sinh viên sẽ được học các kiến thức cơ bản về lập trình Java, sử dụng Java để lập trình giao diện, và kết nối cơ sở dữ liệu."
+    },
+    {
+        "ten_mon":"Các hệ cơ sở tri thức",
+        "Description":"Học phần gồm 7 phần lý thuyết, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần giới thiệu cho người học tổng quan về các hệ cơ sở tri thức (KBS), cách thức biểu diễn tri thức, các kỹ thuật suy diễn và suy luận. Trình bày những lợi ích khi sử dụng KBS và các ví dụ. Đánh giá được tính thích hợp khi khai thác KBS. Sử dụng Knowledge Fusion hoặc Python để cài đặt KBS."
+    },
+    {
+        "ten_mon":"Đồ hoạ máy tính",
+        "Description":"Học phần gồm 6 phần lý thuyết và 5 bài thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nền tảng. Học phần cung cấp cho người học các kiến thức cơ bản về cấu trúc, chức năng của các thiết bị thành phần trong một hệ thống đồ họa máy tính. Đồng thời người học được trang bị các kiến thức, giải thuật đồ họa máy tính 2 và 3 chiều, và ứng dụng trong thực tế. Trọng tâm của học phần là yêu cầu người học viết được các ứng dụng đồ họa 2 hoặc 3 chiều cụ thể."
+    },
+    {
+        "ten_mon":"Bảo mật và an ninh mạng",
+        "Description":"Học phần gồm có 11 phần lý thuyết và 9 bài thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần này là học phần tự chọn bắt buộc cho người học ngành Công nghệ phần mềm và Mạng máy tính. Thông qua học phần, người học lĩnh hội các kiến thức về cơ bản về an ninh mạng, các lỗ hỏng bảo mật và cách thức khắc phục sự cố an ninh mạng. Trên cơ sở này, người học vận dụng nhằm các kiến thức để xây dựng hệ thống an toàn và khắc phục các sự cố an ninh mạng có thể xảy ra."
+    },
+    {
+        "ten_mon":"Logic mờ và ứng dụng",
+        "Description":"Học phần gồm có 9 phần lý thuyết, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần trang bị cho người học những kiến thức về logic mờ triển khai trong thực tế như sự mờ hồ và không chắc chắn; tập cổ điển và tập mờ; quan hệ cổ điển và quan hệ mờ; số mờ và tính toán mờ, logic cổ điển và logic mờ; hệ thống dựa và luật mờ; hệ thống kiểm soát mờ, đồng thời người học cũng được củng cố về các khái niệm về logic mệnh đề và logic vị từ qua đó trang bị thêm các kỹ năng về logic tính toán hình thức trong các tiếp cận ứng dụng thực tế."
+    },
+    {
+        "ten_mon":"Công nghệ NET",
+        "Description":"Học phần Công nghệ NET bao gồm 6 phần lý thuyết và 6 bài tập thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Thông qua học phần này, người học được cung cấp cho các kỹ năng lập trình và phát triển ứng dụng Web trên nền tảng .NET framework. Bao gồm các kiến thức cơ bản của .NET Core, MVC Core, Web API Core, Unit testing và triển khai ứng dụng."
+    },
+    {
+        "ten_mon":"Chuyên đề Oracle",
+        "Description":"Học phần gồm có 5 phần lý thuyết và 7 bài tập thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần trình bày phương pháp thiết kế và tạo CSDL quan hệ. Các chủ đề bao gồm lưu trữ, truy vấn, cập nhật, và hiển thị dữ liệu sử dụng Structured Query Language (SQL) được tích hợp vào Stored Procedures, Functions, Packages và Triggers (PL\/SQL Programming). Học phần sử dụng DBMS Oracle để thực hiện các vấn đề kỹ thuật trên.."
+    },
+    {
+        "ten_mon":"Truyền thông kỹ thuật số",
+        "Description":"Học phần gồm 9 phần lý thuyết và các bài thảo luận nhóm, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần trang bị cho người học những kiến thức về lĩnh vực truyền số liệu qua các mạng thông tin (hầu hết các mạng viễn thông có dây hay không dây đều được đề cập đến, trong đó mạng máy tính được nhấn mạnh). Học phần này cũng giúp người học hiểu được những nguyên lý và những chủ đề thiết yếu liên quan đến công nghệ, kỹ thuật và kiến trúc của các hệ thống truyền dữ liệu, đồng thời người học cũng được củng cố về các khái niệm mạng Lan, Wan, các thành phần cơ bản cấu thành nên mạng máy tính."
+    },
+    {
+        "ten_mon":"Chuẩn đoán và quản lý sự cố mạng",
+        "Description":"Nghi thức giao tiếp mạng (CISCO 1), Học phần gồm 4 phần lý, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần hướng dẫn một số thao tác chuyên sâu trên thiết bị Switch của hệ thống mạng Cisco. Trình bày phương pháp xác định nguyên nhân và giải pháp khắc phục các sự cố trên mạng như nghẽn mạng, lỗi thiết bị, lỗi phần mềm trong hệ thống mạng Cisco."
+    },
+    {
+        "ten_mon":"Định tuyến mạng nâng cao (CISCO 2)",
+        "Description":"Học phần gồm 8 phần lý thuyết, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần trang bị kiến thức cho người học lấy bằng CCNA của CISCO. Sau khi học môn học môn học này người học có khả năng: - Mô tả mô hình thiết kế mạng phân cấp, khả năng lựa chọn thiết bị thích hợp cho mỗi cấp. Có khả năng cấu hình switch căn bản. - Nắm vững mục đích và nguyên lý hoạt động của mạng virtual LAN, giao thức VTP, STP và định tuyến Inter-VLAN. - Hiểu rõ nguyên lý hoạt động và cấu hình căn bản mạng Wireless. - Nắm vững khái niệm và nguyên lý hoạt động cơ bản của một số giao thức và các dịch vụ được sử dụng để triển khai mạng WAN như PPP, Frame Relay, Access Control List, Teleworker services, IP services - Nắm vững khái niệm an toàn hệ thống mạng. - Phát hiện và khắc phục sự cố trong việc triển khai mạng WAN. Thực hành: trên thiết bị chuyên dụng của CISCO."
+    },
+    {
+        "ten_mon":"Quản trị mạng với Linux",
+        "Description":"Học phần gồm 9 phần lý thuyết, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần trang bị cho người học những kiến thức cơ bản về cài đặt, cấu hình, quản trị và sử dụng hệ điều hành Linux. Học phần này sẽ cung cấp cho người học những kiến thức cơ bản để quản lý một mạng LAN (Local Area Network) nhỏ dưới 100 máy bằng hệ điều hành Linux hay triển khai hệ thống máy chủ phục vụ các dịch vụ thông dụng trên nền tảng Internet."
+    },
+    {
+        "ten_mon":"Quản trị dịch vụ mạng với Windows Server",
+        "Description":"Học phần gồm có 9 phần lý thuyết và 7 bài tập thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Trang bị cho sinh viên những kiến thức kiến thức, kỹ thuật cơ bản, nắm vững những khái niệm và làm việc trong lĩnh vực quản trị dịch vụ mạng Window Server của một công ty. Học phần này nhằm cung cấp cho các sinh viên các kiến thức cơ sở liên quan đến quản trị, vận hành, bảo trì các dịch vụ mạng, bảo mật cho hệ thống máy chủ Windows. Giúp sinh viên hiểu biết cài đặt, cấu hình và quản trị các dịch vụ mạng, bảo mật cho hệ thống mạng dùng máy chủ Windows Server."
+    },
+    {
+        "ten_mon":"Hệ thống quản trị doanh nghiệp",
+        "Description":"Phát triển ứng dụng trên thiết bị di động, Học phần gồm có 3 phần lý thuyết và 8 bài tập thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần cung cấp kiến thức về tổ chức và triển khai một hệ thống hỗ trợ cho lãnh đạo các đơn vị: quản trị nguồn lực (ERP), phân tích đa chiều (OLAP), hỗ trợ ra quyết định (DSS). Ngoài các kiến thức chuyên ngành cần thiết như lập trình, quản trị hệ thống,… sinh viên chuyên ngành CNTT cũng cần được trang bị thêm các kiến thức liên quan tới quản trị doanh nghiệp và đặc biệt là ứng dụng CNTT trong quản lý và điều hành doanh nghiệp để có thể nhanh chóng thích nghi với môi trường làm việc mới mẻ sau tốt nghiệp. Với kiến thức bổ trợ trong môn học Hệ quản trị doanh nghiệp này sinh viên có thể nhanh chóng nắm bắt được vấn đề của doanh nghiệp khi tham gia tư vấn và thiết kế các hệ thống thông tin ứng dụng cho doanh nghiệp. Ngoài ra môn học còn định hướng và cung cấp kỹ năng cho sinh viên về xu hướng công nghệ xử lý thông tin hiện đại trong doanh nghiệp là Business Intelligence đã và đang được các hãng công nghệ lớn quan tâm, đầu tư, phát triển."
+    },
+    {
+        "ten_mon":"Xây dựng dự án Công nghệ thông tin",
+        "Description":"Học phần gồm có 5 phần lý thuyết và 8 bài thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Thông qua học phần, học sinh được trang bị cho sinh viên các kiến thức , kỹ thuật cơ bản, nắm vững những khái niệm và làm việc trong lĩnh vực xây dựng dự án phần mềm của một công ty. Sinh viên sẽ hiểu được tầm quan trọng của việc tính toán thời lượng thực hiện dự án cùng chi phí dự toán phát sinh để đảm bảo tiến độ tối ưu nhất. Đồng thời phát triển năng lực quản lý kiểm soát trong hoạt động nhóm"
+    },
+    {
+        "ten_mon":"Hệ tư vấn thông tin",
+        "Description":"Học phần gồm có 8 phần lý thuyết và 7 bài tập thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần trang bị cho sinh viên phương pháp và kĩ thuật phát triển các hệ thống tư vấn hiện đại, cách đánh giá hệ thống, tự động hóa nhiều chiến lược tư vấn khác nhau với mục tiêu cung cấp các tư vấn có chất lượng cao, phù hợp với sở thích và hoàn cảnh từng cá nhân."
+    },
+    {
+        "ten_mon":"Bảo mật cơ sở dữ liệu",
+        "Description":"Học phần gồm có 6 phần lý thuyết và 5 bài tập, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Thông qua học phần, người học lĩnh hội về kiến thức, kỹ thuật nền tảng về bảo mật cơ sở dữ liệu để có thể hiểu được những cơ chế, mô hình và kỹ thuật bảo mật cơ sở dữ liệu, cụ thể: các kiểu tấn công và các phương pháp bảo vệ tương ứng, bảo vệ người dùng, bảo vệ dữ liệu, bảo vệ bảo vệ tính riêng tư của người dùng, theo dõi nhật ký. Trên cơ sở này, người học vận dụng nhằm các kiến thức để phân tích, thiết kế tăng cường an toàn cho dự án công nghệ phần mềm."
+    },
+    {
+        "ten_mon":"Khai thác dữ liệu và ứng dụng",
+        "Description":"Học phần gồm 6 phần lý thuyết, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nền tảng. Học phần cung cấp cho sinh viên các kiến thức và kỹ thuật khai thác dữ liệu để rút trích các tri thức quí báu từ các núi dữ liệu. Mối quan hệ giữa tri thức rút trích và tiến trình ra quyết định, hoạch định chính sách sẽ được thảo luận với nhiều ứng dụng thực tế Khai thác dữ liệu nhằm tìm kiếm các tri thức tiềm ẩn trong kho dữ liệu và dự đoán hoặc tổng hợp luật từ tri thức tiềm ẩn. Trọng tâm của học phần là giới thiệu các kỹ thuật khai thác dữ liệu cơ bản như khái niệm, mô hình, huấn luyện, dự đoán và đánh giá. Học phần trình bày các phương pháp, giải thuật như Apriori, ECLAT, và FPgrowth sử dụng trong nhận dạng mẫu dữ liệu có trong kho dữ liệu, hỗ trợ dự đoán và các ứng dụng thực tế. Trình bày các độ đo đánh giá mẫu dữ liệu, như lift, chisquare, cosine, Jaccard, và Kulczynski. Các phương pháp khai phá mẫu dữ liệu tuần tự như GSP, SPADE, PrefixSpan, CloSpan. Các phương pháp khái thác mẫu dựa trên đồ thị như gSpan, CloseGraph, chỉ mục đồ thị, và các ứng dụng khai thác đồ thị như graph indexing và tìm kiếm tương tự trong graph databases. Các phương pháp phân loại dựa trên mẫu như CBA, CMAR, PatClass, DPClass."
+    },
+    {
+        "ten_mon":"Lập trình tiến hóa và thuật giải di truyền",
+        "Description":"Học phần gồm có 8 phần lý thuyết, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần trình bày các phương pháp và giải thuật học máy: Các phương pháp học máy; Một số khái niệm cơ bản như độ thiên vị, phương sai, quá và dưới khớp; Các giải thuật học giám sát và không giám sát: Các giải thuật học tham số và không tham số."
+    },
+    {
+        "ten_mon":"Các phương pháp học thống kê",
+        "Description":"Học phần gồm 9 phần lý thuyết, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần cung cấp các kỹ thuật đa dạng trong lĩnh vực thống kê và máy học. Nội dung tập trung vào các phương pháp học có bản chất thống kê như: Maximum Likelihood, Expectation Maximization, Bayesian network, Support Vector Machine. Ngoài ra, môn học cũng cung cấp các kiến thức về các giải thuật hồi quy, các phương pháp lấy mẫu, phương pháp gom cụm."
+    },
+    {
+        "ten_mon":"Lắp ráp, cài đặt và bảo trì máy tính",
+        "Description":"Học phần gồm 5 phần lý thuyết, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần cung cấp cho người học các kiến thức về quy trình, thao tác kỹ thuật, tiêu chuẩn an toàn trong việc lắp ráp, cài đặt và bảo trì máy tính. Người học sẽ hiểu được các chuẩn giao tiếp phần cứng thông dụng, có khả năng đọc thông số kỹ thuật từ nhà sản xuất thiết bị và lựa chọn cấu hình, chủng loại thiết vị theo yêu cầu sử dụng của người dùng, có khả năng tự lắp ráp, cài đặt và bảo trì máy tính cá nhân an toàn, hiệu quả và đúng quy trình."
+    },
+    {
+        "ten_mon":"Internet vạn vật",
+        "Description":"Học phần Internet vạn vật bao gồm 7 phần lý thuyết và 6 bài thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Thông qua học phần, người học lĩnh hội những tri thức cơ bản về IoT và các đặc trưng của nó. Trên cơ sở này, người học có kĩ năng phân tích yêu cầu để đề xuất mô hình ứng dụng IoT phù hợp. Học phần cung cấp cho người học những kiến thức nguyên lý hoạt động, các chuẩn, thiết bị và kiến trúc của các hệ thống sử dụng công nghệ IoT và các ứng dụng."
+    },
+    {
+        "ten_mon":"Nhập môn DevOps",
+        "Description":"Học phần gồm có 9 phần lý thuyết và 5 bài tập thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Thông qua học phần, người học lĩnh hội về kiến thức, kỹ năng, và quy trình phát triển phần mềm (gồm 2 giai đoạn chính: phát triển và vận hành) giúp tối ưu hóa chu trình phát triển phần mềm, giúp sản phẩm IT được release nhanh và thường xuyên hơn. Trên cơ sở này, người học vận dụng nhằm các kiến thức để xây dựng quy trình triển khai một dự án án công nghệ phần mềm cụ thể."
+    },
+    {
+        "ten_mon":"Công nghệ chuỗi khối và ứng dụng",
+        "Description":"Học phần gồm có 5 phần lý thuyết, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần cung cấp cho người học những kiến thức nguyên lý hoạt động, các chuẩn, thiết bị và kiến trúc của các hệ thống sử dụng công nghệ blockchain và các ứng dụng. Đây là học phần tự chọn bắt buộc của các chuyên ngành. Học trong chương trình đào tạo cử nhân công nghệ thông tin. Trang bị cho sinh viên những kiến thức kiến thức, kỹ thuật cơ bản, nắm vững những khái niệm và làm việc trong lĩnh vực công nghệ chuỗi khối và ứng dụng của một công ty Tin học. Học phần này cũng giúp sinh viên hiểu được tầm quan trọng của Công nghệ chuỗi khối. Đồng thời phát triển năng lực ứng dụng Công nghệ Thông tin trong hoạt động nhóm."
+    },
+    {
+        "ten_mon":"Các giải thuật tính toán đại số",
+        "Description":"Học phần gồm 4 phần lý thuyết, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần này cung cấp cho sinh viên các kiến thức về giải thuật, giúp giải quyết các bài toán có liên quan đến số học một cách hiệu quả, sáng tạo. Ngoài ra, học phần cũng cung cấp các khái niệm của đại số giúp lựa chọn các giải pháp thích hợp để giải quyết các bài toán ứng dụng cụ thể của mã hóa, phân tích và đưa thuật toán thích hợp cho ứng dụng thực tế và thiết lập một số kỹ thuật số hóa để hoàn thiện hệ thống bảo mật"
+    },
+    {
+        "ten_mon":"Khai thác dữ liệu văn bản",
+        "Description":"Học phần gồm có 7 phần lý thuyết, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần cung cấp các phương pháp và khái niệm về các kỹ thuật khai thác văn bản dựa trên máy học, xử lý ngôn ngữ tự nhiên, và thống kê. Hoc phần trình bày các ứng dụng của text mining trong tổ chức và xử lý thông tin, thông minh doanh nghiệp, phân tích hành vi xã hội."
+    },
+    {
+        "ten_mon":"Xử lý ngôn ngữ tự nhiên",
+        "Description":"Học phần gồm có 6 phần lý thuyết, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Xử lý ngôn ngữ tự nhiên (XLNNTN) là một chuyên ngành trong lĩnh vực ứng dụng trí tuệ nhân tạo chuyên về phân tích, nhận biết và tổng hợp ngôn ngữ tự nhiên. Nó là cơ sở chính để đi vào các hướng: Hiểu ngôn ngữ, dịch ngôn ngữ, xử lý tiếng nói, tóm tắt văn bản, phát hiện thông tin."
+    },
+    {
+        "ten_mon":"Lý thuyết mã hóa và mật mã",
+        "Description":"Học phần gồm có 6 phần lý thuyết, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Nội dung học phần nhằm giúp học viên lĩnh hội các kiến thức về các hệ thống mã hóa mật mã như hệ mã công khai, hệ mã bí mật, hàm băm và mã dòng"
+    },
+    {
+        "ten_mon":"Thực tập nghề nghiệp 1",
+        "Description":"Học phần này là học phần bắt buộc trong nhóm học phần Thực hành -Thực tập nghề nghiệp. Ở học phần này, người học bước đầu được giao công việc thực tập phù hợp với chuyên ngành Công nghệ Thông tin trong các cơ quan, doanh nghiệp trong khoảng 4 tuần. Học phần trang bị các kiến thức thực tế cho người học trước khi tiến hành thực tập nghề nghiệp chính thức. Sản phẩm cần có là báo cáo thực tập có đánh giá của cơ quan thực tập. 100.Thực tập nghề nghiệp 2 - Số tín chỉ: 5 - Mã học phần: COMP1811 - Nhóm học phần: HỌC PHẦN THỰC HÀNH, THỰC TẬP NGHỀ NGHIỆP - Học phần tiên quyết: Không - Học phần học trước: Thực tập nghề nghiệp 1 - Học phần song hành: Không Thực tập tốt nghiệp là học phần bắt buộc trong nhóm học phần thực tập chuyên sâu của chương trình đào tạo đại học ngành công nghệ thông tin. Học phần giúp người học thành thạo một số kỹ năng mềm như: - Kỹ năng tư duy hiệu quả - Kỹ năng làm việc thực tế - Kỹ năng làm việc nhóm - Kỹ năng quản lý thời gian - Kỹ năng thuyết trình - Kỹ năng mô hình hóa vấn đề Đồng thời biết cách vận dụng các công cụ thực hành và các kiến thức đã học để giải quyết bài toán thực tiễn. 101.Hồ sơ tốt nghiệp - Số tín chỉ: 3 - Mã học phần: COMP1813 - Nhóm học phần: HỌC PHẦN TỐT NGHIỆP Học phần hồ sơ tốt nghiệp bao gồm việc thực hiện và tập hợp các minh chứng thể hiện quá trình hình thành và phát triển năng lực nghề nghiệp. Các minh chứng được người học thu thập một cách hệ thống qua các học phần có liên quan tại Trường và các đợt thực tế, thực tập ở cơ sở thực tập. Qua việc chiêm nghiệm, phân tích và đánh giá, người học viết một báo cáo thể hiện lí tưởng, triết lí nghề nghiệp, năng lực định hướng khởi nghiệp cho bản thân, từ đó xác định được hướng phát triển nghề nghiệp của bản thân trong tương lai. 102.Sản phẩm nghiên cứu khoa học - Số tín chỉ: 3 - Mã học phần: COMP1814 - Nhóm học phần: HỌC PHẦN TỐT NGHIỆP Sản phẩm nghiên cứu có thể là tiểu luận, dự án, bài báo, mô hình,… gắn với định hướng nghề nghiệp được người học thực hiện trong thời gian học tại Trường. Người học có thể tự thực hiện các sản phẩm nghiên cứu hoặc Khoa cử giảng viên hướng dẫn người học thực hiện các sản phẩm nghiên cứu. Sản phẩm nghiên cứu đạt giải cấp Trường trở lên hoặc được báo cáo hoặc đăng ở kỉ yếu hội thảo cấp Trường trở lên được đánh giá đạt 10\/10 điểm. Với những sản phẩm khác thì Khoa lập hội đồng đánh giá cho điểm. 103.Khóa luận tốt nghiệp - Số tín chỉ: 6 - Mã học phần: COMP1083 - Nhóm học phần: HỌC PHẦN TỐT NGHIỆP - Học phần: Theo hướng dẫn về thực hiện Khóa luận tốt nghiệp. Khóa luận tốt nghiệp là một trong hai hình thức lựa chọn bắt buộc thuộc nhóm học phần tốt nghiệp. Khóa luận tốt nghiệp là một báo cáo khoa học gắn với định hướng nghề nghiệp lĩnh vực Công nghệ Thông tin, được người học thực hiện trong thời gian được đào tạo tại trường. Khóa luận tốt nghiệp giúp người học vận dụng được kiến thức (nền tảng, nghiệp vụ,...), các phương pháp, công cụ nghiên cứu phù hợp để thực hiện nghiên cứu thuộc lĩnh vực nghề nghiệp và giải quyết được các nhiệm vụ chuyên môn một cách độc lập, hiệu quả, sáng tạo, bảo vệ được quan điểm cá nhân một cách thuyết phục, đáp ứng chuẩn đầu ra chương trình đào tạo."
+    },
+    {
+        "ten_mon":"Khởi nghiệp",
+        "Description":"Học phần Khởi nghiệp dành cho người học ngoài sư phạm bao gồm 5 phần lý thuyết và 6 bài thực hành. Học phần này là học phần bắt buộc trong nhóm học phần nghiệp vụ chung cho khối ngành ngoài sư phạm. Thông qua học phần, người học lĩnh hội những tri thức cơ bản về khởi nghiệp, ý tưởng, cơ hội khởi nghiệp, đồng thời cũng lĩnh hội được các kĩ năng khởi nghiệp như xây dựng mô hình kinh doanh; tạo lập tổ chức; huy động vốn khởi nghiệp. Trên cơ sở này người học vận dụng vào thực tiễn để phân tích được một số mô hình kinh doanh khởi nghiệp, xây dựng đội, nhóm cùng khởi nghiệp và biết cách nhận diện, huy động nguồn vốn hỗ trợ cho quá trình khởi nghiệp"
+    },
+    {
+        "ten_mon":"Công nghệ phần mềm nâng cao",
+        "Description":"Học phần gồm có 5 phần lý thuyết và 5 bài tập thảo luận nhóm, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Trang bị cho sinh viên những kiến thức kiến thức, kỹ thuật cơ bản, nắm vững những khái niệm và làm việc trong lĩnh vực quản trị dự án phần mềm của một công ty. Nội dung môn học giới thiệu cho sinh viên những vấn đề cơ bản về quy trình phát triển phần mềm RUP, chuẩn CMMi. Kết thúc khóa học sinh viên có hiểu biết về các vị trí, công việc trong quy trình làm phần mềm và có thể tham gia vào các dự án phát triển phần mềm theo đúng quy trình"
+    },
+    {
+        "ten_mon":"Công nghệ mạng không dây",
+        "Description":"Học phần gồm có 7 phần lý thuyết và 7 bài thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Thông qua học phần, học sinh được trang bị cho sinh viên những kiến thức cơ bản công nghệ mạng không dây, nguyên lý hoạt động, các chuẩn, thiết bị và kiến trúc của một hệ thống mạng không dây theo các chuẩn thông dụng của IEEE. Sinh viên sẽ hiểu được tầm quan trọng của hệ thống mạng không dây trong giai đoạn hiện nay."
+    },
+    {
+        "ten_mon":"Thương mại điện tử",
+        "Description":"Học phần gồm có 3 phần lý thuyết và 7 bài tập thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Môn học trang bị cho sinh viên các khái niệm, kiến thức nền tảng về thương mại điện tử, bao gồm: cơ sở hạ tầng thương mại điện tử, các mô hình kinh doanh trong thương mại điện tử; kiến trúc công nghệ cho thương mại điện tử (cơ sở dữ liệu, website), vấn đề tiếp thị, quảng cáo trong thương mại điện tử; các hệ thống thanh toán; các vấn đề pháp luật và đạo đức, các thông tin cá nhân và bảo mật khi thực hiện giao dịch trong thương mại điện tử; đưa ra các giải pháp thiết kế, cài đặt và vận hành website, hệ thống thương mại điện tử."
+    },
+    {
+        "ten_mon":"Kiểm thử phần mềm nâng cao",
+        "Description":"Kiểm thử phần mềm cơ bản, Học phần gồm có 5 phần lý thuyết và 7 bài tập thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần trình bày các kỹ năng kiểm thử theo nhóm, từ những kiến thức cơ bản chuyển sang kỹ năng phát triển kiểm thử tự động và xác định yêu cầu kiểm thử phần mềm\/hệ thống công nghệ thông tin. Học phần cũng cung cấp các kiến thức về công cụ kiểm thử tự động như Quick Test Pro, Selenium, kiểm thử trên thiết bị di động và các framework kiểm thử tự động thiết bị di động."
+    },
+    {
+        "ten_mon":"Điện toán đám mây",
+        "Description":"Học phần gồm có 7 chương lý thuyết và 2 hoạt động thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần trang bị cho sinh viên những những vấn đề chung về các hệ thống điện toán đám mây, cách quản lý vận hành cũng như cách tối ưu chi phí khi sử dụng các dịch vụ điện toán đám mây. Học phần giúp sinh viên có khả năng ứng dụng các dịch vụ điện toán đám mây được xây dựng sẵn một cách nhanh chóng và phù hợp."
+    },
+    {
+        "ten_mon":"Đồ họa máy tính nâng cao",
+        "Description":"Học phần gồm có 5 phần lý thuyết và 3 bài thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần trình bày các khái niệm và giải thuật nâng cao của đồ họa máy tính 3 chiều. Học phần trình bày một số kỹ thuật công cụ và môi trường phát triển các ứng dụng đồ họa 3 chiều trong các lĩnh vực đa phương tiện. Nội dung chính bao gồm các kỹ thuật render, mô hình, animation. Người học sẽ được trang bị năng lực để có thể thiết kế, mô hình cảnh đồ họa sáng tạo cho các ứng dụng thực tế. Học phần đòi hỏi kỹ năng lập trình tốt để phát triển các ứng dụng đồ họa."
+    },
+    {
+        "ten_mon":"Phân tích dữ liệu",
+        "Description":"Học phần gồm có 6 phần lý thuyết, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần cung cấp các kỹ thuật CNTT nhằm thao tác, lưu trữ và khai thác dữ liệu lớn như web log, video, âm thanh, hình ảnh, email có trên các mạng xã hội và các ứng dụng tương tự. Sử dụng các kỹ thuật như phân tích thống kê, máy học, đồ thị, MapReduce, Hadoop."
+    },
+    {
+        "ten_mon":"Máy học nâng  cao",
+        "Description":"Học phần gồm có 7 phần lý thuyết và 5 bài tập thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần này trình bày về các vấn đề, thuật toán cơ bản và nâng cao trong lí thuyết học máy và các ứng dụng của chúng trong các bài toán thực tế."
+    },
+    {
+        "ten_mon":"Thị giác máy tính và ứng dụng",
+        "Description":"Học phần Thị giác máy tính và ứng dụng bao gồm 5 chương lí thuyết, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần này trang bị cho sinh viên các vấn đề: cơ bản về cấu tạo ảnh (image formation), các vấn đề liên quan đến camera, rút trích và đối sánh đặc trưng, xác định biên và đường viền, bài toán nhận dạng bao gồm nhận dạng mặt người, nhận dạng đồ vật, nhận dạng biểu hiện khuôn mặt, và một số mô hình máy học cơ bản như học giám sát, học không giám sát, một số thuật toán học sâu hỗ trợ giải quyết bài toán thị giác máy tính.."
+    },
+    {
+        "ten_mon":"Phân tích ảnh y khoa",
+        "Description":"Học phần Phân tích ảnh y khoa"
+    },
+    {
+        "ten_mon":"Phát triển ứng dụng trên thiết bị di động nâng cao",
+        "Description":"Học phần gồm 6 phần lý thuyết và 6 bài thực hành, là học phần tự chọn bắt buộc thuộc trong nhóm học phần nghiệp vụ. Học phần cung cấp cho người học kiến thức và kĩ năng nâng cao và chuyên sâu trong lập trình di động trên nền tảng Android. Đồng thời, còn cung cấp thông tin về kiến trúc và cách thức làm việc chung để người học có thể tự nghiên cứu và tìm hiểu nhiều nền tảng di động khác."
+    },
+    {
+        "ten_mon":"Thực tập nghề nghiệp 2",
+        "Description":"Học phần Thực tập nghề nghiệp 2"
+    },
+    {
+        "ten_mon":"Khóa luận tốt nghiệp",
+        "Description":"Học phần Khóa luận tốt nghiệp"
+    },
+    {
+        "ten_mon":"Hồ sơ tốt nghiệp",
+        "Description":"Học phần Hồ sơ tốt nghiệp"
+    },
+    {
+        "ten_mon":"Sản phẩm nghiên cứu",
+        "Description":"Học phần Sản phẩm nghiên cứu"
+    }
+]
