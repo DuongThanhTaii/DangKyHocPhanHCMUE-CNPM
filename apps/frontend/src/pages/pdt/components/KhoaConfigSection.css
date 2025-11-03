@@ -23,6 +23,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  border: none;
+  color: white;
 }
 
 .khoa-config-toggle-btn--edit {
