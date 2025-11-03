@@ -22,19 +22,18 @@ export class ImportSinhVienController {
                 const sheet = workbook.Sheets[sheetName];
                 const raw = XLSX.utils.sheet_to_json(sheet, { defval: "" });
 
-                // ✅ FIX: Map exact Excel column headers (snake_case)
                 records = raw.map((r: any) => ({
-                    maSoSinhVien: r.ma_so_sinh_vien || r["ma_so_sinh_vien"] || "",
-                    hoTen: r.ho_ten || r["ho_ten"] || "",
-                    maKhoa: r.ma_khoa || r["ma_khoa"] || "",
-                    maNganh: r.ma_nganh || r["ma_nganh"] || "",
-                    lop: r.lop || r["lop"] || "",
-                    khoaHoc: r.khoa_hoc || r["khoa_hoc"] || "",
+                    maSoSinhVien: r.ma_so_sinh_vien || "",
+                    hoTen: r.ho_ten || "",
+                    maKhoa: r.ma_khoa || "",
+                    maNganh: r.ma_nganh || "",
+                    lop: r.lop || "",
+                    khoaHoc: r.khoa_hoc || "",
                     ngayNhapHoc: r.ngay_nhap_hoc ? new Date(r.ngay_nhap_hoc) : undefined,
                 }));
             } else {
-                // 2) If JSON body contains records array or stringified JSON
-                const bodyRecords = (req.body && (req.body.records ?? req.body)) as any;
+                // 2) If JSON body
+                const bodyRecords = req.body?.records ?? req.body;
                 if (Array.isArray(bodyRecords)) {
                     records = bodyRecords;
                 } else if (typeof bodyRecords === "string") {
@@ -42,7 +41,7 @@ export class ImportSinhVienController {
                         const parsed = JSON.parse(bodyRecords);
                         if (Array.isArray(parsed)) records = parsed;
                     } catch {
-                        // ignore parse error
+                        // ignore
                     }
                 }
             }
@@ -54,6 +53,7 @@ export class ImportSinhVienController {
                 });
             }
 
+            // ✅ FIX: Call execute() with only 1 argument (records)
             const result = await this.importUseCase.execute(records);
 
             return res.status(result.isSuccess ? 200 : 400).json(result);
