@@ -58,24 +58,60 @@ const ModalThemMonHoc: React.FC<PropsAdd> = ({
           fetch(`${API2}/dm/nganh`, withToken2()),
           fetch(`${API2}/pdt/mon-hoc?page=1&pageSize=10000`, withToken2()),
         ]);
+
         const [kjson, njson, mjson] = [
           await khoaRes.json(),
           await nganhRes.json(),
           await monRes.json(),
         ];
-        setKhoaList(kjson?.data || []);
-        setNganhList(njson?.data || []);
-        const options = (mjson?.data?.items || []).map((x: any) => ({
-          id: x.id,
-          ma_mon: x.ma_mon,
-          ten_mon: x.ten_mon,
+
+        // ✅ Khoa / Ngành nằm trong `message` (theo log bạn gửi)
+        const khoaData =
+          kjson?.message ??
+          kjson?.data ??
+          kjson?.items ??
+          (Array.isArray(kjson) ? kjson : []);
+        const nganhData =
+          njson?.message ??
+          njson?.data ??
+          njson?.items ??
+          (Array.isArray(njson) ? njson : []);
+
+        setKhoaList(Array.isArray(khoaData) ? khoaData : []);
+        setNganhList(Array.isArray(nganhData) ? nganhData : []);
+
+        // ✅ Môn học: hỗ trợ cả data.items | message | ...
+        const monArray =
+          mjson?.data?.items ??
+          mjson?.message?.items ??
+          mjson?.message ??
+          mjson?.data ??
+          mjson?.items ??
+          (Array.isArray(mjson) ? mjson : []);
+        const options: MonHocOption[] = (
+          Array.isArray(monArray) ? monArray : []
+        ).map((x: any) => ({
+          id: String(x.id),
+          ma_mon: String(x.ma_mon ?? ""),
+          ten_mon: String(x.ten_mon ?? ""),
         }));
         setAllMonHoc(options);
-      } catch {
+      } catch (e) {
+        console.error("[MonHoc] load danh mục fail:", e);
         openNotify?.("Không thể tải danh mục Khoa/Ngành/Môn", "error");
       }
     })();
   }, [isOpen, openNotify]);
+
+  useEffect(() => {
+    // Khi đổi khoa, bỏ những ngành không thuộc khoa mới
+    setForm((s) => ({
+      ...s,
+      nganh_ids: s.nganh_ids.filter((id) =>
+        nganhList.some((n) => n.id === id && n.khoa_id === s.khoa_id)
+      ),
+    }));
+  }, [form.khoa_id]);
 
   const nganhTheoKhoa = useMemo(
     () => nganhList.filter((n) => !form.khoa_id || n.khoa_id === form.khoa_id),

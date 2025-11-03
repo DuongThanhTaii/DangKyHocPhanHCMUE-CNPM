@@ -71,8 +71,7 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      { index: true, element: <Navigate to="dashboard" replace /> },
-      { path: "dashboard", element: <GiaoVienDashboard /> },
+      { index: true, element: <Navigate to="lop-hoc-phan" replace /> },
       { path: "lop-hoc-phan", element: <GVLopHocPhanList /> },
       { path: "lop-hoc-phan/:id", element: <GVLopHocPhanDetail /> },
       { path: "thoi-khoa-bieu", element: <GVThoiKhoaBieu /> },

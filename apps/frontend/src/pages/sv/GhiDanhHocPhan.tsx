@@ -226,7 +226,7 @@ export default function GhiDanhHocPhan(): JSX.Element {
       </div>
 
       <div className="body__inner">
-        <p className="sub__title_gd">Năm học 2025-2026 - Học kỳ HK01</p>
+        {/* <p className="sub__title_gd">Năm học 2025-2026 - Học kỳ HK01</p> */}
 
         {/* Thanh tìm kiếm */}
         <form className="search-form search-form__gd" onSubmit={handleSearch}>

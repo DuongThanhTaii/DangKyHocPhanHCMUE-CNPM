@@ -234,8 +234,6 @@ export default function QuanLyTinChi() {
 
   return (
     <div style={{ padding: 16 }}>
-      <h2 style={{ marginBottom: 12 }}>Quản lý chính sách tín chỉ</h2>
-
       {/* ✅ Show loading state */}
       {loading && (
         <p style={{ textAlign: "center", padding: 20 }}>Đang tải dữ liệu...</p>
@@ -254,87 +252,96 @@ export default function QuanLyTinChi() {
               marginBottom: 16,
             }}
           >
-            {/* Niên khóa */}
-            <select
-              value={selectedNienKhoa}
-              onChange={(e) => {
-                setSelectedNienKhoa(e.target.value);
-                setForm((f) => ({ ...f, hocKyId: "" }));
-              }}
-            >
-              <option value="">-- Chọn niên khóa --</option>
-              {nienKhoas.map((nk) => (
-                <option key={nk} value={nk}>
-                  {nk}
-                </option>
-              ))}
-            </select>
+            <div className="df ">
+              {/* Niên khóa */}
+              <select
+                className="form__select mr_8"
+                value={selectedNienKhoa}
+                onChange={(e) => {
+                  setSelectedNienKhoa(e.target.value);
+                  setForm((f) => ({ ...f, hocKyId: "" }));
+                }}
+              >
+                <option value="">-- Chọn niên khóa --</option>
+                {nienKhoas.map((nk) => (
+                  <option key={nk} value={nk}>
+                    {nk}
+                  </option>
+                ))}
+              </select>
 
-            {/* Học kỳ */}
-            <select
-              value={form.hocKyId}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, hocKyId: e.target.value }))
-              }
-              disabled={!selectedNienKhoa}
-            >
-              <option value="">-- Học kỳ áp dụng --</option>
-              {hocKysBySelectedNK.map((hk) => (
-                <option key={hk.id} value={hk.id}>
-                  {hk.tenHocKy}
-                </option>
-              ))}
-            </select>
+              {/* Học kỳ */}
+              <select
+                className="form__select"
+                value={form.hocKyId}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, hocKyId: e.target.value }))
+                }
+                disabled={!selectedNienKhoa}
+              >
+                <option value="">-- Học kỳ áp dụng --</option>
+                {hocKysBySelectedNK.map((hk) => (
+                  <option key={hk.id} value={hk.id}>
+                    {hk.tenHocKy}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-            {/* Khoa */}
-            <select
-              value={form.khoaId}
-              onChange={(e) => {
-                const val = e.target.value;
-                setSelectedKhoaId(val);
-                setForm((f) => ({ ...f, khoaId: val, nganhId: "" }));
-              }}
-              disabled={!form.hocKyId} // ✅ Disable if no hocKyId
-            >
-              <option value="">-- Áp dụng cho khoa (tùy chọn) --</option>
-              {khoas.map((k) => (
-                <option key={k.id} value={k.id}>
-                  {k.tenKhoa}
-                </option>
-              ))}
-            </select>
+            <div className="df ">
+              {/* Khoa */}
+              <select
+                className="form__select mr_8"
+                value={form.khoaId}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setSelectedKhoaId(val);
+                  setForm((f) => ({ ...f, khoaId: val, nganhId: "" }));
+                }}
+                disabled={!form.hocKyId} // ✅ Disable if no hocKyId
+              >
+                <option value="">Áp dụng cho khoa</option>
+                {khoas.map((k) => (
+                  <option key={k.id} value={k.id}>
+                    {k.tenKhoa}
+                  </option>
+                ))}
+              </select>
 
-            {/* Ngành */}
-            <select
-              value={form.nganhId}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, nganhId: e.target.value }))
-              }
-              disabled={!form.khoaId || !form.hocKyId} // ✅ Disable if no hocKyId or khoaId
-            >
-              <option value="">-- Áp dụng cho ngành (tùy chọn) --</option>
-              {nganhs.map((n) => (
-                <option key={n.id} value={n.id}>
-                  {n.tenNganh}
-                </option>
-              ))}
-            </select>
+              {/* Ngành */}
+              <select
+                className="form__select mr_8"
+                value={form.nganhId}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, nganhId: e.target.value }))
+                }
+                disabled={!form.khoaId || !form.hocKyId} // ✅ Disable if no hocKyId or khoaId
+              >
+                <option value="">Áp dụng cho ngành</option>
+                {nganhs.map((n) => (
+                  <option key={n.id} value={n.id}>
+                    {n.tenNganh}
+                  </option>
+                ))}
+              </select>
 
-            {/* Đơn giá */}
-            <input
-              type="number"
-              min={0}
-              step={1000}
-              placeholder="Phí mỗi tín chỉ (VND)"
-              value={form.phiMoiTinChi}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, phiMoiTinChi: e.target.value }))
-              }
-            />
+              {/* Đơn giá */}
+              <input
+                className="form__select mr_8"
+                type="number"
+                min={0}
+                step={1000}
+                placeholder="Phí mỗi tín chỉ (VND)"
+                value={form.phiMoiTinChi}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, phiMoiTinChi: e.target.value }))
+                }
+              />
 
-            <button type="submit" className="btn__chung" disabled={loading}>
-              {loading ? "Đang lưu..." : "Lưu chính sách"}
-            </button>
+              <button type="submit" className="btn__chung" disabled={loading}>
+                {loading ? "Đang lưu..." : "Lưu chính sách"}
+              </button>
+            </div>
           </form>
 
           {/* ✅ HEADER - Nút tính học phí (Option B) */}
@@ -356,7 +363,7 @@ export default function QuanLyTinChi() {
               type="button"
               onClick={handleTinhHocPhi}
               disabled={calculatingFee || !form.hocKyId}
-              className="btn__chung"
+              className="btn__update h__40"
               style={{
                 padding: "8px 16px",
                 fontSize: "14px",
@@ -365,20 +372,13 @@ export default function QuanLyTinChi() {
                 gap: "8px",
               }}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
+                <path
+                  fill="currentColor"
+                  d="M392 176L248 176L210.7 101.5C208.9 97.9 208 93.9 208 89.9C208 75.6 219.6 64 233.9 64L406.1 64C420.4 64 432 75.6 432 89.9C432 93.9 431.1 97.9 429.3 101.5L392 176zM233.6 224L406.4 224L455.1 264.6C521.6 320 560 402 560 488.5C560 536.8 520.8 576 472.5 576L167.4 576C119.2 576 80 536.8 80 488.5C80 402 118.4 320 184.9 264.6L233.6 224zM324 288C313 288 304 297 304 308L304 312C275.2 312.3 252 335.7 252 364.5C252 390.2 270.5 412.1 295.9 416.3L337.6 423.3C343.6 424.3 348 429.5 348 435.6C348 442.5 342.4 448.1 335.5 448.1L280 448C269 448 260 457 260 468C260 479 269 488 280 488L304 488L304 492C304 503 313 512 324 512C335 512 344 503 344 492L344 487.3C369 483.2 388 461.6 388 435.5C388 409.8 369.5 387.9 344.1 383.7L302.4 376.7C296.4 375.7 292 370.5 292 364.4C292 357.5 297.6 351.9 304.5 351.9L352 351.9C363 351.9 372 342.9 372 331.9C372 320.9 363 311.9 352 311.9L344 311.9L344 307.9C344 296.9 335 287.9 324 287.9z"
+                />
               </svg>
-              {calculatingFee ? "Đang tính..." : "⚡ Tính học phí hàng loạt"}
+              {calculatingFee ? "Đang tính..." : "Tính học phí hàng loạt"}
             </button>
           </div>
 

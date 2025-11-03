@@ -2,72 +2,117 @@ import { injectable, inject } from "inversify";
 import { TYPES } from "../../../../infrastructure/di/types";
 import { IUnitOfWork } from "../../../ports/qlSinhVienPDT/IUnitOfWork";
 import { IPasswordHasher } from "../../../ports/qlSinhVienPDT/services/IPasswordHasher";
+import { IImportStrategy } from "../../../ports/qlSinhVienPDT/services/IImportStrategy";
+import { SinhVien } from "../../../../domain/entities/SinhVien.entity";
+import { ImportResult, ImportSummary } from "../../../../domain/value-objects/ImportResult.vo";
+import { ImportSinhVienOutputDTO } from "../../../dtos/qlSinhVienPDT/import/ImportSinhVienOutput.dto";
 import { ServiceResult, ServiceResultBuilder } from "../../../../types/serviceResult";
 
-interface ImportRecord {
-    maSoSinhVien: string;
-    hoTen: string;
-    maKhoa: string;
-    maNganh: string;
-    lop?: string;
-    khoaHoc?: string;
-    ngayNhapHoc?: Date;
+// ✅ Fix: Custom limiter thay vì p-limit
+function createLimiter(concurrency: number) {
+    let active = 0;
+    const queue: Array<() => void> = [];
+
+    const next = () => {
+        if (active >= concurrency) return;
+        const run = queue.shift();
+        if (!run) return;
+        active++;
+        run();
+    };
+
+    return function limit<T>(fn: () => Promise<T>): Promise<T> {
+        return new Promise<T>((resolve, reject) => {
+            const task = () => {
+                fn()
+                    .then(resolve, reject)
+                    .finally(() => {
+                        active--;
+                        next();
+                    });
+            };
+            queue.push(task);
+            next();
+        });
+    };
 }
 
-interface ImportSummary {
-    total: number;
-    created: number;
-    failed: number;
-    skipped: number;
-}
-
-interface ImportResultItem {
-    row: number;
-    status: "success" | "failed" | "skipped";
-    key?: string;
-    error?: string;
-}
+const limit = createLimiter(5);
 
 @injectable()
 export class ImportSinhVienUseCase {
     constructor(
-        @inject(TYPES.QlSinhVienPDT.IUnitOfWork) private unitOfWork: IUnitOfWork,
-        @inject(TYPES.QlSinhVienPDT.IPasswordHasher) private passwordHasher: IPasswordHasher
+        @inject(IUnitOfWork) private unitOfWork: IUnitOfWork,
+        @inject(IPasswordHasher) private passwordHasher: IPasswordHasher
     ) { }
 
-    async execute(records: ImportRecord[]): Promise<ServiceResult<{ summary: ImportSummary; results: ImportResultItem[] }>> {
+    async execute(
+        strategy: IImportStrategy,
+        input: any
+    ): Promise<ServiceResult<ImportSinhVienOutputDTO>> {
         try {
-            if (!records || records.length === 0) {
+            // Step 1: Parse input via strategy
+            const records = await strategy.parse(input);
+
+            if (records.length === 0) {
                 return ServiceResultBuilder.failure("Không có dữ liệu để import", "NO_DATA");
             }
 
-            const results: ImportResultItem[] = [];
+            // Step 2: Validate all records
+            const validRecords = records.filter((record) => {
+                const validation = record.validate();
+                return validation.isValid;
+            });
 
-            // Process each record sequentially (simple version)
-            for (let i = 0; i < records.length; i++) {
-                const record = records[i];
-                const rowNumber = i + 2; // Excel row (header = 1)
+            const invalidRecords = records.filter((record) => !record.isValid());
 
-                try {
-                    await this.importSingleRecord(record, rowNumber, results);
-                } catch (error: any) {
-                    results.push({
-                        row: rowNumber,
-                        status: "failed",
-                        error: error.message,
-                    });
-                }
-            }
+            // Step 3: Process valid records with concurrency control
+            const results: ImportResult[] = [];
 
-            // Build summary
-            const summary: ImportSummary = {
-                total: results.length,
-                created: results.filter((r) => r.status === "success").length,
-                failed: results.filter((r) => r.status === "failed").length,
-                skipped: results.filter((r) => r.status === "skipped").length,
+            await Promise.all(
+                validRecords.map((record, index) =>
+                    limit(async () => {
+                        const rowNumber = index + 2; // Excel rows start from 2 (header = 1)
+
+                        try {
+                            await this.importSingleRecord(record, rowNumber, results);
+                        } catch (error: any) {
+                            results.push(ImportResult.failed(rowNumber, error.message));
+                        }
+                    })
+                )
+            );
+
+            // Add skipped records
+            invalidRecords.forEach((record, index) => {
+                const validation = record.validate();
+                results.push(
+                    ImportResult.skipped(
+                        validRecords.length + index + 2,
+                        validation.errors.join(", ")
+                    )
+                );
+            });
+
+            // Step 4: Build summary
+            const summary = ImportSummary.fromResults(results);
+
+            const output: ImportSinhVienOutputDTO = {
+                summary: {
+                    total: summary.total,
+                    created: summary.created,
+                    failed: summary.failed,
+                    skipped: summary.skipped,
+                },
+                results: results.map((r) => ({
+                    row: r.row,
+                    status: r.status,
+                    key: r.key,
+                    error: r.error,
+                })),
             };
 
-            return ServiceResultBuilder.success("Import hoàn tất", { summary, results });
+            return ServiceResultBuilder.success("Import hoàn tất", output);
         } catch (error: any) {
             console.error("[ImportSinhVienUseCase] Error:", error);
             return ServiceResultBuilder.failure(
@@ -78,106 +123,86 @@ export class ImportSinhVienUseCase {
     }
 
     private async importSingleRecord(
-        record: ImportRecord,
+        record: any,
         rowNumber: number,
-        results: ImportResultItem[]
+        results: ImportResult[]
     ): Promise<void> {
-        // Step 1: Check duplicate MSSV
+        // Step 1: Check duplicates
         const existingMssv = await this.unitOfWork
             .getSinhVienRepository()
             .findByMssv(record.maSoSinhVien);
 
         if (existingMssv) {
-            results.push({
-                row: rowNumber,
-                status: "failed",
-                error: "Mã số sinh viên đã tồn tại",
-            });
+            results.push(ImportResult.failed(rowNumber, "Mã số sinh viên đã tồn tại"));
             return;
         }
 
         // Step 2: Resolve khoa
         const khoa = await this.unitOfWork.getKhoaRepository().findByMaKhoa(record.maKhoa);
+
         if (!khoa) {
-            results.push({
-                row: rowNumber,
-                status: "failed",
-                error: `Không tìm thấy khoa: ${record.maKhoa}`,
-            });
+            results.push(ImportResult.failed(rowNumber, `Không tìm thấy khoa: ${record.maKhoa}`));
             return;
         }
 
         // Step 3: Resolve nganh
         const nganh = await this.unitOfWork.getNganhRepository().findByMaNganh(record.maNganh);
+
         if (!nganh) {
-            results.push({
-                row: rowNumber,
-                status: "failed",
-                error: `Không tìm thấy ngành: ${record.maNganh}`,
-            });
+            results.push(ImportResult.failed(rowNumber, `Không tìm thấy ngành: ${record.maNganh}`));
             return;
         }
 
-        // Step 4: Generate username and password
-        const tenDangNhap = record.maSoSinhVien;
-        const defaultPassword = record.maSoSinhVien; // Default password = MSSV
+    // Step 4: Generate username and password
+    const tenDangNhap = record.maSoSinhVien;
+    const defaultPassword = record.maSoSinhVien; // Default password = MSSV
 
-        const existingUsername = await this.unitOfWork
-            .getTaiKhoanRepository()
-            .findByUsername(tenDangNhap);
+    const existingUsername = await this.unitOfWork
+      .getTaiKhoanRepository()
+      .findByUsername(tenDangNhap);
 
         if (existingUsername) {
-            results.push({
-                row: rowNumber,
-                status: "failed",
-                error: "Tên đăng nhập đã tồn tại",
-            });
+            results.push(ImportResult.failed(rowNumber, "Tên đăng nhập đã tồn tại"));
             return;
         }
 
-        // Step 5: Hash password
-        const hashedPassword = await this.passwordHasher.hash(defaultPassword);
+    // Step 5: Hash password
+    const hashedPassword = await this.passwordHasher.hash(defaultPassword);
 
-        // Step 6: Transaction (giống logic SinhVienService.create)
-        await this.unitOfWork.transaction(async (tx) => {
+        // Step 6: Transaction
+        await this.unitOfWork.transaction(async (repos) => {
             // Create tai_khoan
-            const tk = await tx.tai_khoan.create({
-                data: {
-                    ten_dang_nhap: tenDangNhap,
-                    mat_khau: hashedPassword,
-                    loai_tai_khoan: "sinh_vien",
-                    trang_thai_hoat_dong: true,
-                },
+            const taiKhoanId = await repos.taiKhoanRepo.create({
+                tenDangNhap,
+                matKhau: hashedPassword,
+                loaiTaiKhoan: "sinh_vien",
+                trangThaiHoatDong: true,
             });
 
             // Create users
-            const user = await tx.users.create({
-                data: {
-                    ho_ten: record.hoTen,
-                    tai_khoan_id: tk.id,
-                    ma_nhan_vien: record.maSoSinhVien,
-                    email: `${record.maSoSinhVien}@student.hcmue.edu.vn`,
-                },
+            const userId = await repos.usersRepo.create({
+                id: taiKhoanId,
+                hoTen: record.hoTen,
+                taiKhoanId,
+                maNhanVien: record.maSoSinhVien,
+                email: `${record.maSoSinhVien}@student.hcmue.edu.vn`,
             });
 
-            // Create sinh_vien
-            await tx.sinh_vien.create({
-                data: {
-                    id: user.id,
-                    ma_so_sinh_vien: record.maSoSinhVien,
-                    khoa_id: khoa.id,
-                    lop: record.lop ?? null,
-                    khoa_hoc: record.khoaHoc ?? null,
-                    ngay_nhap_hoc: record.ngayNhapHoc ?? null,
-                    nganh_id: nganh.id,
-                },
+            // Create sinh_vien entity
+            const sinhVien = SinhVien.create({
+                id: userId,
+                maSoSinhVien: record.maSoSinhVien,
+                hoTen: record.hoTen,
+                khoaId: khoa.id,
+                nganhId: nganh.id,
+                lop: record.lop,
+                khoaHoc: record.khoaHoc,
+                ngayNhapHoc: record.ngayNhapHoc,
             });
+
+            await repos.sinhVienRepo.create(sinhVien);
         });
 
-        results.push({
-            row: rowNumber,
-            status: "success",
-            key: record.maSoSinhVien,
-        });
+        results.push(ImportResult.success(rowNumber, record.maSoSinhVien));
     }
 }
