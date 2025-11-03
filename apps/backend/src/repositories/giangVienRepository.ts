@@ -1,7 +1,7 @@
 import { PrismaClient, Prisma } from "@prisma/client";
 
 export class GiangVienRepository {
-  constructor(private prisma: PrismaClient) { }
+  constructor(private prisma: PrismaClient) {}
 
   async findAll() {
     return this.prisma.giang_vien.findMany({
@@ -71,7 +71,7 @@ export class GiangVienRepository {
           ho_ten,
           ma_nhan_vien: ten_dang_nhap,
           tai_khoan_id: tai_khoan.id,
-          email: `${ten_dang_nhap}@example.com`, // ✅ Thêm email (bắt buộc)
+          email: `${ten_dang_nhap}@hcmue.edu.vn`, // ✅ Thêm email (bắt buộc)
         },
       });
 
