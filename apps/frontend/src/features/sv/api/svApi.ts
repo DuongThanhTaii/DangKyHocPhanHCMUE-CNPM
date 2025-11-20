@@ -16,10 +16,13 @@ import type {
     CreatePaymentRequest,
     CreatePaymentResponse,
     PaymentStatusResponse,
+    LopDaDangKyWithTaiLieuDTO,
+    SVTaiLieuDTO,
 } from "../types";
 import { fetchJSON } from "../../../utils/fetchJSON";
 import type { LichSuDangKyDTO } from "../types";
 import type { MonHocTraCuuDTO } from "../types";
+import api from "../../../utils/api";
 export const svApi = {
     // ========== GHI DANH ==========
 
@@ -141,7 +144,7 @@ export const svApi = {
      * ✅ Lấy chi tiết học phí theo học kỳ
      */
     getChiTietHocPhi: async (hocKyId: string): Promise<ServiceResult<ChiTietHocPhiDTO>> => {
-        return await fetchJSON(`sv/hoc-phi/chi-tiet?hoc_ky_id=${hocKyId}`);
+        return await fetchJSON(`hoc-phi/chi-tiet?hoc_ky_id=${hocKyId}`);
     },
 
     /**
@@ -198,6 +201,45 @@ export const svApi = {
                 message: error.message || "Không thể lấy trạng thái thanh toán",
                 errorCode: error.code || "FETCH_ERROR",
             };
+        }
+    },
+
+    // ========== TÀI LIỆU HỌC TẬP ==========
+
+    /**
+     * Lấy danh sách lớp đã đăng ký kèm tài liệu
+     */
+    getLopDaDangKyWithTaiLieu: async (hocKyId: string): Promise<ServiceResult<LopDaDangKyWithTaiLieuDTO[]>> => {
+        return await fetchJSON(`sv/lop-da-dang-ky/tai-lieu?hoc_ky_id=${hocKyId}`);
+    },
+
+    /**
+     * Lấy tài liệu của một lớp học phần
+     */
+    getTaiLieuByLopHocPhan: async (lopHocPhanId: string): Promise<ServiceResult<SVTaiLieuDTO[]>> => {
+        return await fetchJSON(`sv/lop-hoc-phan/${lopHocPhanId}/tai-lieu`);
+    },
+
+    /**
+     * Download tài liệu (backend streams from S3)
+     */
+    downloadTaiLieu: async (lopHocPhanId: string, docId: string): Promise<Blob | null> => {
+        try {
+            const response = await api.get(
+                `sv/lop-hoc-phan/${lopHocPhanId}/tai-lieu/${docId}/download`,
+                {
+                    responseType: "blob",
+                }
+            );
+
+            if (response.status === 200 && response.data) {
+                return response.data as Blob;
+            }
+
+            return null;
+        } catch (error) {
+            console.error("Download tài liệu failed:", error);
+            return null;
         }
     },
 };

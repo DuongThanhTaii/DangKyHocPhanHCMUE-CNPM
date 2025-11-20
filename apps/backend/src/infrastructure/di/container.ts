@@ -109,6 +109,8 @@ import { registerPdtQuanLyHocKyBindings } from "./modules/pdtQuanLyHocKy.binding
 import { registerBaoCaoThongKeBindings } from "./modules/baoCaoThongKe.bindings";
 import { bindDanhMucModule } from "./modules/dm.bindings";
 import { registerPdtQuanLyPhaseBindings } from "./modules/pdtQuanLyPhase.bindings";
+// ✅ Import Sinh Vien Tai Lieu module bindings
+import { registerSinhVienTaiLieuBindings } from "./modules/sinhvienTaiLieu.bindings";
 
 // ✅ Register QL Sinh Vien PDT module
 registerQlSinhVienPDTBindings(container);
@@ -120,6 +122,8 @@ registerPdtQuanLyHocKyBindings(container);
 registerBaoCaoThongKeBindings(container);
 // ✅ Register PDT Quan Ly Phase module
 registerPdtQuanLyPhaseBindings(container);
+// ✅ Register Sinh Vien Tai Lieu module
+registerSinhVienTaiLieuBindings(container);
 
 // ✅ Bind DM module
 bindDanhMucModule(container, prisma);

@@ -454,19 +454,11 @@ export class DeXuatHocPhanService {
         sinhVienId: string
     ): Promise<ServiceResult<null>> {
         try {
-            // Step 1: Kiểm tra học phần tồn tại và đang mở
             const hocPhan = await this.unitOfWork.hocPhanRepository.findById(request.monHocId);
             if (!hocPhan) {
                 return ServiceResultBuilder.failure(
                     "Không tìm thấy học phần",
                     "HOC_PHAN_NOT_FOUND"
-                );
-            }
-
-            if (!hocPhan.trang_thai_mo) {
-                return ServiceResultBuilder.failure(
-                    "Học phần đã đóng, không thể ghi danh",
-                    "HOC_PHAN_CLOSED"
                 );
             }
 
@@ -479,26 +471,8 @@ export class DeXuatHocPhanService {
                 );
             }
 
-            // Lấy phase hiện tại
-            const currentPhase = await this.unitOfWork.kyPhaseRepository.findOne({
-                hoc_ky_id: hocKy.id,
-                bat_dau: { lte: new Date() },
-                ket_thuc: { gte: new Date() },
-            });
 
-            if (!currentPhase) {
-                return ServiceResultBuilder.failure(
-                    "Hiện không trong thời gian ghi danh",
-                    "NOT_IN_PHASE"
-                );
-            }
 
-            if (currentPhase.phase !== "Ghi danh") {
-                return ServiceResultBuilder.failure(
-                    `Hiện đang trong phase "${currentPhase.phase}", không thể ghi danh`,
-                    "WRONG_PHASE"
-                );
-            }
 
             // Step 3: Kiểm tra sinh viên đã ghi danh chưa
             const isAlreadyRegistered = await this.unitOfWork.ghiDanhHocPhanRepository.isAlreadyRegistered(

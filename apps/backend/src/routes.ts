@@ -10,14 +10,13 @@ import gvRouter from "./modules/gv/gv.router";
 import configRouter from "./modules/common/config_service";
 import chinhSachTinChiRoutes from "./modules/hocphi/chinhSachTinChi.routes";
 import mienGiamRoutes from "./modules/hocphi/mienGiam.routes";
-import tuitionRoutes from "./presentation/http/routes/tuition.routes";
+import tuitionRoutes from "./presentation/http/routes/tuition.routes"; // PDT tuition
+import tuitionsv from "./interface/routes/tuitionsv.routes"; // ✅ SV tuition (NEW)
 import paymentRoutes from "./presentation/http/routes/payment.routes";
 import sinhVienRoutes from "./presentation/http/routes/qlSinhVienPDT/sinh-vien.routes";
 import importSinhVienRoutes from "./presentation/http/routes/qlSinhVienPDT/import-sinh-vien.routes";
 import hocKyPublicRoutes from "./presentation/http/routes/hocKyPublic/hoc-ky-public.routes";
-// ✅ Import PDT Quan Ly Hoc Ky routes
 import quanLyHocKyRoutes from "./presentation/http/routes/pdtQuanLyHocKy/quan-ly-hoc-ky.routes";
-// ✅ Import BaoCao routes (Clean Architecture)
 import baoCaoThongKeRoutes from "./presentation/http/routes/baoCaoThongKe/bao-cao.routes";
 import danhMucRoutes from "./presentation/http/routes/dm/danh-muc.routes";
 import kyPhaseRoutes from "./presentation/http/routes/pdtQuanLyPhase/ky-phase.routes";
@@ -40,9 +39,9 @@ router.use("/dm", danhMucRoutes);
 router.use("/config", configRouter);
 
 // ✅ Học phí routes
+router.use("/tuition", tuitionRoutes); // PDT: POST /compute
 router.use("/chinh-sach-tin-chi", chinhSachTinChiRoutes);
-router.use("/mien-giam", mienGiamRoutes);
-router.use("/sv/hoc-phi", tuitionRoutes);
+router.use("/hoc-phi", tuitionsv); // ✅ SV: GET /chi-tiet
 
 // ✅ Payment routes (Clean Architecture)
 router.use("/payment", paymentRoutes);

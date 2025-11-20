@@ -15,7 +15,7 @@ export async function fetchJSON(url: string, options?: { method?: string; body?:
         return putRes.data;
 
       case "PATCH":
-        const patchRes = await api.patch(url, { data: options?.body });
+        const patchRes = await api.patch(url, options?.body);
         return patchRes.data;
 
       case "DELETE":

@@ -229,3 +229,26 @@ export type PaymentErrorCode =
     | "PAYMENT_TIMEOUT"
     | "INVALID_SIGNATURE"
     | "PAYMENT_PENDING";
+
+// ========== TÀI LIỆU HỌC TẬP ==========
+
+export interface SVTaiLieuDTO {
+    id: string;
+    tenTaiLieu: string;
+    fileType: string;
+    fileUrl: string;
+    uploadedAt: string;
+    uploadedBy: string;
+}
+
+export interface LopDaDangKyWithTaiLieuDTO {
+    lopHocPhanId: string;
+    maLop: string;
+    maMon: string;
+    tenMon: string;
+    soTinChi: number;
+    giangVien: string;
+    trangThaiDangKy: string;
+    ngayDangKy: string;
+    taiLieu: SVTaiLieuDTO[];
+}
