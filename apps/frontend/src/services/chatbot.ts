@@ -24,24 +24,25 @@ export type ChatbotPayload =
 const trimBase = (s: string) => (s || "").replace(/\/+$/, "");
 
 const BANG_BASE = trimBase(
-  import.meta.env.VITE_API_BANG || "https://<your-bang>.hf.space"
+  import.meta.env.VITE_API_BANG || "https://anhfeee-truyvanbanghcmue.hf.space"
 );
 const PHONG_BASE = trimBase(
-  import.meta.env.VITE_API_PHONG || "https://<your-phong>.hf.space"
+  import.meta.env.VITE_API_PHONG || "https://anhfeee-truyvanphonghcmue.hf.space"
 );
 const MONHOC_BASE = trimBase(
-  import.meta.env.VITE_API_MONHOC || "https://<your-monhoc>.hf.space"
+  import.meta.env.VITE_API_MONHOC ||
+    "https://anhfeee-truyvanmonhochcmue.hf.space"
 );
 const KHOA_BASE = trimBase(
-  import.meta.env.VITE_API_KHOA || "https://<your-khoa>.hf.space"
+  import.meta.env.VITE_API_KHOA || "https://anhfeee-truyvankhoahcmue.hf.space"
 );
 const NGANH_BASE = trimBase(
-  import.meta.env.VITE_API_NGANH || "https://<your-nganh>.hf.space"
+  import.meta.env.VITE_API_NGANH || "https://anhfeee-truyvannganhhcmue.hf.space"
 );
 
 /** 👉 FileQA dùng /ask (POST {question}), không phải /search */
 const FILEQA_BASE = trimBase(
-  import.meta.env.VITE_API_FILEQA || "https://<your-fileqa>.hf.space"
+  import.meta.env.VITE_API_FILEQA || "https://anhfeee-truyvangemini.hf.space"
 );
 
 /** Gộp domain -> base */
