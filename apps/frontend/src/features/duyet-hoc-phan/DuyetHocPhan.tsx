@@ -307,7 +307,7 @@ export default function DuyetHocPhan({
 
                     {userRole !== "tro_ly_khoa" && (
                       <td>
-                        {/* Nút Duyệt */}
+                        {/* Nút Duyệt - chỉ truyền id */}
                         {actions.duyetDeXuat && (
                           <button
                             className="btn__chung w50__h20 mr_10"
@@ -318,11 +318,17 @@ export default function DuyetHocPhan({
                           </button>
                         )}
 
-                        {/* Nút Từ chối - gọi action từ props */}
+                        {/* Nút Từ chối - chỉ truyền id */}
                         {actions.tuChoiDeXuat ? (
                           <button
                             className="btn-cancel w50__h20"
-                            onClick={() => actions.tuChoiDeXuat!(dx.id)}
+                            onClick={() => {
+                              if (
+                                confirm("Bạn có chắc muốn từ chối đề xuất này?")
+                              ) {
+                                actions.tuChoiDeXuat!(dx.id);
+                              }
+                            }}
                             disabled={!canAct}
                           >
                             Từ chối

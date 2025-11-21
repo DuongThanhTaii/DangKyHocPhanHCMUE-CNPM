@@ -18,6 +18,7 @@ import ChuyenLopModal from "./components/ChuyenLopModal";
 export default function DangKyHocPhan() {
   const { openNotify, openConfirm } = useModalContext();
 
+  // ✅ ALL HOOKS AT THE TOP - BEFORE ANY CONDITIONAL RETURNS
   const { data: hocKyHienHanh, loading: loadingHocKy } = useHocKyHienHanh();
   const hocKyId = hocKyHienHanh?.id || "";
 
@@ -40,6 +41,7 @@ export default function DangKyHocPhan() {
     fetchLop: fetchLopChuaDangKy,
   } = useLopChuaDangKyByMonHoc();
 
+  // ✅ ALL STATE HOOKS
   const [activeTab, setActiveTab] = useState<"monChung" | "batBuoc" | "tuChon">(
     "monChung"
   );
@@ -56,19 +58,73 @@ export default function DangKyHocPhan() {
       tenLop: string;
     };
   } | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>(""); // ✅ Move here
 
-  // ✅ Check môn đã đăng ký dựa trên MÃ MÔN (không phải lopId)
+  // ✅ ALL HELPER FUNCTIONS
+  const norm = (s: string) =>
+    (s || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+
   const isDaDangKyMonHoc = (maMon: string) => {
     return lopDaDangKy.some((mon) => mon.maMon === maMon);
   };
 
-  // ✅ Check lớp cụ thể đã đăng ký (for modal)
   const isDaDangKyLop = (lopId: string) => {
     return lopDaDangKy.some((mon) =>
       mon.danhSachLop.some((lop) => lop.id === lopId)
     );
   };
 
+  // ✅ ALL USEMEMO HOOKS
+  const sourceByTab = useMemo(
+    () => ({
+      monChung: lopHocPhanData?.monChung || [],
+      batBuoc: lopHocPhanData?.batBuoc || [],
+      tuChon: lopHocPhanData?.tuChon || [],
+    }),
+    [lopHocPhanData]
+  );
+
+  const filteredMonHoc = useMemo(() => {
+    const src = sourceByTab[activeTab] as MonHocInfoDTO[];
+    const q = norm(searchQuery.trim());
+    if (!q) return src;
+    return src.filter(
+      (m) => norm(m.maMon).includes(q) || norm(m.tenMon).includes(q)
+    );
+  }, [sourceByTab, activeTab, searchQuery]);
+
+  const flatDaDangKy = useMemo(() => {
+    const result: Array<{
+      lopId: string;
+      maMon: string;
+      tenMon: string;
+      soTinChi: number;
+      maLop: string;
+      tenLop: string;
+      tkbFormatted: string;
+    }> = [];
+
+    lopDaDangKy.forEach((mon) => {
+      mon.danhSachLop.forEach((lop) => {
+        result.push({
+          lopId: lop.id,
+          maMon: mon.maMon,
+          tenMon: mon.tenMon,
+          soTinChi: mon.soTinChi,
+          maLop: lop.maLop,
+          tenLop: lop.tenLop,
+          tkbFormatted: lop.tkb.map((t) => t.formatted).join("\n"),
+        });
+      });
+    });
+
+    return result;
+  }, [lopDaDangKy]);
+
+  // ✅ ALL EVENT HANDLERS
   const handleOpenModal = (mon: MonHocInfoDTO) => {
     setSelectedMonHoc(mon);
   };
@@ -104,14 +160,12 @@ export default function DangKyHocPhan() {
     );
   };
 
-  // ✅ Handle mở modal chuyển lớp
   const handleOpenChuyenLopModal = async (lop: {
     lopId: string;
     maMon: string;
     tenMon: string;
     tenLop: string;
   }) => {
-    // ✅ Tìm monHocId từ lopDaDangKy
     const monHoc = lopDaDangKy.find((mon) =>
       mon.danhSachLop.some((l) => l.id === lop.lopId)
     );
@@ -124,18 +178,16 @@ export default function DangKyHocPhan() {
     setChuyenLopModalData({
       lopCu: {
         lopId: lop.lopId,
-        monHocId: monHoc.maMon, // ✅ Tạm dùng maMon làm ID
+        monHocId: monHoc.maMon,
         maMon: lop.maMon,
         tenMon: lop.tenMon,
         tenLop: lop.tenLop,
       },
     });
 
-    // ✅ Load lớp chưa đăng ký
     await fetchLopChuaDangKy(monHoc.maMon, hocKyId);
   };
 
-  // ✅ Handle chuyển lớp
   const handleChuyenLop = async (lopMoiId: string) => {
     if (!chuyenLopModalData) return;
 
@@ -166,7 +218,6 @@ export default function DangKyHocPhan() {
     }
   };
 
-  // ✅ Handle hủy đăng ký (single)
   const handleHuyDangKySingle = async (lopId: string) => {
     const confirmed = await openConfirm({
       message: "Xác nhận hủy đăng ký lớp này?",
@@ -176,7 +227,7 @@ export default function DangKyHocPhan() {
     if (!confirmed) return;
 
     const result = await huyDangKy({
-      lop_hoc_phan_id: lopId, // ✅ Only pass lopId
+      lop_hoc_phan_id: lopId,
     });
 
     if (result.isSuccess) {
@@ -193,7 +244,6 @@ export default function DangKyHocPhan() {
     }
   };
 
-  // ✅ Handle hủy nhiều lớp (batch)
   const handleHuyDangKy = async () => {
     if (selectedToCancelIds.length === 0) {
       openNotify({ message: "Chưa chọn lớp nào", type: "warning" });
@@ -210,7 +260,7 @@ export default function DangKyHocPhan() {
     let successCount = 0;
     for (const lopId of selectedToCancelIds) {
       const result = await huyDangKy({
-        lop_hoc_phan_id: lopId, // ✅ Only pass lopId
+        lop_hoc_phan_id: lopId,
       });
 
       if (result.isSuccess) {
@@ -228,9 +278,23 @@ export default function DangKyHocPhan() {
     }
   };
 
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const q = searchQuery.trim();
+    if (!q) {
+      openNotify({ message: "Đã làm mới danh sách môn học", type: "info" });
+      return;
+    }
+    const count = filteredMonHoc.length;
+    if (count === 0) {
+      openNotify({ message: "Không tìm thấy môn phù hợp", type: "warning" });
+    } else {
+      openNotify({ message: `Tìm thấy ${count} môn`, type: "info" });
+    }
+  };
+
   const renderMonHocTable = (danhSachMon: MonHocInfoDTO[]) => {
     return danhSachMon.map((mon: MonHocInfoDTO, index: number) => {
-      // ✅ Check theo MÃ MÔN thay vì lopId
       const hasRegisteredLop = isDaDangKyMonHoc(mon.maMon);
 
       return (
@@ -263,35 +327,7 @@ export default function DangKyHocPhan() {
     });
   };
 
-  // ✅ Flatten lopDaDangKy để hiển thị
-  const flatDaDangKy = useMemo(() => {
-    const result: Array<{
-      lopId: string;
-      maMon: string;
-      tenMon: string;
-      soTinChi: number;
-      maLop: string;
-      tenLop: string;
-      tkbFormatted: string;
-    }> = [];
-
-    lopDaDangKy.forEach((mon) => {
-      mon.danhSachLop.forEach((lop) => {
-        result.push({
-          lopId: lop.id,
-          maMon: mon.maMon,
-          tenMon: mon.tenMon,
-          soTinChi: mon.soTinChi,
-          maLop: lop.maLop,
-          tenLop: lop.tenLop,
-          tkbFormatted: lop.tkb.map((t) => t.formatted).join("\n"),
-        });
-      });
-    });
-
-    return result;
-  }, [lopDaDangKy]);
-
+  // ✅ NOW SAFE TO DO EARLY RETURNS (all hooks already called)
   if (loadingHocKy || checkingPhase) {
     return (
       <section className="main__body">
@@ -329,53 +365,6 @@ export default function DangKyHocPhan() {
       </section>
     );
   }
-
-  // Ở đầu component
-  const [searchQuery, setSearchQuery] = useState<string>("");
-
-  // bỏ dấu tiếng Việt + lowercase để tìm “mềm” hơn
-  const norm = (s: string) =>
-    (s || "")
-      .toLowerCase()
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "");
-
-  // nguồn dữ liệu theo tab hiện tại
-  const sourceByTab = useMemo(
-    () => ({
-      monChung: lopHocPhanData?.monChung || [],
-      batBuoc: lopHocPhanData?.batBuoc || [],
-      tuChon: lopHocPhanData?.tuChon || [],
-    }),
-    [lopHocPhanData]
-  );
-
-  // danh sách đã lọc theo search + tab đang chọn
-  const filteredMonHoc = useMemo(() => {
-    const src = sourceByTab[activeTab] as MonHocInfoDTO[];
-    const q = norm(searchQuery.trim());
-    if (!q) return src;
-    return src.filter(
-      (m) => norm(m.maMon).includes(q) || norm(m.tenMon).includes(q)
-    );
-  }, [sourceByTab, activeTab, searchQuery]);
-
-  // handler giống màn trước
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const q = searchQuery.trim();
-    if (!q) {
-      // reset (không cần set list vì đang tính qua useMemo)
-      openNotify({ message: "Đã làm mới danh sách môn học", type: "info" });
-      return;
-    }
-    const count = filteredMonHoc.length;
-    if (count === 0) {
-      openNotify({ message: "Không tìm thấy môn phù hợp", type: "warning" });
-    } else {
-      openNotify({ message: `Tìm thấy ${count} môn`, type: "info" });
-    }
-  };
 
   return (
     <section className="main__body">

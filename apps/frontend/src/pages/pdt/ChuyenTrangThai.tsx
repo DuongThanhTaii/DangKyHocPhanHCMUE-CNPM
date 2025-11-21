@@ -71,7 +71,7 @@ export default function ChuyenTrangThai() {
   const { data: phasesData, loading: loadingPhases } =
     usePhasesByHocKy(selectedHocKyId);
 
-  // State cho học kỳ/niên khóa
+  // State cho học kỳ/niên khó
   const [selectedNienKhoa, setSelectedNienKhoa] = useState<string>("");
   const [semesterStart, setSemesterStart] = useState<string>("");
   const [semesterEnd, setSemesterEnd] = useState<string>("");

@@ -4,14 +4,16 @@ import { requireAuth, requireRole } from "../../../middlewares/auth";
 import { TuitionCalculationController } from "../controllers/pdt/TuitionCalculation.controller";
 
 const router = Router();
-const tuitionController = new TuitionCalculationController();
+const tuitionCalculationController = new TuitionCalculationController();
 
-// ✅ Tính học phí hàng loạt (PDT only)
+// ✅ PDT: Tính học phí hàng loạt
 router.post(
     "/calculate-semester",
     requireAuth,
     requireRole(["phong_dao_tao"]),
-    (req, res) => tuitionController.calculateForSemester(req, res)
+    (req, res) => tuitionCalculationController.calculateForSemester(req, res)
 );
+
+
 
 export default router;

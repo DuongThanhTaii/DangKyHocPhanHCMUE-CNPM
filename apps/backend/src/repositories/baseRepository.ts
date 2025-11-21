@@ -19,7 +19,15 @@ export abstract class BaseRepository<T> {
     }
 
     async findById(id: string): Promise<T | null> {
-        return this.model.findUnique({ where: { id } });
+        // ✅ ADD: Guard clause
+        if (!id || typeof id !== 'string') {
+            console.error(`[BaseRepository.findById] Invalid id:`, id);
+            return null; // or throw new Error("Invalid ID")
+        }
+
+        return this.model.findUnique({
+            where: { id } as any,
+        }) as Promise<T | null>;
     }
 
     async create(data: any): Promise<T> {

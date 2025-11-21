@@ -1,156 +1,86 @@
 // src/pages/sv/SVLopHocPhanDetail.tsx
-import { useState } from "react";
 import { useParams } from "react-router-dom";
 import "../../styles/reset.css";
 import "../../styles/menu.css";
-// ❗️Ưu tiên dùng hook riêng cho SV (chỉ fetch, không mutate)
 import { useGVLopHocPhanDetail } from "../../features/gv/hooks";
-// Nếu muốn tái dùng list có sẵn:
-import TaiLieuList from "../gv/components/TaiLieuList";
+import SVTaiLieuList from "./components/SVTaiLieuList";
 
 export default function SVLopHocPhanDetail() {
   const { id } = useParams<{ id: string }>();
-  const [tab, setTab] = useState<"docs" | "sv" | "grades">("docs");
-
   const {
-    info,
-    students,
+    info: lopHocPhan,
     documents,
-    grades, // { [sinhVienId: string]: number }
     loading,
-    getDocumentUrl, // (doc: { id: string, ...}) => Promise<string> | string
-  } = useGVLopHocPhanDetail(id!);
+    getDocumentUrl,
+  } = useGVLopHocPhanDetail(id || "");
+
+  if (loading) {
+    return (
+      <section className="main__body">
+        <div className="body__title">
+          <p className="body__title-text">TÀI LIỆU LỚP HỌC PHẦN</p>
+        </div>
+        <div className="body__inner">
+          <p style={{ textAlign: "center", padding: 40 }}>
+            Đang tải dữ liệu...
+          </p>
+        </div>
+      </section>
+    );
+  }
+
+  if (!lopHocPhan) {
+    return (
+      <section className="main__body">
+        <div className="body__title">
+          <p className="body__title-text">TÀI LIỆU LỚP HỌC PHẦN</p>
+        </div>
+        <div className="body__inner">
+          <p style={{ textAlign: "center", padding: 40, color: "#dc2626" }}>
+            ❌ Không tìm thấy lớp học phần
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="main__body">
       <div className="body__title">
-        <p className="body__title-text">
-          {info
-            ? `LỚP ${info.ma_lop} — ${info.hoc_phan.mon_hoc.ma_mon} ${info.hoc_phan.mon_hoc.ten_mon}`
-            : "LỚP HỌC PHẦN"}
-        </p>
+        <p className="body__title-text">TÀI LIỆU LỚP HỌC PHẦN</p>
       </div>
 
       <div className="body__inner">
-        {loading && (
-          <p style={{ textAlign: "center", padding: 20 }}>
-            Đang tải dữ liệu...
-          </p>
-        )}
+        {/* ✅ Thông tin lớp học phần */}
+        <div
+          className="form-section"
+          style={{
+            padding: "20px",
+            backgroundColor: "#f9fafb",
+            borderRadius: "8px",
+            marginBottom: "24px",
+          }}
+        >
+          <h3 className="sub__title_chuyenphase">
+            {lopHocPhan.ma_lop} - {lopHocPhan.hoc_phan.ten_hoc_phan}
+          </h3>
+          <div style={{ marginTop: "12px", color: "#6b7280" }}>
+            <p>
+              <strong>Môn học:</strong> {lopHocPhan.hoc_phan.mon_hoc.ma_mon} -{" "}
+              {lopHocPhan.hoc_phan.mon_hoc.ten_mon}
+            </p>
+          </div>
+        </div>
 
-        {!loading && info && (
-          <>
-            {/* Tabs */}
-            <div className="tabs" style={{ marginBottom: 12 }}>
-              <button
-                className={tab === "docs" ? "active" : ""}
-                onClick={() => setTab("docs")}
-              >
-                Tài liệu
-              </button>
-              <button
-                className={tab === "sv" ? "active" : ""}
-                onClick={() => setTab("sv")}
-              >
-                Sinh viên
-              </button>
-              <button
-                className={tab === "grades" ? "active" : ""}
-                onClick={() => setTab("grades")}
-              >
-                Điểm
-              </button>
-            </div>
-
-            {/* ========== TÀI LIỆU (READ-ONLY) ========== */}
-            {tab === "docs" && (
-              <div>
-                <TaiLieuList
-                  documents={documents}
-                  onGetUrl={getDocumentUrl}
-                  submitting={false}
-                  lhpId={id!}
-                  onDelete={() => {}}
-                />
-              </div>
-            )}
-
-            {/* ========== SINH VIÊN (READ-ONLY) ========== */}
-            {tab === "sv" && (
-              <div className="table__wrapper">
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th>MSSV</th>
-                      <th>Họ tên</th>
-                      <th>Lớp</th>
-                      <th>Email</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {students.map((s: any) => (
-                      <tr key={s.mssv}>
-                        <td>{s.mssv}</td>
-                        <td>{s.hoTen}</td>
-                        <td>{s.lop || ""}</td>
-                        <td>{s.email}</td>
-                      </tr>
-                    ))}
-                    {students.length === 0 && (
-                      <tr>
-                        <td
-                          colSpan={4}
-                          style={{ textAlign: "center", padding: 20 }}
-                        >
-                          Chưa có sinh viên đăng ký.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            )}
-
-            {/* ========== ĐIỂM (READ-ONLY) ========== */}
-            {tab === "grades" && (
-              <div className="table__wrapper">
-                <table className="table">
-                  <thead>
-                    <tr>
-                      <th>MSSV</th>
-                      <th>Họ tên</th>
-                      <th>Điểm</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {students.map((s: any) => (
-                      <tr key={s.id /* UUID */}>
-                        <td>{s.mssv}</td>
-                        <td>{s.hoTen}</td>
-                        <td style={{ maxWidth: 120 }}>
-                          {/* ❌ KHÔNG cho nhập, chỉ hiển thị */}
-                          {grades[s.id] ?? ""}
-                        </td>
-                      </tr>
-                    ))}
-                    {students.length === 0 && (
-                      <tr>
-                        <td
-                          colSpan={3}
-                          style={{ textAlign: "center", padding: 20 }}
-                        >
-                          Chưa có dữ liệu điểm.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-
-                {/* ❌ KHÔNG có nút Lưu điểm cho sinh viên */}
-              </div>
-            )}
-          </>
-        )}
+        {/* ✅ Danh sách tài liệu (READ-ONLY) */}
+        <div className="form-section">
+          <h3 className="sub__title_chuyenphase">📚 Tài liệu học tập</h3>
+          <SVTaiLieuList
+            documents={documents}
+            onGetUrl={getDocumentUrl}
+            lhpId={id || ""}
+          />
+        </div>
       </div>
     </section>
   );

@@ -35,23 +35,10 @@ export class HocKyPublicController {
 
   async updateHocKyDates(req: Request, res: Response) {
     try {
-      // ✅ FIX: Handle FE sending { data: "stringified JSON" }
-      let payload = req.body;
-
-      if (req.body.data && typeof req.body.data === 'string') {
-        try {
-          payload = JSON.parse(req.body.data);
-        } catch (e) {
-          console.error("[DEBUG] Failed to parse req.body.data:", e);
-        }
-      }
-
-      console.log("[DEBUG] Parsed payload:", JSON.stringify(payload, null, 2));
-
-      const parsed = UpdateHocKyDatesInputDTOSchema.safeParse(payload);
+      // ✅ Direct validation
+      const parsed = UpdateHocKyDatesInputDTOSchema.safeParse(req.body);
 
       if (!parsed.success) {
-        console.log("[DEBUG] Zod validation failed:", parsed.error);
         return res.status(400).json({
           isSuccess: false,
           message: "Dữ liệu không hợp lệ",

@@ -37,6 +37,11 @@ import DangKyHocPhan from "./pages/sv/DangKyHocPhan";
 import ThanhToanHocPhi from "./pages/sv/ThanhToanHocPhi";
 import PaymentResult from "./pages/sv/PaymentResult";
 
+// ✅ Add SV imports
+import SVLopHocPhanList from "./pages/sv/SVLopHocPhanList";
+import SVLopHocPhanDetail from "./pages/sv/SVLopHocPhanDetail";
+import TaiLieuHocTap from "./pages/sv/TaiLieuHocTap";
+
 export const router = createBrowserRouter([
   { path: "/", element: <LoginPage /> },
   { path: "/reset-password", element: <ResetPassword /> },
@@ -123,6 +128,13 @@ export const router = createBrowserRouter([
       { path: "xem-thoi-khoa-bieu", element: <XemThoiKhoaBieu /> },
       { path: "dang-ky-hoc-phan", element: <DangKyHocPhan /> },
       { path: "thanh-toan-hoc-phi", element: <ThanhToanHocPhi /> },
+
+      // ✅ Tài liệu học tập
+      { path: "tai-lieu", element: <TaiLieuHocTap /> },
+
+      // ✅ Routes for SV lớp học phần detail (nếu có)
+      { path: "lop-hoc-phan", element: <SVLopHocPhanList /> },
+      { path: "lop-hoc-phan/:id", element: <SVLopHocPhanDetail /> },
     ],
   },
 

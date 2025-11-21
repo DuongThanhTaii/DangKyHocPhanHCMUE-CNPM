@@ -25,6 +25,7 @@ import {
 import { traCuuHocPhanHandler } from "./sv_traCuuHocPhan_service";
 import { getHocPhiHandler, computeTuitionHandler } from "./sv_hocPhi_service";
 import { TuitionController } from "../../interface/controllers/tuition/TuitionController";
+import { SinhVienTaiLieuController } from "../../interface/controllers/sinhvien/SinhVienTaiLieuController";
 import { container } from "../../infrastructure/di/container";
 
 const r = Router();
@@ -165,5 +166,24 @@ r.get(
   traCuuHocPhanHandler
 );
 
+// ============ TÀI LIỆU HỌC TẬP ============
+
+const sinhVienTaiLieuController = container.get(SinhVienTaiLieuController);
+
+// ✅ Lấy danh sách lớp đã đăng ký kèm tài liệu
+r.get(
+  "/lop-da-dang-ky/tai-lieu",
+  requireAuth,
+  requireRole(["sinh_vien"]),
+  (req, res) => sinhVienTaiLieuController.getLopDaDangKyWithTaiLieu(req, res)
+);
+
+// ✅ Lấy tài liệu của một lớp học phần cụ thể
+r.get(
+  "/lop-hoc-phan/:id/tai-lieu",
+  requireAuth,
+  requireRole(["sinh_vien"]),
+  (req, res) => sinhVienTaiLieuController.getTaiLieuByLopHocPhan(req, res)
+);
 
 export default r;

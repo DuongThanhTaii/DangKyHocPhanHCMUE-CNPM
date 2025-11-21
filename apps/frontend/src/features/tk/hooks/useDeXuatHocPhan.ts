@@ -44,7 +44,7 @@ export const useDeXuatHocPhan = () => {
   const duyetDeXuat = async (id: string) => {
     try {
       setLoading(true);
-      console.log("Duyệt đề xuất với id:", id);
+
       const result = await tkApi.duyetDeXuatHocPhan({ id });
 
       if (result.isSuccess) {

@@ -1,5 +1,6 @@
 import { RequestHandler } from "express";
 import { ServiceFactory } from "../../services/serviceFactory";
+import { ServiceResultBuilder } from "../../types/serviceResult";
 
 const serviceFactory = ServiceFactory.getInstance();
 
