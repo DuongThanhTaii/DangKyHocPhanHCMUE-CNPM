@@ -1,0 +1,5 @@
+# Bỏ qua môi trường ảo Python
+venv/
+
+# Bỏ qua các file pdf
+*.pdf

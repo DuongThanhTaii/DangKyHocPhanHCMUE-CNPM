@@ -1,0 +1,802 @@
+{
+    "thoi_gian_dai_hoc_k51_goc": [
+        {
+            "Chương trình đào tạo": "Đào tạo đại học cấp bằng thứ nhất",
+            "Thời gian học tập chuẩn": "04 năm học",
+            "Thời gian học tập tối đa": "08 năm học"
+        },
+        {
+            "Chương trình đào tạo": "Đào tạo liên thông từ trình độ cao đẳng lên trình độ đại học",
+            "Thời gian học tập chuẩn": "1,5 năm học",
+            "Thời gian học tập tối đa": "03 năm học"
+        },
+        {
+            "Chương trình đào tạo": "Đào tạo liên thông từ trình độ trung cấp lên trình độ đại học",
+            "Thời gian học tập chuẩn": "2,5 năm học",
+            "Thời gian học tập tối đa": "05 năm học"
+        },
+        {
+            "Chương trình đào tạo": "Đào tạo liên thông trình độ đại học đối với người đã có một bằng đại học",
+            "Thời gian học tập chuẩn": "02 năm học",
+            "Thời gian học tập tối đa": "04 năm học"
+        }
+    ],
+    "hinh_thuc_dao_tao": [
+        {
+            "Hình thức đào tạo": "Chính quy",
+            "Thời gian học tập chuẩn": "04 năm học",
+            "Thời gian học tập tối đa": "06 năm học"
+        },
+        {
+            "Hình thức đào tạo": "Vừa làm vừa học",
+            "Thời gian học tập chuẩn": "05 năm học",
+            "Thời gian học tập tối đa": "7,5 năm học"
+        }
+    ],
+    "thang_diem_10_k51": [
+        {
+            "Loại": "Đạt",
+            "Thang điểm 10": "8,5 – 10",
+            "Thang điểm chữ": "A"
+        },
+        {
+            "Loại": "Đạt",
+            "Thang điểm 10": "7,8 – 8,4",
+            "Thang điểm chữ": "B+"
+        },
+        {
+            "Loại": "Đạt",
+            "Thang điểm 10": "7,0 – 7,7",
+            "Thang điểm chữ": "B"
+        },
+        {
+            "Loại": "Đạt",
+            "Thang điểm 10": "6,3 – 6,9",
+            "Thang điểm chữ": "C+"
+        },
+        {
+            "Loại": "Đạt",
+            "Thang điểm 10": "5,5 – 6,2",
+            "Thang điểm chữ": "C"
+        },
+        {
+            "Loại": "Đạt",
+            "Thang điểm 10": "4,8 – 5,4",
+            "Thang điểm chữ": "D+"
+        },
+        {
+            "Loại": "Đạt",
+            "Thang điểm 10": "4,0 – 4,7",
+            "Thang điểm chữ": "D"
+        },
+        {
+            "Loại": "Không đạt",
+            "Thang điểm 10": "3,0 – 3,9",
+            "Thang điểm chữ": "F+"
+        },
+        {
+            "Loại": "Không đạt",
+            "Thang điểm 10": "0,0 – 2,9",
+            "Thang điểm chữ": "F"
+        }
+    ],
+    "thang_diem_10_dai_cuong": [
+        {
+            "Loại": "Đạt",
+            "Thang điểm 10": "8,5 – 10",
+            "Thang điểm chữ": "A"
+        },
+        {
+            "Loại": "Đạt",
+            "Thang điểm 10": "7,8 – 8,4",
+            "Thang điểm chữ": "B+"
+        },
+        {
+            "Loại": "Đạt",
+            "Thang điểm 10": "7,0 – 7,7",
+            "Thang điểm chữ": "B"
+        },
+        {
+            "Loại": "Đạt",
+            "Thang điểm 10": "6,3 – 6,9",
+            "Thang điểm chữ": "C+"
+        },
+        {
+            "Loại": "Đạt",
+            "Thang điểm 10": "5,5 – 6,2",
+            "Thang điểm chữ": "C"
+        },
+        {
+            "Loại": "Đạt",
+            "Thang điểm 10": "4,8 – 5,4",
+            "Thang điểm chữ": "D+"
+        },
+        {
+            "Loại": "Đạt",
+            "Thang điểm 10": "4,0 – 4,7",
+            "Thang điểm chữ": "D"
+        },
+        {
+            "Loại": "Không đạt",
+            "Thang điểm 10": "3,0 – 3,9",
+            "Thang điểm chữ": "F+"
+        },
+        {
+            "Loại": "Không đạt",
+            "Thang điểm 10": "0,0 – 2,9",
+            "Thang điểm chữ": "F"
+        }
+    ],
+    "thang_diem_10_chuyen_nganh": [
+        {
+            "Loại": "Đạt",
+            "Thang điểm 10": "8,5 – 10",
+            "Thang điểm chữ": "A"
+        },
+        {
+            "Loại": "Đạt",
+            "Thang điểm 10": "7,8 – 8,4",
+            "Thang điểm chữ": "B+"
+        },
+        {
+            "Loại": "Đạt",
+            "Thang điểm 10": "7,0 – 7,7",
+            "Thang điểm chữ": "B"
+        },
+        {
+            "Loại": "Đạt",
+            "Thang điểm 10": "6,3 – 6,9",
+            "Thang điểm chữ": "C+"
+        },
+        {
+            "Loại": "Đạt",
+            "Thang điểm 10": "5,5 – 6,2",
+            "Thang điểm chữ": "C"
+        },
+        {
+            "Loại": "Không đạt",
+            "Thang điểm 10": "4,8 – 5,4",
+            "Thang điểm chữ": "D+"
+        },
+        {
+            "Loại": "Không đạt",
+            "Thang điểm 10": "4,0 – 4,7",
+            "Thang điểm chữ": "D"
+        },
+        {
+            "Loại": "Không đạt",
+            "Thang điểm 10": "3,0 – 3,9",
+            "Thang điểm chữ": "F+"
+        },
+        {
+            "Loại": "Không đạt",
+            "Thang điểm 10": "0,0 – 2,9",
+            "Thang điểm chữ": "F"
+        }
+    ],
+    "thang_diem_4": [
+        {
+            "Thang điểm chữ": "A",
+            "Thang điểm 4": "4,0"
+        },
+        {
+            "Thang điểm chữ": "B+",
+            "Thang điểm 4": "3,5"
+        },
+        {
+            "Thang điểm chữ": "B",
+            "Thang điểm 4": "3,0"
+        },
+        {
+            "Thang điểm chữ": "C+",
+            "Thang điểm 4": "2,5"
+        },
+        {
+            "Thang điểm chữ": "C",
+            "Thang điểm 4": "2,0"
+        },
+        {
+            "Thang điểm chữ": "D+",
+            "Thang điểm 4": "1,5"
+        },
+        {
+            "Thang điểm chữ": "D",
+            "Thang điểm 4": "1,0"
+        },
+        {
+            "Thang điểm chữ": "F+",
+            "Thang điểm 4": "0,5"
+        },
+        {
+            "Thang điểm chữ": "F",
+            "Thang điểm 4": "0,0"
+        }
+    ],
+    "xep_loai_hoc_luc": [
+        {
+            "Xếp loại": "Xuất sắc",
+            "Thang điểm 4": "Từ 3,6 đến 4,0"
+        },
+        {
+            "Xếp loại": "Giỏi",
+            "Thang điểm 4": "Từ 3,2 đến dưới 3,6"
+        },
+        {
+            "Xếp loại": "Khá",
+            "Thang điểm 4": "Từ 2,5 đến dưới 3,2"
+        },
+        {
+            "Xếp loại": "Trung bình",
+            "Thang điểm 4": "Từ 2,0 đến dưới 2,5"
+        },
+        {
+            "Xếp loại": "Yếu",
+            "Thang điểm 4": "Từ 1,0 đến dưới 2,0"
+        },
+        {
+            "Xếp loại": "Kém",
+            "Thang điểm 4": "Dưới 1,0"
+        }
+    ],
+    "phan_bo_tiet_hoc": [
+        {
+            "Buổi": "Sáng",
+            "Tiết": "1",
+            "Từ": "7g00",
+            "Đến": "7g50"
+        },
+        {
+            "Buổi": "Sáng",
+            "Tiết": "2",
+            "Từ": "7g50",
+            "Đến": "8g40"
+        },
+        {
+            "Buổi": "Sáng",
+            "Tiết": "3",
+            "Từ": "8g50",
+            "Đến": "9g40"
+        },
+        {
+            "Buổi": "Sáng",
+            "Tiết": "4",
+            "Từ": "9g40",
+            "Đến": "10g30"
+        },
+        {
+            "Buổi": "Sáng",
+            "Tiết": "5",
+            "Từ": "10g40",
+            "Đến": "11g30"
+        },
+        {
+            "Buổi": "Chiều",
+            "Tiết": "6",
+            "Từ": "13g00",
+            "Đến": "13g50"
+        },
+        {
+            "Buổi": "Chiều",
+            "Tiết": "7",
+            "Từ": "13g50",
+            "Đến": "14g40"
+        },
+        {
+            "Buổi": "Chiều",
+            "Tiết": "8",
+            "Từ": "14g50",
+            "Đến": "15g40"
+        },
+        {
+            "Buổi": "Chiều",
+            "Tiết": "9",
+            "Từ": "15g40",
+            "Đến": "16g30"
+        },
+        {
+            "Buổi": "Chiều",
+            "Tiết": "10",
+            "Từ": "16g40",
+            "Đến": "17g30"
+        }
+    ],
+    "phan_loai_ren_luyen": [
+        {
+            "TT": "1",
+            "Khung điểm": "Từ 90 đến 100 điểm",
+            "Xếp loại": "Xuất sắc"
+        },
+        {
+            "TT": "2",
+            "Khung điểm": "Từ 80 đến dưới 90 điểm",
+            "Xếp loại": "Tốt"
+        },
+        {
+            "TT": "3",
+            "Khung điểm": "Từ 65 đến dưới 80 điểm",
+            "Xếp loại": "Khá"
+        },
+        {
+            "TT": "4",
+            "Khung điểm": "Từ 50 đến dưới 65 điểm",
+            "Xếp loại": "Trung bình"
+        },
+        {
+            "TT": "5",
+            "Khung điểm": "Từ 35 đến dưới 50 điểm",
+            "Xếp loại": "Yếu"
+        },
+        {
+            "TT": "6",
+            "Khung điểm": "Dưới 35 điểm",
+            "Xếp loại": "Kém"
+        }
+    ],
+    "he_thong_danh_gia_ren_luyen": {
+        "Phu_luc_1": {
+            "I": {
+                "Ten": "ĐÁNH GIÁ VỀ Ý THỨC THAM GIA HỌC TẬP",
+                "Khung_diem": "0 đến 20 điểm",
+                "a": {
+                    "Ten": "Tinh thần và thái độ trong học tập",
+                    "Khung_diem": "0 đến 3 điểm",
+                    "Tieu_chi": [
+                        {
+                            "Noi_dung": "Vào lớp học đúng giờ, tham gia các giờ học đầy đủ",
+                            "Diem": "1,5 điểm"
+                        },
+                        {
+                            "Noi_dung": "Chuẩn bị bài tốt, ý thức trong giờ học nghiêm túc",
+                            "Diem": "1,5 điểm"
+                        }
+                    ]
+                },
+                "b": {
+                    "Ten": "Tham gia các hoạt động học thuật, hoạt động NCKH",
+                    "Tieu_chi": [
+                        {
+                            "Noi_dung": "Tham gia các hoạt động học thuật",
+                            "Diem": "3 điểm/hoạt động"
+                        },
+                        {
+                            "Noi_dung": "Tham gia hoạt động NCKH",
+                            "Diem": "5 điểm/nghiên cứu"
+                        }
+                    ]
+                },
+                "c": {
+                    "Ten": "Tham gia các kỳ thi, cuộc thi",
+                    "Tieu_chi": [
+                        {
+                            "Noi_dung": "Cổ vũ các kỳ thi",
+                            "Diem": "1 điểm/hoạt động"
+                        },
+                        {
+                            "Noi_dung": "Thi cấp khoa",
+                            "Diem": "3 điểm/hoạt động"
+                        },
+                        {
+                            "Noi_dung": "Thi cấp Trường",
+                            "Diem": "4 điểm/hoạt động"
+                        },
+                        {
+                            "Noi_dung": "Thi cấp tỉnh/thành trở lên",
+                            "Diem": "5 điểm/hoạt động"
+                        }
+                    ]
+                },
+                "d": {
+                    "Ten": "Kết quả học tập",
+                    "Khung_diem": "0 đến 10 điểm",
+                    "Xep_loai": [
+                        {
+                            "Loai": "Xuất sắc",
+                            "Diem": "10 điểm"
+                        },
+                        {
+                            "Loai": "Giỏi",
+                            "Diem": "8 điểm"
+                        },
+                        {
+                            "Loai": "Khá",
+                            "Diem": "6 điểm"
+                        },
+                        {
+                            "Loai": "Trung bình",
+                            "Diem": "5 điểm"
+                        },
+                        {
+                            "Loai": "Yếu",
+                            "Diem": "3 điểm"
+                        },
+                        {
+                            "Loai": "Kém",
+                            "Diem": "0 điểm"
+                        }
+                    ]
+                },
+                "e": {
+                    "Ten": "Tinh thần vượt khó",
+                    "Khung_diem": "0 đến 3 điểm"
+                },
+                "f": {
+                    "Ten": "Khen thưởng – kỷ luật",
+                    "Khen_thuong": [
+                        {
+                            "Cap": "Cấp khoa/phân hiệu",
+                            "Diem": "3 điểm/thành tích"
+                        },
+                        {
+                            "Cap": "Cấp Trường",
+                            "Diem": "4 điểm/thành tích"
+                        },
+                        {
+                            "Cap": "Cấp tỉnh/thành",
+                            "Diem": "5 điểm/thành tích"
+                        },
+                        {
+                            "Cap": "Cấp Trung ương",
+                            "Diem": "6 điểm/thành tích"
+                        }
+                    ],
+                    "Ky_luat": [
+                        {
+                            "Loai": "Không thực hiện khảo sát",
+                            "Diem": "-3 điểm/lần"
+                        },
+                        {
+                            "Loai": "Vi phạm quy định kỳ thi",
+                            "Diem": null
+                        }
+                    ]
+                }
+            },
+            "II": {
+                "Ten": "ĐÁNH GIÁ VỀ Ý THỨC CHẤP HÀNH NỘI QUY, QUY CHẾ",
+                "Khung_diem": "0 đến 25 điểm",
+                "a": {
+                    "Ten": "Ý thức chấp hành nội quy",
+                    "Tieu_chi": [
+                        {
+                            "Noi_dung": "Không vi phạm quy chế",
+                            "Diem": "2 điểm"
+                        },
+                        {
+                            "Noi_dung": "Vi phạm nội quy học đường",
+                            "Diem": "-3 điểm"
+                        },
+                        {
+                            "Noi_dung": "ĐK mà không tham gia (khoa)",
+                            "Diem": "-3 điểm/lần"
+                        },
+                        {
+                            "Noi_dung": "ĐK mà không tham gia (Trường)",
+                            "Diem": "-4 điểm/lần"
+                        },
+                        {
+                            "Noi_dung": "Không nộp hồ sơ đúng hạn",
+                            "Diem": "-3 điểm/lần"
+                        },
+                        {
+                            "Noi_dung": "Chấp hành tốt nội quy KTX",
+                            "Diem": "3 điểm"
+                        },
+                        {
+                            "Noi_dung": "Chấp hành tốt ngoại trú",
+                            "Diem": "3 điểm"
+                        },
+                        {
+                            "Noi_dung": "Tham gia BHYT đúng hạn",
+                            "Diem": "2 điểm"
+                        },
+                        {
+                            "Noi_dung": "Không tham gia BHYT",
+                            "Diem": "-5 điểm"
+                        },
+                        {
+                            "Noi_dung": "Khiển trách",
+                            "Diem": "-5 điểm"
+                        },
+                        {
+                            "Noi_dung": "Cảnh cáo",
+                            "Diem": "-10 điểm"
+                        },
+                        {
+                            "Noi_dung": "Đình chỉ học tập",
+                            "Ket_qua": "Rèn luyện Kém"
+                        },
+                        {
+                            "Noi_dung": "Đóng lệ phí đúng hạn",
+                            "Diem": "3 điểm"
+                        }
+                    ]
+                },
+                "b": {
+                    "Ten": "Tuần sinh hoạt công dân",
+                    "Xep_loai": [
+                        {
+                            "Loai": "Đạt",
+                            "Diem": "10 điểm"
+                        },
+                        {
+                            "Loai": "Không đạt",
+                            "Diem": "0 điểm"
+                        }
+                    ]
+                },
+                "c": {
+                    "Ten": "Đánh giá kết quả rèn luyện",
+                    "Tieu_chi": [
+                        {
+                            "Noi_dung": "Đánh giá đúng tiến độ",
+                            "Diem": "2 điểm"
+                        },
+                        {
+                            "Noi_dung": "Sai quy định, không trung thực",
+                            "Diem": "-3 điểm"
+                        },
+                        {
+                            "Noi_dung": "Không đánh giá",
+                            "Ket_qua": "Rèn luyện Kém"
+                        }
+                    ]
+                },
+                "d": {
+                    "Ten": "Sinh hoạt lớp định kỳ",
+                    "Khung_diem": "0 đến 5 điểm"
+                }
+            },
+            "III": {
+                "Ten": "ĐÁNH GIÁ Ý THỨC THAM GIA HOẠT ĐỘNG CHÍNH TRỊ – XH",
+                "Khung_diem": "0 đến 20 điểm",
+                "a": {
+                    "Ten": "Hoạt động chính trị – xã hội – VH – TDTT",
+                    "Tieu_chi": [
+                        {
+                            "Noi_dung": "Thành viên CLB",
+                            "Diem": "3 điểm/CLB"
+                        },
+                        {
+                            "Noi_dung": "Cổ vũ hoạt động",
+                            "Diem": "1 điểm/hoạt động"
+                        },
+                        {
+                            "Noi_dung": "Hội nghị/Đại hội/triệu tập",
+                            "Diem": "4 điểm/hoạt động"
+                        },
+                        {
+                            "Noi_dung": "Không tham gia khi triệu tập",
+                            "Diem": "-4 điểm/hoạt động"
+                        },
+                        {
+                            "Noi_dung": "Hoạt động cấp lớp",
+                            "Diem": "1 điểm/hoạt động"
+                        },
+                        {
+                            "Noi_dung": "Hoạt động cấp khoa",
+                            "Diem": "2 điểm/hoạt động"
+                        },
+                        {
+                            "Noi_dung": "Hoạt động cấp Trường",
+                            "Diem": "3 điểm/hoạt động"
+                        },
+                        {
+                            "Noi_dung": "Cấp tỉnh/thành",
+                            "Diem": "4 điểm/hoạt động"
+                        }
+                    ]
+                },
+                "b": {
+                    "Ten": "Hiến máu – công ích",
+                    "Diem": "3 điểm/hoạt động"
+                },
+                "c": {
+                    "Ten": "Tuyên truyền – phòng chống tội phạm",
+                    "Diem": "3 điểm/hoạt động"
+                },
+                "d": {
+                    "Ten": "Kết nạp Đoàn",
+                    "Diem": "2 điểm"
+                },
+                "e": {
+                    "Ten": "Kết nạp Đảng",
+                    "Diem": "3 điểm"
+                },
+                "f": {
+                    "Ten": "Khen thưởng",
+                    "Cap": [
+                        {
+                            "Cap": "Cấp khoa",
+                            "Diem": "3 điểm/thành tích"
+                        },
+                        {
+                            "Cap": "Cấp Trường",
+                            "Diem": "4 điểm/thành tích"
+                        },
+                        {
+                            "Cap": "Cấp tỉnh/thành",
+                            "Diem": "5 điểm/thành tích"
+                        },
+                        {
+                            "Cap": "Cấp Trung ương",
+                            "Diem": "6 điểm/thành tích"
+                        }
+                    ]
+                }
+            },
+            "IV": {
+                "Ten": "ĐÁNH GIÁ Ý THỨC CÔNG DÂN TRONG CỘNG ĐỒNG",
+                "Khung_diem": "0 đến 25 điểm",
+                "a": {
+                    "Ten": "Ý thức chấp hành pháp luật",
+                    "Khung_diem": "0 đến 5 điểm",
+                    "Tieu_chi": [
+                        {
+                            "Noi_dung": "Chấp hành chủ trương Đảng",
+                            "Diem": "2,5 điểm"
+                        },
+                        {
+                            "Noi_dung": "Tham gia tuyên truyền",
+                            "Diem": "2,5 điểm"
+                        }
+                    ]
+                },
+                "b": {
+                    "Ten": "Tình nguyện vì cộng đồng",
+                    "Diem": "3 điểm"
+                },
+                "c": {
+                    "Ten": "Khen thưởng vì cộng đồng",
+                    "Cap": [
+                        {
+                            "Loai": "Cấp lớp",
+                            "Diem": "2 điểm/hoạt động"
+                        },
+                        {
+                            "Loai": "Cấp khoa",
+                            "Diem": "3 điểm/hoạt động"
+                        },
+                        {
+                            "Loai": "Cấp Trường trở lên",
+                            "Diem": "4 điểm/hoạt động"
+                        },
+                        {
+                            "Loai": "Thành tích cấp khoa",
+                            "Diem": "3 điểm/thành tích"
+                        },
+                        {
+                            "Loai": "Thành tích cấp Trường",
+                            "Diem": "4 điểm/thành tích"
+                        },
+                        {
+                            "Loai": "Thành tích cấp tỉnh/thành",
+                            "Diem": "5 điểm/thành tích"
+                        },
+                        {
+                            "Loai": "Thành tích cấp Trung ương",
+                            "Diem": "6 điểm/thành tích"
+                        }
+                    ]
+                }
+            },
+            "V": {
+                "Ten": "ĐÁNH GIÁ CÔNG TÁC LỚP – ĐOÀN – HỘI",
+                "Khung_diem": "0 đến 10 điểm",
+                "a": {
+                    "Ten": "Hỗ trợ hoạt động chung",
+                    "Diem": "3 điểm"
+                },
+                "b": {
+                    "Ten": "Hoàn thành nhiệm vụ",
+                    "Cap_1": [
+                        {
+                            "Loai": "Xuất sắc",
+                            "Diem": "3 điểm"
+                        },
+                        {
+                            "Loai": "Tốt",
+                            "Diem": "2 điểm"
+                        },
+                        {
+                            "Loai": "Hoàn thành",
+                            "Diem": "1 điểm"
+                        },
+                        {
+                            "Loai": "Không hoàn thành",
+                            "Diem": "-3 điểm"
+                        }
+                    ],
+                    "Cap_2": [
+                        {
+                            "Loai": "Xuất sắc",
+                            "Diem": "4 điểm"
+                        },
+                        {
+                            "Loai": "Tốt",
+                            "Diem": "3 điểm"
+                        },
+                        {
+                            "Loai": "Hoàn thành",
+                            "Diem": "2 điểm"
+                        },
+                        {
+                            "Loai": "Không hoàn thành",
+                            "Diem": "-5 điểm"
+                        }
+                    ],
+                    "Cap_3": [
+                        {
+                            "Loai": "Xuất sắc",
+                            "Diem": "4 điểm"
+                        },
+                        {
+                            "Loai": "Tốt",
+                            "Diem": "3 điểm"
+                        },
+                        {
+                            "Loai": "Hoàn thành",
+                            "Diem": "2 điểm"
+                        },
+                        {
+                            "Loai": "Không hoàn thành",
+                            "Diem": "-5 điểm"
+                        }
+                    ]
+                },
+                "c": {
+                    "Ten": "Thành tích đặc biệt",
+                    "Danh_hieu": [
+                        {
+                            "Loai": "Sinh viên 5 tốt",
+                            "Diem": "4 điểm"
+                        },
+                        {
+                            "Loai": "Thanh niên tiên tiến",
+                            "Diem": "4 điểm"
+                        },
+                        {
+                            "Loai": "Cán bộ Đoàn – Hội xuất sắc",
+                            "Diem": "4 điểm"
+                        },
+                        {
+                            "Loai": "Sinh viên 5 tốt (tỉnh)",
+                            "Diem": "5 điểm"
+                        },
+                        {
+                            "Loai": "NCKH cấp Thành",
+                            "Diem": "5 điểm"
+                        },
+                        {
+                            "Loai": "Giấy khen Thành Đoàn",
+                            "Diem": "5 điểm"
+                        },
+                        {
+                            "Loai": "Sinh viên 5 tốt (TW)",
+                            "Diem": "7 điểm"
+                        },
+                        {
+                            "Loai": "Sao Tháng Giêng",
+                            "Diem": "7 điểm"
+                        },
+                        {
+                            "Loai": "NCKH cấp Bộ (I–III)",
+                            "Diem": "7 điểm"
+                        },
+                        {
+                            "Loai": "KK NCKH Bộ",
+                            "Diem": "6 điểm"
+                        },
+                        {
+                            "Loai": "Bằng khen TW Đoàn",
+                            "Diem": "6 điểm"
+                        },
+                        {
+                            "Loai": "Hoạt động xã hội nổi bật",
+                            "Diem": "6 điểm"
+                        }
+                    ]
+                }
+            }
+        }
+    }
+}

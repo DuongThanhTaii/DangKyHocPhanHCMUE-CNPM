@@ -1,0 +1,284 @@
+{
+  "Phòng Công nghệ Thông tin": {
+    "loai": "phòng",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "166",
+    "email": "phongcntt@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà A, tầng 5, P.503, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
+    "cong_viec_lien_quan_sinh_vien": [
+      "Quản lý email của sinh viên được cấp theo tên miền của Trường Đại học Sư phạm Thành phố Hồ Chí Minh;",
+      "Quản lý trang thông tin điện tử của Trường;",
+      "Hỗ trợ về tài khoản sinh viên trên hệ thống phần mềm quản lý đào tạo theo học chế tín chỉ;",
+      "Quản lý về kỹ thuật với các hệ thống phần mềm tại Trường Đại học Sư phạm Thành phố Hồ Chí Minh;",
+      "Phụ trách kỹ thuật phòng máy chủ và hệ thống mạng trung tâm của Trường;",
+      "Các công tác khác có liên quan đến công nghệ thông tin."
+    ]
+  },
+  "Phòng Công tác chính trị và Học sinh, sinh viên": {
+    "loai": "phòng",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "127, 128, 143",
+    "email": "hopthusinhvien@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà A, tầng 1, P.108, P.109, P.110 số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
+    "cong_viec_lien_quan_sinh_vien": [
+      "Công tác giáo dục chính trị, tư tưởng;",
+      "Công tác giáo dục pháp luật;",
+      "Công tác giáo dục đạo đức, lối sống, kỹ năng sống;",
+      "Tuyên truyền hình ảnh tư liệu; chụp hình, phục vụ các lễ, hội cấp Trường;",
+      "Thực hiện các chế độ, chính sách, quy chế, quy định liên quan đến sinh viên: xét cấp học bổng (kể cả các học bổng do các tổ chức và cá nhân tài trợ); miễn, giảm học phí; tiếp nhận, lưu trữ hồ sơ và cấp thẻ sinh viên; thực hiện công tác liên quan đến tình trạng học vụ; xét tiến độ học tập của sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh viên; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên; theo dõi phát triển Đảng trong sinh viên;",
+      "Phối hợp với các đơn vị liên quan tư vấn nghề nghiệp, việc làm cho sinh viên;",
+      "Tiếp nhận thông tin phản ánh của sinh viên."
+    ]
+  },
+  "Phòng Đào tạo": {
+    "loai": "phòng",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "141, 142",
+    "email": "phongdt@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà A, tầng 1, P.106, P.107 số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
+    "cong_viec_lien_quan_sinh_vien": [
+      "Tổ chức tuyển sinh các hệ;",
+      "Xây dựng kế hoạch thời gian năm học, kế hoạch đào tạo học kỳ; xây dựng thời khóa biểu và tổ chức đăng ký học phần cho sinh viên; theodõi, giám sát hoạt động dạy và học của giảng viên và sinh viên;",
+      "Xây dựng và triển khai kế hoạch thực tập, thực tế năm học;",
+      "Tổ chức xét tuyển đào tạo theo hình thức học cùng lúc hai chương trình (song ngành) cho sinh viên đang theo học tại Trường;",
+      "Xây dựng và triển khai kế hoạch xét tốt nghiệp cho sinh viên theo kế hoạch thời gian năm học;",
+      "Cấp phát giấy chứng nhận hoàn thành khóa học, giấy chứng nhận tốt nghiệp tạm thời, văn bằng tốt nghiệp;",
+      "Thông báo các nội dung liên quan đến công tác đào tạo trên cổng thông tin trực tuyến."
+    ]
+  },
+  "Phòng Hợp tác Quốc tế": {
+    "loai": "phòng",
+    "dien_thoai": "(028) 3891080",
+    "noi_bo": "172, 173",
+    "email": "phonghtqt@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà A, tầng 1, P.111, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
+    "cong_viec_lien_quan_sinh_vien": [
+      "Hỗ trợ dịch thuật, tổ chức sự kiện trong và ngoài nước;",
+      "Thông báo thông tin học bổng ở các trường, doanh nghiệp đối tác nước ngoài;",
+      "Tổ chức giao lưu văn hóa – trao đổi học thuật."
+    ]
+  },
+  "Phòng Khoa học Công nghệ và Môi trường – Tạp chí Khoa học": {
+    "loai": "phòng",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "177",
+    "email": "phongkhcn@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà A, tầng 1, P.112, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
+    "cong_viec_lien_quan_sinh_vien": [
+      "Tổ chức xét duyệt đề tài, đề xuất cấp kinh phí hỗ trợ, theo dõi tiến độ thực hiện đề tài NCKH sinh viên, tổ chức Hội nghị Sinh viên NCKH, lập hồ sơ đề nghị khen thưởng sinh viên đạt giải thưởng sinh viên NCKH cấp Bộ, cấp Trường;",
+      "Quản lý Tạp chí Khoa học."
+    ]
+  },
+  "Phòng Kế hoạch – Tài chính": {
+    "loai": "phòng",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "136, 137, 138, 139, 140",
+    "email": "phongkhtc@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà A, tầng 2, P.205, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
+    "cong_viec_lien_quan_sinh_vien": [
+      "Thực hiện thu học phí, lệ phí theo quy định đối với các hệ đào tạo theo phương thức không dùng tiền mặt;",
+      "Thực hiện việc cấp HBKKHT và chi trả các chế độ, chính sách hỗ trợ cho sinh viên các hệ đào tạo."
+    ]
+  },
+  "Phòng Quản trị – Thiết bị": {
+    "loai": "phòng",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "197, 198",
+    "email": "phongqttb@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà C, tầng trệt, P.004, P.005, P.006, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
+    "cong_viec_lien_quan_sinh_vien": [
+      "Quản lý lớp học, giảng đường, phòng họp;",
+      "Cho mượn amply, micro lớp học;",
+      "Quản lý thiết bị trình chiếu, máy vi tính lớp học;",
+      "Quản lý dịch vụ căn tin, bãi giữ xe tại 280 An Dương Vương, phường Chợ Quán và 222 Lê Văn Sỹ, phường Nhiêu Lộc."
+    ]
+  },
+  "Phòng Sau Đại học": {
+    "loai": "phòng",
+    "dien_thoai": "(028) 38391077",
+    "noi_bo": "181, 182, 183, 184",
+    "email": "phongsdh@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà C, tầng 1, P.102, P.103, P.104, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
+    "cong_viec_lien_quan_sinh_vien": [
+      "Tổ chức tư vấn chiêu sinh, tiếp nhận hồ sơ chương trình bổ sung kiến thức trình độ tiến sĩ, thạc sĩ;",
+      "Tổ chức tư vấn tuyển sinh, tiếp nhận hồ sơ đăng ký xét tuyển và xét tuyển sinh trình độ tiến sĩ, thạc sĩ;",
+      "Tổ chức đào tạo chương trình bổ sung kiến thức, đào tạo trình độ thạc sĩ và tiến sĩ;",
+      "Sinh viên truy cập đường dẫn sau để đọc các thông tin về Quy chế tuyển sinh và đào tạo trình độ thạc sĩ: http://tracuu.hcmue.edu.vn/Quyche_Thacsi."
+    ]
+  },
+  "Phòng Thanh tra Đào tạo": {
+    "loai": "phòng",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "160",
+    "email": "phongthanhtra@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà A, tầng 2, P.209, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
+    "cong_viec_lien_quan_sinh_vien": [
+      "Tiếp nhận và giải quyết những phản ánh liên quan đến công tác đào tạo;",
+      "Tiếp nhận và giải quyết đơn thư khiếu nại, tố cáo của sinh viên."
+    ]
+  },
+  "Phòng Khảo thí và Đảm bảo chất lượng": {
+    "loai": "phòng",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "146, 147, 218, 219",
+    "email": "phongkhaothi@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà A, tầng 2, P.202, P.206, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
+    "cong_viec_lien_quan_sinh_vien": [
+      "Tổ chức thực hiện các công tác khảo thí và đảm bảo chất lượng của Nhà trường nhằm đảm bảo chất lượng giáo dục theo sứ mạng và các mục tiêu, chiến lược đề ra;",
+      "Cấp các loại giấy chứng nhận điểm cho sinh viên, theo dõi việc học tập;",
+      "Tiếp nhận và hoàn trả các giấy tờ liên quan đến điểm thi theo yêu cầu của sinh viên;",
+      "Tiếp nhận các chứng chỉ; xét miễn các học phần ngoại ngữ và tin học."
+    ]
+  },
+  "Thư viện": {
+    "loai": "thư viện",
+    "dien_thoai": "",
+    "noi_bo": "",
+    "email": "thuvien@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Tòa nhà Thư viện – Nhà làm việc Giáo sư, tầng 1 – 7, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
+    "cong_viec_lien_quan_sinh_vien": [
+      "Cung cấp tài liệu, thông tin phục vụ quá trình học tập, nghiên cứu;",
+      "Hướng dẫn sinh viên sử dụng thư viện;",
+      "Hướng dẫn sinh viên khai thác nguồn tài nguyên thông tin;",
+      "Cung cấp các sản phẩm, dịch vụ thông tin;",
+      "Tư vấn, trao đổi, phổ biến thông tin cho sinh viên.",
+      "Tổ chức các sự kiện văn hóa, triển lãm sách và các hoạt động nhằm phát triển văn hoá đọc cho sinh viên."
+    ]
+  },
+  "Trạm Y tế": {
+    "loai": "trạm y tế",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "152",
+    "email": "tramyte@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà A, tầng trệt, P.011, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
+    "cong_viec_lien_quan_sinh_vien": [
+      "Phối hợp tổ chức khám sức khỏe đầu khóa học cho tân sinh viên;",
+      "Khám cấp cứu;",
+      "Khám bệnh, cấp phát thuốc thông thường;",
+      "Làm thẻ và phát thẻ bảo hiểm y tế."
+    ]
+  },
+  "Trường Trung học Thực hành – Đại học Sư phạm": {
+    "loai": "khác",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "115, 116, 117, 118",
+    "email": "truongthth@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà J, tầng trệt, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
+    "cong_viec_lien_quan_sinh_vien": [
+      "Hỗ trợ học sinh NCKH;",
+      "Dự giờ tìm hiểu hoạt động dạy và học;",
+      "Phối hợp hoạt động trong công tác Đoàn."
+    ]
+  },
+  "Nhà xuất bản Đại học Sư phạm Thành phố Hồ Chí Minh": {
+    "loai": "khác",
+    "dien_thoai": "(028) 39381382",
+    "noi_bo": "",
+    "email": "nxb@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà A, tầng trệt: P.007, tầng 1: P.114, tầng 2: P.212, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
+    "cong_viec_lien_quan_sinh_vien": [
+      "In ấn giáo trình phục vụ sinh viên các hệ đào tạo;",
+      "Xuất bản và phát hành sách phục vụ sinh viên trong và ngoài trường."
+    ]
+  },
+  "Ký túc xá": {
+    "loai": "ký túc xá",
+    "dien_thoai": "(028) 38650758",
+    "noi_bo": "",
+    "email": "ktx@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "351A Lạc Long Quân, phường Hoà Bình, TP. HCM.",
+    "cong_viec_lien_quan_sinh_vien": [
+      "Tiếp nhận sinh viên, bố trí chỗ ở và quản lý sinh viên nội trú;",
+      "Tổ chức các hoạt động ngoại khóa trong và ngoài khu nội trú giúp sinh viên rèn luyện kỹ năng."
+    ]
+  },
+  "Viện Nghiên cứu Giáo dục": {
+    "loai": "viện",
+    "dien_thoai": "(028) 38224813",
+    "noi_bo": "",
+    "email": "vienncgd@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "115 Hai Bà Trưng, phường Sài Gòn, TP. HCM.",
+    "cong_viec_lien_quan_sinh_vien": []
+  },
+  "Trung tâm Phát triển kỹ năng sư phạm": {
+    "loai": "trung tâm",
+    "dien_thoai": "(028) 38397868",
+    "noi_bo": "169, 170",
+    "email": "trungtamptknsp@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà A, tầng 2, P.201, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
+    "cong_viec_lien_quan_sinh_vien": [
+      "Tổ chức các hoạt động tập giảng, kiến tập và thực tập giảng tại các phòng học trực tuyến, phòng học ảo và phòng học thông minh;",
+      "Phối hợp với Phòng Đào tạo và các khoa chuyên môn để xây dựng nội dung, kế hoạch, quy chế thực tập và rèn luyện nghiệp vụ cho sinh viên;",
+      "Tổ chức hội thảo khoa học và các hoạt động NCKH về giáo dục và kỹ năng, nghiệp vụ sư phạm;",
+      "Tổ chức các dịch vụ công về kỹ năng sử dụng các phần mềm dạy học; các chiến lược và kỹ thuật dạy học trong và ngoài lớp học; kỹ năng thiết kế các công cụ dạy học; kỹ năng quản lý hệ thống học tập; kỹ năng kiểm tra đánh giá kết quả học tập; phương pháp dạy học tích hợp, phân hóa; mô hình và phương pháp dạy – học STEM,…"
+    ]
+  },
+  "Trung tâm Tin học": {
+    "loai": "trung tâm",
+    "dien_thoai": "(028) 38392549",
+    "noi_bo": "",
+    "email": "trungtamtinhoc@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Dãy A, tầng trệt, P.004, P.005 số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
+    "cong_viec_lien_quan_sinh_vien": [
+      "Giảng dạy chương trình Tin học cơ bản cho sinh viên năm 1 của toàn Trường;",
+      "Đào tạo và giảng dạy các chương trình Tin học văn phòng, Tin học ứng dụng và ứng dụng công nghệ thông tin trong dạy học bộ môn cho sinh viên, học viên trong và ngoài Trường."
+    ]
+  },
+  "Trung tâm Ngoại ngữ": {
+    "loai": "trung tâm",
+    "dien_thoai": "(028) 38355084",
+    "noi_bo": "",
+    "email": "trungtamnn@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Dãy nhà B, tầng 6, P.601, P.602, P.608, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
+    "cong_viec_lien_quan_sinh_vien": [
+      "Tổ chức các loại hình lớp học ngoại ngữ, luyện thi, tổ chức thi các chứng chỉ ngoại ngữ quốc gia và phối hợp tổ chức thi cấp chứng chỉ ngoại ngữ quốc tế, cụ thể là:",
+      "Giảng dạy các Chương trình Ngoại ngữ tổng quát theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam, các lớp chuyên luyện các kỹ năng ngoại ngữ từ cơ bản đến nâng cao;",
+      "Tổ chức kỳ thi cấp chứng chỉ/chứng nhận năng lực ngoại ngữ theo Khung năng lực ngoại ngữ 6 bậc dùng cho Việt Nam;",
+      "Giảng dạy các Chương trình Ngoại ngữ Quốc tế như TOEFL, TOEIC, IELTS, HSK, DELF, DALF, N1 – N5,… Phối hợp với các Tổ chức Khảo thí Quốc tế tổ chức các kỳ thi nói trên."
+    ]
+  },
+  "Đoàn Thanh niên và Hội Sinh viên Trường": {
+    "loai": "khác",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "145",
+    "email": "vpdoantn@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà A, tầng trệt, P.001, số 280 An Dương Vương, phường Chợ Quán, TP. HCM. + Văn phòng Hội Sinh viên:"
+  },
+  "Trung tâm Hỗ trợ sinh viên và Phát triển khởi nghiệp": {
+    "loai": "trung tâm",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "168",
+    "email": "csaed.hcmue.edu.vn",
+    "website": "csaed.hcmue.edu.vn",
+    "van_phong_lam_viec": "Nhà A, tầng 1, P.101,số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
+    "cong_viec_lien_quan_sinh_vien": [
+      "Tổ chức dịch vụ hỗ trợ đời sống của sinh viên: giới thiệu việc làm, thông tin học bổng, khảo sát và giới thiệu chỗ trọ,…;",
+      "Tổ chức các hoạt động trang bị, bồi dưỡng kỹ năng thực hành xã hội, các kiến thức, kỹ năng về khởi nghiệp cần thiết cho sinh viên theo từng đối tượng và chuyên ngành;",
+      "Tập huấn kỹ năng và hướng dẫn sinh viên tham gia các chương trình, dự án khởi nghiệp; tổ chức các hoạt động tạo môi trường để hỗ trợ sinh viên hình thành và hiện thực hóa các ý tưởng, dự án khởi nghiệp, góp phần tạo việc làm cho sinh viên sau khi tốt nghiệp;",
+      "Phối hợp các đơn vị tuyển chọn và quản lý các nhóm cộng tác viên (là sinh viên) hỗ trợ cho công tác tổ chức các sự kiện trong trường;",
+      "Tổ chức và phối hợp tổ chức các hoạt động nhằm nâng cao chuyên môn nghiệp vụ cho sinh viên khi tốt nghiệp;",
+      "Xây dựng và điều hành các kênh thông tin của trung tâm để nắm bắt và giải quyết các nhu cầu hỗ trợ sinh viên;",
+      "Tổ chức ngày hội việc làm và các hoạt động giúp sinh viên tiếp cận với các nguồn lực của xã hội."
+    ]
+  }
+}

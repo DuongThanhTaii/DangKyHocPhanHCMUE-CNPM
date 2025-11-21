@@ -1,0 +1,306 @@
+{
+  "Khoa Công nghệ Thông tin": {
+    "loai": "khoa",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "209, 210",
+    "email": "khoacntt@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà B, tầng 5, P.506, P.507, số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+    
+  },
+  "Khoa Toán – Tin học": {
+    "loai": "khoa",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "111",
+    "email": "khoatoantin@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà B, tầng 5, P.503, số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+  },
+  "Khoa Vật lý": {
+    "loai": "khoa",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "109, 110",
+    "email": "khoavatly@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà B, tầng 5, P.504, P.509, số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+    
+  },
+  "Khoa Hóa học": {
+    "loai": "khoa",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "107, 108",
+    "email": "khoahoahoc@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà B, tầng 5, P.505, P.508, số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+    
+  },
+  "Khoa Sinh học": {
+    "loai": "khoa",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "113, 114",
+    "email": "khoasinhhoc@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà B, tầng 5, P.501, P.502, số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+    
+  },
+  "Khoa Ngữ văn": {
+    "loai": "khoa",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "105, 106",
+    "email": "khoanguvan@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà B, tầng 4, P.403, số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+    
+  },
+  "Khoa Lịch sử": {
+    "loai": "khoa",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "123, 124",
+    "email": "khoalichsu@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà B, tầng 4, P.408, P.409, số 280 An Dương Vương, phường Chợ Quán, TP. HCM. 208 SỔ TAY SINH VIÊN KHÓA 51"
+    
+  },
+  "Khoa Địa lý": {
+    "loai": "khoa",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "121, 122",
+    "email": "khoadialy@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà B, tầng 4, P.407, P.410, số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+    
+  },
+  "Khoa Tiếng Anh": {
+    "loai": "khoa",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "102, 119",
+    "email": "khoatienganh@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà B, tầng 6, P.603, P.607, số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+    
+  },
+  "Khoa Tiếng Pháp": {
+    "loai": "khoa",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "151",
+    "email": "khoatiengphap@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà A, tầng 4, P.409, P.412, số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+    
+  },
+  "Khoa Tiếng Nga": {
+    "loai": "khoa",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "129, 130",
+    "email": "khoatiengnga@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà A, tầng 4, P.405, P.407, số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+    
+  },
+  "Khoa Tiếng Trung": {
+    "loai": "khoa",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "131, 150, 153",
+    "email": "khoatiengtrung@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà A, tầng 4, P.408, P.410, P.411, số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+    
+  },
+  "Khoa Tiếng Hàn Quốc": {
+    "loai": "khoa",
+    "dien_thoai": "(028) 38303247",
+    "noi_bo": "222, 223",
+    "email": "khoatienghan@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà C, tầng 6, P.604, P.606, số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+    
+  },
+  "Khoa Tiếng Nhật": {
+    "loai": "khoa",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "174",
+    "email": "khoatiengnhat@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà C, tầng 6, P.607, P.609, số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+    
+  },
+  "Khoa Khoa học Giáo dục": {
+    "loai": "khoa",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "103, 104",
+    "email": "khoakhgd@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà B, tầng 4, P.401, P.402, số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+    
+  },
+  "Khoa Tâm lý học": {
+    "loai": "khoa",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "216, 217",
+    "email": "khoatlh@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà A, tầng 4, P.402 (Văn phòng Khoa), P.403 (Ban Chủ nhiệm), số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+    
+  },
+  "Khoa Giáo dục Chính trị": {
+    "loai": "khoa",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "125, 126",
+    "email": "khoagdct@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà B, tầng 4, P.411, số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+    
+  },
+  "Khoa Giáo dục Đặc biệt": {
+    "loai": "khoa",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "",
+    "email": "khoagddb@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà A, tầng 3, P.301, P.302, số 280 An Dương Vương, phường Chợ Quán, TP. HCM"
+    
+  },
+  "Khoa Giáo dục Tiểu học": {
+    "loai": "khoa",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "134, 135",
+    "email": "khoagdth@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà A, tầng 3, P.308, P.309, P.310, số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+    
+  },
+  "Khoa Giáo dục Mầm non": {
+    "loai": "khoa",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "133",
+    "email": "khoagdmn@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà A, tầng 3, P.306, P.307, số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+    
+  },
+  "Khoa Giáo dục Quốc phòng": {
+    "loai": "khoa",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "165, 167",
+    "email": "khoagdqp@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà C, tầng 1, P.106, P.108, số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+  },
+  "Khoa Giáo dục Thể chất": {
+    "loai": "khoa",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "155, 156",
+    "email": "khoagdtc@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà thi đấu TDTT, tầng 1, số 280 An Dương Vương, phường Chợ Quán, TP. HCM."
+  },
+  "Tổ Giáo dục Nữ công": {
+    "loai": "khoa",
+    "dien_thoai": "(028) 38352020",
+    "noi_bo": "159",
+    "email": "togdnc@hcmue.edu.vn",
+    "website": "hcmue.edu",
+    "van_phong_lam_viec": "Nhà H, tầng 1, P.103, P.104, P.105, số 280 An Dương Vương, phường Chợ Quán, TP. HCM.",
+    "nhiem_vu": [
+      "liên quan đến sinh viên:",
+      "Tổ Giáo dục Nữ công phụ trách giảng dạy nhóm học phần Giáo dục đời sống gồm các học phần gắn liền với cuộc sống như: Kỹ thuật chế biến món ăn đãi tiệc, Kỹ thuật làm bánh Âu, Kỹ thuật làm hoa giấy nhún, Kỹ thuật trang điểm ứng dụng, Kỹ thuật cắt may trang phục nữ thường ngày, Kỹ thuật cắt tỉa rau củ trang trí món ăn,... Học phần này là học phần tự chọn trong nhóm học phần nền tảng;",
+      "Thông qua những học phần Giáo dục đời sống, người học lĩnh hội được những kiến thức, kỹ năng cơ bản trong cuộc sống nhằm tự phục vụ cho bản thân và gia đình."
+    ]
+  },
+  "Tổ Đào tạo – Khảo thí – Công tác sinh viên": {
+    "loai": "khoa",
+    "dien_thoai": "(026) 93877365",
+    "noi_bo": "",
+    "email": "gialai.dtktsv@hcmue.edu.vn",
+    "website": "gialai.dtktsv",
+    "van_phong_lam_viec": "Nhà làm việc hành chính, Số 126 Lê Thánh Tôn, phường Diên Hồng, tỉnh Gia Lai.",
+    "nhiem_vu": [
+      "liên quan đến sinh viên: BỘ PHẬN ĐÀO TẠO",
+      "Tổ chức tuyển sinh các hệ đào tạo;",
+      "Triển khai kế hoạch thời gian năm học, kế hoạch đào tạo học kỳ; xây dựng thời khóa biểu và tổ chức đăng ký học phần cho sinh viên Phân hiệu; theo dõi, giám sát hoạt động dạy và học của giảng viên và sinh viên;",
+      "Xây dựng và triển khai kế hoạch thực tập, thực tế năm học;",
+      "Xây dựng và triển khai kế hoạch xét tốt nghiệp cho sinh viên theo kế hoạch thời gian năm học;",
+      "Phối hợp phát giấy chứng nhận hoàn thành khóa học, giấy chứng nhận tốt nghiệp tạm thời, văn bằng tốt nghiệp;",
+      "Thông báo các nội dung liên quan đến công tác đào tạo trên website Phân hiệu. BỘ PHẬN KHẢO THÍ",
+      "Tổ chức thực hiện các công tác khảo thí và đảm bảo chất lượng của Phân hiệu nhằm đảm bảo chất lượng giáo dục theo sứ mạng và các mục tiêu, chiến lược đề ra;",
+      "Phối hợp phát các loại giấy chứng nhận điểm cho sinh viên, theo dõi việc học tập;",
+      "Tiếp nhận và hoàn trả các giấy tờ liên quan đến điểm thi theo yêu cầu của sinh viên;",
+      "Tiếp nhận các chứng chỉ; xét miễn các học phần ngoại ngữ và tin học.",
+      "Phối hợp thực hiện công tác giáo dục chính trị, tư tưởng; công tác giáo dục pháp luật; công tác giáo dục đạo đức, lối sống, kỹ năng sống, kỹ năng thực hành xã hội;",
+      "Tuyên truyền hình ảnh tư liệu; chụp hình, phục vụ các lễ, hội cấp Phân hiệu; phối hợp với các đơn vị tuyển chọn, quản lý cộng tác viên (là sinh viên) để hỗ trợ tổ chức sự kiện và các hoạt động trong Phân hiệu.",
+      "Thực hiện các chế độ, chính sách, quy chế, quy định liên quan đến sinh viên Phân hiệu: xét cấp học bổng (kể cả các học bổng do các tổ chức và cá nhân tài trợ); miễn, giảm học phí; tiếp nhận, lưu trữ hồ sơ và cấp thẻ sinh viên; thực hiện công tác liên quan đến tình trạng học vụ; xét tiến độ học tập của sinh viên; xác nhận và chứng thực các giấy tờ liên quan đến sinh viên; tiếp nhận và giải quyết những vấn đề khác liên quan đến sinh viên; theo dõi phát triển Đảng trong sinh viên;",
+      "Phối hợp với các đơn vị liên quan tư vấn nghề nghiệp, việc làm cho sinh viên; thông báo các thông tin học bổng từ Trường và các doanh nghiệp, đối tác nước ngoài; tổ chức các dịch vụ hỗ trợ đời sống sinh viên như khảo sát, giới thiệu chỗ trọ, giới thiệu việc làm và các nguồn lực xã hội;",
+      "Tổ chức giao lưu văn hóa, trao đổi học thuật; xét duyệt đề tài, đề xuất cấp kinh phí, theo dõi tiến độ thực hiện đề tài nghiên cứu khoa học của sinh viên; tổ chức Hội nghị Sinh viên NCKH và lập hồ sơ đề nghị khen thưởng sinh viên đạt giải cấp Trường, cấp Bộ. Đồng thời tổ chức các hoạt động nâng cao chuyên môn nghiệp vụ cho sinh viên trước và sau tốt nghiệp.",
+      "Tiếp nhận thông tin phản ánh từ sinh viên và xây dựng, điều hành các kênh thông tin nhằm nắm bắt, giải quyết kịp thời nhu cầu hỗ trợ sinh viên."
+    ]
+  },
+  "Tổ Hành chính – Quản trị": {
+    "loai": "khoa",
+    "dien_thoai": "(026) 93877244",
+    "noi_bo": "",
+    "email": "gialai.hcqt@hcmue.edu.vn",
+    "website": "gialai.hcqt",
+    "van_phong_lam_viec": "Nhà làm việc hành chính, Số 126 Lê Thánh Tôn, phường Diên Hồng, tỉnh Gia Lai. SỔ TAY SINH VIÊN KHÓA 51 219",
+    "nhiem_vu": [
+      "liên quan đến sinh viên: Phụ trách công tác hành chính, tổng hợp, kế toán, tài chính, cơ sở vật chất, hạ tầng, công nghệ thông tin, y tế, thư viện, ký túc xá và công tác đoàn thể."
+    ]
+  },
+  "Đoàn Thanh niên Phân hiệu": {
+    "loai": "khoa",
+    "dien_thoai": "",
+    "noi_bo": "",
+    "email": "dtnsp.phlongan@hcmue.edu.vn",
+    "website": "dtnsp.phlongan",
+    "van_phong_lam_viec": "Khu Hiệu bộ, Số 934, Quốc lộ 1A, phường Khánh Hậu, tỉnh Tây Ninh.",
+    "nhiem_vu": [
+      "Triển khai các hoạt động của Đoàn Trường và Đoàn cấp trên đến đoàn viên, thanh niên;",
+      "Tổ chức các hoạt động, tạo môi trường giáo dục, rèn luyện đoàn viên, thanh niên nhằm góp phần thực hiện các nhiệm vụ chính trị, kinh tế, văn hóa, xã hội, quốc phòng, an ninh của Trường, Phân hiệu và của địa phương;",
+      "Kết nạp đoàn viên mới, quản lý đoàn viên, tiếp nhận, chuyển sinh hoạt Đoàn; giới thiệu đoàn viên ưu tú cho Đảng bồi dưỡng, kết nạp. 216 SỔ TAY SINH VIÊN KHÓA 51"
+    ]
+  },
+  "Khoa Khoa học – Tự nhiên": {
+    "loai": "khoa",
+    "dien_thoai": "",
+    "noi_bo": "",
+    "email": "longan.khtn@hcmue.edu.vn",
+    "website": "longan.khtn",
+    "van_phong_lam_viec": "Khu Hiệu bộ, Số 934, Quốc lộ 1A, phường Khánh Hậu, tỉnh Tây Ninh."
+    
+  },
+  "Tổ Khoa học cơ bản": {
+    "loai": "khoa",
+    "dien_thoai": "",
+    "noi_bo": "",
+    "email": "longan.khcb@hcmue.edu.vn",
+    "website": "longan.khcb",
+    "van_phong_lam_viec": "Khu Hiệu bộ, Số 934, Quốc lộ 1A, phường Khánh Hậu, tỉnh Tây Ninh."
+    
+  },
+  "Tổ Ngoại ngữ": {
+    "loai": "khoa",
+    "dien_thoai": "",
+    "noi_bo": "",
+    "email": "longan.ngoaingu@hcmue.edu.vn",
+    "website": "longan.ngoaingu",
+    "van_phong_lam_viec": "Khu Hiệu bộ, Số 934, Quốc lộ 1A, phường Khánh Hậu, tỉnh Tây Ninh. "
+    
+  },
+  "Khoa Khoa học Tự nhiên": {
+    "loai": "khoa",
+    "dien_thoai": "(026) 93877322",
+    "noi_bo": "",
+    "email": "gialai.khtn@hcmue.edu.vn",
+    "website": "gialai.khtn",
+    "van_phong_lam_viec": "Văn phòng Khoa – Nhà K, Số 126 Lê Thánh Tôn, phường Diên Hồng, tỉnh Gia Lai."
+    
+  },
+  "Khoa Giáo dục đặc thù": {
+    "loai": "khoa",
+    "dien_thoai": "(026) 93877351",
+    "noi_bo": "141, 142",
+    "email": "gialai.gddt@hcmue.edu.vn",
+    "website": "gialai.gddt",
+    "van_phong_lam_viec": "Văn phòng Khoa – Nhà K, Số 126 Lê Thánh Tôn, phường Diên Hồng, tỉnh Gia Lai."
+    
+  }
+}

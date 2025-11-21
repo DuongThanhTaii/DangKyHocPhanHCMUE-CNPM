@@ -1,12 +1,3 @@
-gradio
-chromadb
+rapidfuzz
 sentence-transformers
-pandas
-fuzzywuzzy
-python-Levenshtein
-unidecode
-tqdm
-fastapi
-uvicorn
-transformers>=4.41.0
-torch>=2.0.0
+google
